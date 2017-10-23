@@ -42,5 +42,6 @@ This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/
 - [ ] Check for CI runs
 - [ ] Check if commiters match authors
 - [ ] Check 48-hour wait
-- [ ] Check two TSC approval for semver-major
+- [x] Check two TSC approval for semver-major
+- [ ] Warn new commits after reviews
 - [ ] Check number of files changed (request pre-backport)
