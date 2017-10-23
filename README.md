@@ -32,8 +32,8 @@ This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/
 
 - [x] Generate `PR-URL`
 - [x] Generate `Reviewed-By`
-- [ ] Generate `Fixes`
-- [ ] Generate `Refs`
+- [x] Generate `Fixes`
+- [x] Generate `Refs`
 - [ ] Check for CI runs
 - [ ] Check if commiters match authors
 - [ ] Check 48-hour wait
