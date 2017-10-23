@@ -1,6 +1,6 @@
 {
   "name": "node-core-utils",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "./bin/metadata.js",
   "bin": {
@@ -12,6 +12,8 @@
   "author": "Joyee Cheung <joyeec9h3@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^2.2.0",
+    "jsdom": "^11.3.0",
     "pino": "^4.8.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5"

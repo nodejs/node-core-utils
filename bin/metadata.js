@@ -17,14 +17,12 @@ const { request, requestAll } = require('../lib/request');
 const { getCollaborators } = require('../lib/collaborators');
 const logger = require('../lib/logger');
 const { ascending } = require('../lib/comp');
+const LinkParser = require('../lib/links');
+
 const {
   PENDING, COMMENTED, APPROVED, CHANGES_REQUESTED, DISMISSED
 } = require('../lib/review_state');
 
-const FIXES_RE = /Fixes: (\S+)/mg;
-const FIX_RE = /Fixes: (\S+)/;
-const REFS_RE = /Refs?: (\S+)/mg;
-const REF_RE = /Refs?: (\S+)/;
 const LGTM_RE = /(\W|^)lgtm(\W|$)/i;
 
 // const REFERENCE_RE = /referenced this pull request in/
@@ -113,41 +111,33 @@ function updateMapByRawReviews(oldMap, comments, collaborators) {
 async function getReviewers(reviews, comments, collaborators) {
   const ghReviews = mapByGithubReviews(reviews, collaborators);
   const reviewers = updateMapByRawReviews(ghReviews, comments, collaborators);
-  const result = [];
+  const result = {
+    approved: [],
+    rejected: []
+  };
   for (const [ login, review ] of reviewers) {
-    if (review.state !== APPROVED) {
-      logger.warn(`${login}: ${review.state} ${review.ref}`);
-    } else {
-      const data = collaborators.get(login);
-      result.push({
-        name: data.name,
-        email: data.email
-      });
+    const reviwer = collaborators.get(login);
+    if (review.state === APPROVED) {
+      result.approved.push(Object.assign({ review }, reviwer));
+    } else if (review.state === CHANGES_REQUESTED) {
+      result.rejected.push(Object.assign({ review }, reviwer));
     }
   }
   return result;
 }
 
-async function getFixes(pr) {
-  return []; // TODO
-}
-
-async function getRefs(pr) {
-  return []; // TODO
-}
-
 async function main(prid, owner, repo) {
-  logger.info(`Requesting ${owner}/${repo}/pull/${prid}`);
+  logger.trace(`Getting PR from ${owner}/${repo}/pull/${prid}`);
   const prData = await request(PR_QUERY, { prid, owner, repo });
   const pr = prData.repository.pullRequest;
   const prUrl = pr.url;
 
   const vars = { prid, owner, repo };
-  logger.info(`Requesting ${owner}/${repo}/pull/${prid}/reviews`);
+  logger.trace(`Getting reviews from ${owner}/${repo}/pull/${prid}`);
   const reviews = await requestAll(REVIEWS_QUERY, vars, [
     'repository', 'pullRequest', 'reviews'
   ]);
-  logger.info(`Requesting ${owner}/${repo}/pull/${prid}/comments`);
+  logger.trace(`Getting comments from ${owner}/${repo}/pull/${prid}`);
   const comments = await requestAll(COMMENTS_QUERY, vars, [
     'repository', 'pullRequest', 'comments'
   ]);
@@ -155,14 +145,25 @@ async function main(prid, owner, repo) {
   // TODO: check committers against authors
   // TODO: check CI runs
   // TODO: maybe invalidate review after new commits?
-  // logger.info(`Requesting ${owner}/${repo}/pull/${prid}/commits`);
+  // logger.trace(`Getting commits from ${owner}/${repo}/pull/${prid}`);
   // const commits = await requestAll(COMMITS_QUERY, vars, [
   //   'repository', 'pullRequest', 'commits'
   // ]);
 
-  const reviewedBy = await getReviewers(reviews, comments, collaborators);
-  const fixes = await getFixes(reviews, comments);
-  const refs = await getRefs(reviews, comments);
+  const reviewers = await getReviewers(reviews, comments, collaborators);
+  if (reviewers.rejected.length > 0) {
+    for (const { name, login, review } of reviewers.rejected) {
+      logger.warn(`${name}(${login}) rejected in ${review.ref}`);
+    }
+  }
+  if (reviewers.approved.length === 0) {
+    logger.warn('This PR has not been approved yet');
+  }
+
+  const reviewedBy = reviewers.approved;
+  const parser = new LinkParser(repo, pr.bodyHTML);
+  const fixes = parser.getFixes();
+  const refs = parser.getRefs();
 
   const output = {
     prUrl, reviewedBy, fixes, refs
@@ -180,8 +181,17 @@ async function main(prid, owner, repo) {
   meta.push(
     '-------------------------------- 8< --------------------------------'
   );
-
-  logger.info({ raw: meta.join('\n') }, `Generated metadta:`);
+  logger.info({ raw: meta.join('\n') }, 'Generated metadta:');
+  if (reviewers.rejected.length === 0) {
+    logger.info(`Rejections: 0`);
+  } else {
+    logger.warn(`Rejections: ${reviewers.rejected.length}`);
+  }
+  if (reviewers.approved.length === 0) {
+    logger.warn(`Approvals: 0`);
+  } else {
+    logger.info(`Approvals: ${reviewers.approved.length}`);
+  }
 }
 
 main(PR_ID, OWNER, REPO).catch((err) => {
