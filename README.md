@@ -1,20 +1,25 @@
 # Node.js Core Utilities
 
+CLI tools for Node.js Core collaborators
+
 ## Usage
 
 First, [follow these instructions](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
 to create a personal access token.
 
+Note: You don't need to check any boxes, these tools only require public access(for now).
+
 Then create a file named `.ncurc` under your `$HOME` directory (`~/.ncurc`);
 
 ```
 {
-  "username": "joyeecheung",
+  "username": "you_github_username"
   "token": "token_that_you_created"
 }
 ```
 
-Install and link ():
+If you install via npm, that's it.
+If you are using it from source, install and link:
 
 ```
 git clone git@github.com:joyeecheung/node-core-utils.git
