@@ -1,18 +1,25 @@
+#!/usr/bin/env node
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 
-const PR_QUERY = fs.readFileSync('./queries/PR.gql', 'utf8');
-const REVIEWS_QUERY = fs.readFileSync('./queries/Reviews.gql', 'utf8');
-const COMMENTS_QUERY = fs.readFileSync('./queries/PRComments.gql', 'utf8');
-const COMMITS_QUERY = fs.readFileSync('./queries/PRCommits.gql', 'utf8');
-const { request, requestAll } = require('./lib/request');
-const { getCollaborators } = require('./lib/collaborators');
-const logger = require('./lib/logger');
-const { ascending } = require('./lib/comp');
-const PR_ID = parseInt(process.argv[2]) || 14782;
-const OWNER = 'nodejs';
-const REPO = 'node';
+function loadQuery(file) {
+  const filePath = path.resolve(__dirname, '..', 'queries', `${file}.gql`);
+  return fs.readFileSync(filePath, 'utf8');
+}
+const PR_QUERY = loadQuery('PR');
+const REVIEWS_QUERY = loadQuery('Reviews');
+const COMMENTS_QUERY = loadQuery('PRComments');
+const COMMITS_QUERY = loadQuery('PRCommits');
+
+const { request, requestAll } = require('../lib/request');
+const { getCollaborators } = require('../lib/collaborators');
+const logger = require('../lib/logger');
+const { ascending } = require('../lib/comp');
+const {
+  PENDING, COMMENTED, APPROVED, CHANGES_REQUESTED, DISMISSED
+} = require('../lib/review_state');
 
 const FIXES_RE = /Fixes: (\S+)/mg;
 const FIX_RE = /Fixes: (\S+)/;
@@ -22,9 +29,10 @@ const LGTM_RE = /(\W|^)lgtm(\W|$)/i;
 
 // const REFERENCE_RE = /referenced this pull request in/
 
-const {
-  PENDING, COMMENTED, APPROVED, CHANGES_REQUESTED, DISMISSED
-} = require('./lib/review_state');
+const OWNER = 'nodejs';
+const REPO = 'node';
+
+const PR_ID = parseInt(process.argv[2]) || 14782;  // example
 
 function mapByGithubReviews(reviews, collaborators) {
   const map = new Map();
@@ -128,11 +136,7 @@ async function getRefs(pr) {
   return []; // TODO
 }
 
-async function main() {
-  const prid = PR_ID;
-  const owner = OWNER;
-  const repo = REPO;
-
+async function main(prid, owner, repo) {
   logger.info(`Requesting ${owner}/${repo}/pull/${prid}`);
   const prData = await request(PR_QUERY, { prid, owner, repo });
   const pr = prData.repository.pullRequest;
@@ -148,6 +152,9 @@ async function main() {
     'repository', 'pullRequest', 'comments'
   ]);
   const collaborators = await getCollaborators(owner, repo);
+  // TODO: check committers against authors
+  // TODO: check CI runs
+  // TODO: maybe invalidate review after new commits?
   // logger.info(`Requesting ${owner}/${repo}/pull/${prid}/commits`);
   // const commits = await requestAll(COMMITS_QUERY, vars, [
   //   'repository', 'pullRequest', 'commits'
@@ -168,12 +175,8 @@ async function main() {
   meta = meta.concat(output.reviewedBy.map((reviewer) => {
     return `Reviewed-By: ${reviewer.name} <${reviewer.email}>`;
   }));
-  meta = meta.concat(output.fixes.map((fix) => {
-    return `Fixes: ${fix}`;
-  }));
-  meta = meta.concat(output.refs.map((ref) => {
-    return `Refs: ${ref}`;
-  }));
+  meta = meta.concat(output.fixes.map((fix) => `Fixes: ${fix}`));
+  meta = meta.concat(output.refs.map((ref) => `Refs: ${ref}`));
   meta.push(
     '-------------------------------- 8< --------------------------------'
   );
@@ -181,7 +184,7 @@ async function main() {
   logger.info({ raw: meta.join('\n') }, `Generated metadta:`);
 }
 
-main().catch((err) => {
+main(PR_ID, OWNER, REPO).catch((err) => {
   logger.error(err);
   process.exit(-1);
 });

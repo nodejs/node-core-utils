@@ -2,7 +2,10 @@
   "name": "node-core-utils",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./bin/metadata.js",
+  "bin": {
+    "get-metadata": "./bin/metadata.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
