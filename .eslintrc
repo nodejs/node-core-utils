@@ -1,0 +1,9 @@
+{
+  "extends": "standard",
+  "rules": {
+    "semi": ["error", "always"],
+    "space-before-function-paren": ["error", "never"],
+    "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
+    "camelcase": "off"
+  }
+}
