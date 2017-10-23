@@ -1,0 +1,20 @@
+query Comments($prid: Int!, $owner: String!, $repo: String!, $after: String) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $prid) {
+      comments(first: 100, after: $after) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          publishedAt
+          bodyText
+          author {
+            login
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+query Reviews($prid: Int!, $owner: String!, $repo: String!, $after: String) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $prid) {
+      reviews(first: 100, after: $after) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          state
+          author {
+            login
+          }
+          url
+          publishedAt
+        }
+      }
+    }
+  }
+}

@@ -3,43 +3,168 @@
 const fs = require('fs');
 
 const PR_QUERY = fs.readFileSync('./queries/PR.gql', 'utf8');
-const request = require('./lib/request');
+const REVIEWS_QUERY = fs.readFileSync('./queries/Reviews.gql', 'utf8');
+const COMMENTS_QUERY = fs.readFileSync('./queries/PRComments.gql', 'utf8');
+const COMMITS_QUERY = fs.readFileSync('./queries/PRCommits.gql', 'utf8');
+const { request, requestAll } = require('./lib/request');
+const { getCollaborators } = require('./lib/collaborators');
 const logger = require('./lib/logger');
-const PR_ID = parseInt(process.argv[2]) || 12756;
+const { ascending } = require('./lib/comp');
+const PR_ID = parseInt(process.argv[2]) || 14782;
 const OWNER = 'nodejs';
 const REPO = 'node';
 
-function getReviewers(pr) {
+const FIXES_RE = /Fixes: (\S+)/mg;
+const FIX_RE = /Fixes: (\S+)/;
+const REFS_RE = /Refs?: (\S+)/mg;
+const REF_RE = /Refs?: (\S+)/;
+const LGTM_RE = /(\W|^)lgtm(\W|$)/i;
+
+// const REFERENCE_RE = /referenced this pull request in/
+
+const {
+  PENDING, COMMENTED, APPROVED, CHANGES_REQUESTED, DISMISSED
+} = require('./lib/review_state');
+
+function mapByGithubReviews(reviews, collaborators) {
+  const map = new Map();
+  const list = reviews
+    .filter((r) => r.state !== PENDING && r.state !== COMMENTED)
+    .filter((r) => {
+      return (r.author && r.author.login &&  // could be a ghost
+              collaborators.get(r.author.login.toLowerCase()));
+    }).sort((a, b) => {
+      return ascending(a.publishedAt, b.publishedAt);
+    });
+
+  for (const r of list) {
+    const login = r.author.login.toLowerCase();
+    const entry = map.get(login);
+    if (!entry) {  // initialize
+      map.set(login, {
+        state: r.state,
+        date: r.publishedAt,
+        ref: r.url
+      });
+    }
+    switch (r.state) {
+      case APPROVED:
+      case CHANGES_REQUESTED:
+        // Overwrite previous, whether initalized or not
+        map.set(login, {
+          state: r.state,
+          date: r.publishedAt,
+          ref: r.url
+        });
+        break;
+      case DISMISSED:
+        // TODO: check the state of the dismissed review?
+        map.delete(login);
+        break;
+    }
+  }
+  return map;
+}
+
+// TODO: count -1 ...? But they should make it explicit
+/**
+ * @param {Map} oldMap 
+ * @param {{}[]} comments 
+ * @param {Map} collaborators 
+ * @returns {Map}
+ */
+function updateMapByRawReviews(oldMap, comments, collaborators) {
+  const withLgtm = comments.filter((c) => LGTM_RE.test(c.bodyText))
+    .filter((c) => {
+      return (c.author && c.author.login &&  // could be a ghost
+              collaborators.get(c.author.login.toLowerCase()));
+    }).sort((a, b) => {
+      return ascending(a.publishedAt, b.publishedAt);
+    });
+
+  for (const c of withLgtm) {
+    const login = c.author.login.toLowerCase();
+    const entry = oldMap.get(login);
+    if (!entry || entry.publishedAt < c.publishedAt) {
+      logger.info(`${login} approved via LGTM in comments`);
+      oldMap.set(login, {
+        state: APPROVED,
+        date: c.publishedAt,
+        ref: c.bodyText  // no url, have to use bodyText
+      });
+    }
+  }
+  return oldMap;
+}
+/**
+ * @param {{}[]} reviewes 
+ * @param {{}[]} comments 
+ * @param {Map} collaborators 
+ * @returns {Map}
+ */
+async function getReviewers(reviews, comments, collaborators) {
+  const ghReviews = mapByGithubReviews(reviews, collaborators);
+  const reviewers = updateMapByRawReviews(ghReviews, comments, collaborators);
+  const result = [];
+  for (const [ login, review ] of reviewers) {
+    if (review.state !== APPROVED) {
+      logger.warn(`${login}: ${review.state} ${review.ref}`);
+    } else {
+      const data = collaborators.get(login);
+      result.push({
+        name: data.name,
+        email: data.email
+      });
+    }
+  }
+  return result;
+}
+
+async function getFixes(pr) {
   return []; // TODO
 }
 
-function getFixes(pr) {
-  return []; // TODO
-}
-
-function getRefs(pr) {
+async function getRefs(pr) {
   return []; // TODO
 }
 
 async function main() {
-  logger.info(`Requesting ${OWNER}/${REPO}/pull/${PR_ID}`);
-  const data = await request(PR_QUERY, {
-    prid: PR_ID,
-    owner: OWNER,
-    repo: REPO
-  });
+  const prid = PR_ID;
+  const owner = OWNER;
+  const repo = REPO;
 
-  const pr = data.repository.pullRequest;
+  logger.info(`Requesting ${owner}/${repo}/pull/${prid}`);
+  const prData = await request(PR_QUERY, { prid, owner, repo });
+  const pr = prData.repository.pullRequest;
+  const prUrl = pr.url;
+
+  const vars = { prid, owner, repo };
+  logger.info(`Requesting ${owner}/${repo}/pull/${prid}/reviews`);
+  const reviews = await requestAll(REVIEWS_QUERY, vars, [
+    'repository', 'pullRequest', 'reviews'
+  ]);
+  logger.info(`Requesting ${owner}/${repo}/pull/${prid}/comments`);
+  const comments = await requestAll(COMMENTS_QUERY, vars, [
+    'repository', 'pullRequest', 'comments'
+  ]);
+  const collaborators = await getCollaborators(owner, repo);
+  // logger.info(`Requesting ${owner}/${repo}/pull/${prid}/commits`);
+  // const commits = await requestAll(COMMITS_QUERY, vars, [
+  //   'repository', 'pullRequest', 'commits'
+  // ]);
+
+  const reviewedBy = await getReviewers(reviews, comments, collaborators);
+  const fixes = await getFixes(reviews, comments);
+  const refs = await getRefs(reviews, comments);
+
   const output = {
-    prUrl: pr.url,
-    reviewedBy: getReviewers(pr),
-    fixes: getFixes(pr),
-    refs: getRefs(pr)
+    prUrl, reviewedBy, fixes, refs
   };
 
   let meta = [
     '-------------------------------- >8 --------------------------------',
-    `PR-URL: ${output.prUrl}`];
+    `PR-URL: ${output.prUrl}`
+  ];
   meta = meta.concat(output.reviewedBy.map((reviewer) => {
     return `Reviewed-By: ${reviewer.name} <${reviewer.email}>`;
   }));

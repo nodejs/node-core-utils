@@ -2,47 +2,7 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $prid) {
       url,
-      bodyText,
-      commits(first: 100) {
-        totalCount
-        nodes {
-          commit {
-            committedDate
-            author {
-              email
-              name
-            }
-            committer {
-              email
-              name
-            }
-            oid
-            message
-            authoredByCommitter
-          }
-        }
-      }
-      comments(first: 100) {
-        totalCount
-        nodes {
-          bodyText
-          author {
-            login
-          }
-        }
-      }
-      reviews(first: 100) {
-        totalCount
-        nodes {
-          state
-          author {
-            login
-            resourcePath
-          }
-          authorAssociation
-          publishedAt
-        }
-      }
+      bodyText
     }
   }
 }
