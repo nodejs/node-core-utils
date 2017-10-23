@@ -6,6 +6,7 @@
     "get-metadata": "./bin/get-metadata",
     "git-node": "./bin/git-node",
     "ncu-config": "./bin/ncu-config",
+    "ncu-contrib": "./bin/ncu-contrib",
     "ncu-team": "./bin/ncu-team"
   },
   "scripts": {

@@ -1,0 +1,84 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const Request = require('../lib/request');
+const auth = require('../lib/auth');
+const { writeFile } = require('../lib/file');
+const { runPromise } = require('../lib/run');
+const CLI = require('../lib/cli');
+const ContributionAnalyzer = require('../lib/contribution-analyzer');
+
+const yargs = require('yargs');
+// eslint-disable-next-line no-unused-vars
+const argv = yargs
+  .command({
+    command: 'collaborators',
+    desc: 'Getting contributions from collaborators',
+    handler: handler
+  })
+  .command({
+    command: 'tsc',
+    desc: 'Getting contributions from TSC members',
+    handler: handler
+  })
+  .command({
+    command: 'for <ids..>',
+    desc: 'Getting contributions from GitHub handles',
+    builder: (yargs) => {
+      yargs
+        .positional('ids', {
+          describe: 'GitHub handles',
+          type: 'array'
+        });
+    },
+    handler: handler
+  })
+  .string('repo')
+  .string('owner')
+  .string('type')
+  .string('branch')
+  .string('readme')
+  .string('output')
+  .default({
+    repo: 'node',
+    owner: 'nodejs',
+    type: 'participation',
+    branch: 'master'
+  })
+  .demandCommand(1, 'must provide a valid command')
+  .help()
+  .argv;
+
+async function main(argv) {
+  const cli = new CLI();
+  const credentials = await auth();
+  const request = new Request(credentials);
+  const config = require('../lib/config').getMergedConfig();
+  argv = Object.assign(argv, config);
+  const analyzer = new ContributionAnalyzer(request, cli, argv);
+
+  const [ command ] = argv._;
+  let result;
+  switch (command) {
+    case 'collaborators':
+      result = await analyzer.getLatestContributionForCollaborators();
+      break;
+    case 'tsc':
+      result = await analyzer.getLatestContributionForTSC();
+      break;
+    case 'for':
+      result = await analyzer.getLatestContributionForIds(argv.ids);
+      break;
+    default:
+      throw new Error(`Unknown command ${command}`);
+  }
+  if (argv.output) {
+    const txt = analyzer.formatContributionList(result);
+    writeFile(argv.output, txt);
+  }
+}
+
+function handler(argv) {
+  runPromise(main(argv));
+}

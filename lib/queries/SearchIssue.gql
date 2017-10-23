@@ -1,5 +1,10 @@
-query SearchIssueByUser($queryString: String!, $isCommenter: Boolean!, $after: String) {
+query SearchIssueByUser($queryString: String!, $mustBeAuthor: Boolean!, $after: String) {
   search(query: $queryString, type: ISSUE, first: 100, after: $after) {
+    issueCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
     nodes {
       ... on PullRequest {
         url
@@ -8,7 +13,7 @@ query SearchIssueByUser($queryString: String!, $isCommenter: Boolean!, $after: S
           login
         }
         title
-        reviews(last: 100) @include(if: $isCommenter) {
+        reviews(last: 100) @skip(if: $mustBeAuthor) {
           nodes {
             publishedAt
             author {
@@ -21,7 +26,7 @@ query SearchIssueByUser($queryString: String!, $isCommenter: Boolean!, $after: S
             name
           }
         }
-        comments(last: 100) @include(if: $isCommenter) {
+        comments(last: 100) @skip(if: $mustBeAuthor) {
           nodes {
             publishedAt
             author {
@@ -37,7 +42,7 @@ query SearchIssueByUser($queryString: String!, $isCommenter: Boolean!, $after: S
           login
         }
         title
-        comments(last: 100) @include(if: $isCommenter) {
+        comments(last: 100) @skip(if: $mustBeAuthor) {
           nodes {
             publishedAt
             author {

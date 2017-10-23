@@ -1,0 +1,26 @@
+query SearchCommitByAuthor($repo: String!, $owner: String!, $branch: String!, $authorId: ID!, $after: String) {
+  repository(name: $repo, owner: $owner) {
+    ref(qualifiedName: $branch) {
+      target {
+        ... on Commit {
+          history(first: 100, after: $after, author: { id: $authorId } ) {
+           totalCount
+           pageInfo { hasNextPage, endCursor }
+            nodes {
+              oid
+              authoredDate
+              messageHeadline
+              author {
+                email
+                name
+                user {
+                  login
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
