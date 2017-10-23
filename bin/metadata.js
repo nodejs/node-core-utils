@@ -26,7 +26,20 @@ const REPO = 'node';
 
 const PR_ID = parseInt(process.argv[2]) || 14782;  // example
 
+function getHint(people) {
+  const fromTSC = people.filter((p) => p.reviewer.isTSC());
+  let hint = '';
+  if (fromTSC.length > 0) {
+    const list = `(${fromTSC.map((p) => p.reviewer.login).join(', ')})`;
+    hint = `, ${fromTSC.length} from TSC ${list}`;
+  }
+  return hint;
+}
+
 async function main(prid, owner, repo) {
+  logger.trace(`Getting collaborator contacts from README of ${owner}/${repo}`);
+  const collaborators = await getCollaborators(owner, repo);
+
   logger.trace(`Getting PR from ${owner}/${repo}/pull/${prid}`);
   const prData = await request(PR_QUERY, { prid, owner, repo });
   const pr = prData.repository.pullRequest;
@@ -41,7 +54,6 @@ async function main(prid, owner, repo) {
   const comments = await requestAll(COMMENTS_QUERY, vars, [
     'repository', 'pullRequest', 'comments'
   ]);
-  const collaborators = await getCollaborators(owner, repo);
 
   // TODO: check committers against authors
   // TODO: check CI runs
@@ -54,16 +66,16 @@ async function main(prid, owner, repo) {
   const analyzer = new ReviewAnalyzer(reviews, comments, collaborators);
   const reviewers = analyzer.getReviewers();
   if (reviewers.rejected.length > 0) {
-    for (const { name, login, review } of reviewers.rejected) {
-      logger.warn(`${name}(${login}) rejected in ${review.ref}`);
+    for (const { reviewer, review } of reviewers.rejected) {
+      logger.warn(`${reviewer.getName()}) rejected in ${review.ref}`);
     }
   }
   if (reviewers.approved.length === 0) {
     logger.warn('This PR has not been approved yet');
   } else {
-    for (const { name, login, review } of reviewers.approved) {
+    for (const { reviewer, review } of reviewers.approved) {
       if (review.source === ReviewAnalyzer.SOURCES.FROM_COMMENT) {
-        logger.info(`${name}(${login}) approved in via LGTM in comments`);
+        logger.info(`${reviewer.getName()}) approved in via LGTM in comments`);
       }
     }
   }
@@ -81,8 +93,8 @@ async function main(prid, owner, repo) {
     '-------------------------------- >8 --------------------------------',
     `PR-URL: ${output.prUrl}`
   ];
-  meta = meta.concat(output.reviewedBy.map((reviewer) => {
-    return `Reviewed-By: ${reviewer.name} <${reviewer.email}>`;
+  meta = meta.concat(output.reviewedBy.map((r) => {
+    return `Reviewed-By: ${r.reviewer.getContact()}>`;
   }));
   meta = meta.concat(output.fixes.map((fix) => `Fixes: ${fix}`));
   meta = meta.concat(output.refs.map((ref) => `Refs: ${ref}`));
@@ -90,15 +102,24 @@ async function main(prid, owner, repo) {
     '-------------------------------- 8< --------------------------------'
   );
   logger.info({ raw: meta.join('\n') }, 'Generated metadta:');
+
   if (reviewers.rejected.length === 0) {
     logger.info(`Rejections: 0`);
   } else {
-    logger.warn(`Rejections: ${reviewers.rejected.length}`);
+    const hint = getHint(reviewers.rejected);
+    logger.warn(`Rejections: ${reviewers.rejected.length}${hint}`);
   }
   if (reviewers.approved.length === 0) {
     logger.warn(`Approvals: 0`);
   } else {
-    logger.info(`Approvals: ${reviewers.approved.length}`);
+    const hint = getHint(reviewers.approved);
+    logger.info(`Approvals: ${reviewers.approved.length}${hint}`);
+    const labels = pr.labels.nodes.map((l) => l.name);
+    if (labels.includes('semver-major')) {
+      if (reviewers.approved.filter((p) => p.reviewer.isTSC()) < 2) {
+        logger.warn('semver-major requires at least two TSC approvals');
+      }
+    }
   }
 }
 

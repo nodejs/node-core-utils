@@ -3,6 +3,11 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
     pullRequest(number: $prid) {
       url,
       bodyHTML
+      labels(first: 100) {
+        nodes {
+          name
+        }
+      }
     }
   }
 }
