@@ -59,8 +59,8 @@ async function main(prid, owner, repo) {
   checker.checkReviewers();
   checker.checkReviews();
   checker.checkPRWait();
+  checker.checkCI();
   // TODO: check committers against authors
-  // TODO: check CI runs
   // TODO: maybe invalidate review after new commits?
 }
 
