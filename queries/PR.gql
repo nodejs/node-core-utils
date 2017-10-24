@@ -1,6 +1,7 @@
 query PR($prid: Int!, $owner: String!, $repo: String!) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $prid) {
+      createdAt,
       url,
       bodyHTML
       labels(first: 100) {
