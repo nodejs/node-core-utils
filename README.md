@@ -39,9 +39,9 @@ This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/
 - [x] Generate `Reviewed-By`
 - [x] Generate `Fixes`
 - [x] Generate `Refs`
-- [ ] Check for CI runs
+- [x] Check for CI runs
 - [ ] Check if commiters match authors
-- [ ] Check 48-hour wait
+- [x] Check 48-hour wait
 - [x] Check two TSC approval for semver-major
 - [ ] Warn new commits after reviews
 - [ ] Check number of files changed (request pre-backport)
