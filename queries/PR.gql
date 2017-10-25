@@ -3,7 +3,8 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
     pullRequest(number: $prid) {
       createdAt,
       url,
-      bodyHTML
+      bodyHTML,
+      bodyText,
       labels(first: 100) {
         nodes {
           name
