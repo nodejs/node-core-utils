@@ -70,6 +70,8 @@ main(PR_ID, OWNER, REPO).catch((err) => {
 });
 
 function parsePRId(id) {
+  if (id === undefined)
+    throw new Error('PR id is undefined');
   // Fast path: numeric string
   if (`${+id}` === id)
     return +id;
