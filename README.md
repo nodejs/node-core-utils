@@ -1,4 +1,5 @@
 # Node.js Core Utilities
+[![npm](https://img.shields.io/npm/v/node-core-utils.svg?style=flat-square)](https://npmjs.org/package/node-core-utils)
 
 CLI tools for Node.js Core collaborators
 
