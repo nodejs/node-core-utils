@@ -25,7 +25,7 @@ const MetadataGenerator = require('../lib/metadata_gen');
 const OWNER = 'nodejs';
 const REPO = 'node';
 
-const PR_ID = parseInt(process.argv[2]);  // example
+const PR_ID = parsePRId(process.argv[2]);
 
 async function main(prid, owner, repo) {
   logger.trace(`Getting collaborator contacts from README of ${owner}/${repo}`);
@@ -68,3 +68,13 @@ main(PR_ID, OWNER, REPO).catch((err) => {
   logger.error(err);
   process.exit(-1);
 });
+
+function parsePRId(id) {
+  // Fast path: numeric string
+  if (`${+id}` === id)
+    return +id;
+  const match = id.match(/^https:.*\/pull\/([0-9]+)(?:\/(?:files)?)?$/);
+  if (match !== null)
+    return +match[1];
+  throw new Error(`Could not understand PR id format: ${id}`);
+}
