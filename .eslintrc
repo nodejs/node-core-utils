@@ -5,5 +5,14 @@
     "space-before-function-paren": ["error", "never"],
     "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     "camelcase": "off"
-  }
+  },
+  "env": {
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "globalReturn": true
+    },
+    "sourceType": "script"
+  },
 }
