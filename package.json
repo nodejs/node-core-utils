@@ -33,6 +33,8 @@
     "intelli-espower-loader": "^1.0.1",
     "mocha": "^4.0.1",
     "nyc": "^11.2.1",
-    "power-assert": "^1.4.4"
+    "power-assert": "^1.4.4",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.2"
   }
 }
