@@ -71,10 +71,8 @@ main(PR_ID, OWNER, REPO).catch((err) => {
 
 function parsePRId(id) {
   // Fast path: numeric string
-  if (`${+id}` === id)
-    return +id;
+  if (`${+id}` === id) { return +id; }
   const match = id.match(/^https:.*\/pull\/([0-9]+)(?:\/(?:files)?)?$/);
-  if (match !== null)
-    return +match[1];
+  if (match !== null) { return +match[1]; }
   throw new Error(`Could not understand PR id format: ${id}`);
 }
