@@ -1,0 +1,22 @@
+[
+  {
+    "publishedAt": "2017-10-27T04:16:36.458Z",
+    "bodyText": "CI: https://ci.nodejs.org/job/node-test-pull-request/10984/\ncitgm: https://ci.nodejs.org/view/Node.js-citgm/job/citgm-smoker/1030/"
+  },
+  {
+    "publishedAt": "2017-10-24T04:16:36.458Z",
+    "bodyText": "https://ci.nodejs.org/view/libuv/job/libuv-test-commit/537/"
+  },
+  {
+    "publishedAt": "2017-10-23T04:16:36.458Z",
+    "bodyText": "https://ci.nodejs.org/job/node-test-commit-linux-nointl/7"
+  },
+  {
+    "publishedAt": "2017-10-22T04:16:36.458Z",
+    "bodyText": "CI: https://ci.nodejs.org/job/node-test-pull-request/10992/\nV8 CI: https://ci.nodejs.org/job/node-test-commit-v8-linux/1018/"
+  },
+  {
+    "publishedAt": "2017-10-21T04:16:36.458Z",
+    "bodyText": "Oh nice, it's back now. Benchmark CI: https://ci.nodejs.org/job/benchmark-node-micro-benchmarks/20/"
+  }
+]

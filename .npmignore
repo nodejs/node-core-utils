@@ -1,4 +1,6 @@
 *.json
 !package.json
-!test
-!.git
+test
+.git
+.nyc_output
+coverage
