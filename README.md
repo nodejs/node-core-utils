@@ -1,5 +1,6 @@
 # Node.js Core Utilities
 [![npm](https://img.shields.io/npm/v/node-core-utils.svg?style=flat-square)](https://npmjs.org/package/node-core-utils)
+[![Build Status](https://travis-ci.org/joyeecheung/node-core-utils.svg?branch=master)](https://travis-ci.org/joyeecheung/node-core-utils)
 
 CLI tools for Node.js Core collaborators
 
@@ -20,6 +21,7 @@ Then create a file named `.ncurc` under your `$HOME` directory (`~/.ncurc`);
 ```
 
 If you install via npm, that's it.
+
 If you are using it from source, install and link:
 
 ```
@@ -42,6 +44,7 @@ This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/
 - [x] Generate `Refs`
 - [x] Check for CI runs
 - [ ] Check if commiters match authors
+  - Only when `"authorAssociation": "FIRST_TIME_CONTRIBUTOR"`
 - [x] Check 48-hour wait
 - [x] Check two TSC approval for semver-major
 - [ ] Warn new commits after reviews
