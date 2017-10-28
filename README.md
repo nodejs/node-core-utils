@@ -1,6 +1,7 @@
 # Node.js Core Utilities
 [![npm](https://img.shields.io/npm/v/node-core-utils.svg?style=flat-square)](https://npmjs.org/package/node-core-utils)
 [![Build Status](https://travis-ci.org/joyeecheung/node-core-utils.svg?branch=master)](https://travis-ci.org/joyeecheung/node-core-utils)
+[![codecov](https://codecov.io/gh/joyeecheung/node-core-utils/branch/master/graph/badge.svg)](https://codecov.io/gh/joyeecheung/node-core-utils)
 
 CLI tools for Node.js Core collaborators
 
