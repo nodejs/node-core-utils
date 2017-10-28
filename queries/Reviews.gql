@@ -8,6 +8,7 @@ query Reviews($prid: Int!, $owner: String!, $repo: String!, $after: String) {
           endCursor
         }
         nodes {
+          bodyText
           state
           author {
             login

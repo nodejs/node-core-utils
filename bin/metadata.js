@@ -55,7 +55,7 @@ async function main(prid, owner, repo) {
   const metadata = new MetadataGenerator(repo, pr, reviewers).getMetadata();
   logger.info({ raw: metadata }, 'Generated metadata:');
 
-  const checker = new PRChecker(pr, reviewers, comments);
+  const checker = new PRChecker(pr, reviewers, comments, reviews);
   checker.checkReviewers();
   checker.checkReviews();
   checker.checkPRWait();
