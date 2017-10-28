@@ -4,3 +4,5 @@ node_js:
 sudo: false
 test:
   - npm run coverage-all
+after_success:
+  - npm run report-coverage
