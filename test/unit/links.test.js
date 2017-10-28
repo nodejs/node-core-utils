@@ -13,8 +13,8 @@ const expected = [{
   refs: ['https://github.com/nodejs/node/pull/16293']
 }];
 
-describe('CIparser', () => {
-  it('should parse CI results', () => {
+describe('LinkParser', () => {
+  it('should parse fixes and refs', () => {
     for (let i = 0; i < htmls.length; ++i) {
       const op = htmls[i];
       const parser = new LinkParser('node', op);
