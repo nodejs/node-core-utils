@@ -1,0 +1,55 @@
+
+[{
+  "bodyText": "Good idea",
+  "state": "APPROVED",
+  "author": {
+    "login": "foo"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624",
+  "publishedAt": "2017-10-24T11:19:25Z"
+},
+{
+  "bodyText": "Very close",
+  "state": "CHANGES_REQUESTED",
+  "author": {
+    "login": "Baz"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71488392",
+  "publishedAt": "2017-10-24T11:50:52Z"
+},
+{
+  "bodyText": "Fixed",
+  "state": "DISMISSED",
+  "author": {
+    "login": "Baz"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-714882992",
+  "publishedAt": "2017-10-24T12:30:52Z"
+},
+{
+  "bodyText": "LGTM",
+  "state": "APPROVED",
+  "author": {
+    "login": "Baz"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236",
+  "publishedAt": "2017-10-24T14:49:52Z"
+},
+{
+  "bodyText": "A few nits",
+  "state": "COMMENTED",
+  "author": {
+    "login": "Quo"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71817236",
+  "publishedAt": "2017-10-24T19:09:52Z"
+},
+{
+  "bodyText": "Awesome",
+  "state": "APPROVED",
+  "author": {
+    "login": "bot"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71839232",
+  "publishedAt": "2017-10-24T19:21:52Z"
+}]
