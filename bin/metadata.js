@@ -16,7 +16,7 @@ const COMMENTS_QUERY = loadQuery('PRComments');
 const { request, requestAll } = require('../lib/request');
 const { getCollaborators } = require('../lib/collaborators');
 const logger = require('../lib/logger');
-const ReviewAnalyzer = require('../lib/reviews');
+const { ReviewAnalyzer } = require('../lib/reviews');
 const PRChecker = require('../lib/pr_checker');
 const MetadataGenerator = require('../lib/metadata_gen');
 
