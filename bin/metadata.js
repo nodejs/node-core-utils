@@ -11,7 +11,7 @@ function loadQuery(file) {
 const PR_QUERY = loadQuery('PR');
 const REVIEWS_QUERY = loadQuery('Reviews');
 const COMMENTS_QUERY = loadQuery('PRComments');
-// const COMMITS_QUERY = loadQuery('PRCommits');
+const COMMITS_QUERY = loadQuery('PRCommits');
 
 const { request, requestAll } = require('../lib/request');
 const { getCollaborators } = require('../lib/collaborators');
@@ -22,10 +22,9 @@ const MetadataGenerator = require('../lib/metadata_gen');
 
 // const REFERENCE_RE = /referenced this pull request in/
 
-const OWNER = 'nodejs';
-const REPO = 'node';
-
 const PR_ID = parsePRId(process.argv[2]);
+const OWNER = process.argv[3] || 'nodejs';
+const REPO = process.argv[4] || 'node';
 
 async function main(prid, owner, repo) {
   logger.trace(`Getting collaborator contacts from README of ${owner}/${repo}`);
@@ -45,23 +44,29 @@ async function main(prid, owner, repo) {
     'repository', 'pullRequest', 'comments'
   ]);
 
-  // logger.trace(`Getting commits from ${owner}/${repo}/pull/${prid}`);
-  // const commits = await requestAll(COMMITS_QUERY, vars, [
-  //   'repository', 'pullRequest', 'commits'
-  // ]);
+  logger.trace(`Getting commits from ${owner}/${repo}/pull/${prid}`);
+  const commits = await requestAll(COMMITS_QUERY, vars, [
+    'repository', 'pullRequest', 'commits'
+  ]);
 
   const analyzer = new ReviewAnalyzer(reviews, comments, collaborators);
   const reviewers = analyzer.getReviewers();
   const metadata = new MetadataGenerator(repo, pr, reviewers).getMetadata();
   logger.info({ raw: metadata }, 'Generated metadata:');
 
-  const checker = new PRChecker(pr, reviewers, comments, reviews);
+  const checker = new PRChecker(pr, reviewers, comments, reviews,
+    commits, collaborators);
   checker.checkReviewers();
   checker.checkReviews();
   checker.checkPRWait();
   checker.checkCI();
-  // TODO: check committers against authors
+
+  if (checker.authorIsNew()) {
+    checker.checkAuthor();
+  }
   // TODO: maybe invalidate review after new commits?
+  // TODO: check for pre-backport, Github API v4
+  // does not support reading files changed
 }
 
 main(PR_ID, OWNER, REPO).catch((err) => {
