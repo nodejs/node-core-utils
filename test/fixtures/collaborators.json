@@ -14,4 +14,9 @@
   "name": "Baz User",
   "email": "baz@gmail.com",
   "type": "COLLABORATOR"
+}, {
+  "login": "Quo",
+  "name": "Quo User",
+  "email": "quo@gmail.com",
+  "type": "COLLABORATOR"
 }]
