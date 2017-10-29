@@ -1,0 +1,98 @@
+[
+  {
+    "commit": {
+      "committedDate": "2017-10-26T12:35:26Z",
+      "author": {
+        "email": "pr_author@example.com",
+        "name": "Their Github Account email"
+      },
+      "committer": {
+        "email": "pr_author@example.com",
+        "name": "Their Github Account email"
+      },
+      "oid": "ffdef335209c77f66d933bd873950747bfe42264",
+      "message": "Normal commit, same email for everything",
+      "authoredByCommitter": true
+    }
+  },
+  {
+    "commit": {
+      "committedDate": "2017-09-26T12:35:14Z",
+      "author": {
+        "email": "test@example.com",
+        "name": "Their git config user.email"
+      },
+      "committer": {
+        "email": "pr_author@example.com",
+        "name": "Their Github Account email"
+      },
+      "oid": "e3ad7c72e88c83b7184563e8fdb63df02e2fbacb",
+      "message": "Either they have not configured git user.email, or have not add the email to their account",
+      "authoredByCommitter": false
+    }
+  },
+  {
+    "commit": {
+      "committedDate": "2017-10-16T12:35:26Z",
+      "author": {
+        "email": "test@example.com",
+        "name": "Their git config user.email"
+      },
+      "committer": {
+        "email": "pr_author@example.com",
+        "name": "Their Github Account email"
+      },
+      "oid": "ff30f335209c77f66d933bd873950747bfe42264",
+      "message": "They have added the config email to their Github Account, so Github will set authoredByCommitter to true",
+      "authoredByCommitter": true
+    }
+  },
+  {
+    "commit": {
+      "committedDate": "2017-10-17T12:35:26Z",
+      "author": {
+        "email": "pr_author@example.com",
+        "name": "Their git config user.email"
+      },
+      "committer": {
+        "email": "noreply@github.com",
+        "name": "GitHub"
+      },
+      "oid": "ff88f335209c77f66d933bd873950747bfe42264",
+      "message": "They probably used the Github interface to update PR, the author email should their account email because...it's done on Github",
+      "authoredByCommitter": false
+    }
+  },
+  {
+    "commit": {
+      "committedDate": "2017-10-17T12:35:26Z",
+      "author": {
+        "email": "pr_author@example.com",
+        "name": "Their Github Account email"
+      },
+      "committer": {
+        "email": "baz@gmail.com",
+        "name": "Baz User"
+      },
+      "oid": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "message": "Edited by a collaborator",
+      "authoredByCommitter": false
+    }
+  },
+  {
+    "commit": {
+      "committedDate": "2017-10-17T12:35:26Z",
+      "author": {
+        "email": "test@example.com",
+        "name": "Their git config user.email"
+      },
+      "committer": {
+        "email": "baz@gmail.com",
+        "name": "Baz User"
+      },
+      "oid": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "message": "Edited by a collaborator, but the author is not their Github Account",
+      "authoredByCommitter": false
+    }
+  }
+]

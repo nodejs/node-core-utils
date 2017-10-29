@@ -2,6 +2,10 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $prid) {
       createdAt,
+      authorAssociation,
+      author {
+        login
+      },
       url,
       bodyHTML,
       bodyText,

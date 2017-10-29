@@ -3,6 +3,10 @@ query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
     pullRequest(number: $prid) {
       commits(first: 100, after: $after) {
         totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
         nodes {
           commit {
             committedDate
