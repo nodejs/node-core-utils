@@ -6,13 +6,7 @@ const assert = require('assert');
 const { Collaborator } = require('../../lib/collaborators');
 const comments = fixtures.readJSON('comments_with_lgtm.json');
 const reviews = fixtures.readJSON('reviews_approved.json');
-const collabArr = fixtures.readJSON('collaborators.json');
-collabArr.forEach((c) => {
-  Object.setPrototypeOf(c, Collaborator.prototype);
-});
-const collaborators = new Map(
-  collabArr.map((c) => [c.login.toLowerCase(), c])
-);
+const collaborators = require('../fixtures/collaborator_map');
 const approved = fixtures.readJSON('reviewers_approved.json');
 approved.forEach((r) => {
   Object.setPrototypeOf(r.reviewer, Collaborator.prototype);
