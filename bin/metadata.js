@@ -12,6 +12,7 @@ const PR_QUERY = loadQuery('PR');
 const REVIEWS_QUERY = loadQuery('Reviews');
 const COMMENTS_QUERY = loadQuery('PRComments');
 const COMMITS_QUERY = loadQuery('PRCommits');
+const USER_QUERY = loadQuery('User');
 
 const { request, requestAll } = require('../lib/request');
 const { getCollaborators } = require('../lib/collaborators');
@@ -33,6 +34,12 @@ async function main(prid, owner, repo) {
   logger.trace(`Getting PR from ${owner}/${repo}/pull/${prid}`);
   const prData = await request(PR_QUERY, { prid, owner, repo });
   const pr = prData.repository.pullRequest;
+
+  // Get the mail
+  logger.trace(`Getting User information for ${pr.author.login}`);
+  const userData = await request(USER_QUERY, { login: pr.author.login });
+  const user = userData.user;
+  Object.assign(pr.author, user);
 
   const vars = { prid, owner, repo };
   logger.trace(`Getting reviews from ${owner}/${repo}/pull/${prid}`);
