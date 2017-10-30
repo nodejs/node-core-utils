@@ -66,17 +66,7 @@ async function main(prid, owner, repo) {
    */
   const checker = new PRChecker(logger, pr, reviewers, comments, reviews,
     commits, collaborators);
-  checker.checkReviewers();
-  checker.checkReviews();
-  checker.checkPRWait();
-  checker.checkCI();
-
-  if (checker.authorIsNew()) {
-    checker.checkAuthor();
-  }
-  // TODO: maybe invalidate review after new commits?
-  // TODO: check for pre-backport, Github API v4
-  // does not support reading files changed
+  checker.checkAll();
 }
 
 main(PR_ID, OWNER, REPO).catch((err) => {
