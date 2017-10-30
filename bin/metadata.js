@@ -28,7 +28,7 @@ const REPO = process.argv[4] || 'node';
 
 async function main(prid, owner, repo) {
   logger.trace(`Getting collaborator contacts from README of ${owner}/${repo}`);
-  const collaborators = await getCollaborators(owner, repo);
+  const collaborators = await getCollaborators(logger, owner, repo);
 
   logger.trace(`Getting PR from ${owner}/${repo}/pull/${prid}`);
   const prData = await request(PR_QUERY, { prid, owner, repo });
@@ -54,7 +54,10 @@ async function main(prid, owner, repo) {
   const metadata = new MetadataGenerator(repo, pr, reviewers).getMetadata();
   logger.info({ raw: metadata }, 'Generated metadata:');
 
-  const checker = new PRChecker(pr, reviewers, comments, reviews,
+  /**
+   * TODO: put all these data into one object with a class
+   */
+  const checker = new PRChecker(logger, pr, reviewers, comments, reviews,
     commits, collaborators);
   checker.checkReviewers();
   checker.checkReviews();
