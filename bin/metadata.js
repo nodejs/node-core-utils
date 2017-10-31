@@ -5,7 +5,7 @@ const { EOL } = require('os');
 const Request = require('../lib/request');
 const auth = require('../lib/auth');
 const argv = require('yargs')
-.usage('$0 <identifier> [options]', 'Retrieves metadata for a PR and validates them against nodejs/node PR rules')
+.usage('$0 <identifier> [owner] [repo]', 'Retrieves metadata for a PR and validates them against nodejs/node PR rules')
 .detectLocale(false)
 .demandCommand(1, 'Pull request identifier (id or URL) is required as first argument.')
 .option('o', {
@@ -67,8 +67,8 @@ main(PR_ID, OWNER, REPO, logger).catch((err) => {
 function parsePRId(id) {
   // Fast path: numeric string
   if (!isNaN(id)) {
-    OWNER = argv._[0] || argv.o || 'nodejs';
-    REPO = argv._[1] || argv.r || 'node';
+    OWNER = argv.owner || argv.o || 'nodejs';
+    REPO = argv.repo || argv.r || 'node';
     return +id;
   }
   const match = id.match(/^https:\/\/github.com\/(\w+)\/([a-zA-Z.-]+)\/pull\/([0-9]+)(?:\/(?:files)?)?$/);
