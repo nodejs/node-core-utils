@@ -1,0 +1,18 @@
+[
+  {
+    "commit": {
+      "committedDate": "2017-10-26T12:35:26Z",
+      "author": {
+        "email": "pr_author@example.com",
+        "name": "Their Github Account email"
+      },
+      "committer": {
+        "email": "pr_author@example.com",
+        "name": "Their Github Account email"
+      },
+      "oid": "ffdef335209c77f66d933bd873950747bfe42264",
+      "message": "Normal commit, same email for everything",
+      "authoredByCommitter": true
+    }
+  }
+]
