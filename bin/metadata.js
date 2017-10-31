@@ -5,7 +5,7 @@ const { EOL } = require('os');
 const Request = require('../lib/request');
 const auth = require('../lib/auth');
 const argv = require('yargs').
-  usage('Usage : $0 <identifier> [options]').
+  usage('$0 <identifier> [options]', 'Retrieves metadata for a PR and validates them against nodejs/node PR rules').
   detectLocale(false).
   demandCommand(1, 'Pull request identifier (id or URL) is required as first argument.').
   option('o', {
