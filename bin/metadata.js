@@ -4,6 +4,26 @@
 const { EOL } = require('os');
 const Request = require('../lib/request');
 const auth = require('../lib/auth');
+const argv = require('yargs').
+  usage('Usage : $0 <identifier> [options]').
+  detectLocale(false).
+  demandCommand(1, 'Pull request identifier (id or URL) is required as first argument.').
+  option('o', {
+    alias: 'owner',
+    demandOption: false,
+    default: 'nodejs',
+    describe: 'GitHub owner of the PR repository',
+    type: 'string'
+  }).
+  option('r', {
+    alias: 'repo',
+    demandOption: false,
+    default: 'node',
+    describe: 'GitHub repository of the PR',
+    type: 'string'
+  }).
+  help('h').
+  alias('h', 'help').argv;
 
 const loggerFactory = require('../lib/logger');
 const PRData = require('../lib/pr_data');
@@ -12,9 +32,9 @@ const MetadataGenerator = require('../lib/metadata_gen');
 
 // const REFERENCE_RE = /referenced this pull request in/
 
-const PR_ID = parsePRId(process.argv[2]);
-const OWNER = process.argv[3] || 'nodejs';
-const REPO = process.argv[4] || 'node';
+let OWNER;
+let REPO;
+const PR_ID = parsePRId(argv._[0]);
 
 async function main(prid, owner, repo, logger) {
   const credentials = await auth();
@@ -45,8 +65,16 @@ main(PR_ID, OWNER, REPO, logger).catch((err) => {
 
 function parsePRId(id) {
   // Fast path: numeric string
-  if (`${+id}` === id) { return +id; }
-  const match = id.match(/^https:.*\/pull\/([0-9]+)(?:\/(?:files)?)?$/);
-  if (match !== null) { return +match[1]; }
+  if (!isNaN(id)) {
+    OWNER = argv._[1] || argv.o || 'nodejs';
+    REPO = argv._[2] || argv.r || 'node';
+    return +id;
+  }
+  const match = id.match(/^https:\/\/github.com\/(\w+)\/([a-zA-Z.-]+)\/pull\/([0-9]+)(?:\/(?:files)?)?$/);
+  if (match !== null) {
+    OWNER = match[1];
+    REPO = match[2];
+    return +match[3];
+  }
   throw new Error(`Could not understand PR id format: ${id}`);
 }

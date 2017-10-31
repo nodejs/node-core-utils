@@ -31,7 +31,8 @@
     "jsdom": "^11.3.0",
     "pino": "^4.8.0",
     "request": "^2.83.0",
-    "request-promise-native": "^1.0.5"
+    "request-promise-native": "^1.0.5",
+    "yargs": "^10.0.3"
   },
   "devDependencies": {
     "codecov": "^3.0.0",
