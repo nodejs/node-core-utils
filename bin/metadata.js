@@ -4,26 +4,26 @@
 const { EOL } = require('os');
 const Request = require('../lib/request');
 const auth = require('../lib/auth');
-const argv = require('yargs').
-  usage('$0 <identifier> [options]', 'Retrieves metadata for a PR and validates them against nodejs/node PR rules').
-  detectLocale(false).
-  demandCommand(1, 'Pull request identifier (id or URL) is required as first argument.').
-  option('o', {
+const argv = require('yargs')
+.usage('$0 <identifier> [options]', 'Retrieves metadata for a PR and validates them against nodejs/node PR rules')
+.detectLocale(false)
+.demandCommand(1, 'Pull request identifier (id or URL) is required as first argument.')
+.option('o', {
     alias: 'owner',
     demandOption: false,
     default: 'nodejs',
     describe: 'GitHub owner of the PR repository',
     type: 'string'
-  }).
-  option('r', {
+  })
+  .option('r', {
     alias: 'repo',
     demandOption: false,
     default: 'node',
     describe: 'GitHub repository of the PR',
     type: 'string'
-  }).
-  help('h').
-  alias('h', 'help').argv;
+  })
+  .help('h')
+  .alias('h', 'help').argv;
 
 const loggerFactory = require('../lib/logger');
 const PRData = require('../lib/pr_data');
