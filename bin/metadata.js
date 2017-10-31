@@ -23,7 +23,8 @@ const argv = require('yargs')
     type: 'string'
   })
   .help('h')
-  .alias('h', 'help').argv;
+  .alias('h', 'help')
+  .argv;
 
 const loggerFactory = require('../lib/logger');
 const PRData = require('../lib/pr_data');
@@ -34,7 +35,7 @@ const MetadataGenerator = require('../lib/metadata_gen');
 
 let OWNER;
 let REPO;
-const PR_ID = parsePRId(argv._[0]);
+const PR_ID = parsePRId(argv.identifier);
 
 async function main(prid, owner, repo, logger) {
   const credentials = await auth();
@@ -66,8 +67,8 @@ main(PR_ID, OWNER, REPO, logger).catch((err) => {
 function parsePRId(id) {
   // Fast path: numeric string
   if (!isNaN(id)) {
-    OWNER = argv._[1] || argv.o || 'nodejs';
-    REPO = argv._[2] || argv.r || 'node';
+    OWNER = argv._[0] || argv.o || 'nodejs';
+    REPO = argv._[1] || argv.r || 'node';
     return +id;
   }
   const match = id.match(/^https:\/\/github.com\/(\w+)\/([a-zA-Z.-]+)\/pull\/([0-9]+)(?:\/(?:files)?)?$/);
