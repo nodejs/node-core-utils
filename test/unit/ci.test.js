@@ -29,6 +29,10 @@ const expected = new Map([
   ['BENCHMARK', {
     link: 'https://ci.nodejs.org/job/benchmark-node-micro-benchmarks/20/',
     date: '2017-10-21T04:16:36.458Z'
+  }],
+  ['LINTER', {
+    link: 'https://ci.nodejs.org/job/node-test-linter/13127/',
+    date: '2017-10-22T04:16:36.458Z'
   }]
 ]);
 

@@ -18,5 +18,9 @@
   {
     "publishedAt": "2017-10-21T04:16:36.458Z",
     "bodyText": "Oh nice, it's back now. Benchmark CI: https://ci.nodejs.org/job/benchmark-node-micro-benchmarks/20/"
+  },
+  {
+    "publishedAt": "2017-10-22T04:16:36.458Z",
+    "bodyText": "Linter CI: https://ci.nodejs.org/job/node-test-linter/13127/"
   }
 ]
