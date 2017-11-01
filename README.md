@@ -2,6 +2,7 @@
 [![npm](https://img.shields.io/npm/v/node-core-utils.svg?style=flat-square)](https://npmjs.org/package/node-core-utils)
 [![Build Status](https://travis-ci.org/joyeecheung/node-core-utils.svg?branch=master)](https://travis-ci.org/joyeecheung/node-core-utils)
 [![codecov](https://codecov.io/gh/joyeecheung/node-core-utils/branch/master/graph/badge.svg)](https://codecov.io/gh/joyeecheung/node-core-utils)
+[![Known Vulnerabilities](https://snyk.io/test/github/joyeecheung/node-core-utils/badge.svg)](https://snyk.io/test/github/joyeecheung/node-core-utils)
 
 CLI tools for Node.js Core collaborators
 
@@ -10,7 +11,9 @@ CLI tools for Node.js Core collaborators
 First, [follow these instructions](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
 to create a personal access token.
 
-Note: You don't need to check any boxes, these tools only require public access(for now).
+Note: We need to read the email of the PR author in order to check if it matches
+the email of the commit author. This requires checking the box `user:email` when 
+you create the personal access token (you can edit the permission later as well).
 
 Then create a file named `.ncurc` under your `$HOME` directory (`~/.ncurc`);
 
@@ -44,8 +47,7 @@ This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/
 - [x] Generate `Fixes`
 - [x] Generate `Refs`
 - [x] Check for CI runs
-- [ ] Check if commiters match authors
-  - Only when `"authorAssociation": "FIRST_TIME_CONTRIBUTOR"`
+- [x] Check if commiters match authors
 - [x] Check 48-hour wait
 - [x] Check two TSC approval for semver-major
 - [ ] Warn new commits after reviews
