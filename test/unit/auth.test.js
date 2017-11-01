@@ -5,6 +5,7 @@ const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
+const { EOL } = require('os');
 const assert = require('assert');
 let testCounter = 0; // for tmp directories
 
@@ -90,7 +91,7 @@ function runAuthScript(ncurc = undefined, expect = []) {
 
       try {
         let newlineIndex;
-        while ((newlineIndex = pendingStdout.indexOf('\n')) !== -1) {
+        while ((newlineIndex = pendingStdout.indexOf(EOL)) !== -1) {
           const line = pendingStdout.substr(0, newlineIndex);
           pendingStdout = pendingStdout.substr(newlineIndex + 1);
 
@@ -122,7 +123,7 @@ function runAuthScript(ncurc = undefined, expect = []) {
 
       assert(line.match(expected), `${line} should match ${expected}`);
       if (reply !== undefined) {
-        proc.stdin.write(`${reply}\n`);
+        proc.stdin.write(`${reply}${EOL}`);
       }
       if (expect.length === 0) {
         proc.stdin.end();
