@@ -22,6 +22,60 @@ const collaborators = require('../fixtures/collaborator_map');
 const firstTimerPR = fixtures.readJSON('first_timer_pr.json');
 
 describe('PRChecker', () => {
+  it('should warn about PR younger than 72h on weekends', () => {
+    const logger = new TestLogger();
+
+    const expectedLogs = {
+      warn: [ ['49 hours left to land'] ],
+      info: [ ['This PR was created on Fri Oct 27 2017 (weekend in UTC)'] ],
+      error: [],
+      trace: []
+    };
+
+    const now = new Date('2017-10-28T13:00:41.682Z');
+    const youngPR = Object.assign({}, firstTimerPR, {
+      createdAt: '2017-10-27T14:25:41.682Z'
+    });
+
+    const checker = new PRChecker(logger,
+      youngPR,
+      allGreenReviewers,
+      commentsWithLGTM,
+      approvingReviews,
+      simpleCommits,
+      collaborators);
+
+    checker.checkPRWait(now);
+    assert.deepStrictEqual(logger.logs, expectedLogs);
+  });
+
+  it('should warn about PR younger than 48h on weekdays', () => {
+    const logger = new TestLogger();
+
+    const expectedLogs = {
+      warn: [ ['22 hours left to land'] ],
+      info: [ ['This PR was created on Tue Oct 31 2017 (weekday in UTC)'] ],
+      error: [],
+      trace: []
+    };
+
+    const now = new Date('2017-11-01T14:25:41.682Z');
+    const youngPR = Object.assign({}, firstTimerPR, {
+      createdAt: '2017-10-31T13:00:41.682Z'
+    });
+
+    const checker = new PRChecker(logger,
+      youngPR,
+      allGreenReviewers,
+      commentsWithLGTM,
+      approvingReviews,
+      simpleCommits,
+      collaborators);
+
+    checker.checkPRWait(now);
+    assert.deepStrictEqual(logger.logs, expectedLogs);
+  });
+
   it('should warn if no CI runs detected', () => {
     const logger = new TestLogger();
 
