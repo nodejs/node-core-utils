@@ -5,10 +5,16 @@ const fixtures = require('../fixtures');
 const assert = require('assert');
 const TestLogger = require('../fixtures/test_logger');
 const approved = fixtures.readJSON('reviewers_approved.json');
+const rejected = fixtures.readJSON('reviewers_rejected.json');
 const allGreenReviewers = {
   approved,
   rejected: []
 };
+const rejectedReviewers = {
+  rejected,
+  approved: []
+};
+
 const approvingReviews = fixtures.readJSON('reviews_approved.json');
 
 const commentsWithCI = fixtures.readJSON('comments_with_ci.json');
@@ -22,6 +28,34 @@ const collaborators = require('../fixtures/collaborator_map');
 const firstTimerPR = fixtures.readJSON('first_timer_pr.json');
 
 describe('PRChecker', () => {
+
+  it('should warn about PR with rejections & without approvals', () => {
+    const logger = new TestLogger();
+
+    const expectedLogs = {
+      warn: [ ['49 hours left to land'] ],
+      info: [ ['This PR was created on Fri Oct 27 2017 (weekend in UTC)'] ],
+      error: [],
+      trace: []
+    };
+
+    const now = new Date('2017-10-28T13:00:41.682Z');
+    const youngPR = Object.assign({}, firstTimerPR, {
+      createdAt: '2017-10-27T14:25:41.682Z'
+    });
+
+    const checker = new PRChecker(logger,
+      youngPR,
+      rejectedReviewers,
+      [],
+      approvingReviews,
+      simpleCommits,
+      collaborators);
+
+    checker.checkPRWait(now);
+    assert.deepStrictEqual(logger.logs, expectedLogs);
+  });
+
   it('should warn about PR younger than 72h on weekends', () => {
     const logger = new TestLogger();
 
