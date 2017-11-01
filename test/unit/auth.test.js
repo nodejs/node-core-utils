@@ -61,8 +61,6 @@ function runAuthScript(ncurc = undefined, expect = []) {
 
     const proc = spawn(process.execPath,
       [ require.resolve('../fixtures/run-auth') ],
-      // XXX this could just be env: { ...process.env, HOME } but the test loader
-      // is complaining?
       { timeout: 1000, env: Object.assign({}, process.env, { HOME }) });
     let stderr = '';
     proc.stderr.setEncoding('utf8');
