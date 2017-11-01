@@ -16,6 +16,8 @@ describe('collaborators intergration', function() {
     assert(collaborators.get('addaleax') instanceof Collaborator);
     // last of the list
     assert(collaborators.get('yosuke-furukawa') instanceof Collaborator);
-    assert(logger.isEmpty());
+    assert.deepStrictEqual(logger.logs, {
+      info: [], error: [], warn: [], trace: []
+    });
   });
 });
