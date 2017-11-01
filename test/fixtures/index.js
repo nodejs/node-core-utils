@@ -12,3 +12,9 @@ exports.readJSON = function(filePath) {
   const file = exports.readFile(filePath);
   return JSON.parse(file);
 };
+
+exports.patchPrototype = function(arr, key, proto) {
+  for (const item of arr) {
+    Object.setPrototypeOf(item[key], proto);
+  }
+};

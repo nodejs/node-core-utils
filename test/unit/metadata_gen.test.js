@@ -1,17 +1,15 @@
 'use strict';
 
 const MetadataGenerator = require('../../lib/metadata_gen');
-const fixtures = require('../fixtures');
+const { readJSON, patchPrototype } = require('../fixtures');
 const assert = require('assert');
 const { Collaborator } = require('../../lib/collaborators');
 
-const approved = fixtures.readJSON('reviewers_approved.json');
-approved.forEach((r) => {
-  Object.setPrototypeOf(r.reviewer, Collaborator.prototype);
-});
+const approved = readJSON('reviewers_approved.json');
+patchPrototype(approved, 'reviewer', Collaborator.prototype);
 const reviewers = { approved, rejected: [] };
 
-const pr = fixtures.readJSON('pr_with_fixes_and_refs.json');
+const pr = readJSON('pr_with_fixes_and_refs.json');
 
 const SCISSOR_LEFT = '-------------------------------- >8 ' +
   '--------------------------------';

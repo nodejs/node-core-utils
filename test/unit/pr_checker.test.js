@@ -1,11 +1,21 @@
 'use strict';
 
-const PRChecker = require('../../lib/pr_checker');
-const fixtures = require('../fixtures');
 const assert = require('assert');
+
+const { readJSON, patchPrototype } = require('../fixtures');
 const TestLogger = require('../fixtures/test_logger');
-const approved = fixtures.readJSON('reviewers_approved.json');
-const rejected = fixtures.readJSON('reviewers_rejected.json');
+
+const PRChecker = require('../../lib/pr_checker');
+const { Collaborator } = require('../../lib/collaborators');
+const { Review } = require('../../lib/reviews');
+
+const approved = readJSON('reviewers_approved.json');
+const rejected = readJSON('reviewers_rejected.json');
+patchPrototype(approved, 'reviewer', Collaborator.prototype);
+patchPrototype(approved, 'review', Review.prototype);
+patchPrototype(rejected, 'reviewer', Collaborator.prototype);
+patchPrototype(rejected, 'review', Review.prototype);
+
 const allGreenReviewers = {
   approved,
   rejected: []
@@ -15,44 +25,69 @@ const rejectedReviewers = {
   approved: []
 };
 
-const approvingReviews = fixtures.readJSON('reviews_approved.json');
+const approvingReviews = readJSON('reviews_approved.json');
+const rejectingReviews = readJSON('reviews_rejected.json');
 
-const commentsWithCI = fixtures.readJSON('comments_with_ci.json');
-const commentsWithLGTM = fixtures.readJSON('comments_with_lgtm.json');
+const commentsWithCI = readJSON('comments_with_ci.json');
+const commentsWithLGTM = readJSON('comments_with_lgtm.json');
 
-const oddCommits = fixtures.readJSON('odd_commits.json');
-const simpleCommits = fixtures.readJSON('simple_commits.json');
+const oddCommits = readJSON('odd_commits.json');
+const simpleCommits = readJSON('simple_commits.json');
 
 const collaborators = require('../fixtures/collaborator_map');
-
-const firstTimerPR = fixtures.readJSON('first_timer_pr.json');
+const firstTimerPR = readJSON('first_timer_pr.json');
+const semverMajorPR = readJSON('semver_major_pr.json');
 
 describe('PRChecker', () => {
+  it('should warn about semver-major PR without enough TSC approvals', () => {
+    const logger = new TestLogger();
+
+    const expectedLogs = {
+      warn: [
+        ['semver-major requires at least two TSC approvals']
+      ],
+      info: [
+        ['Rejections: 0'],
+        ['Approvals: 3, 1 from TSC (bar)']
+      ],
+      error: [],
+      trace: []
+    };
+
+    const checker = new PRChecker(logger,
+      semverMajorPR,
+      allGreenReviewers,
+      commentsWithLGTM,
+      approvingReviews,
+      simpleCommits,
+      collaborators);
+
+    checker.checkReviewers();
+    assert.deepStrictEqual(logger.logs, expectedLogs);
+  });
 
   it('should warn about PR with rejections & without approvals', () => {
     const logger = new TestLogger();
 
     const expectedLogs = {
-      warn: [ ['49 hours left to land'] ],
-      info: [ ['This PR was created on Fri Oct 27 2017 (weekend in UTC)'] ],
+      warn: [
+        ['Rejections: 2, 1 from TSC (bar)'],
+        ['Approvals: 0']
+      ],
+      info: [],
       error: [],
       trace: []
     };
 
-    const now = new Date('2017-10-28T13:00:41.682Z');
-    const youngPR = Object.assign({}, firstTimerPR, {
-      createdAt: '2017-10-27T14:25:41.682Z'
-    });
-
     const checker = new PRChecker(logger,
-      youngPR,
+      firstTimerPR,
       rejectedReviewers,
       [],
-      approvingReviews,
+      rejectingReviews,
       simpleCommits,
       collaborators);
 
-    checker.checkPRWait(now);
+    checker.checkReviewers();
     assert.deepStrictEqual(logger.logs, expectedLogs);
   });
 
