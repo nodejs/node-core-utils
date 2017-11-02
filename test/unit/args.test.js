@@ -2,8 +2,6 @@
 
 const parseArgs = require('../../lib/args');
 const assert = require('assert');
-const sinon = require('sinon');
-const sandbox = sinon.sandbox.create();
 
 const expected = {
   owner: `nodejs`,
@@ -54,16 +52,8 @@ describe('args', async function() {
     });
   });
   describe('Errors', async function() {
-    afterEach(function() {
-      sandbox.restore();
-      process.removeAllListeners('SIGTERM');
-    });
     it('should exit and log error when called without arguments', async function() {
-      let exitStub = sandbox.stub(process, 'exit').throws();
-      let consoleStub = sandbox.stub(console, 'error');
       await assert.throws(parseArgs);
-      // await sinon.assert.calledOnce(exitStub);
-      // await sinon.assert.called(consoleStub);
     });
     it('should throw when called with a non-url string', async function() {
       let result = () => {
