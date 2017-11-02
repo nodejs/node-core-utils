@@ -40,6 +40,40 @@ npm link
 This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/node-review)
 , although it is a CLI implemented with the Github GraphQL API.
 
+```
+get-metadata <identifier> [owner] [repo]
+
+Retrieves metadata for a PR and validates them against nodejs/node PR rules
+
+Options:
+  --version    Show version number                                     [boolean]
+  -o, --owner  GitHub owner of the PR repository                        [string]
+  -r, --repo   GitHub repository of the PR                              [string]
+  -h, --help   Show help                                               [boolean]
+```
+
+Examples:
+
+```bash
+PRID=12345
+
+# fetch metadata and run checks on nodejs/node/pull/$PRID
+$ get-metadata $PRID
+# is equivalent to
+$ get-metadata https://github.com/nodejs/node/pull/$PRID
+# is equivalent to
+$ get-metadata $PRID -o nodejs -r node
+
+# Or, redirect the metadata to a file while see the checks in stderr
+$ get-metadata $PRID > msg.txt
+
+# Using it to amend commit messages:
+$ git show -s --format=%B > msg.txt
+$ echo "" >> msg.txt
+$ get-metadata $PRID >> msg.txt
+$ git commit --amend -F msg.txt
+```
+
 ### TODO
 
 - [x] Generate `PR-URL`
