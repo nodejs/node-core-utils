@@ -16,7 +16,7 @@ const USER_QUERY = loadQuery('User');
 
 const { request, requestAll } = require('../lib/request');
 const { getCollaborators } = require('../lib/collaborators');
-const logger = require('../lib/logger');
+const loggerFactory = require('../lib/logger');
 const { ReviewAnalyzer } = require('../lib/reviews');
 const PRChecker = require('../lib/pr_checker');
 const MetadataGenerator = require('../lib/metadata_gen');
@@ -27,7 +27,7 @@ const PR_ID = parsePRId(process.argv[2]);
 const OWNER = process.argv[3] || 'nodejs';
 const REPO = process.argv[4] || 'node';
 
-async function main(prid, owner, repo) {
+async function main(prid, owner, repo, logger) {
   logger.trace(`Getting collaborator contacts from README of ${owner}/${repo}`);
   const collaborators = await getCollaborators(logger, owner, repo);
 
@@ -69,7 +69,8 @@ async function main(prid, owner, repo) {
   checker.checkAll();
 }
 
-main(PR_ID, OWNER, REPO).catch((err) => {
+const logger = loggerFactory(process.stdout);
+main(PR_ID, OWNER, REPO, logger).catch((err) => {
   logger.error(err);
   process.exit(-1);
 });
