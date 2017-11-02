@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { EOL } = require('os');
 
 function loadQuery(file) {
   const filePath = path.resolve(__dirname, '..', 'queries', `${file}.gql`);
@@ -59,7 +60,15 @@ async function main(prid, owner, repo, logger) {
   const analyzer = new ReviewAnalyzer(reviews, comments, collaborators);
   const reviewers = analyzer.getReviewers();
   const metadata = new MetadataGenerator(repo, pr, reviewers).getMetadata();
-  logger.info({ raw: metadata }, 'Generated metadata:');
+
+  const [SCISSOR_LEFT, SCISSOR_RIGHT] = MetadataGenerator.SCISSORS;
+  logger.info({
+    raw: [SCISSOR_LEFT, metadata, SCISSOR_RIGHT].join(EOL)
+  }, 'Generated metadata:');
+
+  if (!process.stdout.isTTY) {
+    process.stdout.write(`${metadata}${EOL}`);
+  }
 
   /**
    * TODO: put all these data into one object with a class
@@ -69,7 +78,8 @@ async function main(prid, owner, repo, logger) {
   checker.checkAll();
 }
 
-const logger = loggerFactory(process.stdout);
+const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+const logger = loggerFactory(logStream);
 main(PR_ID, OWNER, REPO, logger).catch((err) => {
   logger.error(err);
   process.exit(-1);
