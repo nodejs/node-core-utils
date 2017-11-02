@@ -6,18 +6,21 @@ const assert = require('assert');
 const htmls = fixtures.readJSON('op_html.json');
 
 const expected = [{
-  fixes: ['https://github.com/node/issues/16437'],
+  fixes: ['https://github.com/nodejs/node/issues/16437'],
   refs: ['https://github.com/nodejs/node/pull/15148']
 }, {
   fixes: [],
   refs: ['https://github.com/nodejs/node/pull/16293']
+}, {
+  fixes: ['https://github.com/nodejs/node/issues/16504'],
+  refs: []
 }];
 
 describe('LinkParser', () => {
   it('should parse fixes and refs', () => {
     for (let i = 0; i < htmls.length; ++i) {
       const op = htmls[i];
-      const parser = new LinkParser('node', op);
+      const parser = new LinkParser('nodejs/node', op);
       const actual = {
         fixes: parser.getFixes(),
         refs: parser.getRefs()
