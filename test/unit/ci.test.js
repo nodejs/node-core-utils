@@ -1,9 +1,10 @@
 'use strict';
 
 const CIParser = require('../../lib/ci');
-const fixtures = require('../fixtures');
 const assert = require('assert');
-const comments = fixtures.readJSON('comments_with_ci.json');
+const {
+  commentsWithCI
+} = require('../fixtures/data');
 
 const expected = new Map([
   ['FULL', {
@@ -38,7 +39,7 @@ const expected = new Map([
 
 describe('CIparser', () => {
   it('should parse CI results', () => {
-    const results = new CIParser(comments).parse();
+    const results = new CIParser(commentsWithCI).parse();
     assert.deepStrictEqual(expected, results);
   });
 });
