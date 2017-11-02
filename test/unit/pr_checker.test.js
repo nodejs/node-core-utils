@@ -42,13 +42,14 @@ const semverMajorPR = readJSON('semver_major_pr.json');
 describe('PRChecker', () => {
   describe('checkAll', () => {
     const logger = new TestLogger();
-    const checker = new PRChecker(logger,
-      firstTimerPR,
-      allGreenReviewers,
-      commentsWithLGTM,
-      approvingReviews,
-      simpleCommits,
-      collaborators);
+    const checker = new PRChecker(logger, {
+      pr: firstTimerPR,
+      reviewers: allGreenReviewers,
+      comments: commentsWithLGTM,
+      reviews: approvingReviews,
+      commits: simpleCommits,
+      collaborators
+    });
 
     let checkReviewsStub;
     let checkPRWaitStub;
@@ -99,13 +100,14 @@ describe('PRChecker', () => {
         trace: []
       };
 
-      const checker = new PRChecker(logger,
-        semverMajorPR,
-        allGreenReviewers,
-        commentsWithLGTM,
-        approvingReviews,
-        simpleCommits,
-        collaborators);
+      const checker = new PRChecker(logger, {
+        pr: semverMajorPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators
+      });
 
       checker.checkReviews();
       assert.deepStrictEqual(logger.logs, expectedLogs);
@@ -126,13 +128,14 @@ describe('PRChecker', () => {
         trace: []
       };
 
-      const checker = new PRChecker(logger,
-        firstTimerPR,
-        rejectedReviewers,
-        [],
-        rejectingReviews,
-        simpleCommits,
-        collaborators);
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: rejectedReviewers,
+        comments: [],
+        reviews: rejectingReviews,
+        commits: simpleCommits,
+        collaborators
+      });
 
       checker.checkReviews();
       assert.deepStrictEqual(logger.logs, expectedLogs);
@@ -155,13 +158,14 @@ describe('PRChecker', () => {
         createdAt: '2017-10-27T14:25:41.682Z'
       });
 
-      const checker = new PRChecker(logger,
-        youngPR,
-        allGreenReviewers,
-        commentsWithLGTM,
-        approvingReviews,
-        simpleCommits,
-        collaborators);
+      const checker = new PRChecker(logger, {
+        pr: youngPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators
+      });
 
       checker.checkPRWait(now);
       assert.deepStrictEqual(logger.logs, expectedLogs);
@@ -182,13 +186,14 @@ describe('PRChecker', () => {
         createdAt: '2017-10-31T13:00:41.682Z'
       });
 
-      const checker = new PRChecker(logger,
-        youngPR,
-        allGreenReviewers,
-        commentsWithLGTM,
-        approvingReviews,
-        simpleCommits,
-        collaborators);
+      const checker = new PRChecker(logger, {
+        pr: youngPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators
+      });
 
       checker.checkPRWait(now);
       assert.deepStrictEqual(logger.logs, expectedLogs);
@@ -208,13 +213,14 @@ describe('PRChecker', () => {
         trace: []
       };
 
-      const checker = new PRChecker(logger,
-        firstTimerPR,
-        allGreenReviewers,
-        commentsWithLGTM,
-        approvingReviews,
-        simpleCommits,
-        collaborators);
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators
+      });
 
       checker.checkCI();
       assert.deepStrictEqual(logger.logs, expectedLogs);
@@ -259,13 +265,14 @@ describe('PRChecker', () => {
         trace: []
       };
 
-      const checker = new PRChecker(logger,
-        firstTimerPR,
-        allGreenReviewers,
-        commentsWithCI,
-        approvingReviews,
-        simpleCommits,
-        collaborators);
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithCI,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators
+      });
 
       checker.checkCI();
       assert.deepStrictEqual(logger.logs, expectedLogs);
@@ -289,12 +296,14 @@ describe('PRChecker', () => {
         trace: []
       };
 
-      const checker = new PRChecker(logger, firstTimerPR,
-        allGreenReviewers,
-        commentsWithLGTM,
-        approvingReviews,
-        oddCommits,
-        collaborators);
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: oddCommits,
+        collaborators
+      });
 
       assert(checker.authorIsNew());
       checker.checkAuthor();
