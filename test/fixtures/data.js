@@ -1,6 +1,6 @@
 'use strict';
 
-const { readJSON, patchPrototype } = require('./index');
+const { readJSON, patchPrototype, readFile } = require('./index');
 const { Collaborator } = require('../../lib/collaborators');
 const { Review } = require('../../lib/reviews');
 
@@ -41,6 +41,7 @@ const collaborators = new Map(
 const firstTimerPR = readJSON('first_timer_pr.json');
 const semverMajorPR = readJSON('semver_major_pr.json');
 const fixAndRefPR = readJSON('pr_with_fixes_and_refs.json');
+const readme = readFile('README.md');
 
 module.exports = {
   approved,
@@ -56,5 +57,6 @@ module.exports = {
   collaborators,
   firstTimerPR,
   semverMajorPR,
-  fixAndRefPR
+  fixAndRefPR,
+  readme
 };

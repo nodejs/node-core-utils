@@ -1,22 +1,26 @@
-[{
-  "login": "foo",
-  "name": "Foo User",
-  "email": "foo@gmail.com",
-  "type": "COLLABORATOR"
-},
-{
-  "login": "bar",
-  "name": "Bar User",
-  "email": "bar@gmail.com",
-  "type": "TSC"
-}, {
-  "login": "Baz",
-  "name": "Baz User",
-  "email": "baz@gmail.com",
-  "type": "COLLABORATOR"
-}, {
-  "login": "Quo",
-  "name": "Quo User",
-  "email": "quo@gmail.com",
-  "type": "COLLABORATOR"
-}]
+[
+  {
+    "login": "bar",
+    "name": "Bar User",
+    "email": "bar@example.com",
+    "type": "TSC"
+  },
+  {
+    "login": "Baz",
+    "name": "Baz User",
+    "email": "baz@example.com",
+    "type": "COLLABORATOR"
+  },
+  {
+    "login": "foo",
+    "name": "Foo User",
+    "email": "foo@example.com",
+    "type": "COLLABORATOR"
+  },
+  {
+    "login": "Quo",
+    "name": "Quo User",
+    "email": "quo@example.com",
+    "type": "COLLABORATOR"
+  }
+]

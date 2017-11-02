@@ -3,7 +3,7 @@
     "reviewer": {
       "login": "foo",
       "name": "Foo User",
-      "email": "foo@gmail.com",
+      "email": "foo@example.com",
       "type": "COLLABORATOR"
     },
     "review": {
@@ -17,7 +17,7 @@
     "reviewer": {
       "login": "Baz",
       "name": "Baz User",
-      "email": "baz@gmail.com",
+      "email": "baz@example.com",
       "type": "COLLABORATOR"
     },
     "review": {
@@ -31,7 +31,7 @@
     "reviewer": {
       "login": "bar",
       "name": "Bar User",
-      "email": "bar@gmail.com",
+      "email": "bar@example.com",
       "type": "TSC"
     },
     "review": {
