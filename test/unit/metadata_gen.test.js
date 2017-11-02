@@ -1,17 +1,16 @@
 'use strict';
 
 const MetadataGenerator = require('../../lib/metadata_gen');
-const { readJSON, patchPrototype } = require('../fixtures');
-const assert = require('assert');
-const { Collaborator } = require('../../lib/collaborators');
+const {
+  fixAndRefPR,
+  allGreenReviewers
+} = require('../fixtures/data');
 
-const approved = readJSON('reviewers_approved.json');
-patchPrototype(approved, 'reviewer', Collaborator.prototype);
-const pr = readJSON('pr_with_fixes_and_refs.json');
+const assert = require('assert');
 const data = {
   repo: 'node',
-  pr,
-  reviewers: { approved, rejected: [] }
+  pr: fixAndRefPR,
+  reviewers: allGreenReviewers
 };
 
 const expected = `PR-URL: https://github.com/nodejs/node/pull/16438

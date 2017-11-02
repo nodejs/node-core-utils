@@ -3,41 +3,23 @@
 const assert = require('assert');
 const sinon = require('sinon');
 
-const { readJSON, patchPrototype } = require('../fixtures');
 const TestLogger = require('../fixtures/test_logger');
 
 const PRChecker = require('../../lib/pr_checker');
-const { Collaborator } = require('../../lib/collaborators');
-const { Review } = require('../../lib/reviews');
 
-const approved = readJSON('reviewers_approved.json');
-const rejected = readJSON('reviewers_rejected.json');
-patchPrototype(approved, 'reviewer', Collaborator.prototype);
-patchPrototype(approved, 'review', Review.prototype);
-patchPrototype(rejected, 'reviewer', Collaborator.prototype);
-patchPrototype(rejected, 'review', Review.prototype);
-
-const allGreenReviewers = {
-  approved,
-  rejected: []
-};
-const rejectedReviewers = {
-  rejected,
-  approved: []
-};
-
-const approvingReviews = readJSON('reviews_approved.json');
-const rejectingReviews = readJSON('reviews_rejected.json');
-
-const commentsWithCI = readJSON('comments_with_ci.json');
-const commentsWithLGTM = readJSON('comments_with_lgtm.json');
-
-const oddCommits = readJSON('odd_commits.json');
-const simpleCommits = readJSON('simple_commits.json');
-
-const collaborators = require('../fixtures/collaborator_map');
-const firstTimerPR = readJSON('first_timer_pr.json');
-const semverMajorPR = readJSON('semver_major_pr.json');
+const {
+  allGreenReviewers,
+  rejectedReviewers,
+  approvingReviews,
+  rejectingReviews,
+  commentsWithCI,
+  commentsWithLGTM,
+  oddCommits,
+  simpleCommits,
+  collaborators,
+  firstTimerPR,
+  semverMajorPR
+} = require('../fixtures/data');
 
 describe('PRChecker', () => {
   describe('checkAll', () => {
