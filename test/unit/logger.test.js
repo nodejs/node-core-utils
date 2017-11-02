@@ -68,7 +68,7 @@ describe('Logger', () => {
         }, 'Error with logger.error');
         assert.strictEqual(stream.toString(),
           `${chalk.red('[ERROR]')} test_error Error with logger.error${EOL}` +
-          `[STACK] stack${EOL}[DATA] {${EOL}` +
+          `${chalk.red('[STACK]')} stack${EOL}${chalk.red('[DATA]')} {${EOL}` +
           `  "reason": "Testing logger.error"${EOL}` +
         `}${EOL}${EOL}`);
       });
@@ -77,7 +77,7 @@ describe('Logger', () => {
         logger.error('test');
         assert.strictEqual(stream.toString(),
           `${chalk.red('[ERROR]')} test${EOL}` +
-          `[STACK] ${EOL}[DATA] ${EOL}${EOL}`);
+          `${chalk.red('[STACK]')} ${EOL}${chalk.red('[DATA]')} ${EOL}${EOL}`);
       });
     });
 
