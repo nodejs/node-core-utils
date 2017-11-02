@@ -17,15 +17,22 @@ patchPrototype(rejected, 'review', Review.prototype);
 
 describe('ReviewAnalyzer', () => {
   it('should parse reviews and comments that all approve', () => {
-    const analyzer = new ReviewAnalyzer(approvingReviews,
-      comments, collaborators);
+    const analyzer = new ReviewAnalyzer({
+      reviews: approvingReviews,
+      comments,
+      collaborators
+    });
     const reviewers = analyzer.getReviewers();
 
     assert.deepStrictEqual(reviewers, { approved, rejected: [] });
   });
 
   it('should parse reviews and comments that rejects', () => {
-    const analyzer = new ReviewAnalyzer(rejectingReviews, [], collaborators);
+    const analyzer = new ReviewAnalyzer({
+      reviews: rejectingReviews,
+      comments: [],
+      collaborators
+    });
     const reviewers = analyzer.getReviewers();
 
     assert.deepStrictEqual(reviewers, { rejected, approved: [] });
