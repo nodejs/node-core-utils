@@ -13,6 +13,8 @@ describe('Logger', () => {
   let stdout = null;
 
   // Capture the stdout output before each test
+  // TODO(joyeecheung): should avoid monkey-patching Node internals
+  // and get pino write to our own writable stream instead
   beforeEach(() => {
     stdout = captureStdout(process.stdout);
   });
