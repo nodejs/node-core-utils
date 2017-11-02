@@ -2,7 +2,9 @@
 'use strict';
 
 const { EOL } = require('os');
-const req = require('../lib/request');
+const { request, requestAll } = require('../lib/request');
+const requestPromise = require('request-promise-native');
+
 const loggerFactory = require('../lib/logger');
 const PRData = require('../lib/pr_data');
 const PRChecker = require('../lib/pr_checker');
@@ -15,6 +17,7 @@ const OWNER = process.argv[3] || 'nodejs';
 const REPO = process.argv[4] || 'node';
 
 async function main(prid, owner, repo, logger) {
+  const req = { request, requestAll, requestPromise };
   const data = new PRData(prid, owner, repo, logger, req);
   await data.getAll();
   data.analyzeReviewers();
