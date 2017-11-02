@@ -2,8 +2,8 @@
 'use strict';
 
 const { EOL } = require('os');
-const { request, requestAll } = require('../lib/request');
-const requestPromise = require('request-promise-native');
+const Request = require('../lib/request');
+const auth = require('../lib/auth');
 
 const loggerFactory = require('../lib/logger');
 const PRData = require('../lib/pr_data');
@@ -17,10 +17,11 @@ const OWNER = process.argv[3] || 'nodejs';
 const REPO = process.argv[4] || 'node';
 
 async function main(prid, owner, repo, logger) {
-  const req = { request, requestAll, requestPromise };
-  const data = new PRData(prid, owner, repo, logger, req);
+  const credentials = await auth();
+  const request = new Request(credentials);
+
+  const data = new PRData(prid, owner, repo, logger, request);
   await data.getAll();
-  data.analyzeReviewers();
 
   const metadata = new MetadataGenerator(data).getMetadata();
   const [SCISSOR_LEFT, SCISSOR_RIGHT] = MetadataGenerator.SCISSORS;
@@ -31,9 +32,6 @@ async function main(prid, owner, repo, logger) {
   if (!process.stdout.isTTY) {
     process.stdout.write(`${metadata}${EOL}`);
   }
-  /**
-   * TODO: put all these data into one object with a class
-   */
   const checker = new PRChecker(logger, data);
   checker.checkAll();
 }
