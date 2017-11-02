@@ -22,25 +22,25 @@ describe('Logger', () => {
     it('should have blue color when the level is INFO', () => {
       logger.info('test');
       assert.strictEqual(stream.toString(),
-        `${chalk.blue('[INFO]')} test${EOL}`);
+        `${chalk.blue('[INFO]')} test\n`);
     });
 
     it('should have red color when the level is FATAL', () => {
       logger.fatal('test');
       assert.strictEqual(stream.toString(),
-        `${chalk.red('[FATAL]')} test${EOL}`);
+        `${chalk.red('[FATAL]')} test\n`);
     });
 
     it('should have yellow color when the level is WARN', () => {
       logger.warn('test');
       assert.strictEqual(stream.toString(),
-        `${chalk.yellow('[WARN]')} test${EOL}`);
+        `${chalk.yellow('[WARN]')} test\n`);
     });
 
     it('should have green color when the level is DEBUG', () => {
       logger.debug('test');
       assert.strictEqual(stream.toString(),
-        `${chalk.green('[DEBUG]')} test${EOL}`);
+        `${chalk.green('[DEBUG]')} test\n`);
     });
   });
 
@@ -70,14 +70,14 @@ describe('Logger', () => {
           `${chalk.red('[ERROR]')} test_error Error with logger.error${EOL}` +
           `${chalk.red('[STACK]')} stack${EOL}${chalk.red('[DATA]')} {${EOL}` +
           `  "reason": "Testing logger.error"${EOL}` +
-        `}${EOL}${EOL}`);
+        `}${EOL}\n`);
       });
 
       it('should print nothing when there is no object to be serialized', () => {
         logger.error('test');
         assert.strictEqual(stream.toString(),
           `${chalk.red('[ERROR]')} test${EOL}` +
-          `${chalk.red('[STACK]')} ${EOL}${chalk.red('[DATA]')} ${EOL}${EOL}`);
+          `${chalk.red('[STACK]')} ${EOL}${chalk.red('[DATA]')} ${EOL}\n`);
       });
     });
 
@@ -94,14 +94,14 @@ describe('Logger', () => {
         logger.info({ raw: 'Some interesting information' }, 'test');
         assert.strictEqual(stream.toString(),
           `${chalk.blue('[INFO]')} test${EOL}` +
-          `Some interesting information${EOL}`);
+          `Some interesting information\n`);
       });
 
       it('should not print message when msg is defined', () => {
         logger.info({ raw: 'Some interesting information' });
         assert.strictEqual(stream.toString(),
           `${chalk.blue('[INFO]')} ${EOL}` +
-          `Some interesting information${EOL}`);
+          `Some interesting information\n`);
       });
     });
   });
