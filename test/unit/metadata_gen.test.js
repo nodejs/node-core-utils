@@ -16,9 +16,9 @@ const data = {
 const expected = `PR-URL: https://github.com/nodejs/node/pull/16438
 Fixes: https://github.com/node/issues/16437
 Refs: https://github.com/nodejs/node/pull/15148
-Reviewed-By: Foo User <foo@gmail.com>
-Reviewed-By: Baz User <baz@gmail.com>
-Reviewed-By: Bar User <bar@gmail.com>`;
+Reviewed-By: Foo User <foo@example.com>
+Reviewed-By: Baz User <baz@example.com>
+Reviewed-By: Bar User <bar@example.com>`;
 
 describe('MetadataGenerator', () => {
   it('should generate metadata properly', () => {

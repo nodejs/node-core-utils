@@ -71,7 +71,7 @@
         "name": "Their Github Account email"
       },
       "committer": {
-        "email": "baz@gmail.com",
+        "email": "baz@example.com",
         "name": "Baz User"
       },
       "oid": "da28173e5e6b4b0d3255bfef95601890afd80709",
@@ -87,7 +87,7 @@
         "name": "Their git config user.email"
       },
       "committer": {
-        "email": "baz@gmail.com",
+        "email": "baz@example.com",
         "name": "Baz User"
       },
       "oid": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
