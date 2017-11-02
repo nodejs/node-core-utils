@@ -11,19 +11,12 @@ const reviewers = { approved, rejected: [] };
 
 const pr = readJSON('pr_with_fixes_and_refs.json');
 
-const SCISSOR_LEFT = '-------------------------------- >8 ' +
-  '--------------------------------';
-const SCISSOR_RIGHT = '-------------------------------- 8< ' +
-  '--------------------------------';
-
-const expected = `${SCISSOR_LEFT}
-PR-URL: https://github.com/nodejs/node/pull/16438
+const expected = `PR-URL: https://github.com/nodejs/node/pull/16438
 Fixes: https://github.com/node/issues/16437
 Refs: https://github.com/nodejs/node/pull/15148
 Reviewed-By: Foo User <foo@gmail.com>
 Reviewed-By: Baz User <baz@gmail.com>
-Reviewed-By: Bar User <bar@gmail.com>
-${SCISSOR_RIGHT}`;
+Reviewed-By: Bar User <bar@gmail.com>`;
 
 describe('MetadataGenerator', () => {
   it('should generate metadata properly', () => {
