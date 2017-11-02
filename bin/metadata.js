@@ -30,12 +30,12 @@ const loggerFactory = require('../lib/logger');
 const PRData = require('../lib/pr_data');
 const PRChecker = require('../lib/pr_checker');
 const MetadataGenerator = require('../lib/metadata_gen');
+const argv = require('../lib/args')();
 
 // const REFERENCE_RE = /referenced this pull request in/
-
-let OWNER;
-let REPO;
-const PR_ID = parsePRId(argv.identifier);
+const OWNER = argv.owner;
+const REPO = argv.repo;
+const PR_ID = argv.id;
 
 async function main(prid, owner, repo, logger) {
   const credentials = await auth();
@@ -63,19 +63,3 @@ main(PR_ID, OWNER, REPO, logger).catch((err) => {
   logger.error(err);
   process.exit(-1);
 });
-
-function parsePRId(id) {
-  // Fast path: numeric string
-  if (!isNaN(id)) {
-    OWNER = argv.owner || argv.o || 'nodejs';
-    REPO = argv.repo || argv.r || 'node';
-    return +id;
-  }
-  const match = id.match(/^https:\/\/github.com\/(\w+)\/([a-zA-Z.-]+)\/pull\/([0-9]+)(?:\/(?:files)?)?$/);
-  if (match !== null) {
-    OWNER = match[1];
-    REPO = match[2];
-    return +match[3];
-  }
-  throw new Error(`Could not understand PR id format: ${id}`);
-}
