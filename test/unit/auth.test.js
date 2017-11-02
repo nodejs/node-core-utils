@@ -11,7 +11,7 @@ let testCounter = 0; // for tmp directories
 
 describe('auth', async function() {
   it('asks for auth data if no ncurc is found', async function() {
-    this.timeout(1000);
+    this.timeout(1500);
     await runAuthScript(undefined, [
       'Reading configuration for node-core-utils failed:',
       /ENOENT: no such file or directory, open/,
@@ -24,7 +24,7 @@ describe('auth', async function() {
   });
 
   it('asks for auth data if ncurc is invalid json', async function() {
-    this.timeout(1000);
+    this.timeout(1500);
     await runAuthScript('this is not json', [
       'Reading configuration for node-core-utils failed:',
       /Unexpected token h in JSON at position 1/,
@@ -37,7 +37,7 @@ describe('auth', async function() {
   });
 
   it('returns ncurc data if it is present and valid', async function() {
-    this.timeout(1000);
+    this.timeout(1500);
     await runAuthScript({ username: 'nyancat', token: '0123456789abcdef' }, [
       'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
     ]);
@@ -61,7 +61,7 @@ function runAuthScript(ncurc = undefined, expect = []) {
 
     const proc = spawn(process.execPath,
       [ require.resolve('../fixtures/run-auth') ],
-      { timeout: 1000, env: Object.assign({}, process.env, { HOME }) });
+      { timeout: 1500, env: Object.assign({}, process.env, { HOME }) });
     let stderr = '';
     proc.stderr.setEncoding('utf8');
     proc.stderr.on('data', (chunk) => { stderr += chunk; });
