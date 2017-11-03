@@ -10,6 +10,7 @@ const PRData = require('../lib/pr_data');
 const PRChecker = require('../lib/pr_checker');
 const MetadataGenerator = require('../lib/metadata_gen');
 const argv = require('../lib/args')();
+const commitAfterReview = require('../lib/commit_after_review');
 
 // const REFERENCE_RE = /referenced this pull request in/
 const OWNER = argv.owner;
@@ -32,8 +33,10 @@ async function main(prid, owner, repo, logger) {
   if (!process.stdout.isTTY) {
     process.stdout.write(`${metadata}${EOL}`);
   }
+
   const checker = new PRChecker(logger, data);
   checker.checkAll();
+  commitAfterReview(data.commits, data.reviews, logger);
 }
 
 const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
