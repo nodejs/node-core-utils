@@ -12,7 +12,6 @@ const {
   readme
 } = require('../fixtures/data');
 const TestLogger = require('../fixtures/test_logger');
-const logger = new TestLogger();
 const PRData = require('../../lib/pr_data');
 
 function toRaw(obj) {
@@ -51,6 +50,7 @@ describe('PRData', function() {
   request.gql.returns(new Error('unknown query'));
 
   it('getAll', async() => {
+    const logger = new TestLogger();
     const data = new PRData(16348, 'nodejs', 'node', logger, request);
     await data.getAll();
     assert.deepStrictEqual(data.collaborators, collaborators);
@@ -59,5 +59,26 @@ describe('PRData', function() {
     assert.deepStrictEqual(data.comments, commentsWithLGTM);
     assert.deepStrictEqual(data.commits, simpleCommits);
     assert.deepStrictEqual(data.reviewers, allGreenReviewers);
+  });
+
+  it('logIntro', async() => {
+    const logger = new TestLogger();
+    const data = new PRData(16348, 'nodejs', 'node', logger, request);
+    await data.getAll();
+    logger.clear();
+
+    const expectedLogs = {
+      warn: [],
+      info: [
+        ['test: awesome changes #16348'],
+        ['pr_author wants to merge 1 commit into nodejs:master from pr_author:awesome-changes'],
+        ['Labels: test']
+      ],
+      error: [],
+      trace: []
+    };
+
+    data.logIntro();
+    assert.deepStrictEqual(logger.logs, expectedLogs);
   });
 });

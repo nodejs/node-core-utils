@@ -13,7 +13,10 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
         nodes {
           name
         }
-      }
+      },
+      title,
+      baseRefName,
+      headRefName
     }
   }
 }
