@@ -14,5 +14,8 @@
         "name": "semver-major"
       }
     ]
-  }
+  },
+  "title": "lib: awesome changes",
+  "baseRefName": "master",
+  "headRefName": "awesome-changes"
 }

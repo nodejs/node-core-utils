@@ -19,6 +19,13 @@ class TestLogger {
     return true;
   }
 
+  clear() {
+    this.logs.warn = [];
+    this.logs.info = [];
+    this.logs.trace = [];
+    this.logs.error = [];
+  }
+
   warn(...args) {
     this.logs.warn.push(args);
   }

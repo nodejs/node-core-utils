@@ -23,6 +23,8 @@ async function main(prid, owner, repo, logger) {
   const data = new PRData(prid, owner, repo, logger, request);
   await data.getAll();
 
+  data.logIntro();
+
   const metadata = new MetadataGenerator(data).getMetadata();
   const [SCISSOR_LEFT, SCISSOR_RIGHT] = MetadataGenerator.SCISSORS;
   logger.info({
