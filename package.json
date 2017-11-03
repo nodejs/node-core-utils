@@ -28,6 +28,7 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.2.0",
+    "ghauth": "^3.2.1",
     "jsdom": "^11.3.0",
     "pino": "^4.9.0",
     "request": "^2.83.0",

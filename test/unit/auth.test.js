@@ -15,10 +15,6 @@ describe('auth', async function() {
     await runAuthScript(undefined, [
       'Reading configuration for node-core-utils failed:',
       /ENOENT: no such file or directory, open/,
-      'Please enter your Github user information:',
-      /Github tokens can be created as described in/,
-      { expected: 'Github user name: ', reply: 'nyancat' },
-      { expected: 'Github token: ', reply: '0123456789abcdef' },
       'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
     ]);
   });
@@ -28,10 +24,6 @@ describe('auth', async function() {
     await runAuthScript('this is not json', [
       'Reading configuration for node-core-utils failed:',
       /Unexpected token h in JSON at position 1/,
-      'Please enter your Github user information:',
-      /Github tokens can be created as described in/,
-      { expected: 'Github user name: ', reply: 'nyancat' },
-      { expected: 'Github token: ', reply: '0123456789abcdef' },
       'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
     ]);
   });
