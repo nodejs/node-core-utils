@@ -56,7 +56,8 @@ describe('PRChecker', () => {
     });
 
     it('should run necessary checks', () => {
-      checker.checkAll();
+      const status = checker.checkAll();
+      assert.strictEqual(status, false);
       assert.strictEqual(checkReviewsStub.calledOnce, true);
       assert.strictEqual(checkPRWaitStub.calledOnce, true);
       assert.strictEqual(checkCIStub.calledOnce, true);
@@ -91,7 +92,8 @@ describe('PRChecker', () => {
         collaborators
       });
 
-      checker.checkReviews();
+      const status = checker.checkReviews();
+      assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
 
@@ -119,7 +121,8 @@ describe('PRChecker', () => {
         collaborators
       });
 
-      checker.checkReviews();
+      const status = checker.checkReviews();
+      assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });
@@ -149,7 +152,8 @@ describe('PRChecker', () => {
         collaborators
       });
 
-      checker.checkPRWait(now);
+      const status = checker.checkPRWait(now);
+      assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
 
@@ -177,7 +181,8 @@ describe('PRChecker', () => {
         collaborators
       });
 
-      checker.checkPRWait(now);
+      const status = checker.checkPRWait(now);
+      assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });
@@ -204,7 +209,8 @@ describe('PRChecker', () => {
         collaborators
       });
 
-      checker.checkCI();
+      const status = checker.checkCI();
+      assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
 
@@ -256,7 +262,8 @@ describe('PRChecker', () => {
         collaborators
       });
 
-      checker.checkCI();
+      const status = checker.checkCI();
+      assert(status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });
@@ -288,7 +295,8 @@ describe('PRChecker', () => {
       });
 
       assert(checker.authorIsNew());
-      checker.checkAuthor();
+      const status = checker.checkAuthor();
+      assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });
