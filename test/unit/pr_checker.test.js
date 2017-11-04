@@ -310,8 +310,7 @@ describe('PRChecker', () => {
       const expectedLogs = {
         warn: [
           [ 'Changes were pushed since the last review:' ],
-          [ 'single commit was pushed after review' ],
-          [ 'see https://github.com/nodejs/node/pull/16438/commits/6c0945cbeea2cbbc97d13a3d9e3fe68bd145b985 for more info.' ]
+          [ 'single commit was pushed after review' ]
         ],
         info: [],
         trace: [],
@@ -338,8 +337,8 @@ describe('PRChecker', () => {
       const expectedLogs = {
         warn: [
           [ 'Changes were pushed since the last review:' ],
-          [ 'see https://github.com/nodejs/node/pull/16438/commits to see all the commits' ],
-          [ 'see https://github.com/nodejs/node/pull/16438/files to see all the changes' ]
+          [ 'src: add requested feature' ],
+          [ 'nit: fix errors' ]
         ],
         info: [],
         trace: [],
