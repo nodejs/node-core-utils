@@ -13,12 +13,10 @@ describe('auth', async function() {
   it('asks for auth data if no ncurc is found', async function() {
     this.timeout(1500);
     await runAuthScript(undefined, [
-      'Reading configuration for node-core-utils failed:',
-      /ENOENT: no such file or directory, open/,
-      'Please enter your Github user information:',
-      /Github tokens can be created as described in/,
-      { expected: 'Github user name: ', reply: 'nyancat' },
-      { expected: 'Github token: ', reply: '0123456789abcdef' },
+      'If this is your first time running this command, ' +
+      'follow the instructions to create an access token. ' +
+      'If you prefer to create it yourself on Github, ' +
+      'see https://github.com/joyeecheung/node-core-utils/blob/master/README.md.',
       'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
     ]);
   });
@@ -26,12 +24,10 @@ describe('auth', async function() {
   it('asks for auth data if ncurc is invalid json', async function() {
     this.timeout(1500);
     await runAuthScript('this is not json', [
-      'Reading configuration for node-core-utils failed:',
-      /Unexpected token h in JSON at position 1/,
-      'Please enter your Github user information:',
-      /Github tokens can be created as described in/,
-      { expected: 'Github user name: ', reply: 'nyancat' },
-      { expected: 'Github token: ', reply: '0123456789abcdef' },
+      'If this is your first time running this command, ' +
+      'follow the instructions to create an access token. ' +
+      'If you prefer to create it yourself on Github, ' +
+      'see https://github.com/joyeecheung/node-core-utils/blob/master/README.md.',
       'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
     ]);
   });
