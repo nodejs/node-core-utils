@@ -14,6 +14,7 @@ const {
   rejectingReviews,
   commentsWithCI,
   commentsWithLGTM,
+  commitsAfterReview,
   oddCommits,
   simpleCommits,
   collaborators,
@@ -297,6 +298,64 @@ describe('PRChecker', () => {
       assert(checker.authorIsNew());
       const status = checker.checkAuthor();
       assert(!status);
+      assert.deepStrictEqual(logger.logs, expectedLogs);
+    });
+  });
+
+  describe('checkCommitAfterReview', () => {
+    it('should warn about commit pushed since the last review', () => {
+      const logger = new TestLogger();
+      const { commit, review } = commitsAfterReview.singleCommit;
+
+      const expectedLogs = {
+        warn: [
+          [ 'Changes were pushed since the last review:' ],
+          [ 'single commit was pushed after review' ],
+          [ 'see https://github.com/nodejs/node/pull/16438/commits/6c0945cbeea2cbbc97d13a3d9e3fe68bd145b985 for more info.' ]
+        ],
+        info: [],
+        trace: [],
+        error: []
+      };
+
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: oddCommits,
+        collaborators
+      });
+
+      checker.checkCommitsAfterReview(commit, review, logger);
+      assert.deepStrictEqual(logger.logs, expectedLogs);
+    });
+
+    it('should warn about multiple commits since the last review', () => {
+      const logger = new TestLogger();
+      const { commits, review } = commitsAfterReview.multipleCommits;
+
+      const expectedLogs = {
+        warn: [
+          [ 'Changes were pushed since the last review:' ],
+          [ 'see https://github.com/nodejs/node/pull/16438/commits to see all the commits' ],
+          [ 'see https://github.com/nodejs/node/pull/16438/files to see all the changes' ]
+        ],
+        info: [],
+        trace: [],
+        error: []
+      };
+
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: oddCommits,
+        collaborators
+      });
+
+      checker.checkCommitsAfterReview(commits, review, logger);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });

@@ -1,3 +1,4 @@
+
 {
   "name": "node-core-utils",
   "version": "1.5.0",
@@ -10,6 +11,10 @@
     "test": "npm run test-unit && npm run lint",
     "test-unit": "mocha --require intelli-espower-loader test/unit/*.test.js --exit",
     "test-all": "mocha --require intelli-espower-loader test/**/*.test.js --exit",
+    "coverage": "nyc npm test",
+    "coverage-all": "nyc npm run test-all",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
     "coverage": "nyc --reporter=html --reporter=text --reporter=text-summary npm test",
     "coverage-all": "nyc --reporter=lcov --reporter=text --reporter=text-summary npm run test-all",
     "lint": "eslint . --cache",

@@ -31,6 +31,8 @@ const simpleCommits = readJSON('simple_commits.json');
 
 const collabArr = readJSON('collaborators.json');
 
+const commitsAfterReview = readJSON('commits_after_review.json');
+
 collabArr.forEach((c) => {
   Object.setPrototypeOf(c, Collaborator.prototype);
 });
@@ -57,6 +59,7 @@ module.exports = {
   rejectingReviews,
   commentsWithCI,
   commentsWithLGTM,
+  commitsAfterReview,
   oddCommits,
   simpleCommits,
   collaborators,
