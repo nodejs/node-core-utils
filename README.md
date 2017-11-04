@@ -4,7 +4,7 @@
 [![codecov](https://img.shields.io/codecov/c/github/joyeecheung/node-core-utils.svg?style=flat-square)](https://codecov.io/gh/joyeecheung/node-core-utils)
 [![Known Vulnerabilities](https://snyk.io/test/github/joyeecheung/node-core-utils/badge.svg?style=flat-square)](https://snyk.io/test/github/joyeecheung/node-core-utils)
 
-CLI tools for Node.js Core collaborators
+CLI tools for Node.js Core collaborators.
 
 ## Usage
 
@@ -74,7 +74,7 @@ $ get-metadata $PRID >> msg.txt
 $ git commit --amend -F msg.txt
 ```
 
-### TODO
+### Features
 
 - [x] Generate `PR-URL`
 - [x] Generate `Reviewed-By`
@@ -86,3 +86,11 @@ $ git commit --amend -F msg.txt
 - [x] Check two TSC approval for semver-major
 - [ ] Warn new commits after reviews
 - [ ] Check number of files changed (request pre-backport)
+
+### Contributing
+
+See [CONTRIBUTIN.md](./CONTRIBUTING.md).
+
+### License
+
+MIT. See [LICENSE](./LICENSE).
