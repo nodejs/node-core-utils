@@ -140,12 +140,8 @@ describe('PRChecker', () => {
       const logger = new TestLogger();
 
       const expectedLogs = {
-        warn: [
-          ['49 hours left to land']
-        ],
-        info: [
-          ['This PR was created on Fri Oct 27 2017 (weekend in UTC)']
-        ],
+        warn: [['49 hours left to land']],
+        info: [['This PR was created on Fri Oct 27 2017 (weekend in UTC)']],
         error: [],
         trace: []
       };
@@ -173,12 +169,8 @@ describe('PRChecker', () => {
       const logger = new TestLogger();
 
       const expectedLogs = {
-        warn: [
-          ['22 hours left to land']
-        ],
-        info: [
-          ['This PR was created on Tue Oct 31 2017 (weekday in UTC)']
-        ],
+        warn: [['22 hours left to land']],
+        info: [['This PR was created on Tue Oct 31 2017 (weekday in UTC)']],
         error: [],
         trace: []
       };
@@ -283,25 +275,20 @@ describe('PRChecker', () => {
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
 
-    it('should warn about pushed commit after ci', () => {
+    it('should check commits after last ci', () => {
       const logger = new TestLogger();
-      const {
-        commits,
-        comment
-      } = commitsAfterCi;
+      const {commits, comment} = commitsAfterCi;
 
       const expectedLogs = {
         warn: [
-          ['commit(single commit was pushed after ci) after Last Full CI']
+          ['Commits pushed after the last CI run:'],
+          ['fixup: adjust spelling']
         ],
         info: [
-          [
-            'Last Full CI on 2017-10-24T11:19:25Z: ' +
-            'https://ci.nodejs.org/job/node-test-pull-request/10984/'
-          ]
+          ['Last Full CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
         ],
-        trace: [],
-        error: []
+        error: [],
+        trace: []
       };
 
       const checker = new PRChecker(logger, {
@@ -327,11 +314,9 @@ describe('PRChecker', () => {
         warn: [
           ['PR is opened by @pr_author'],
           ['Author test@example.com of commit e3ad7c7 ' +
-            'does not match committer or PR author'
-          ],
+            'does not match committer or PR author'],
           ['Author test@example.com of commit da39a3e ' +
-            'does not match committer or PR author'
-          ]
+            'does not match committer or PR author']
         ],
         info: [],
         error: [],

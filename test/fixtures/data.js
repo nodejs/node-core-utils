@@ -1,16 +1,8 @@
 'use strict';
 
-const {
-  readJSON,
-  patchPrototype,
-  readFile
-} = require('./index');
-const {
-  Collaborator
-} = require('../../lib/collaborators');
-const {
-  Review
-} = require('../../lib/reviews');
+const { readJSON, patchPrototype, readFile } = require('./index');
+const { Collaborator } = require('../../lib/collaborators');
+const { Review } = require('../../lib/reviews');
 
 const approved = readJSON('reviewers_approved.json');
 const rejected = readJSON('reviewers_rejected.json');
