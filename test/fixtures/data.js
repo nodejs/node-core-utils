@@ -1,8 +1,16 @@
 'use strict';
 
-const { readJSON, patchPrototype, readFile } = require('./index');
-const { Collaborator } = require('../../lib/collaborators');
-const { Review } = require('../../lib/reviews');
+const {
+  readJSON,
+  patchPrototype,
+  readFile
+} = require('./index');
+const {
+  Collaborator
+} = require('../../lib/collaborators');
+const {
+  Review
+} = require('../../lib/reviews');
 
 const approved = readJSON('reviewers_approved.json');
 const rejected = readJSON('reviewers_rejected.json');
@@ -39,6 +47,7 @@ const multipleCommitsAfterReview = {
   commits: readJSON('multiple_commits_after_review_commits.json'),
   reviews: readJSON('multiple_commits_after_review_reviews.json')
 };
+const commitsAfterCi = readJSON('commits_after_ci.json');
 
 collabArr.forEach((c) => {
   Object.setPrototypeOf(c, Collaborator.prototype);
@@ -70,6 +79,7 @@ module.exports = {
   simpleCommits,
   singleCommitAfterReview,
   multipleCommitsAfterReview,
+  commitsAfterCi,
   collaborators,
   firstTimerPR,
   semverMajorPR,
