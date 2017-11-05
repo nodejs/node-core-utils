@@ -20,7 +20,8 @@ Fixes: https://github.com/nodejs/node/issues/16437
 Refs: https://github.com/nodejs/node/pull/15148
 Reviewed-By: Foo User <foo@example.com>
 Reviewed-By: Baz User <baz@example.com>
-Reviewed-By: Bar User <bar@example.com>`;
+Reviewed-By: Bar User <bar@example.com>
+`;
 
 describe('MetadataGenerator', () => {
   it('should generate metadata properly', () => {
