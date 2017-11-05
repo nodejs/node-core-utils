@@ -301,7 +301,7 @@ describe('PRChecker', () => {
       });
 
       const status = checker.checkCI();
-      assert(status);
+      assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });
