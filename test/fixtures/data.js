@@ -41,12 +41,12 @@ const collaborators = new Map(
 const firstTimerPR = readJSON('first_timer_pr.json');
 const semverMajorPR = readJSON('semver_major_pr.json');
 const fixAndRefPR = readJSON('pr_with_fixes_and_refs.json');
-const readme = readFile('README.md');
-const readmeNoTsc = readFile('README_no_TSC.md');
-const readmeNoTscE = readFile('README_no_TSCE.md');
-const readmeNoCollaborators = readFile('README_no_collaborators.md');
-const readmeNoCollaboratorE = readFile('README_no_collaboratorE.md');
-const readmeUnordered = readFile('README_unordered.md');
+const readme = readFile('./README/README.md');
+const readmeNoTsc = readFile('./README/README_no_TSC.md');
+const readmeNoTscE = readFile('./README/README_no_TSCE.md');
+const readmeNoCollaborators = readFile('./README/README_no_collaborators.md');
+const readmeNoCollaboratorE = readFile('./README/README_no_collaboratorE.md');
+const readmeUnordered = readFile('./README/README_unordered.md');
 
 module.exports = {
   approved,
