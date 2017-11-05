@@ -20,7 +20,7 @@ describe('LinkParser', () => {
   it('should parse fixes and refs', () => {
     for (let i = 0; i < htmls.length; ++i) {
       const op = htmls[i];
-      const parser = new LinkParser('nodejs/node', op);
+      const parser = new LinkParser('nodejs', 'node', op);
       const actual = {
         fixes: parser.getFixes(),
         refs: parser.getRefs()
