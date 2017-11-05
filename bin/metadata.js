@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 'use strict';
 
-const { EOL } = require('os');
 const Request = require('../lib/request');
 const auth = require('../lib/auth');
 
@@ -28,11 +27,11 @@ async function main(prid, owner, repo, logger) {
   const metadata = new MetadataGenerator(data).getMetadata();
   const [SCISSOR_LEFT, SCISSOR_RIGHT] = MetadataGenerator.SCISSORS;
   logger.info({
-    raw: [SCISSOR_LEFT, metadata, SCISSOR_RIGHT].join(EOL)
+    raw: `${SCISSOR_LEFT}${metadata}${SCISSOR_RIGHT}`
   }, 'Generated metadata:');
 
   if (!process.stdout.isTTY) {
-    process.stdout.write(`${metadata}${EOL}`);
+    process.stdout.write(metadata);
   }
   const checker = new PRChecker(logger, data);
   checker.checkAll();
