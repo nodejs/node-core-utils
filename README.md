@@ -94,7 +94,7 @@ $ git commit --amend -F msg.txt
 
 ### Contributing
 
-See [CONTRIBUTIN.md](./CONTRIBUTING.md).
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ### License
 
