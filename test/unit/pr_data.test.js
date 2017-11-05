@@ -71,7 +71,8 @@ describe('PRData', function() {
       warn: [],
       info: [
         ['test: awesome changes #16348'],
-        ['pr_author wants to merge 1 commit into nodejs:master from pr_author:awesome-changes'],
+        ['pr_author wants to merge 1 commit into nodejs:master ' +
+         'from pr_author:awesome-changes'],
         ['Labels: test']
       ],
       error: [],

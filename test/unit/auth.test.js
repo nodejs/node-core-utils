@@ -105,7 +105,10 @@ function runAuthScript(ncurc = undefined, expect = []) {
     });
 
     function onLine(line) {
-      assert.notStrictEqual(expect.length, 0, `unexpected stdout line: ${line}`);
+      assert.notStrictEqual(
+        expect.length,
+        0,
+        `unexpected stdout line: ${line}`);
       let expected = expect.shift();
       let reply;
       if (typeof expected.reply === 'string') {

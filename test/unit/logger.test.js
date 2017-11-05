@@ -7,7 +7,8 @@ const loggerFactory = require('../../lib/logger');
 const LogStream = require('../fixtures/log_stream');
 
 // Complete ISO date format -> YYYY-MM-DDThh:mm:ss.sTZD
-const dateRegex = new RegExp(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/);
+const dateRegex =
+  /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
 
 describe('Logger', () => {
   describe('Colors', () => {
@@ -73,12 +74,15 @@ describe('Logger', () => {
         `}${EOL}${EOL}`);
       });
 
-      it('should print nothing when there is no object to be serialized', () => {
-        logger.error('test');
-        assert.strictEqual(stream.toString(),
-          `${chalk.red('[ERROR]')} test${EOL}` +
-          `${chalk.red('[STACK]')} ${EOL}${chalk.red('[DATA]')} ${EOL}${EOL}`);
-      });
+      it(
+        'should print nothing when there is no object to be serialized',
+        () => {
+          logger.error('test');
+          assert.strictEqual(stream.toString(),
+            `${chalk.red('[ERROR]')} test${EOL}` +
+            `${chalk.red('[STACK]')} ${EOL}` +
+            `${chalk.red('[DATA]')} ${EOL}${EOL}`);
+        });
     });
 
     describe('INFO', () => {
