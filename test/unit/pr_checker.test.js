@@ -281,7 +281,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          ['Commits pushed after the last CI run:'],
+          ['Commits pushed after the last Full CI run:'],
           ['fixup: adjust spelling']
         ],
         info: [
