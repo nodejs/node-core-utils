@@ -9,38 +9,45 @@ const { EOL } = require('os');
 const assert = require('assert');
 let testCounter = 0; // for tmp directories
 
+const FIRST_TIME_MSG =
+  'If this is your first time running this command, ' +
+  'follow the instructions to create an access token. ' +
+  'If you prefer to create it yourself on Github, ' +
+  'see https://github.com/joyeecheung/node-core-utils/blob/master/README.md.';
+
 describe('auth', async function() {
   it('asks for auth data if no ncurc is found', async function() {
-    this.timeout(1500);
+    this.timeout(2000);
     await runAuthScript(undefined, [
-      'If this is your first time running this command, ' +
-      'follow the instructions to create an access token. ' +
-      'If you prefer to create it yourself on Github, ' +
-      'see https://github.com/joyeecheung/node-core-utils/blob/master/README.md.',
+      FIRST_TIME_MSG,
       'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
     ]);
   });
 
   it('asks for auth data if ncurc is invalid json', async function() {
-    this.timeout(1500);
+    this.timeout(2000);
     await runAuthScript('this is not json', [
-      'If this is your first time running this command, ' +
-      'follow the instructions to create an access token. ' +
-      'If you prefer to create it yourself on Github, ' +
-      'see https://github.com/joyeecheung/node-core-utils/blob/master/README.md.',
+      FIRST_TIME_MSG,
       'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
     ]);
   });
 
   it('returns ncurc data if it is present and valid', async function() {
-    this.timeout(1500);
+    this.timeout(2000);
     await runAuthScript({ username: 'nyancat', token: '0123456789abcdef' }, [
       'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
     ]);
   });
+
+  it('prints an error message if it can\'t generate a token', async function() {
+    this.timeout(2000);
+    await runAuthScript(undefined, [
+      FIRST_TIME_MSG
+    ], `Could not get token: Bad credentials${EOL}`, 'run-auth-error');
+  });
 });
 
-function runAuthScript(ncurc = undefined, expect = []) {
+function runAuthScript(ncurc = undefined, expect = [], error = '', fixture = 'run-auth') {
   return new Promise((resolve, reject) => {
     const HOME = path.resolve(__dirname, `tmp-${testCounter++}`);
     rimraf.sync(HOME);
@@ -56,8 +63,8 @@ function runAuthScript(ncurc = undefined, expect = []) {
     }
 
     const proc = spawn(process.execPath,
-      [ require.resolve('../fixtures/run-auth') ],
-      { timeout: 1500, env: Object.assign({}, process.env, { HOME }) });
+      [ require.resolve(`../fixtures/${fixture}`) ],
+      { timeout: 1500, env: Object.assign({}, process.env, { USERPROFILE: HOME, HOME }) });
     let stderr = '';
     proc.stderr.setEncoding('utf8');
     proc.stderr.on('data', (chunk) => { stderr += chunk; });
@@ -67,7 +74,7 @@ function runAuthScript(ncurc = undefined, expect = []) {
     });
     proc.on('close', () => {
       try {
-        assert.strictEqual(stderr, '');
+        assert.strictEqual(stderr, error);
         assert.strictEqual(expect.length, 0);
         rimraf.sync(HOME);
       } catch (err) {
@@ -87,7 +94,7 @@ function runAuthScript(ncurc = undefined, expect = []) {
         let newlineIndex;
         while ((newlineIndex = pendingStdout.indexOf(EOL)) !== -1) {
           const line = pendingStdout.substr(0, newlineIndex);
-          pendingStdout = pendingStdout.substr(newlineIndex + 1);
+          pendingStdout = pendingStdout.substr(newlineIndex + EOL.length);
 
           onLine(line);
         }

@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert');
+const { EOL } = require('os');
 
 async function mockCredentials() {
   return {
@@ -13,5 +14,5 @@ async function mockCredentials() {
   const auth = require('../../lib/auth');
   const authParams = await auth(mockCredentials);
   assert.strictEqual(await auth(mockCredentials), authParams);
-  console.log(authParams);
+  process.stdout.write(`${authParams}${EOL}`);
 })();
