@@ -282,9 +282,9 @@ describe('PRChecker', () => {
       const expectedLogs = {
         warn: [
           ['Commits pushed after the last Full CI run:'],
-          ['fixup: adjust spelling'],
-          ['doc: add api description README'],
-          ['feat: add something']
+          ['- fixup: adjust spelling'],
+          ['- doc: add api description README'],
+          ['- feat: add something']
         ],
         info: [
           ['Last Full CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
