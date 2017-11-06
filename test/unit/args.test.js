@@ -6,7 +6,7 @@ const assert = require('assert');
 const expected = {
   owner: `nodejs`,
   repo: `node`,
-  id: 16637
+  prid: 16637
 };
 
 describe('args', async function() {
@@ -36,7 +36,7 @@ describe('args', async function() {
         let expect = {
           owner: 'joyeecheung',
           repo: 'node-core-utils',
-          id: 41
+          prid: 41
         };
         let actual = parseArgs('41 joyeecheung node-core-utils');
         await assert.deepStrictEqual(actual, expect);

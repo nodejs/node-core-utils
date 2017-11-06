@@ -7,7 +7,8 @@ const PRData = require('../lib/pr_data');
 const PRChecker = require('../lib/pr_checker');
 const MetadataGenerator = require('../lib/metadata_gen');
 
-module.exports = async function getMetadata(prid, owner, repo, logger) {
+module.exports = async function getMetadata(argv, logger) {
+  const { prid, owner, repo } = argv;
   const credentials = await auth();
   const request = new Request(credentials);
 
