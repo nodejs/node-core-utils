@@ -47,14 +47,15 @@ This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/
 , although it is a CLI implemented with the Github GraphQL API.
 
 ```
-get-metadata <identifier> [owner] [repo]
+get-metadata <identifier>
 
 Retrieves metadata for a PR and validates them against nodejs/node PR rules
 
 Options:
   --version    Show version number                                     [boolean]
-  -o, --owner  GitHub owner of the PR repository                        [string]
-  -r, --repo   GitHub repository of the PR                              [string]
+  --owner, -o  GitHub owner of the PR repository                        [string]
+  --repo, -r   GitHub repository of the PR                              [string]
+  --file, -f   File to write the metadata in                            [string]
   -h, --help   Show help                                               [boolean]
 ```
 
@@ -74,9 +75,8 @@ $ get-metadata $PRID -o nodejs -r node
 $ get-metadata $PRID > msg.txt
 
 # Using it to amend commit messages:
-$ git show -s --format=%B > msg.txt
-$ echo "" >> msg.txt
-$ get-metadata $PRID >> msg.txt
+$ get-metadata $PRID -f msg.txt
+$ echo -e "$(git show -s --format=%B)\n\n$(cat msg.txt)" > msg.txt
 $ git commit --amend -F msg.txt
 ```
 
