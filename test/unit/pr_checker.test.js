@@ -14,6 +14,8 @@ const {
   rejectingReviews,
   commentsWithCI,
   commentsWithLGTM,
+  singleCommitAfterReview,
+  multipleCommitsAfterReview,
   oddCommits,
   simpleCommits,
   collaborators,
@@ -38,6 +40,7 @@ describe('PRChecker', () => {
     let checkCIStub;
     let authorIsNewStub;
     let checkAuthorStub;
+    let checkCommitsAfterReviewStub;
 
     before(() => {
       checkReviewsStub = sinon.stub(checker, 'checkReviews');
@@ -45,6 +48,8 @@ describe('PRChecker', () => {
       checkCIStub = sinon.stub(checker, 'checkCI');
       authorIsNewStub = sinon.stub(checker, 'authorIsNew').returns(true);
       checkAuthorStub = sinon.stub(checker, 'checkAuthor');
+      checkCommitsAfterReviewStub =
+        sinon.stub(checker, 'checkCommitsAfterReview');
     });
 
     after(() => {
@@ -53,6 +58,7 @@ describe('PRChecker', () => {
       checkCIStub.restore();
       authorIsNewStub.restore();
       checkAuthorStub.restore();
+      checkCommitsAfterReviewStub.restore();
     });
 
     it('should run necessary checks', () => {
@@ -63,6 +69,7 @@ describe('PRChecker', () => {
       assert.strictEqual(checkCIStub.calledOnce, true);
       assert.strictEqual(authorIsNewStub.calledOnce, true);
       assert.strictEqual(checkAuthorStub.calledOnce, true);
+      assert.strictEqual(checkCommitsAfterReviewStub.calledOnce, true);
     });
   });
 
@@ -297,6 +304,93 @@ describe('PRChecker', () => {
       assert(checker.authorIsNew());
       const status = checker.checkAuthor();
       assert(!status);
+      assert.deepStrictEqual(logger.logs, expectedLogs);
+    });
+  });
+
+  describe('checkCommitsAfterReview', () => {
+    let logger = new TestLogger();
+
+    afterEach(() => {
+      logger.clear();
+    });
+
+    it('should warn about commit pushed since the last review', () => {
+      const { commits, reviews } = singleCommitAfterReview;
+
+      const expectedLogs = {
+        warn: [
+          [ 'Changes were pushed since the last review:' ],
+          [ '- single commit was pushed after review' ]
+        ],
+        info: [],
+        trace: [],
+        error: []
+      };
+
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        collaborators,
+        reviews,
+        commits
+      });
+
+      let status = checker.checkCommitsAfterReview();
+      assert.deepStrictEqual(status, false);
+      assert.deepStrictEqual(logger.logs, expectedLogs);
+    });
+
+    it('should warn about multiple commits since the last review', () => {
+      const { commits, reviews } = multipleCommitsAfterReview;
+
+      const expectedLogs = {
+        warn: [
+          [ 'Changes were pushed since the last review:' ],
+          [ '- src: add requested feature' ],
+          [ '- nit: fix errors' ]
+        ],
+        info: [],
+        trace: [],
+        error: []
+      };
+
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        collaborators,
+        reviews,
+        commits
+      });
+
+      let status = checker.checkCommitsAfterReview();
+      assert.deepStrictEqual(status, false);
+      assert.deepStrictEqual(logger.logs, expectedLogs);
+    });
+
+    it('should skip the check if there are no reviews', () => {
+      const { commits } = multipleCommitsAfterReview;
+
+      const expectedLogs = {
+        warn: [],
+        info: [],
+        trace: [],
+        error: []
+      };
+
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: [],
+        collaborators,
+        commits
+      });
+
+      let status = checker.checkCommitsAfterReview();
+      assert.deepStrictEqual(status, true);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });

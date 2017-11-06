@@ -27,7 +27,7 @@ Then create a file named `.ncurc` under your `$HOME` directory (`~/.ncurc`);
 
 ```
 {
-  "username": "you_github_username"
+  "username": "you_github_username",
   "token": "token_that_you_created"
 }
 ```
@@ -90,7 +90,7 @@ $ git commit --amend -F msg.txt
 - [x] Check if commiters match authors
 - [x] Check 48-hour wait
 - [x] Check two TSC approval for semver-major
-- [ ] Warn new commits after reviews
+- [x] Warn new commits after reviews
 - [ ] Check number of files changed (request pre-backport)
 
 ### Contributing

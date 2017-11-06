@@ -1,0 +1,11 @@
+[{
+  "commit": {
+    "committedDate": "2017-10-25T11:27:02Z",
+    "oid": "6c0945cbeea2cbbc97d13a3d9e3fe68bd145b985",
+    "bodyText": "src: fix issue with es-modules",
+    "message": "single commit was pushed after review",
+    "author": {
+      "login": "bar"
+    }
+  }
+}]
