@@ -12,7 +12,7 @@
     "test-all": "mocha --require intelli-espower-loader test/**/*.test.js --exit",
     "coverage": "nyc --reporter=html --reporter=text --reporter=text-summary npm test",
     "coverage-all": "nyc --reporter=lcov --reporter=text --reporter=text-summary npm run test-all",
-    "lint": "eslint .",
+    "lint": "eslint . --cache",
     "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov"
   },
   "author": "Joyee Cheung <joyeec9h3@gmail.com>",

@@ -5,3 +5,4 @@ coverage
 tmp
 coverage.lcov
 tmp-*
+.eslintcache
