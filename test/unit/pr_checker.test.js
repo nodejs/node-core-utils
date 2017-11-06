@@ -84,7 +84,7 @@ describe('PRChecker', () => {
         ],
         info: [
           ['Rejections: 0'],
-          ['Approvals: 3, 1 from TSC (bar)'],
+          ['Approvals: 2'],
           ['Bar User(bar)) approved in via LGTM in comments']
         ],
         error: [],
