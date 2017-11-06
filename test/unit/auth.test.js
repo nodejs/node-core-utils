@@ -47,7 +47,8 @@ describe('auth', async function() {
   });
 });
 
-function runAuthScript(ncurc = undefined, expect = [], error = '', fixture = 'run-auth') {
+function runAuthScript(
+  ncurc = undefined, expect = [], error = '', fixture = 'run-auth') {
   return new Promise((resolve, reject) => {
     const HOME = path.resolve(__dirname, `tmp-${testCounter++}`);
     rimraf.sync(HOME);
@@ -64,7 +65,8 @@ function runAuthScript(ncurc = undefined, expect = [], error = '', fixture = 'ru
 
     const proc = spawn(process.execPath,
       [ require.resolve(`../fixtures/${fixture}`) ],
-      { timeout: 1500, env: Object.assign({}, process.env, { USERPROFILE: HOME, HOME }) });
+      { timeout: 1500,
+        env: Object.assign({}, process.env, { USERPROFILE: HOME, HOME }) });
     let stderr = '';
     proc.stderr.setEncoding('utf8');
     proc.stderr.on('data', (chunk) => { stderr += chunk; });
