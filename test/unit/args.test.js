@@ -6,7 +6,8 @@ const assert = require('assert');
 const expected = {
   owner: `nodejs`,
   repo: `node`,
-  prid: 16637
+  prid: 16637,
+  file: undefined
 };
 
 describe('args', async function() {
@@ -31,6 +32,17 @@ describe('args', async function() {
         assert.deepStrictEqual(actual, expected);
         actual = parseArgs('16637 --repo node --owner nodejs');
         assert.deepStrictEqual(actual, expected);
+      });
+  });
+
+  describe('Pull URL', async function() {
+    it('should return object with specified file',
+      async function() {
+        const withFile = Object.assign({}, expected, { file: 'test.txt' });
+        let actual = parseArgs('https://github.com/nodejs/node/pull/16637 -f test.txt');
+        assert.deepStrictEqual(actual, withFile);
+        actual = parseArgs('16637 -f test.txt');
+        assert.deepStrictEqual(actual, withFile);
       });
   });
 
