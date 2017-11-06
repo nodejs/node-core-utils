@@ -56,7 +56,7 @@ Options:
   --owner, -o  GitHub owner of the PR repository                        [string]
   --repo, -r   GitHub repository of the PR                              [string]
   --file, -f   File to write the metadata in                            [string]
-  -h, --help   Show help                                               [boolean]
+  --help, -h   Show help                                               [boolean]
 ```
 
 Examples:
