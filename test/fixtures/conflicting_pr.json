@@ -1,0 +1,21 @@
+{
+  "createdAt": "2017-10-24T11:13:43Z",
+  "author": {
+    "login": "pr_author",
+    "email": "pr_author@example.com"
+  },
+  "url": "https://github.com/nodejs/node/pull/15256",
+  "bodyHTML": "<p>This PR has conflicts</p>",
+  "bodyText": "This PR has conflicts",
+  "labels": {
+    "nodes": [
+      {
+        "name": "test"
+      }
+    ]
+  },
+  "title": "test: This PR has conflicts",
+  "baseRefName": "master",
+  "headRefName": "pr-conflicts",
+  "mergeable": "CONFLICTING"
+}
