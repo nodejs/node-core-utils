@@ -199,12 +199,12 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [],
-        info: [['This PR was is Code & Learn and doesn\'t have a time limit.']],
+        info: [['This is a Code & Learn PR, it doesn\'t have a time limit.']],
         error: [],
         trace: []
       };
 
-      const now = new Date('2017-10-28T13:00:41.682Z');
+      const now = new Date();
       const youngPR = Object.assign({}, firstTimerPR, {
         createdAt: '2017-10-27T14:25:41.682Z',
         labels: {
