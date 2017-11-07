@@ -199,7 +199,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [],
-        info: [['This is a Code & Learn PR, it doesn\'t have a time limit.']],
+        info: [['This is a Code & Learn PR, no time limit.']],
         error: [],
         trace: []
       };
