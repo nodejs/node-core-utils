@@ -193,6 +193,42 @@ describe('PRChecker', () => {
       assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
+
+    it('should skip wait check for Code & Learn PR', () => {
+      const logger = new TestLogger();
+
+      const expectedLogs = {
+        warn: [],
+        info: [['This PR was is Code & Learn and doesn\'t have a time limit.']],
+        error: [],
+        trace: []
+      };
+
+      const now = new Date('2017-10-28T13:00:41.682Z');
+      const youngPR = Object.assign({}, firstTimerPR, {
+        createdAt: '2017-10-27T14:25:41.682Z',
+        labels: {
+          nodes: [
+            {
+              name: 'code-and-learn'
+            }
+          ]
+        }
+      });
+
+      const checker = new PRChecker(logger, {
+        pr: youngPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators
+      });
+
+      const status = checker.checkPRWait(now);
+      assert(!status);
+      assert.deepStrictEqual(logger.logs, expectedLogs);
+    });
   });
 
   describe('checkCI', () => {
