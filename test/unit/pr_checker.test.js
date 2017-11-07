@@ -18,6 +18,7 @@ const {
   multipleCommitsAfterReview,
   oddCommits,
   simpleCommits,
+  commitsAfterCi,
   collaborators,
   firstTimerPR,
   semverMajorPR
@@ -265,12 +266,44 @@ describe('PRChecker', () => {
         reviewers: allGreenReviewers,
         comments: commentsWithCI,
         reviews: approvingReviews,
-        commits: simpleCommits,
+        commits: [],
         collaborators
       });
 
       const status = checker.checkCI();
       assert(status);
+      assert.deepStrictEqual(logger.logs, expectedLogs);
+    });
+
+    it('should check commits after last ci', () => {
+      const logger = new TestLogger();
+      const {commits, comment} = commitsAfterCi;
+
+      const expectedLogs = {
+        warn: [
+          ['Commits pushed after the last Full CI run:'],
+          ['- fixup: adjust spelling'],
+          ['- doc: add api description README'],
+          ['- feat: add something']
+        ],
+        info: [
+          ['Last Full CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
+        ],
+        error: [],
+        trace: []
+      };
+
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: comment,
+        reviews: approvingReviews,
+        commits: commits,
+        collaborators
+      });
+
+      const status = checker.checkCI();
+      assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });

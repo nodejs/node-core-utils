@@ -39,6 +39,7 @@ const multipleCommitsAfterReview = {
   commits: readJSON('multiple_commits_after_review_commits.json'),
   reviews: readJSON('multiple_commits_after_review_reviews.json')
 };
+const commitsAfterCi = readJSON('commits_after_ci.json');
 
 collabArr.forEach((c) => {
   Object.setPrototypeOf(c, Collaborator.prototype);
@@ -70,6 +71,7 @@ module.exports = {
   simpleCommits,
   singleCommitAfterReview,
   multipleCommitsAfterReview,
+  commitsAfterCi,
   collaborators,
   firstTimerPR,
   semverMajorPR,
