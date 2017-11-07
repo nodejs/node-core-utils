@@ -13,12 +13,10 @@ patchPrototype(rejected, 'review', Review.prototype);
 
 const allGreenReviewers = {
   approved,
-  commentApproved: [],
   rejected: []
 };
 const rejectedReviewers = {
   rejected,
-  commentApproved: [],
   approved: []
 };
 
