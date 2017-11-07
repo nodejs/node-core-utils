@@ -24,7 +24,8 @@
   "files": [
     "lib/",
     "bin/",
-    "queries/"
+    "queries/",
+    "steps/"
   ],
   "license": "MIT",
   "dependencies": {
