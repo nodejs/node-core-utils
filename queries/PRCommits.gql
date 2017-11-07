@@ -20,6 +20,7 @@ query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
             }
             oid
             message
+            messageHeadline
             authoredByCommitter
           }
         }

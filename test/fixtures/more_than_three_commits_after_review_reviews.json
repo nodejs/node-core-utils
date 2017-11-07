@@ -1,0 +1,9 @@
+[{
+  "bodyText": "Good idea",
+  "state": "APPROVED",
+  "author": {
+    "login": "foo"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-89923489",
+  "publishedAt": "2017-07-23T11:19:25Z"
+}]
