@@ -1,6 +1,0 @@
-*.json
-!package.json
-test
-.git
-.nyc_output
-coverage
