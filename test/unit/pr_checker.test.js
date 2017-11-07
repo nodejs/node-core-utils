@@ -199,7 +199,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [],
-        info: [['This is a Code & Learn PR, no time limit.']],
+        info: [],
         error: [],
         trace: []
       };
@@ -226,7 +226,7 @@ describe('PRChecker', () => {
       });
 
       const status = checker.checkPRWait(now);
-      assert(!status);
+      assert(status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });
