@@ -252,6 +252,8 @@ For more information about the governance of the Node.js project, see
 **Foo User** &lt;foo@example.com&gt; (she/her)
 * [Quo](https://github.com/quo) -
 **Quo User** &lt;quo@example.com&gt; (she/her)
+* [Quux](https://github.com/quux) -
+**Quux User** &lt;quux@example.com&gt; (he/him)
 
 ### Collaborator Emeriti
 

@@ -80,12 +80,13 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
+          ['Quux User(Quux)) approved in via LGTM in comments'],
+          ['Bar User(bar)) approved in via LGTM in comments'],
           ['semver-major requires at least two TSC approvals']
         ],
         info: [
           ['Rejections: 0'],
-          ['Approvals: 3, 1 from TSC (bar)'],
-          ['Bar User(bar)) approved in via LGTM in comments']
+          ['Approvals: 4, 1 from TSC (bar)']
         ],
         error: [],
         trace: []
@@ -100,7 +101,7 @@ describe('PRChecker', () => {
         collaborators
       });
 
-      const status = checker.checkReviews();
+      const status = checker.checkReviews(true);
       assert(!status);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
