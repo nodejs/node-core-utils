@@ -4,7 +4,7 @@ const parseArgs = require('../../lib/args');
 const assert = require('assert');
 
 const expected = {
-  comments: false,
+  checkComments: false,
   owner: `nodejs`,
   repo: `node`,
   prid: 16637,

@@ -80,8 +80,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          ['Quux User(Quux)) approved in via LGTM in comments'],
-          ['Bar User(bar)) approved in via LGTM in comments'],
+          ['Quux User(Quux) approved in via LGTM in comments'],
+          ['Bar User(bar) approved in via LGTM in comments'],
           ['semver-major requires at least two TSC approvals']
         ],
         info: [
@@ -112,8 +112,8 @@ describe('PRChecker', () => {
       const expectedLogs = {
         warn: [
           ['Rejections: 2, 1 from TSC (bar)'],
-          ['Foo User(foo)) rejected in https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
-          ['Bar User(bar)) rejected in https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624'],
+          ['Foo User(foo) rejected in https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+          ['Bar User(bar) rejected in https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624'],
           ['Approvals: 0']
         ],
         info: [],
