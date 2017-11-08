@@ -22,5 +22,11 @@
     "name": "Quo User",
     "email": "quo@example.com",
     "type": "COLLABORATOR"
+  },
+  {
+    "login": "Quux",
+    "name": "Quux User",
+    "email": "quux@example.com",
+    "type": "COLLABORATOR"
   }
 ]

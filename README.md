@@ -52,11 +52,12 @@ get-metadata <identifier>
 Retrieves metadata for a PR and validates them against nodejs/node PR rules
 
 Options:
-  --version    Show version number                                     [boolean]
-  --owner, -o  GitHub owner of the PR repository                        [string]
-  --repo, -r   GitHub repository of the PR                              [string]
-  --file, -f   File to write the metadata in                            [string]
-  --help, -h   Show help                                               [boolean]
+  --version         Show version number                                [boolean]
+  --owner, -o       GitHub owner of the PR repository                   [string]
+  --repo, -r        GitHub repository of the PR                         [string]
+  --file, -f        File to write the metadata in                       [string]
+  --check-comments  Check for 'LGTM' in comments                        [boolean]
+  --help, -h        Show help                                          [boolean]
 ```
 
 Examples:

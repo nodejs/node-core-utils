@@ -15,6 +15,20 @@
   },
   {
     "reviewer": {
+      "login": "Quux",
+      "name": "Quux User",
+      "email": "quux@example.com",
+      "type": "COLLABORATOR"
+    },
+    "review": {
+      "state": "APPROVED",
+      "date": "2017-10-24T14:49:52Z",
+      "ref": "LGTM",
+      "source": "review_comment"
+    }
+  },
+  {
+    "reviewer": {
       "login": "Baz",
       "name": "Baz User",
       "email": "baz@example.com",

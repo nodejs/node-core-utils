@@ -36,6 +36,15 @@
   "publishedAt": "2017-10-24T14:49:52Z"
 },
 {
+  "bodyText": "LGTM",
+  "state": "COMMENTED",
+  "author": {
+    "login": "Quux"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71817236",
+  "publishedAt": "2017-10-24T14:49:52Z"
+},
+{
   "bodyText": "A few nits",
   "state": "COMMENTED",
   "author": {

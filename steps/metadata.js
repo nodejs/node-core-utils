@@ -34,7 +34,7 @@ module.exports = async function getMetadata(argv, logger) {
   }, 'Generated metadata:');
 
   const checker = new PRChecker(logger, data);
-  const status = checker.checkAll();
+  const status = checker.checkAll(argv.checkComments);
   return {
     status,
     request,
