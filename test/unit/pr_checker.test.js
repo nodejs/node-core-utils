@@ -21,7 +21,8 @@ const {
   commitsAfterCi,
   collaborators,
   firstTimerPR,
-  semverMajorPR
+  semverMajorPR,
+  conflictingPR
 } = require('../fixtures/data');
 
 describe('PRChecker', () => {
@@ -42,6 +43,7 @@ describe('PRChecker', () => {
     let authorIsNewStub;
     let checkAuthorStub;
     let checkCommitsAfterReviewStub;
+    let checkMergeableStateStub;
 
     before(() => {
       checkReviewsStub = sinon.stub(checker, 'checkReviews');
@@ -51,6 +53,7 @@ describe('PRChecker', () => {
       checkAuthorStub = sinon.stub(checker, 'checkAuthor');
       checkCommitsAfterReviewStub =
         sinon.stub(checker, 'checkCommitsAfterReview');
+      checkMergeableStateStub = sinon.stub(checker, 'checkMergeableState');
     });
 
     after(() => {
@@ -60,6 +63,7 @@ describe('PRChecker', () => {
       authorIsNewStub.restore();
       checkAuthorStub.restore();
       checkCommitsAfterReviewStub.restore();
+      checkMergeableStateStub.restore();
     });
 
     it('should run necessary checks', () => {
@@ -71,6 +75,7 @@ describe('PRChecker', () => {
       assert.strictEqual(authorIsNewStub.calledOnce, true);
       assert.strictEqual(checkAuthorStub.calledOnce, true);
       assert.strictEqual(checkCommitsAfterReviewStub.calledOnce, true);
+      assert.strictEqual(checkMergeableStateStub.calledOnce, true);
     });
   });
 
@@ -424,6 +429,60 @@ describe('PRChecker', () => {
       });
 
       let status = checker.checkCommitsAfterReview();
+      assert.deepStrictEqual(status, true);
+      assert.deepStrictEqual(logger.logs, expectedLogs);
+    });
+  });
+
+  describe('checkMergeableState', () => {
+    let logger = new TestLogger();
+
+    afterEach(() => {
+      logger.clear();
+    });
+
+    it('should warn if the PR mergeable state is CONFLICTING', () => {
+      const expectedLogs = {
+        warn: [['This PR has conflicts that must be resolved']],
+        info: [],
+        error: [],
+        trace: []
+      };
+
+      const checker = new PRChecker(logger, {
+        pr: conflictingPR,
+        reviewers: allGreenReviewers,
+        comments: [],
+        reviews: [],
+        commits: simpleCommits,
+        collaborators
+      });
+
+      let status = checker.checkMergeableState();
+      assert.deepStrictEqual(status, false);
+      assert.deepStrictEqual(logger.logs, expectedLogs);
+    });
+
+    it('should not warn if the PR mergeable state is not CONFLICTING', () => {
+      const { commits } = multipleCommitsAfterReview;
+
+      const expectedLogs = {
+        warn: [],
+        info: [],
+        trace: [],
+        error: []
+      };
+
+      const checker = new PRChecker(logger, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: [],
+        collaborators,
+        commits
+      });
+
+      let status = checker.checkMergeableState();
       assert.deepStrictEqual(status, true);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
