@@ -1,0 +1,311 @@
+#!/usr/bin/env node
+
+const getMetadata = require('../metadata');
+const CLI = require('../../lib/cli');
+const cli = new CLI(process.stderr);
+const Request = require('../../lib/request');
+const req = new Request();
+const {
+  runPromise, runAsync, runSync, forceRunAsync
+} = require('../../lib/run');
+const Session = require('../../lib/landing_session');
+const dir = process.cwd();
+const args = process.argv.slice(2);
+
+const START = 'START';
+const APPLY = 'APPLY';
+const AMEND = 'AMEND';
+const FINAL = 'FINAL';
+const CONTINUE = 'CONTINUE';
+const ABORT = 'ABORT';
+
+const states = [
+  [START, (args) => !isNaN(parseInt(args[0]))],
+  [CONTINUE, (args) => args[0] === '--continue'],
+  [APPLY, (args) => args[0] === '--apply'],
+  [AMEND, (args) => args[0] === '--amend'],
+  [FINAL, (args) => args[0] === '--final'],
+  [ABORT, (args) => args[0] === '--abort']
+];
+
+const result = states.filter(([state, pred]) => pred(args));
+if (result.length) {
+  runPromise(main(result[0][0], args).catch((err) => {
+    if (cli.spinner.enabled) {
+      cli.spinner.fail();
+    }
+    throw err;
+  }));
+} else {
+  cli.error('Usage: `git node land <PRID>`');
+  process.exit(1);
+}
+
+async function main(state, args) {
+  let session;
+
+  try {
+    session = Session.restore(dir);
+  } catch (err) { // JSON error?
+    if (state === ABORT) {
+      session = new Session(dir);
+      await abort(session);
+      return;
+    }
+    cli.warn(
+      'Failed to detect previous session. ' +
+      'please run `git node land --abort`');
+    return;
+  }
+
+  if (state === START) {
+    if (session.hasStarted()) {
+      cli.warn(
+        'Previous `git node land` session for ' +
+        `${session.pullName} in progress.`);
+      cli.log('run `git node land --abort` before starting a new session');
+      return;
+    }
+    session = new Session(dir, parseInt(args[0]));
+    await start(session);
+  } else if (state === APPLY) {
+    await apply(session);
+  } else if (state === AMEND) {
+    await amend(session);
+  } else if (state === FINAL) {
+    await final(session);
+  } else if (state === ABORT) {
+    await abort(session);
+  } else if (state === CONTINUE) {
+    await continueSession(session);
+  }
+}
+
+async function start(session) {
+  session.start();
+  const { repo, owner, prid } = session;
+  const result = await getMetadata({ repo, owner, prid }, cli);
+
+  const status = result.status ? 'should be ready' : 'is not ready';
+  const response = await cli.prompt(
+    `This PR ${status} to land, do you want to continue?`);
+  if (response) {
+    session.saveMetadata(result);
+    session.startApplying();
+    return apply(session);
+  } else {
+    await abort(session);
+    process.exit();
+  }
+}
+
+function getNotYetPushedCommits(session, verbose) {
+  const upstream = session.upstream;
+  const branch = session.branch;
+  var revs;
+  if (verbose) {
+    revs = runSync('git',
+      ['log', '--oneline', `${upstream}/${branch}...HEAD`]);
+  } else {
+    revs = runSync('git', ['rev-list', `${upstream}/${branch}...HEAD`]);
+  }
+
+  if (!revs.trim()) {
+    return [];
+  }
+  return revs.trim().split('\n');
+}
+
+async function tryAbortAm(session, cli) {
+  if (session.amInProgress()) {
+    const shouldAbortAm = await cli.prompt(
+      'Abort previous git am sessions?');
+    if (shouldAbortAm) {
+      await forceRunAsync('git', ['am', '--abort']);
+      cli.ok('Aborted previous git am sessions');
+    }
+  } else {
+    cli.ok('No git am in progress');
+  }
+}
+
+async function tryAbortRebase(session, cli) {
+  if (session.rebaseInProgress()) {
+    const shouldAbortRebase = await cli.prompt(
+      'Abort previous git rebase sessions?');
+    if (shouldAbortRebase) {
+      await forceRunAsync('git', ['rebase', '--abort']);
+      cli.ok('Aborted previous git rebase sessions');
+    }
+  } else {
+    cli.ok('No git rebase in progress');
+  }
+}
+
+async function tryResetHead(session, cli) {
+  const branch = `${session.upstream}/${session.branch}`;
+  cli.startSpinner(`Bringing ${branch} up to date`);
+  await runAsync('git',
+    ['fetch', session.upstream, session.branch]);
+  cli.stopSpinner(`${branch} is now up-to-date`);
+  const notYetPushed = getNotYetPushedCommits(session, true);
+  if (notYetPushed.length) {
+    const branch = `${session.upstream}/${session.branch}`;
+    cli.log(`Found strayed commits in ${branch}:\n` +
+      ` - ${notYetPushed.join('\n - ')}`);
+    const shouldReset = await cli.prompt(`Reset to ${branch}?`);
+    if (shouldReset) {
+      await runAsync('git', ['reset', '--hard', branch]);
+      cli.ok(`Reset to ${branch}`);
+    }
+  }
+}
+
+async function tryResetBranch(session, cli) {
+  await tryAbortAm(session, cli);
+  await tryAbortRebase(session, cli);
+
+  const branch = `${session.upstream}/${session.branch}`;
+  const shouldResetHead = await cli.prompt(
+    `Do you want to try reset the branch to ${branch}?`);
+  if (shouldResetHead) {
+    await tryResetHead(session, cli);
+  }
+}
+
+async function abort(session) {
+  session.abort();
+  await tryResetBranch(session, cli);
+  cli.log(`Aborted \`git node land\` session in ${session.ncuDir}`);
+}
+
+async function apply(session) {
+  if (!session.readyToApply()) {
+    cli.warn('This session can not proceed to apply patches, ' +
+      'run `git node land --abort`');
+    return;
+  }
+
+  await tryResetBranch(session, cli);
+
+  const { repo, owner, prid } = session;
+  // TODO: restore previously downloaded patches
+  cli.startSpinner(`Downloading patch for ${prid}`);
+  const patch = await req.promise({
+    url: `https://github.com/${owner}/${repo}/pull/${prid}.patch`
+  });
+  session.savePatch(patch);
+  cli.stopSpinner(`Downloaded patch to ${session.patchPath}`);
+
+  // TODO: check that patches downloaded match metadata.commits
+  await runAsync('git', ['am', '--whitespace=fix', session.patchPath]);
+  cli.ok('Patches applied');
+
+  session.startAmending();
+  if (/Subject: \[PATCH\]/.test(patch)) {
+    const shouldAmend = await cli.prompt(
+      'There is only one commit in this PR.\n' +
+      'do you want to amend the commit message?');
+    if (shouldAmend) {
+      const canFinal = await amend(session);
+      if (canFinal) {
+        return final(session);
+      }
+    }
+  } else {
+    const re = /Subject: \[PATCH 1\/(\d+)\]/;
+    const match = patch.match(re);
+    if (!match) {
+      cli.warn('Cannot get number of commits in the patch. ' +
+        'It seems to be malformed');
+      return;
+    }
+    const upstream = session.upstream;
+    const branch = session.branch;
+    cli.log(
+      `There are ${match[1]} commits in the PR.\n` +
+      `Please run \`git rebase ${upstream}/${branch} -i\` ` +
+      'and use `git node land --amend` to amend the commit messages');
+    // TODO: do git rebase automatically?
+  }
+}
+
+async function amend(session) {
+  if (!session.readyToAmend()) {
+    cli.warn('Not yet ready to amend, run `git node land --abort`');
+    return;
+  }
+
+  const rev = runSync('git', ['rev-parse', 'HEAD']);
+  const original = runSync('git', ['show', 'HEAD', '-s', '--format=%B']).trim();
+  const metadata = session.metadata.trim().split('\n');
+  const amended = original.split('\n');
+  if (amended[amended.length - 1] !== '') {
+    amended.push('');
+  }
+
+  for (const line of metadata) {
+    if (original.includes(line)) {
+      if (line) {
+        cli.warn(`Found ${line}, skipping..`);
+      }
+    } else {
+      amended.push(line);
+    }
+  }
+
+  const message = amended.join('\n') + '\n';
+  const messageFile = session.saveMessage(rev, message);
+  cli.separator('New Message');
+  cli.log(message.trim());
+  cli.separator();
+  const takeMessage = await cli.prompt('Use this message?');
+  if (takeMessage) {
+    await runAsync('git', ['commit', '--amend', '-F', messageFile]);
+    // session.markAsAmended(rev);
+    return true;
+  }
+
+  cli.log(`Please manually edit ${messageFile}, then run\n` +
+    `\`git commit --amend -F ${messageFile}\` to finish amending the message`);
+  return false;
+};
+
+async function final(session) {
+  if (!session.readyToFinal()) {  // check git rebase/am has been done
+    cli.warn('Not yet ready to final');
+    return;
+  }
+  const upstream = session.upstream;
+  const branch = session.branch;
+  const notYetPushed = getNotYetPushedCommits(session);
+  const notYetPushedVerbose = getNotYetPushedCommits(session, true);
+  await runAsync('core-validate-commit', notYetPushed);
+  cli.separator();
+  cli.log('The following commits are ready to be pushed to ' +
+    `${upstream}/${branch}`);
+  cli.log(`- ${notYetPushedVerbose.join('\n- ')}`);
+  cli.separator();
+  cli.log(`run \`git push ${upstream} ${branch}\` to finish landing`);
+  const shouldClean = await cli.prompt('Clean up generated temporary files?');
+  if (shouldClean) {
+    session.cleanFiles();
+  }
+}
+
+async function continueSession(session) {
+  if (session.readyToFinal()) {
+    return final(session);
+  }
+  if (session.readyToAmend()) {
+    return amend(session);
+  }
+  if (session.readyToApply()) {
+    return apply(session);
+  }
+  if (session.hasStarted()) {
+    return apply(session);
+  }
+  cli.log(
+    'Please run `git node land <PRID> to start a landing session`');
+}

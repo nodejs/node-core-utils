@@ -5,7 +5,8 @@
   "main": "./bin/metadata.js",
   "bin": {
     "get-metadata": "./bin/get-metadata",
-    "ncu-config": "./bin/ncu-config"
+    "ncu-config": "./bin/ncu-config",
+    "git-node": "./bin/git-node"
   },
   "scripts": {
     "test": "npm run test-unit && npm run lint",
@@ -34,6 +35,7 @@
     "ghauth": "^3.2.1",
     "jsdom": "^11.3.0",
     "ora": "^1.3.0",
+    "read": "^1.0.7",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
     "yargs": "^10.0.3"
