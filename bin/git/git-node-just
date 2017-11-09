@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+if [[ $1 -eq 0 ]] ; then
+  echo 'no patch number specified!'
+  exit 1
+fi
+
+set -x
+
+# grab the patch
+mkdir -p .ncu
+PATCH=.ncu/patch-$1.patch
+curl -L "https://github.com/nodejs/node/pull/$1.patch" > $PATCH
+NUM_COMMITS=`cat $PATCH | grep -c "Subject: \[PATCH\]"`
+
+if [[ ! $NUM_COMMITS -eq 1 ]] ; then
+  echo 'There are multiple commits in this patch, can not land using `git node just`'
+  exit 1
+fi
+
+# abort any previous session
+git am --abort
+
+# apply the patch
+cat $PATCH | git am --whitespace=fix
+
+# build message
+git node msg $1;
+
+REV=$(git rev-parse HEAD)
+SHORT_REV=${REV:0:7}
+MSG=.ncu/msg-$SHORT_REV.txt
+META=.ncu/metadata-$1.txt;
+
+# ammend the message
+git show $REV -s --format=%B | git node check-msg $MSG
+if [ ! $? -eq 0 ]; then
+  echo "commit message is already ammended"
+else
+  git commit --amend -F $MSG
+fi
+
+rm $MSG $PATCH $META

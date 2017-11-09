@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if [[ $1 -eq 0 ]] ; then
+  echo 'no patch number specified!'
+  exit 1
+fi
+
+META=.ncu/metadata-$1.txt;
+
+if [ ! -e $META ] ; then
+  git node meta $1 -f $META
+fi;
+
+set -x;
+UPSTREAM=$(git node-rc upstream)
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+REV=$(git rev-parse HEAD)
+#REVS=$(git rev-list $UPSTREAM/$BRANCH...HEAD)
+
+#for rev in $REVS; do
+SHORT_REV=${REV:0:7}
+MSG=.ncu/msg-$SHORT_REV.txt
+echo -e "$(git show $rev -s --format=%B)\n\n$(cat $META)" > $MSG;
+#done
+

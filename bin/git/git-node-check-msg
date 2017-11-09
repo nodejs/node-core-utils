@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+
+const file = process.argv[2];
+const msg = fs.readFileSync(0, 'utf8');
+const toAmmend = fs.readFileSync(file, 'utf8');
+const META_RE = /PR-URL:|Reviewed-By:/;
+
+for (const line of msg.split('\n')) {
+  if (line.match(META_RE)) {
+    throw new Error(`Found ${line}`);
+  }
+}

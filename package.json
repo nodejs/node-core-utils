@@ -4,7 +4,8 @@
   "description": "Utilities for Node.js core collaborators",
   "main": "./bin/metadata.js",
   "bin": {
-    "get-metadata": "./bin/get_metadata.js"
+    "get-metadata": "./bin/get_metadata.js",
+    "git-node": "./bin/git/git-node"
   },
   "scripts": {
     "test": "npm run test-unit && npm run lint",

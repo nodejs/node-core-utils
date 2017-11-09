@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+UPSTREAM=$(git node-rc upstream)
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+git rev-list $UPSTREAM/$BRANCH...HEAD | xargs core-validate-commit
+
+# clean up when it passes
+# rm .ncu/msg-*.txt .ncu/metadata-*.txt
+
