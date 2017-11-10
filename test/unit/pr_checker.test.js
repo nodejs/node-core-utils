@@ -416,7 +416,7 @@ describe('PRChecker', () => {
 
       let status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
-      assert.deepStrictEqual(cli.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should only warn last three commits if more than 3 commits', () => {
@@ -463,7 +463,7 @@ describe('PRChecker', () => {
 
       let status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
-      assert.deepStrictEqual(cli.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should return true if PR can be landed', () => {
