@@ -19,7 +19,7 @@
   "author": "Joyee Cheung <joyeec9h3@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:joyeecheung/node-core-utils.git"
+    "url": "git+ssh://git@github.com:nodejs/node-core-utils.git"
   },
   "files": [
     "lib/",
