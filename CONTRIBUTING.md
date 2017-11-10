@@ -4,13 +4,13 @@ This document will guide you through the contribution process.
 
 ### Step 1: Fork
 
-Fork the project [on GitHub](https://github.com/joyeecheung/node-core-utils)
+Fork the project [on GitHub](https://github.com/nodejs/node-core-utils)
 and check out your copy locally.
 
 ```bash
 $ git clone git@github.com:username/node-core-utils.git
 $ cd node-core-utils
-$ git remote add upstream git@github.com:joyeecheung/node-core-utils.git
+$ git remote add upstream git@github.com:nodejs/node-core-utils.git
 ```
 
 #### Which branch?
@@ -51,7 +51,7 @@ If your patch fixes an open issue, you can add a reference to it at the end
 of the log. Use the `Fixes:` prefix and the full issue URL. For example:
 
 ```
-Fixes: https://github.com/joyeecheung/node-core-utils/issues/1
+Fixes: https://github.com/nodejs/node-core-utils/issues/1
 ```
 
 ### Step 4: Rebase

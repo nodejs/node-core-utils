@@ -13,7 +13,7 @@ const FIRST_TIME_MSG =
   'If this is your first time running this command, ' +
   'follow the instructions to create an access token. ' +
   'If you prefer to create it yourself on Github, ' +
-  'see https://github.com/joyeecheung/node-core-utils/blob/master/README.md.';
+  'see https://github.com/nodejs/node-core-utils/blob/master/README.md.';
 
 describe('auth', async function() {
   it('asks for auth data if no ncurc is found', async function() {

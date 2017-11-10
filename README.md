@@ -35,7 +35,7 @@ Then create a file named `.ncurc` under your `$HOME` directory (`~/.ncurc`);
 If you would prefer to build from the source, install and link:
 
 ```
-git clone git@github.com:joyeecheung/node-core-utils.git
+git clone git@github.com:nodejs/node-core-utils.git
 cd node-core-utils
 npm install
 npm link
