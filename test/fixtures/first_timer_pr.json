@@ -12,6 +12,9 @@
     "nodes": [
       {
         "name": "test"
+      },
+      {
+        "name": "doc"
       }
     ]
   },

@@ -15,19 +15,15 @@ const {
   readmeUnordered,
   collaborators
 } = require('../fixtures/data');
-const TestLogger = require('../fixtures/test_logger');
+const TestCLI = require('../fixtures/test_cli');
 const assertThrowsAsync = require('../fixtures/assert_throws_async');
 
 describe('collaborators', function() {
   const collaborator = collaborators.get('bar');
-  let logger = null;
+  let cli = null;
 
   beforeEach(() => {
-    logger = new TestLogger();
-  });
-
-  afterEach(() => {
-    logger.clear();
+    cli = new TestCLI();
   });
 
   describe('Collaborator', () => {
@@ -88,7 +84,7 @@ describe('collaborators', function() {
 
   describe('getCollaborators', () => {
     it('should return all collaborators', async function() {
-      const parsed = await getCollaborators(readme, logger, 'nodejs', 'node');
+      const parsed = await getCollaborators(readme, cli, 'nodejs', 'node');
       assert.deepStrictEqual(parsed, collaborators);
     });
 
@@ -96,7 +92,7 @@ describe('collaborators', function() {
       'should throw error if there is no TSC section in the README',
       async() => {
         await assertThrowsAsync(
-          async() => getCollaborators(readmeNoTsc, logger, 'nodejs', 'node'),
+          async() => getCollaborators(readmeNoTsc, cli, 'nodejs', 'node'),
           Error);
       });
 
@@ -104,7 +100,7 @@ describe('collaborators', function() {
       'should throw error if there is no TSC Emeriti section in the README',
       async() => {
         await assertThrowsAsync(
-          async() => getCollaborators(readmeNoTscE, logger, 'nodejs', 'node'),
+          async() => getCollaborators(readmeNoTscE, cli, 'nodejs', 'node'),
           /Error: Couldn't find ### TSC Emeriti in the README/);
       });
 
@@ -112,7 +108,7 @@ describe('collaborators', function() {
       async() => {
         await assertThrowsAsync(
           async() => getCollaborators(
-            readmeNoCollaborators, logger, 'nodejs', 'node'),
+            readmeNoCollaborators, cli, 'nodejs', 'node'),
           /Error: Couldn't find ### Collaborators in the README/);
       });
 
@@ -122,7 +118,7 @@ describe('collaborators', function() {
       async() => {
         await assertThrowsAsync(
           async() => getCollaborators(
-            readmeNoCollaboratorE, logger, 'nodejs', 'node'),
+            readmeNoCollaboratorE, cli, 'nodejs', 'node'),
           /Error: Couldn't find ### Collaborator Emeriti in the README/);
       });
 
@@ -132,16 +128,19 @@ describe('collaborators', function() {
       async() => {
         await assertThrowsAsync(
           async() => getCollaborators(
-            readmeUnordered, logger, 'nodejs', 'node'),
+            readmeUnordered, cli, 'nodejs', 'node'),
           /Error/);
-        assert.strictEqual(logger.logs.warn[0][0],
-          'Order of different types of contacts needs update. ' +
-          'Analysis could get wrong.');
+        cli.assertCalledWith({
+          warn: [[
+            'Contacts in the README is out of order, analysis could go wrong.',
+            { newline: true }
+          ]]
+        });
       });
 
     it('should throw error if there are no collaborators', async() => {
       await assertThrowsAsync(
-        async() => getCollaborators(readmeUnordered, logger, 'nodejs', 'node'),
+        async() => getCollaborators(readmeUnordered, cli, 'nodejs', 'node'),
         /Error: Could not find any collaborators/);
     });
   });
