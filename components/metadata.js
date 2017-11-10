@@ -35,6 +35,7 @@ module.exports = async function getMetadata(argv, cli) {
   cli.write(metadata);
   cli.separator();
 
+  data.warnCommits = argv.warnCommits;
   const checker = new PRChecker(cli, data);
   const status = checker.checkAll(argv.checkComments);
   return {

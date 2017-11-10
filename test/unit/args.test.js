@@ -8,7 +8,8 @@ const expected = {
   owner: `nodejs`,
   repo: `node`,
   prid: 16637,
-  file: undefined
+  file: undefined,
+  warnCommits: 3
 };
 
 describe('args', async function() {
