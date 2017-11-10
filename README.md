@@ -1,9 +1,9 @@
 # Node.js Core Utilities
 [![npm](https://img.shields.io/npm/v/node-core-utils.svg?style=flat-square)](https://npmjs.org/package/node-core-utils)
-[![Build Status](https://img.shields.io/travis/joyeecheung/node-core-utils.svg?style=flat-square)](https://travis-ci.org/joyeecheung/node-core-utils)
-[![AppVeyor Build Status](https://img.shields.io/appveyor/ci/joyeecheung/node-core-utils/master.svg?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/joyeecheung/node-core-utils/history)
-[![codecov](https://img.shields.io/codecov/c/github/joyeecheung/node-core-utils.svg?style=flat-square)](https://codecov.io/gh/joyeecheung/node-core-utils)
-[![Known Vulnerabilities](https://snyk.io/test/github/joyeecheung/node-core-utils/badge.svg?style=flat-square)](https://snyk.io/test/github/joyeecheung/node-core-utils)
+[![Build Status](https://img.shields.io/travis/nodejs/node-core-utils.svg?style=flat-square)](https://travis-ci.org/nodejs/node-core-utils)
+[![AppVeyor Build Status](https://img.shields.io/appveyor/ci/nodejs/node-core-utils/master.svg?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/nodejs/node-core-utils/history)
+[![codecov](https://img.shields.io/codecov/c/github/nodejs/node-core-utils.svg?style=flat-square)](https://codecov.io/gh/nodejs/node-core-utils)
+[![Known Vulnerabilities](https://snyk.io/test/github/nodejs/node-core-utils/badge.svg?style=flat-square)](https://snyk.io/test/github/nodejs/node-core-utils)
 
 CLI tools for Node.js Core collaborators.
 
