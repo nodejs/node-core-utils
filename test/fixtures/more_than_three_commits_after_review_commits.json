@@ -1,0 +1,51 @@
+[{
+  "commit": {
+    "committedDate": "2017-06-25T11:27:02Z",
+    "oid": "f230e691459f8b0f448e1eec1b83fbf7f708eba3",
+    "messageHeadline": "src: add requested feature",
+    "message": "src: add requested feature\nkjlks jskld ksa",
+    "author": {
+      "login": "foo"
+    }
+  }
+},{
+  "commit": {
+    "committedDate": "2017-08-25T12:42:02Z",
+    "oid": "9416475a6dc1b27c3e343dcbc07674a439c88db1",
+    "messageHeadline": "nit: edit mistakes",
+    "message": "nit: fix errors\n fixed requested errors",
+    "author": {
+      "login": "bar"
+    }
+  }
+},{
+  "commit": {
+    "committedDate": "2017-09-25T11:27:02Z",
+    "oid": "f230e691459f8b0f448e1eec1b83fbf7f708eba3",
+    "messageHeadline": "src: add requested feature",
+    "message": "src: new functionality\n works really great",
+    "author": {
+      "login": "baz"
+    }
+  }
+},{
+  "commit": {
+    "committedDate": "2017-10-25T12:42:02Z",
+    "oid": "9416475a6dc1b27c3e343dcbc07674a439c88db1",
+    "messageHeadline": "nit: edit mistakes",
+    "message": "nit: fix mistakes\n fixed requested errors",
+    "author": {
+      "login": "bar"
+    }
+  }
+},{
+  "commit": {
+    "committedDate": "2017-10-25T12:42:02Z",
+    "oid": "9416475a6dc1b27c3e343dcbc07674a439c88db1",
+    "messageHeadline": "final: we should be good to go",
+    "message": "final: we should be good to go\n fixed requested errors",
+    "author": {
+      "login": "bar"
+    }
+  }
+}]

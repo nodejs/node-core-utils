@@ -39,6 +39,11 @@ const multipleCommitsAfterReview = {
   commits: readJSON('multiple_commits_after_review_commits.json'),
   reviews: readJSON('multiple_commits_after_review_reviews.json')
 };
+const moreThanThreeCommitsAfterReview = {
+  commits: readJSON('more_than_three_commits_after_review_commits.json'),
+  reviews: readJSON('more_than_three_commits_after_review_reviews.json')
+};
+
 const commitsAfterCi = readJSON('commits_after_ci.json');
 
 collabArr.forEach((c) => {
@@ -72,6 +77,7 @@ module.exports = {
   simpleCommits,
   singleCommitAfterReview,
   multipleCommitsAfterReview,
+  moreThanThreeCommitsAfterReview,
   commitsAfterCi,
   collaborators,
   firstTimerPR,

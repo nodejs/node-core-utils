@@ -16,6 +16,7 @@ const {
   commentsWithLGTM,
   singleCommitAfterReview,
   multipleCommitsAfterReview,
+  moreThanThreeCommitsAfterReview,
   oddCommits,
   simpleCommits,
   commitsAfterCi,
@@ -370,9 +371,11 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Changes pushed since the last review:' ],
-          [ '- single commit was pushed after review' ]
-        ]
+          [ 'Single commit was pushed since the last review:' ],
+          [ '- src: fix issue with es-modules' ]
+        ],
+        info: [],
+        error: []
       };
 
       const checker = new PRChecker(cli, {
@@ -394,10 +397,40 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Changes pushed since the last review:' ],
+          [ '2 commits were pushed since the last review:' ],
           [ '- src: add requested feature' ],
-          [ '- nit: fix errors' ]
-        ]
+          [ '- nit: edit mistakes' ]
+        ],
+        info: [],
+        error: []
+      };
+
+      const checker = new PRChecker(cli, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        collaborators,
+        reviews,
+        commits
+      });
+
+      let status = checker.checkCommitsAfterReview();
+      assert.deepStrictEqual(status, false);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should only warn last three commits if more than 3 commits', () => {
+      const { commits, reviews } = moreThanThreeCommitsAfterReview;
+      const expectedLogs = {
+        warn: [
+          [ '4 commits were pushed since the last review, ' +
+            'the last three commits are:' ],
+          [ '- src: add requested feature' ],
+          [ '- nit: edit mistakes' ],
+          [ '- final: we should be good to go' ]
+        ],
+        info: [],
+        error: []
       };
 
       const checker = new PRChecker(cli, {
@@ -429,8 +462,22 @@ describe('PRChecker', () => {
       });
 
       let status = checker.checkCommitsAfterReview();
-      assert.deepStrictEqual(status, true);
+      assert.deepStrictEqual(status, false);
       cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should return true if PR can be landed', () => {
+      const checker = new PRChecker(cli, {
+        pr: semverMajorPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators
+      });
+
+      const status = checker.checkCommitsAfterReview();
+      assert.deepStrictEqual(status, true);
     });
   });
 
