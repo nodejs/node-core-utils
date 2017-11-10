@@ -8,14 +8,15 @@ const MetadataGenerator = require('../lib/metadata_gen');
 
 const fs = require('fs');
 
-module.exports = async function getMetadata(argv, logger) {
+module.exports = async function getMetadata(argv, cli) {
   const { prid, owner, repo } = argv;
   const credentials = await auth();
   const request = new Request(credentials);
 
-  const data = new PRData(prid, owner, repo, logger, request);
+  const data = new PRData(prid, owner, repo, cli, request);
   await data.getAll();
 
+  cli.separator('PR info');
   data.logIntro();
 
   const metadata = new MetadataGenerator(data).getMetadata();
@@ -24,16 +25,17 @@ module.exports = async function getMetadata(argv, logger) {
   }
 
   if (argv.file) {
-    logger.info(`Writing metadata to ${argv.file}`);
+    cli.separator();
+    cli.startSpinner(`Writing metadata to ${argv.file}..`);
     fs.writeFileSync(argv.file, metadata);
+    cli.stopSpinner(`Done writing metadata to ${argv.file}`);
   }
 
-  const [SCISSOR_LEFT, SCISSOR_RIGHT] = MetadataGenerator.SCISSORS;
-  logger.info({
-    raw: `${SCISSOR_LEFT}${metadata}${SCISSOR_RIGHT}`
-  }, 'Generated metadata:');
+  cli.separator('Generated metadata');
+  cli.write(metadata);
+  cli.separator();
 
-  const checker = new PRChecker(logger, data);
+  const checker = new PRChecker(cli, data);
   const status = checker.checkAll(argv.checkComments);
   return {
     status,
