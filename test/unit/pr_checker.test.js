@@ -232,6 +232,35 @@ describe('PRChecker', () => {
       assert(status);
       cli.assertCalledWith(expectedLogs);
     });
+
+    it('should skip wait check for fast-track labelled PR', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {};
+
+      const now = new Date();
+      const youngPR = Object.assign({}, firstTimerPR, {
+        createdAt: '2017-10-27T14:25:41.682Z',
+        labels: {
+          nodes: [
+            { name: 'fast-track' }
+          ]
+        }
+      });
+
+      const checker = new PRChecker(cli, {
+        pr: youngPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators
+      });
+
+      const status = checker.checkPRWait(now);
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
   });
 
   describe('checkCI', () => {
