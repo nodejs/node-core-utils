@@ -204,7 +204,9 @@ describe('PRChecker', () => {
     it('should skip wait check for Code & Learn PR', () => {
       const cli = new TestCLI();
 
-      const expectedLogs = {};
+      const expectedLogs = {
+        info: [['This PR is being fast-tracked.']]
+      };
 
       const now = new Date();
       const youngPR = Object.assign({}, firstTimerPR, {
@@ -236,9 +238,10 @@ describe('PRChecker', () => {
     it('should skip wait check for fast-track labelled PR', () => {
       const cli = new TestCLI();
 
-      const expectedLogs = {};
+      const expectedLogs = {
+        info: [['This PR is being fast-tracked.']]
+      };
 
-      const now = new Date();
       const youngPR = Object.assign({}, firstTimerPR, {
         createdAt: '2017-10-27T14:25:41.682Z',
         labels: {
@@ -257,7 +260,7 @@ describe('PRChecker', () => {
         collaborators
       });
 
-      const status = checker.checkPRWait(now);
+      const status = checker.checkPRWait(new Date());
       assert(status);
       cli.assertCalledWith(expectedLogs);
     });
