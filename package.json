@@ -30,9 +30,10 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.2.0",
+    "figures": "^2.0.0",
     "ghauth": "^3.2.1",
     "jsdom": "^11.3.0",
-    "pino": "^4.9.0",
+    "ora": "^1.3.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
     "yargs": "^10.0.3"
