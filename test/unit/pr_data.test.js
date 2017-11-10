@@ -6,12 +6,12 @@ const {
   approvingReviews,
   allGreenReviewers,
   commentsWithLGTM,
-  simpleCommits,
+  oddCommits,
   collaborators,
   firstTimerPR,
   readme
 } = require('../fixtures/data');
-const TestLogger = require('../fixtures/test_logger');
+const TestCLI = require('../fixtures/test_cli');
 const PRData = require('../../lib/pr_data');
 
 function toRaw(obj) {
@@ -45,41 +45,39 @@ describe('PRData', function() {
   request.gql.withArgs('PRComments').returns(
     Promise.resolve(toRaw(commentsWithLGTM)));
   request.gql.withArgs('PRCommits').returns(
-    Promise.resolve(toRaw(simpleCommits)));
+    Promise.resolve(toRaw(oddCommits)));
 
   request.gql.returns(new Error('unknown query'));
 
   it('getAll', async() => {
-    const logger = new TestLogger();
-    const data = new PRData(16348, 'nodejs', 'node', logger, request);
+    const cli = new TestCLI();
+    const data = new PRData(16348, 'nodejs', 'node', cli, request);
     await data.getAll();
     assert.deepStrictEqual(data.collaborators, collaborators);
     assert.deepStrictEqual(data.pr, firstTimerPR);
     assert.deepStrictEqual(data.reviews, approvingReviews);
     assert.deepStrictEqual(data.comments, commentsWithLGTM);
-    assert.deepStrictEqual(data.commits, simpleCommits);
+    assert.deepStrictEqual(data.commits, oddCommits);
     assert.deepStrictEqual(data.reviewers, allGreenReviewers);
   });
 
   it('logIntro', async() => {
-    const logger = new TestLogger();
-    const data = new PRData(16348, 'nodejs', 'node', logger, request);
+    const cli = new TestCLI();
+    const data = new PRData(16348, 'nodejs', 'node', cli, request);
     await data.getAll();
-    logger.clear();
+    cli.clearCalls();
 
     const expectedLogs = {
-      warn: [],
-      info: [
-        ['test: awesome changes #16348'],
-        ['pr_author wants to merge 1 commit into nodejs:master ' +
-         'from pr_author:awesome-changes'],
-        ['Labels: test']
-      ],
-      error: [],
-      trace: []
+      table: [
+        ['Title', 'test: awesome changes #16348'],
+        ['Author', 'pr_author'],
+        ['Commits', '6'],
+        ['Branch', 'pr_author:awesome-changes -> nodejs:master'],
+        ['Labels', 'test, doc']
+      ]
     };
 
     data.logIntro();
-    assert.deepStrictEqual(logger.logs, expectedLogs);
+    cli.assertCalledWith(expectedLogs);
   });
 });

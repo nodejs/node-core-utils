@@ -3,7 +3,7 @@
 const assert = require('assert');
 const sinon = require('sinon');
 
-const TestLogger = require('../fixtures/test_logger');
+const TestCLI = require('../fixtures/test_cli');
 
 const PRChecker = require('../../lib/pr_checker');
 
@@ -27,8 +27,8 @@ const {
 
 describe('PRChecker', () => {
   describe('checkAll', () => {
-    const logger = new TestLogger();
-    const checker = new PRChecker(logger, {
+    const cli = new TestCLI();
+    const checker = new PRChecker(cli, {
       pr: firstTimerPR,
       reviewers: allGreenReviewers,
       comments: commentsWithLGTM,
@@ -81,23 +81,23 @@ describe('PRChecker', () => {
 
   describe('checkReviews', () => {
     it('should warn about semver-major PR without enough TSC approvals', () => {
-      const logger = new TestLogger();
+      const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [
-          ['Quux User(Quux) approved in via LGTM in comments'],
-          ['Bar User(bar) approved in via LGTM in comments'],
+        error: [
           ['semver-major requires at least two TSC approvals']
         ],
-        info: [
+        ok: [
           ['Rejections: 0'],
           ['Approvals: 4, 1 from TSC (bar)']
         ],
-        error: [],
-        trace: []
+        info: [
+          ['- Quux User(Quux) approved in via LGTM in comments'],
+          ['- Bar User(bar) approved in via LGTM in comments']
+        ]
       };
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: semverMajorPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -108,25 +108,22 @@ describe('PRChecker', () => {
 
       const status = checker.checkReviews(true);
       assert(!status);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should warn about PR with rejections & without approvals', () => {
-      const logger = new TestLogger();
+      const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [
+        error: [
           ['Rejections: 2, 1 from TSC (bar)'],
-          ['Foo User(foo) rejected in https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
-          ['Bar User(bar) rejected in https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624'],
+          ['- Foo User(foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+          ['- Bar User(bar): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624'],
           ['Approvals: 0']
-        ],
-        info: [],
-        error: [],
-        trace: []
+        ]
       };
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: firstTimerPR,
         reviewers: rejectedReviewers,
         comments: [],
@@ -137,19 +134,17 @@ describe('PRChecker', () => {
 
       const status = checker.checkReviews();
       assert(!status);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
   });
 
   describe('checkPRWait', () => {
     it('should warn about PR younger than 72h on weekends', () => {
-      const logger = new TestLogger();
+      const cli = new TestCLI();
 
       const expectedLogs = {
         warn: [['49 hours left to land']],
-        info: [['This PR was created on Fri Oct 27 2017 (weekend in UTC)']],
-        error: [],
-        trace: []
+        info: [['This PR was created on Fri Oct 27 2017 (weekend in UTC)']]
       };
 
       const now = new Date('2017-10-28T13:00:41.682Z');
@@ -157,7 +152,7 @@ describe('PRChecker', () => {
         createdAt: '2017-10-27T14:25:41.682Z'
       });
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: youngPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -168,17 +163,15 @@ describe('PRChecker', () => {
 
       const status = checker.checkPRWait(now);
       assert(!status);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should warn about PR younger than 48h on weekdays', () => {
-      const logger = new TestLogger();
+      const cli = new TestCLI();
 
       const expectedLogs = {
         warn: [['22 hours left to land']],
-        info: [['This PR was created on Tue Oct 31 2017 (weekday in UTC)']],
-        error: [],
-        trace: []
+        info: [['This PR was created on Tue Oct 31 2017 (weekday in UTC)']]
       };
 
       const now = new Date('2017-11-01T14:25:41.682Z');
@@ -186,7 +179,7 @@ describe('PRChecker', () => {
         createdAt: '2017-10-31T13:00:41.682Z'
       });
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: youngPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -197,18 +190,13 @@ describe('PRChecker', () => {
 
       const status = checker.checkPRWait(now);
       assert(!status);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should skip wait check for Code & Learn PR', () => {
-      const logger = new TestLogger();
+      const cli = new TestCLI();
 
-      const expectedLogs = {
-        warn: [],
-        info: [],
-        error: [],
-        trace: []
-      };
+      const expectedLogs = {};
 
       const now = new Date();
       const youngPR = Object.assign({}, firstTimerPR, {
@@ -222,7 +210,7 @@ describe('PRChecker', () => {
         }
       });
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: youngPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -233,24 +221,21 @@ describe('PRChecker', () => {
 
       const status = checker.checkPRWait(now);
       assert(status);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
   });
 
   describe('checkCI', () => {
     it('should warn if no CI runs detected', () => {
-      const logger = new TestLogger();
+      const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [
+        error: [
           ['No CI runs detected']
-        ],
-        info: [],
-        error: [],
-        trace: []
+        ]
       };
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -261,14 +246,13 @@ describe('PRChecker', () => {
 
       const status = checker.checkCI();
       assert(!status);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should summarize CI runs detected', () => {
-      const logger = new TestLogger();
+      const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [],
         info: [
           [
             'Last Full CI on 2017-10-27T04:16:36.458Z: ' +
@@ -298,12 +282,10 @@ describe('PRChecker', () => {
             'Last Linter CI on 2017-10-22T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/node-test-linter/13127/'
           ]
-        ],
-        error: [],
-        trace: []
+        ]
       };
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithCI,
@@ -314,11 +296,11 @@ describe('PRChecker', () => {
 
       const status = checker.checkCI();
       assert(status);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should check commits after last ci', () => {
-      const logger = new TestLogger();
+      const cli = new TestCLI();
       const {commits, comment} = commitsAfterCi;
 
       const expectedLogs = {
@@ -330,12 +312,10 @@ describe('PRChecker', () => {
         ],
         info: [
           ['Last Full CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
-        ],
-        error: [],
-        trace: []
+        ]
       };
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: comment,
@@ -346,28 +326,23 @@ describe('PRChecker', () => {
 
       const status = checker.checkCI();
       assert(!status);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
   });
 
   describe('authorIsNew/checkAuthor', () => {
     it('should check odd commits for first timers', () => {
-      const logger = new TestLogger();
+      const cli = new TestCLI();
 
       const expectedLogs = {
         warn: [
-          ['PR is opened by @pr_author'],
-          ['Author test@example.com of commit e3ad7c7 ' +
-            'does not match committer or PR author'],
-          ['Author test@example.com of commit da39a3e ' +
-            'does not match committer or PR author']
-        ],
-        info: [],
-        error: [],
-        trace: []
+          ['PR author is: @pr_author'],
+          ['- commit e3ad7c7 is authored by test@example.com'],
+          ['- commit da39a3e is authored by test@example.com']
+        ]
       };
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -379,15 +354,15 @@ describe('PRChecker', () => {
       assert(checker.authorIsNew());
       const status = checker.checkAuthor();
       assert(!status);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
   });
 
   describe('checkCommitsAfterReview', () => {
-    let logger = new TestLogger();
+    let cli = new TestCLI();
 
     afterEach(() => {
-      logger.clear();
+      cli.clearCalls();
     });
 
     it('should warn about commit pushed since the last review', () => {
@@ -395,15 +370,12 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Changes were pushed since the last review:' ],
+          [ 'Changes pushed since the last review:' ],
           [ '- single commit was pushed after review' ]
-        ],
-        info: [],
-        trace: [],
-        error: []
+        ]
       };
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -414,7 +386,7 @@ describe('PRChecker', () => {
 
       let status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should warn about multiple commits since the last review', () => {
@@ -422,16 +394,13 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Changes were pushed since the last review:' ],
+          [ 'Changes pushed since the last review:' ],
           [ '- src: add requested feature' ],
           [ '- nit: fix errors' ]
-        ],
-        info: [],
-        trace: [],
-        error: []
+        ]
       };
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -442,20 +411,15 @@ describe('PRChecker', () => {
 
       let status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should skip the check if there are no reviews', () => {
       const { commits } = multipleCommitsAfterReview;
 
-      const expectedLogs = {
-        warn: [],
-        info: [],
-        trace: [],
-        error: []
-      };
+      const expectedLogs = {};
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -466,26 +430,23 @@ describe('PRChecker', () => {
 
       let status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, true);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
   });
 
   describe('checkMergeableState', () => {
-    let logger = new TestLogger();
+    let cli = new TestCLI();
 
     afterEach(() => {
-      logger.clear();
+      cli.clearCalls();
     });
 
     it('should warn if the PR mergeable state is CONFLICTING', () => {
       const expectedLogs = {
-        warn: [['This PR has conflicts that must be resolved']],
-        info: [],
-        error: [],
-        trace: []
+        warn: [['This PR has conflicts that must be resolved']]
       };
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: conflictingPR,
         reviewers: allGreenReviewers,
         comments: [],
@@ -496,20 +457,15 @@ describe('PRChecker', () => {
 
       let status = checker.checkMergeableState();
       assert.deepStrictEqual(status, false);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
 
     it('should not warn if the PR mergeable state is not CONFLICTING', () => {
       const { commits } = multipleCommitsAfterReview;
 
-      const expectedLogs = {
-        warn: [],
-        info: [],
-        trace: [],
-        error: []
-      };
+      const expectedLogs = {};
 
-      const checker = new PRChecker(logger, {
+      const checker = new PRChecker(cli, {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
@@ -520,7 +476,7 @@ describe('PRChecker', () => {
 
       let status = checker.checkMergeableState();
       assert.deepStrictEqual(status, true);
-      assert.deepStrictEqual(logger.logs, expectedLogs);
+      cli.assertCalledWith(expectedLogs);
     });
   });
 });

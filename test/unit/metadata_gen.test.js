@@ -6,7 +6,6 @@ const {
   allGreenReviewers
 } = require('../fixtures/data');
 
-const { EOL } = require('os');
 const assert = require('assert');
 const data = {
   owner: 'nodejs',
@@ -27,6 +26,6 @@ Reviewed-By: Bar User <bar@example.com>
 describe('MetadataGenerator', () => {
   it('should generate metadata properly', () => {
     const results = new MetadataGenerator(data).getMetadata();
-    assert.strictEqual(expected.replace(/\n/g, EOL), results);
+    assert.strictEqual(expected, results);
   });
 });
