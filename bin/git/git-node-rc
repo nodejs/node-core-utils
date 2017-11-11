@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+const field = process.argv[2];
+if (!field) {
+  throw Error('no field specified!');
+}
+
+const ncurcPath = path.join(os.homedir(), '.ncurc');
+const ncurc = JSON.parse(fs.readFileSync(ncurcPath, 'utf8'));
+console.log(ncurc[field]);

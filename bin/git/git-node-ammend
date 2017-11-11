@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+if [[ $1 -eq 0 ]] ; then
+  echo 'no patch number specified!'
+  exit 1
+fi
+
+set -x;
+REV=$(git rev-parse HEAD)
+SHORT_REV=${REV:0:7}
+MSG=.ncu/msg-$SHORT_REV.txt
+
+if [ ! -e $MSG ] ; then
+  git node msg $1;
+fi;
+
+git show $REV -s --format=%B | git node check-msg $MSG
+if [ ! $? -eq 0 ]; then
+  echo "commit message is already ammended"
+else
+  git commit --amend -F $MSG
+fi
+

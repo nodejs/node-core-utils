@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [[ $1 -eq 0 ]] ; then
+  echo 'no patch number specified!'
+  exit 1
+fi
+
+mkdir -p .ncu
+META=.ncu/metadata-$1.txt;
+get-metadata $1 -f $META

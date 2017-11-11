@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+echo "
+1) To land single a commit:
+   git node just <PRID>
+
+2) To land multiple commits: 
+   git node apply <PRID>
+   git rebase -i upstream/master  # edit every commit that's gonna stay
+   # on each stay
+   git node ammend <PRID>
+   git rebase --continue
+   # when the rebase is done
+   git node final"
