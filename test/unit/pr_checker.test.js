@@ -20,6 +20,7 @@ const {
   oddCommits,
   simpleCommits,
   commitsAfterCi,
+  mulipleCommitsAfterCi,
   collaborators,
   firstTimerPR,
   semverMajorPR,
@@ -314,6 +315,41 @@ describe('PRChecker', () => {
         info: [
           ['Last Full CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
         ]
+      };
+
+      const checker = new PRChecker(cli, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: comment,
+        reviews: approvingReviews,
+        commits: commits,
+        collaborators
+      });
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should only log last three commits if multiple', () => {
+      const cli = new TestCLI();
+      const { commits, comment } = mulipleCommitsAfterCi;
+
+      const expectedLogs = {
+        warn: [
+          [ 'Commits pushed after the last Full CI run. ' +
+            'The last 3 commits are...' ],
+          [ '- doc: add api description README' ],
+          [ '- feat: add something' ],
+          [ '- style: format code' ]
+        ],
+        info: [
+          [
+            'Last Full CI on 2017-08-24T11:19:25Z: ' +
+            'https://ci.nodejs.org/job/node-test-pull-request/12984/'
+          ]
+        ],
+        error: []
       };
 
       const checker = new PRChecker(cli, {
