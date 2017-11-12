@@ -57,7 +57,7 @@ Options:
   --repo, -r        GitHub repository of the PR                         [string]
   --file, -f        File to write the metadata in                       [string]
   --check-comments  Check for 'LGTM' in comments                       [boolean]
-  --warn-commits    Number of commits to warn              [number] [default: 3]
+  --max-commits     Number of commits to warn              [number] [default: 3]
   --help, -h        Show help                                          [boolean]
 ```
 

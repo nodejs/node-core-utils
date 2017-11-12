@@ -27,6 +27,8 @@ const {
   conflictingPR
 } = require('../fixtures/data');
 
+const argv = { maxCommits: 3 };
+
 describe('PRChecker', () => {
   describe('checkAll', () => {
     const cli = new TestCLI();
@@ -99,14 +101,15 @@ describe('PRChecker', () => {
         ]
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: semverMajorPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       const status = checker.checkReviews(true);
       assert(!status);
@@ -125,14 +128,15 @@ describe('PRChecker', () => {
         ]
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: requestedChangesReviewers,
         comments: [],
         reviews: requestingChangesReviews,
         commits: simpleCommits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       const status = checker.checkReviews();
       assert(!status);
@@ -154,14 +158,15 @@ describe('PRChecker', () => {
         createdAt: '2017-10-27T14:25:41.682Z'
       });
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: youngPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       const status = checker.checkPRWait(now);
       assert(!status);
@@ -181,14 +186,15 @@ describe('PRChecker', () => {
         createdAt: '2017-10-31T13:00:41.682Z'
       });
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: youngPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       const status = checker.checkPRWait(now);
       assert(!status);
@@ -212,14 +218,15 @@ describe('PRChecker', () => {
         }
       });
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: youngPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       const status = checker.checkPRWait(now);
       assert(status);
@@ -237,14 +244,15 @@ describe('PRChecker', () => {
         ]
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       const status = checker.checkCI();
       assert(!status);
@@ -287,14 +295,15 @@ describe('PRChecker', () => {
         ]
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithCI,
         reviews: approvingReviews,
         commits: [],
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       const status = checker.checkCI();
       assert(status);
@@ -307,7 +316,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          ['Commits pushed after the last Full CI run:'],
+          ['Commits were pushed after the last Full CI run:'],
           ['- fixup: adjust spelling'],
           ['- doc: add api description README'],
           ['- feat: add something']
@@ -317,14 +326,15 @@ describe('PRChecker', () => {
         ]
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: comment,
         reviews: approvingReviews,
         commits: commits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       const status = checker.checkCI();
       assert(!status);
@@ -337,11 +347,11 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Commits pushed after the last Full CI run. ' +
-            'The last 3 commits are...' ],
+          [ 'Commits were pushed after the last Full CI run:' ],
           [ '- doc: add api description README' ],
           [ '- feat: add something' ],
-          [ '- style: format code' ]
+          [ '- style: format code' ],
+          [ '...(use `--max-commits 4` to see the full list of commits)' ]
         ],
         info: [
           [
@@ -359,7 +369,39 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: commits,
         collaborators
-      });
+      }, argv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should log as expected if passed 0', () => {
+      const cli = new TestCLI();
+      const { commits, comment } = mulipleCommitsAfterCi;
+
+      const expectedLogs = {
+        warn: [
+          [ 'Commits were pushed after the last Full CI run:' ],
+          [ '...(use `--max-commits 4` to see the full list of commits)' ]
+        ],
+        info: [
+          [
+            'Last Full CI on 2017-08-24T11:19:25Z: ' +
+            'https://ci.nodejs.org/job/node-test-pull-request/12984/'
+          ]
+        ],
+        error: []
+      };
+
+      const checker = new PRChecker(cli, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: comment,
+        reviews: approvingReviews,
+        commits: commits,
+        collaborators
+      }, { maxCommits: 0 });
 
       const status = checker.checkCI();
       assert(!status);
@@ -379,14 +421,15 @@ describe('PRChecker', () => {
         ]
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         reviews: approvingReviews,
         commits: oddCommits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       assert(checker.authorIsNew());
       const status = checker.checkAuthor();
@@ -407,21 +450,23 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Single commit was pushed since the last review:' ],
+          [ 'Commits were pushed since the last review:' ],
           [ '- src: fix issue with es-modules' ]
         ],
         info: [],
         error: []
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         collaborators,
         reviews,
         commits
-      });
+      };
+
+      const checker = new PRChecker(cli, options, argv);
 
       let status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
@@ -433,7 +478,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ '2 commits were pushed since the last review:' ],
+          [ 'Commits were pushed since the last review:' ],
           [ '- src: add requested feature' ],
           [ '- nit: edit mistakes' ]
         ],
@@ -441,14 +486,15 @@ describe('PRChecker', () => {
         error: []
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         collaborators,
         reviews,
         commits
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       let status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
@@ -459,24 +505,25 @@ describe('PRChecker', () => {
       const { commits, reviews } = moreThanThreeCommitsAfterReview;
       const expectedLogs = {
         warn: [
-          [ '4 commits were pushed since the last review, ' +
-            'the last three commits are:' ],
+          [ 'Commits were pushed since the last review:' ],
           [ '- src: add requested feature' ],
           [ '- nit: edit mistakes' ],
-          [ '- final: we should be good to go' ]
+          [ '- final: we should be good to go' ],
+          [ '...(use `--max-commits 4` to see the full list of commits)' ]
         ],
         info: [],
         error: []
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         collaborators,
         reviews,
         commits
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       let status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
@@ -485,17 +532,17 @@ describe('PRChecker', () => {
 
     it('should skip the check if there are no reviews', () => {
       const { commits } = multipleCommitsAfterReview;
-
       const expectedLogs = {};
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         reviews: [],
         collaborators,
         commits
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       let status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
@@ -510,10 +557,63 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators
-      });
+      }, argv);
 
       const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, true);
+    });
+
+    it('should log as expected if passed 1 as flag', () => {
+      const { commits, reviews } = moreThanThreeCommitsAfterReview;
+      const expectedLogs = {
+        warn: [
+          [ 'Commits were pushed since the last review:' ],
+          [ '- final: we should be good to go' ],
+          [ '...(use `--max-commits 4` to see the full list of commits)' ]
+        ],
+        info: [],
+        error: []
+      };
+
+      const options = {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        collaborators,
+        reviews,
+        commits
+      };
+
+      const checker = new PRChecker(cli, options, { maxCommits: 1 });
+      const status = checker.checkCommitsAfterReview();
+      cli.assertCalledWith(expectedLogs);
+      assert(!status);
+    });
+
+    it('should log as expected if passed 0 as flag', () => {
+      const { commits, reviews } = moreThanThreeCommitsAfterReview;
+      const expectedLogs = {
+        warn: [
+          [ 'Commits were pushed since the last review:' ],
+          [ '...(use `--max-commits 4` to see the full list of commits)' ]
+        ],
+        info: [],
+        error: []
+      };
+
+      const options = {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        collaborators,
+        reviews,
+        commits
+      };
+
+      const checker = new PRChecker(cli, options, { maxCommits: 0 });
+      const status = checker.checkCommitsAfterReview();
+      cli.assertCalledWith(expectedLogs);
+      assert(!status);
     });
   });
 
@@ -524,19 +624,20 @@ describe('PRChecker', () => {
       cli.clearCalls();
     });
 
-    it('should warn if the PR mergeable state is CONFLICTING', () => {
+    it('should max if the PR mergeable state is CONFLICTING', () => {
       const expectedLogs = {
         warn: [['This PR has conflicts that must be resolved']]
       };
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: conflictingPR,
         reviewers: allGreenReviewers,
         comments: [],
         reviews: [],
         commits: simpleCommits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       let status = checker.checkMergeableState();
       assert.deepStrictEqual(status, false);
@@ -545,17 +646,17 @@ describe('PRChecker', () => {
 
     it('should not warn if the PR mergeable state is not CONFLICTING', () => {
       const { commits } = multipleCommitsAfterReview;
-
       const expectedLogs = {};
 
-      const checker = new PRChecker(cli, {
+      const options = {
         pr: firstTimerPR,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         reviews: [],
         collaborators,
         commits
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
       let status = checker.checkMergeableState();
       assert.deepStrictEqual(status, true);
