@@ -5,23 +5,23 @@ const { Collaborator } = require('../../lib/collaborators');
 const { Review } = require('../../lib/reviews');
 
 const approved = readJSON('reviewers_approved.json');
-const rejected = readJSON('reviewers_rejected.json');
+const requestedChanges = readJSON('reviewers_requested_changes.json');
 patchPrototype(approved, 'reviewer', Collaborator.prototype);
 patchPrototype(approved, 'review', Review.prototype);
-patchPrototype(rejected, 'reviewer', Collaborator.prototype);
-patchPrototype(rejected, 'review', Review.prototype);
+patchPrototype(requestedChanges, 'reviewer', Collaborator.prototype);
+patchPrototype(requestedChanges, 'review', Review.prototype);
 
 const allGreenReviewers = {
   approved,
-  rejected: []
+  requestedChanges: []
 };
-const rejectedReviewers = {
-  rejected,
+const requestedChangesReviewers = {
+  requestedChanges,
   approved: []
 };
 
 const approvingReviews = readJSON('reviews_approved.json');
-const rejectingReviews = readJSON('reviews_rejected.json');
+const requestingChangesReviews = readJSON('reviews_requesting_changes.json');
 
 const commentsWithCI = readJSON('comments_with_ci.json');
 const commentsWithLGTM = readJSON('comments_with_lgtm.json');
@@ -67,11 +67,11 @@ const readmeUnordered = readFile('./README/README_unordered.md');
 
 module.exports = {
   approved,
-  rejected,
+  requestedChanges,
   allGreenReviewers,
-  rejectedReviewers,
+  requestedChangesReviewers,
   approvingReviews,
-  rejectingReviews,
+  requestingChangesReviews,
   commentsWithCI,
   commentsWithLGTM,
   oddCommits,
