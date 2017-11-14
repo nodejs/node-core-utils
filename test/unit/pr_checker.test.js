@@ -9,9 +9,9 @@ const PRChecker = require('../../lib/pr_checker');
 
 const {
   allGreenReviewers,
-  rejectedReviewers,
+  requestedChangesReviewers,
   approvingReviews,
-  rejectingReviews,
+  requestingChangesReviews,
   commentsWithCI,
   commentsWithLGTM,
   singleCommitAfterReview,
@@ -90,7 +90,7 @@ describe('PRChecker', () => {
           ['semver-major requires at least two TSC approvals']
         ],
         ok: [
-          ['Rejections: 0'],
+          ['Requested Changes: 0'],
           ['Approvals: 4, 1 from TSC (bar)']
         ],
         info: [
@@ -118,7 +118,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Rejections: 2, 1 from TSC (bar)'],
+          ['Requested Changes: 2, 1 from TSC (bar)'],
           ['- Foo User(foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
           ['- Bar User(bar): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624'],
           ['Approvals: 0']
@@ -127,9 +127,9 @@ describe('PRChecker', () => {
 
       const checker = new PRChecker(cli, {
         pr: firstTimerPR,
-        reviewers: rejectedReviewers,
+        reviewers: requestedChangesReviewers,
         comments: [],
-        reviews: rejectingReviews,
+        reviews: requestingChangesReviews,
         commits: simpleCommits,
         collaborators
       });

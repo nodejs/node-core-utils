@@ -5,9 +5,9 @@ const { ReviewAnalyzer } = require('../../lib/reviews');
 
 const {
   allGreenReviewers,
-  rejectedReviewers,
+  requestedChangesReviewers,
   approvingReviews,
-  rejectingReviews,
+  requestingChangesReviews,
   commentsWithLGTM,
   collaborators
 } = require('../fixtures/data');
@@ -26,12 +26,12 @@ describe('ReviewAnalyzer', () => {
 
   it('should parse reviews and comments that rejects', () => {
     const analyzer = new ReviewAnalyzer({
-      reviews: rejectingReviews,
+      reviews: requestingChangesReviews,
       comments: [],
       collaborators
     });
     const reviewers = analyzer.getReviewers();
 
-    assert.deepStrictEqual(reviewers, rejectedReviewers);
+    assert.deepStrictEqual(reviewers, requestedChangesReviewers);
   });
 });
