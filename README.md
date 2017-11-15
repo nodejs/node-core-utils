@@ -27,7 +27,7 @@ Then create a file named `.ncurc` under your `$HOME` directory (`~/.ncurc`);
 
 ```
 {
-  "username": "you_github_username",
+  "username": "your_github_username",
   "token": "token_that_you_created"
 }
 ```
@@ -43,8 +43,8 @@ npm link
 
 ## `get-metadata`
 
-This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/node-review)
-, although it is a CLI implemented with the Github GraphQL API.
+This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/node-review),
+although it is a CLI implemented with the Github GraphQL API.
 
 ```
 get-metadata <identifier>
@@ -88,7 +88,7 @@ $ git commit --amend -F msg.txt
 - [x] Generate `Fixes`
 - [x] Generate `Refs`
 - [x] Check for CI runs
-- [x] Check if commiters match authors
+- [x] Check if committers match authors
 - [x] Check 48-hour wait
 - [x] Check two TSC approval for semver-major
 - [x] Warn new commits after reviews
