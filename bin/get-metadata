@@ -2,7 +2,7 @@
 'use strict';
 
 const argv = require('../lib/args')();
-const getMetadata = require('../steps/metadata');
+const getMetadata = require('../components/metadata');
 const CLI = require('../lib/cli');
 
 const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
