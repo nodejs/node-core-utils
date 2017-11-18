@@ -56,7 +56,8 @@ Options:
   --owner, -o       GitHub owner of the PR repository                   [string]
   --repo, -r        GitHub repository of the PR                         [string]
   --file, -f        File to write the metadata in                       [string]
-  --check-comments  Check for 'LGTM' in comments                        [boolean]
+  --check-comments  Check for 'LGTM' in comments                       [boolean]
+  --max-commits     Number of commits to warn              [number] [default: 3]
   --help, -h        Show help                                          [boolean]
 ```
 

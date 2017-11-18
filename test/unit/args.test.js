@@ -8,7 +8,8 @@ const expected = {
   owner: `nodejs`,
   repo: `node`,
   prid: 16637,
-  file: undefined
+  file: undefined,
+  maxCommits: 3
 };
 
 describe('args', async function() {
@@ -74,5 +75,40 @@ describe('args', async function() {
         const actual = parseArgs('https://github.com/nodejs/node/pull/16637 -o nodejs.org');
         assert.deepStrictEqual(actual, expected);
       });
+  });
+
+  describe('Max Commits Flag', () => {
+    it('should convert -1 to postive', async function() {
+      const actual = parseArgs('16637 --max-commits -1');
+      const expected = {
+        checkComments: false,
+        owner: `nodejs`,
+        repo: `node`,
+        prid: 16637,
+        file: undefined,
+        maxCommits: 1
+      };
+
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should be zero if passed 0', async function() {
+      const actual = parseArgs('16637 --max-commits 0');
+      const expected = {
+        checkComments: false,
+        owner: `nodejs`,
+        repo: `node`,
+        prid: 16637,
+        file: undefined,
+        maxCommits: 0
+      };
+
+      assert.deepStrictEqual(actual, expected);
+    });
+
+    it('should default to three if passed string', async function() {
+      const actual = parseArgs('16637 --max-commits not-a-number');
+      assert.deepStrictEqual(actual, expected);
+    });
   });
 });
