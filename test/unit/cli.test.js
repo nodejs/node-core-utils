@@ -12,6 +12,8 @@ describe('cli', () => {
   let cli = null;
   let stream = null;
 
+  const logResult = () => stream.toString().replace(/\r?\n|\r/, EOL);
+
   describe('instantiation', () => {
     it('should set `process.stderr` as stream if no stream is specified',
       () => {
@@ -46,43 +48,43 @@ describe('cli', () => {
     describe('stopSpinner', () => {
       it('should log the error symbol and the specified text', () => {
         cli.stopSpinner('error', cli.SPINNER_STATUS.FAILED);
-        assert.strictEqual(stream.toString(), `${error}  error${EOL}`);
+        assert.strictEqual(logResult(), `${error}  error${EOL}`);
       });
 
       it('should log the success symbol and the specified text', () => {
         cli.stopSpinner('success');
-        assert.strictEqual(stream.toString(), `${success}  success${EOL}`);
+        assert.strictEqual(logResult(), `${success}  success${EOL}`);
       });
 
       it('should log the warn symbol and the specified text', () => {
         cli.stopSpinner('warn', cli.SPINNER_STATUS.WARN);
-        assert.strictEqual(stream.toString(), `${warning}  warn${EOL}`);
+        assert.strictEqual(logResult(), `${warning}  warn${EOL}`);
       });
 
       it('should log the info symbol and the specified text', () => {
         cli.stopSpinner('info', cli.SPINNER_STATUS.INFO);
-        assert.strictEqual(stream.toString(), `${info}  info${EOL}`);
+        assert.strictEqual(logResult(), `${info}  info${EOL}`);
       });
     });
 
     describe('write', () => {
       it('should write in stream', () => {
         cli.write('Getting commits...');
-        assert.strictEqual(stream.toString(), 'Getting commits...');
+        assert.strictEqual(logResult(), 'Getting commits...');
       });
     });
 
     describe('log', () => {
       it('should write in stream', () => {
         cli.log('Getting commits...');
-        assert.strictEqual(stream.toString(), `Getting commits...${EOL}`);
+        assert.strictEqual(logResult(), `Getting commits...${EOL}`);
       });
     });
 
     describe('table', () => {
       it('should print the first element with bold style and padding', () => {
         cli.table('Title', 'description');
-        assert.strictEqual(stream.toString(),
+        assert.strictEqual(logResult(),
           `${chalk.bold('Title   ')}description${EOL}`);
       });
     });
@@ -91,7 +93,7 @@ describe('cli', () => {
       it('should print a separator line with the specified text', () => {
         cli.separator('Separator');
         assert.strictEqual(
-          stream.toString(),
+          logResult(),
           '---------------------------------- ' + chalk.bold('Separator') +
             ' -----------------------------------' + EOL);
       });
@@ -99,14 +101,14 @@ describe('cli', () => {
       it('should print a separator line with a custom separator', () => {
         cli.separator('PR', 20, '+');
         assert.strictEqual(
-          stream.toString(),
+          logResult(),
           '++++++++ ' + chalk.bold('PR') + ' ++++++++' + EOL);
       });
 
       it('should print a separator line without text', () => {
         cli.separator();
         assert.strictEqual(
-          stream.toString(),
+          logResult(),
           '-------------------------------------------------------' +
             '-------------------------' + EOL);
       });
@@ -115,12 +117,12 @@ describe('cli', () => {
     describe('ok', () => {
       it('should print a success message', () => {
         cli.ok('Perfect!');
-        assert.strictEqual(stream.toString(), `${success}  Perfect!${EOL}`);
+        assert.strictEqual(logResult(), `${success}  Perfect!${EOL}`);
       });
 
       it('should print a success message in a new line if specified', () => {
         cli.ok('Perfect!', { newline: true });
-        assert.strictEqual(stream.toString(),
+        assert.strictEqual(logResult(),
           `${EOL}${success}  Perfect!${EOL}`);
       });
     });
@@ -128,12 +130,12 @@ describe('cli', () => {
     describe('warn', () => {
       it('should print a warning message', () => {
         cli.warn('Warning!');
-        assert.strictEqual(stream.toString(), `${warning}  Warning!${EOL}`);
+        assert.strictEqual(logResult(), `${warning}  Warning!${EOL}`);
       });
 
       it('should print a warning message in a new line if specified', () => {
         cli.warn('Warning!', { newline: true });
-        assert.strictEqual(stream.toString(),
+        assert.strictEqual(logResult(),
           `${EOL}${warning}  Warning!${EOL}`);
       });
     });
@@ -141,12 +143,12 @@ describe('cli', () => {
     describe('info', () => {
       it('should print an info message', () => {
         cli.info('Info!');
-        assert.strictEqual(stream.toString(), `${info}  Info!${EOL}`);
+        assert.strictEqual(logResult(), `${info}  Info!${EOL}`);
       });
 
       it('should print an info message in a new line if specified', () => {
         cli.info('Info!', { newline: true });
-        assert.strictEqual(stream.toString(), `${EOL}${info}  Info!${EOL}`);
+        assert.strictEqual(logResult(), `${EOL}${info}  Info!${EOL}`);
       });
     });
 
@@ -154,12 +156,12 @@ describe('cli', () => {
     describe('error', () => {
       it('should print an error message', () => {
         cli.error('Error!');
-        assert.strictEqual(stream.toString(), `${error}  Error!${EOL}`);
+        assert.strictEqual(logResult(), `${error}  Error!${EOL}`);
       });
 
       it('should print an error message in a new line if specified', () => {
         cli.error('Error!', { newline: true });
-        assert.strictEqual(stream.toString(), `${EOL}${error}  Error!${EOL}`);
+        assert.strictEqual(logResult(), `${EOL}${error}  Error!${EOL}`);
       });
     });
   });
