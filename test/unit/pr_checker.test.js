@@ -201,49 +201,18 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should skip wait check for Code & Learn PR', () => {
+    it('should log as expected if PR can be fast-tracked', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        info: [['This PR is being fast-tracked.']]
+        info: [
+          [ 'This PR is being fast-tracked' ]
+        ]
       };
 
-      const now = new Date();
-      const youngPR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-27T14:25:41.682Z',
-        labels: {
-          nodes: [
-            {
-              name: 'code-and-learn'
-            }
-          ]
-        }
-      });
-
-      const options = {
-        pr: youngPR,
-        reviewers: allGreenReviewers,
-        comments: commentsWithLGTM,
-        reviews: approvingReviews,
-        commits: simpleCommits,
-        collaborators
-      };
-      const checker = new PRChecker(cli, options, argv);
-
-      const status = checker.checkPRWait(now);
-      assert(status);
-      cli.assertCalledWith(expectedLogs);
-    });
-
-    it('should skip wait check for fast-track labelled PR', () => {
-      const cli = new TestCLI();
-
-      const expectedLogs = {
-        info: [['This PR is being fast-tracked.']]
-      };
-
-      const youngPR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-27T14:25:41.682Z',
+      const now = new Date('2017-11-01T14:25:41.682Z');
+      const PR = Object.assign({}, firstTimerPR, {
+        createdAt: '2017-10-31T13:00:41.682Z',
         labels: {
           nodes: [
             { name: 'fast-track' }
@@ -251,17 +220,130 @@ describe('PRChecker', () => {
         }
       });
 
-      const checker = new PRChecker(cli, {
-        pr: youngPR,
+      const options = {
+        pr: PR,
         reviewers: allGreenReviewers,
-        comments: commentsWithLGTM,
+        comments: commentsWithCI,
+        reviews: approvingReviews,
+        commits: [],
+        collaborators
+      };
+      const checker = new PRChecker(cli, options, argv);
+
+      checker.checkCI();
+      cli.clearCalls();
+      const status = checker.checkPRWait(now);
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should warn about approvals and CI for fast-tracked PR', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        warn: [
+          [ 'This PR is being fast-tracked, but awating ' +
+          'approvals of 2 contributors and a CI run' ]
+        ]
+      };
+
+      const now = new Date('2017-11-01T14:25:41.682Z');
+      const PR = Object.assign({}, firstTimerPR, {
+        createdAt: '2017-10-31T13:00:41.682Z',
+        labels: {
+          nodes: [
+            { name: 'fast-track' }
+          ]
+        }
+      });
+
+      const options = {
+        pr: PR,
+        reviewers: requestedChangesReviewers,
+        comments: [],
+        reviews: requestingChangesReviews,
+        commits: simpleCommits,
+        collaborators
+      };
+      const checker = new PRChecker(cli, options, argv);
+
+      checker.checkCI();
+      cli.clearCalls();
+      const status = checker.checkPRWait(now);
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should warn cannot be fast-tracked because of approvals', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        warn: [
+          [ 'This PR is being fast-tracked, but awating ' +
+          'approvals of 2 contributors' ]
+        ]
+      };
+
+      const now = new Date('2017-11-01T14:25:41.682Z');
+      const PR = Object.assign({}, firstTimerPR, {
+        createdAt: '2017-10-31T13:00:41.682Z',
+        labels: {
+          nodes: [
+            { name: 'fast-track' }
+          ]
+        }
+      });
+
+      const options = {
+        pr: PR,
+        reviewers: requestedChangesReviewers,
+        comments: commentsWithCI,
+        reviews: approvingReviews,
+        commits: [],
+        collaborators
+      };
+      const checker = new PRChecker(cli, options, argv);
+
+      checker.checkCI();
+      cli.clearCalls();
+      const status = checker.checkPRWait(now);
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should warn if the PR has no CI and cannot be fast-tracked', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        warn: [
+          [ 'This PR is being fast-tracked, but awating a CI run' ]
+        ]
+      };
+
+      const now = new Date('2017-11-01T14:25:41.682Z');
+      const PR = Object.assign({}, firstTimerPR, {
+        createdAt: '2017-10-31T13:00:41.682Z',
+        labels: {
+          nodes: [
+            { name: 'fast-track' }
+          ]
+        }
+      });
+
+      const options = {
+        pr: PR,
+        reviewers: allGreenReviewers,
+        comments: [],
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators
-      });
+      };
+      const checker = new PRChecker(cli, options, argv);
 
-      const status = checker.checkPRWait(new Date());
-      assert(status);
+      checker.checkCI();
+      cli.clearCalls();
+      const status = checker.checkPRWait(now);
+      assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
   });
