@@ -1,0 +1,24 @@
+{
+  "createdAt": "2017-10-24T11:13:43Z",
+  "authorAssociation": "FIRST_TIMER",
+  "author": {
+    "login": "pr_author",
+    "email": ""
+  },
+  "url": "https://github.com/nodejs/node/pull/16438",
+  "bodyHTML": "<p>Awesome changes</p>",
+  "bodyText": "Awesome changes",
+  "labels": {
+    "nodes": [
+      {
+        "name": "test"
+      },
+      {
+        "name": "doc"
+      }
+    ]
+  },
+  "title": "test: awesome changes",
+  "baseRefName": "master",
+  "headRefName": "awesome-changes"
+}
