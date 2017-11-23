@@ -23,6 +23,7 @@ const {
   mulipleCommitsAfterCi,
   collaborators,
   firstTimerPR,
+  firstTimerPrivatePR,
   semverMajorPR,
   conflictingPR
 } = require('../fixtures/data');
@@ -548,6 +549,28 @@ describe('PRChecker', () => {
       assert(checker.authorIsNew());
       const status = checker.checkAuthor();
       assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should skip checking odd commits for first timers ' +
+      'with private emails', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {};
+
+      const options = {
+        pr: firstTimerPrivatePR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: oddCommits,
+        collaborators
+      };
+      const checker = new PRChecker(cli, options, argv);
+
+      assert(checker.authorIsNew());
+      const status = checker.checkAuthor();
+      assert(status);
       cli.assertCalledWith(expectedLogs);
     });
   });
