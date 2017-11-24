@@ -82,6 +82,13 @@ $ echo -e "$(git show -s --format=%B)\n\n$(cat msg.txt)" > msg.txt
 $ git commit --amend -F msg.txt
 ```
 
+### Git bash for Windows
+If you are using `git bash` and having trouble with output use `winpty get-metadata.cmd $PRID`.
+
+current known issues with git bash:
+- git bash Lacks colors.
+- git bash output duplicates metadata.
+
 ### Features
 
 - [x] Generate `PR-URL`
