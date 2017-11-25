@@ -17,7 +17,7 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
       title,
       baseRefName,
       headRefName,
-      filesChanged
+      changedFiles,
       mergeable
     }
   }
