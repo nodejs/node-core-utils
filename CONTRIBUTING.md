@@ -101,7 +101,7 @@ feature branch. Post a comment in the pull request afterwards.
 ## Code of Conduct
 
 We follow the
-[Node.js Code of Conduct](https://github.com/nodejs/TSC/blob/master/CODE_OF_CONDUCT.md)
+[Node.js Code of Conduct](https://github.com/nodejs/admin/blob/master/CODE_OF_CONDUCT.md)
 in this project.
 
 ## Developer's Certificate of Origin 1.1
