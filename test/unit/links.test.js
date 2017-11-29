@@ -14,6 +14,9 @@ const expected = [{
 }, {
   fixes: ['https://github.com/nodejs/node/issues/16504'],
   refs: []
+}, {
+  fixes: [],
+  refs: ['https://en.wikipedia.org/w/index.php?title=IPv6_address&type=revision&diff=809494791&oldid=804196124']
 }];
 
 describe('LinkParser', () => {
