@@ -1,0 +1,51 @@
+query SearchIssueByUser($queryString: String!, $isCommenter: Boolean!, $after: String) {
+  search(query: $queryString, type: ISSUE, first: 100, after: $after) {
+    nodes {
+      ... on PullRequest {
+        url
+        publishedAt
+        author {
+          login
+        }
+        title
+        reviews(last: 100) @include(if: $isCommenter) {
+          nodes {
+            publishedAt
+            author {
+              login
+            }
+          }
+        }
+        labels(first: 100) {
+          nodes {
+            name
+          }
+        }
+        comments(last: 100) @include(if: $isCommenter) {
+          nodes {
+            publishedAt
+            author {
+              login
+            }
+          }
+        }
+      }
+      ... on Issue {
+        publishedAt
+        url
+        author {
+          login
+        }
+        title
+        comments(last: 100) @include(if: $isCommenter) {
+          nodes {
+            publishedAt
+            author {
+              login
+            }
+          }
+        }
+      }
+    }
+  }
+}
