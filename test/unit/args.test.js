@@ -9,6 +9,7 @@ const expected = {
   repo: `node`,
   prid: 16637,
   file: undefined,
+  readme: undefined,
   maxCommits: 3
 };
 
@@ -77,6 +78,23 @@ describe('args', async function() {
       });
   });
 
+  describe('Readme flag', () => {
+    it('should accept readme', async function() {
+      const actual = parseArgs('--repo llnode --readme ../node/README.md 152');
+      const expected = {
+        checkComments: false,
+        owner: `nodejs`,
+        repo: `llnode`,
+        prid: 152,
+        file: undefined,
+        readme: '../node/README.md',
+        maxCommits: 3
+      };
+
+      assert.deepStrictEqual(actual, expected);
+    });
+  });
+
   describe('Max Commits Flag', () => {
     it('should convert -1 to postive', async function() {
       const actual = parseArgs('16637 --max-commits -1');
@@ -86,6 +104,7 @@ describe('args', async function() {
         repo: `node`,
         prid: 16637,
         file: undefined,
+        readme: undefined,
         maxCommits: 1
       };
 
@@ -100,6 +119,7 @@ describe('args', async function() {
         repo: `node`,
         prid: 16637,
         file: undefined,
+        readme: undefined,
         maxCommits: 0
       };
 

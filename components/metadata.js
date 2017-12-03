@@ -9,11 +9,10 @@ const MetadataGenerator = require('../lib/metadata_gen');
 const fs = require('fs');
 
 module.exports = async function getMetadata(argv, cli) {
-  const { prid, owner, repo } = argv;
   const credentials = await auth();
   const request = new Request(credentials);
 
-  const data = new PRData(prid, owner, repo, cli, request);
+  const data = new PRData(argv, cli, request);
   await data.getAll();
 
   cli.separator('PR info');

@@ -84,7 +84,7 @@ describe('collaborators', function() {
 
   describe('getCollaborators', () => {
     it('should return all collaborators', async function() {
-      const parsed = await getCollaborators(readme, cli, 'nodejs', 'node');
+      const parsed = getCollaborators(readme, cli, 'nodejs', 'node');
       assert.deepStrictEqual(parsed, collaborators);
     });
 
