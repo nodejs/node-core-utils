@@ -435,7 +435,8 @@ describe('PRChecker', () => {
           ['- fixup: adjust spelling'],
           ['- doc: add api description README'],
           ['- feat: add something'],
-          [ 'Some or all CI tests seems to be failing or flasky' ]
+          [ 'CI tests have some failures, ' +
+            'perhaps maybe unrelated or flasky error.' ]
         ],
         info: [
           ['Last Full CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
@@ -474,7 +475,7 @@ describe('PRChecker', () => {
             'Last Full CI on 2017-08-24T11:19:25Z: ' +
             'https://ci.nodejs.org/job/node-test-pull-request/12984/'
           ],
-          [ 'All CI tests are successful' ]
+          [ 'All CI tests are successful.' ]
         ],
         error: []
       };
@@ -507,7 +508,7 @@ describe('PRChecker', () => {
             'Last Full CI on 2017-08-24T11:19:25Z: ' +
             'https://ci.nodejs.org/job/node-test-pull-request/12984/'
           ],
-          [ 'All CI tests are successful' ]
+          [ 'All CI tests are successful.' ]
         ],
         error: []
       };
@@ -550,7 +551,7 @@ describe('PRChecker', () => {
 
         const expectedLogs = {
           warn: [
-            [ 'CI test results are still pending' ]
+            [ 'CI results are still pending.' ]
           ],
           info: [
             ciLog
@@ -580,7 +581,7 @@ describe('PRChecker', () => {
             ciLog
           ],
           warn: [
-            [ 'CI test results are still pending' ]
+            [ 'CI results are still pending.' ]
           ]
         };
         const checker = new PRChecker(cli, {
@@ -604,7 +605,7 @@ describe('PRChecker', () => {
         const expectedLogs = {
           info: [
             ciLog,
-            [ 'All CI tests are successful' ]
+            [ 'All CI tests are successful.' ]
           ]
         };
         const checker = new PRChecker(cli, {
@@ -630,7 +631,8 @@ describe('PRChecker', () => {
             ciLog
           ],
           warn: [
-            [ 'Some or all CI tests seems to be failing or flasky' ]
+            [ 'CI tests have some failures, ' +
+              'perhaps maybe unrelated or flasky error.' ]
           ]
         };
         const checker = new PRChecker(cli, {
@@ -656,7 +658,7 @@ describe('PRChecker', () => {
             ciLog
           ],
           error: [
-            [ 'CI testing seems to be error out' ]
+            [ 'CI tests have failed.' ]
           ]
         };
         const checker = new PRChecker(cli, {
