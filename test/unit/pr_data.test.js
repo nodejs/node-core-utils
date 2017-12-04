@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const sinon = require('sinon');
+const path = require('path');
 const {
   approvingReviews,
   allGreenReviewers,
@@ -49,9 +50,10 @@ describe('PRData', function() {
 
   request.gql.returns(new Error('unknown query'));
 
+  const argv = { prid: 16348, owner: 'nodejs', repo: 'node' };
   it('getAll', async() => {
     const cli = new TestCLI();
-    const data = new PRData(16348, 'nodejs', 'node', cli, request);
+    const data = new PRData(argv, cli, request);
     await data.getAll();
     assert.deepStrictEqual(data.collaborators, collaborators);
     assert.deepStrictEqual(data.pr, firstTimerPR);
@@ -63,7 +65,7 @@ describe('PRData', function() {
 
   it('logIntro', async() => {
     const cli = new TestCLI();
-    const data = new PRData(16348, 'nodejs', 'node', cli, request);
+    const data = new PRData(argv, cli, request);
     await data.getAll();
     cli.clearCalls();
 
@@ -79,5 +81,40 @@ describe('PRData', function() {
 
     data.logIntro();
     cli.assertCalledWith(expectedLogs);
+  });
+});
+
+describe('PRData', function() {
+  const request = {
+    promise: sinon.stub(),
+    gql: sinon.stub()
+  };
+  request.promise.withArgs({
+    url: 'https://raw.githubusercontent.com/nodejs/node/master/README.md'
+  }).returns(new Error('Should not call'));
+  request.promise.returns(new Error('unknown query'));
+  request.gql.withArgs('PR').returns(Promise.resolve(rawPR));
+  request.gql.withArgs('User').returns(Promise.resolve(rawUser));
+  request.gql.withArgs('Reviews').returns(
+    Promise.resolve(toRaw(approvingReviews)));
+  request.gql.withArgs('PRComments').returns(
+    Promise.resolve(toRaw(commentsWithLGTM)));
+  request.gql.withArgs('PRCommits').returns(
+    Promise.resolve(toRaw(oddCommits)));
+  request.gql.returns(new Error('unknown query'));
+
+  it('getAll with specified readme', async() => {
+    const cli = new TestCLI();
+    const readmePath = path.resolve(
+      __dirname, '..', 'fixtures', 'README', 'README.md');
+    const argv2 = Object.assign({ readme: readmePath });
+    const data = new PRData(argv2, cli, request);
+    await data.getAll();
+    assert.deepStrictEqual(data.collaborators, collaborators);
+    assert.deepStrictEqual(data.pr, firstTimerPR);
+    assert.deepStrictEqual(data.reviews, approvingReviews);
+    assert.deepStrictEqual(data.comments, commentsWithLGTM);
+    assert.deepStrictEqual(data.commits, oddCommits);
+    assert.deepStrictEqual(data.reviewers, allGreenReviewers);
   });
 });
