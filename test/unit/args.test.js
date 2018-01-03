@@ -68,7 +68,7 @@ describe('args', async function() {
         const result = () => {
           return parseArgs('dummy');
         };
-        assert.throws(result);
+        assert.throws(result, /dummy/);
       });
 
     it('should ignore other arguments if called with url',
