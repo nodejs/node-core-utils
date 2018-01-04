@@ -18,55 +18,87 @@ const FIRST_TIME_MSG =
 describe('auth', async function() {
   it('asks for auth data if no ncurc is found', async function() {
     this.timeout(2000);
-    await runAuthScript(undefined, [
-      FIRST_TIME_MSG,
-      'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
-    ]);
+    await runAuthScript(
+      undefined,
+      [FIRST_TIME_MSG, 'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm']
+    );
   });
 
   it('asks for auth data if ncurc is invalid json', async function() {
     this.timeout(2000);
-    await runAuthScript('this is not json', [
-      FIRST_TIME_MSG,
-      'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
-    ]);
+    await runAuthScript(
+      { HOME: 'this is not json' },
+      [FIRST_TIME_MSG, 'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm']
+    );
   });
 
-  it('returns ncurc data if it is present and valid', async function() {
+  it('returns ncurc data if valid in HOME', async function() {
     this.timeout(2000);
-    await runAuthScript({ username: 'nyancat', token: '0123456789abcdef' }, [
-      'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
-    ]);
+    await runAuthScript(
+      { HOME: { username: 'nyancat', token: '0123456789abcdef' } },
+      [ 'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm' ]
+    );
   });
 
-  it('prints an error message if it can\'t generate a token', async function() {
+  it('returns ncurc data if valid in XDG_CONFIG_HOME', async function() {
     this.timeout(2000);
-    await runAuthScript(undefined, [
-      FIRST_TIME_MSG
-    ], `Could not get token: Bad credentials${EOL}`, 'run-auth-error');
+    await runAuthScript(
+      { HOME: { username: 'nyancat', token: '0123456789abcdef' } },
+      ['bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm']
+    );
+  });
+
+  it('prefers XDG_CONFIG_HOME/ncurc to HOME/.ncurc', async function() {
+    this.timeout(2000);
+    await runAuthScript(
+      {
+        HOME: { username: 'notnyancat', token: 'somewrongtoken' },
+        XDG_CONFIG_HOME: { username: 'nyancat', token: '0123456789abcdef' }
+      },
+      ['bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm']
+    );
+  });
+
+  it("prints an error message if it can't generate a token", async function() {
+    this.timeout(2000);
+    await runAuthScript(
+      {},
+      [FIRST_TIME_MSG],
+      `Could not get token: Bad credentials${EOL}`, 'run-auth-error'
+    );
   });
 });
 
+// ncurc: { HOME: 'text to put in home ncurc',
+//          XDG_CONFIG_HOME: 'text to put in this ncurc' }
 function runAuthScript(
-  ncurc = undefined, expect = [], error = '', fixture = 'run-auth') {
+  ncurc = {}, expect = [], error = '', fixture = 'run-auth') {
   return new Promise((resolve, reject) => {
-    const HOME = path.resolve(__dirname, `tmp-${testCounter++}`);
-    rimraf.sync(HOME);
-    mkdirp.sync(HOME);
-    const ncurcPath = path.resolve(HOME, '.ncurc');
+    const newEnv = { HOME: undefined, XDG_CONFIG_HOME: undefined };
+    if (ncurc.HOME === undefined) ncurc.HOME = ''; // HOME must always be set.
+    for (const envVar in ncurc) {
+      if (ncurc[envVar] === undefined) continue;
+      newEnv[envVar] = path.resolve(__dirname, `tmp-${testCounter++}`);
+      rimraf.sync(newEnv[envVar]);
+      mkdirp.sync(newEnv[envVar]);
 
-    if (ncurc !== undefined) {
-      if (typeof ncurc === 'string') {
-        fs.writeFileSync(ncurcPath, ncurc, 'utf8');
-      } else {
-        fs.writeFileSync(ncurcPath, JSON.stringify(ncurc), 'utf8');
+      const ncurcPath = path.resolve(newEnv[envVar],
+        envVar === 'HOME' ? '.ncurc' : 'ncurc');
+
+      if (ncurc[envVar] !== undefined) {
+        if (typeof ncurc[envVar] === 'string') {
+          fs.writeFileSync(ncurcPath, ncurc[envVar], 'utf8');
+        } else {
+          fs.writeFileSync(ncurcPath, JSON.stringify(ncurc[envVar]), 'utf8');
+        }
       }
     }
+    newEnv.USERPROFILE = newEnv.HOME;
 
     const proc = spawn(process.execPath,
       [ require.resolve(`../fixtures/${fixture}`) ],
       { timeout: 1500,
-        env: Object.assign({}, process.env, { USERPROFILE: HOME, HOME }) });
+        env: Object.assign({}, process.env, newEnv) });
     let stderr = '';
     proc.stderr.setEncoding('utf8');
     proc.stderr.on('data', (chunk) => { stderr += chunk; });
@@ -78,7 +110,8 @@ function runAuthScript(
       try {
         assert.strictEqual(stderr, error);
         assert.strictEqual(expect.length, 0);
-        rimraf.sync(HOME);
+        if (newEnv.HOME) rimraf.sync(newEnv.HOME);
+        if (newEnv.XDG_CONFIG_HOME) rimraf.sync(newEnv.XDG_CONFIG_HOME);
       } catch (err) {
         reject(err);
       }
