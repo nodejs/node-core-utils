@@ -18,7 +18,9 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
       baseRefName,
       headRefName,
       changedFiles,
-      mergeable
+      mergeable,
+      closed,
+      merged
     }
   }
 }

@@ -59,6 +59,8 @@ const firstTimerPrivatePR = readJSON('first_timer_pr_with_private_email.json');
 const semverMajorPR = readJSON('semver_major_pr.json');
 const fixAndRefPR = readJSON('pr_with_fixes_and_refs.json');
 const conflictingPR = readJSON('conflicting_pr.json');
+const closedPR = readJSON('./closed_pr.json');
+const mergedPR = readJSON('./merged_pr.json');
 const readme = readFile('./README/README.md');
 const readmeNoTsc = readFile('./README/README_no_TSC.md');
 const readmeNoTscE = readFile('./README/README_no_TSCE.md');
@@ -93,5 +95,7 @@ module.exports = {
   readmeNoTscE,
   readmeNoCollaborators,
   readmeNoCollaboratorE,
-  readmeUnordered
+  readmeUnordered,
+  closedPR,
+  mergedPR
 };

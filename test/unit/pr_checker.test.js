@@ -25,7 +25,9 @@ const {
   firstTimerPR,
   firstTimerPrivatePR,
   semverMajorPR,
-  conflictingPR
+  conflictingPR,
+  closedPR,
+  mergedPR
 } = require('../fixtures/data');
 
 const argv = { maxCommits: 3 };
@@ -49,6 +51,7 @@ describe('PRChecker', () => {
     let checkAuthorStub;
     let checkCommitsAfterReviewStub;
     let checkMergeableStateStub;
+    let checkPRState;
 
     before(() => {
       checkReviewsStub = sinon.stub(checker, 'checkReviews');
@@ -59,6 +62,7 @@ describe('PRChecker', () => {
       checkCommitsAfterReviewStub =
         sinon.stub(checker, 'checkCommitsAfterReview');
       checkMergeableStateStub = sinon.stub(checker, 'checkMergeableState');
+      checkPRState = sinon.stub(checker, 'checkPRState');
     });
 
     after(() => {
@@ -69,6 +73,7 @@ describe('PRChecker', () => {
       checkAuthorStub.restore();
       checkCommitsAfterReviewStub.restore();
       checkMergeableStateStub.restore();
+      checkPRState.restore();
     });
 
     it('should run necessary checks', () => {
@@ -81,6 +86,7 @@ describe('PRChecker', () => {
       assert.strictEqual(checkAuthorStub.calledOnce, true);
       assert.strictEqual(checkCommitsAfterReviewStub.calledOnce, true);
       assert.strictEqual(checkMergeableStateStub.calledOnce, true);
+      assert.strictEqual(checkPRState.calledOnce, true);
     });
   });
 
@@ -797,6 +803,76 @@ describe('PRChecker', () => {
 
       let status = checker.checkMergeableState();
       assert.deepStrictEqual(status, true);
+      cli.assertCalledWith(expectedLogs);
+    });
+  });
+
+  describe('checkPRStatus - check PR status (closed || merged)', () => {
+    let cli = new TestCLI();
+
+    afterEach(() => {
+      cli.clearCalls();
+    });
+
+    it('should warn if PR is closed', () => {
+      const expectedLogs = {
+        warn: [
+          [ 'This PR is closed' ]
+        ]
+      };
+
+      const options = {
+        pr: closedPR,
+        reviewers: allGreenReviewers,
+        comments: [],
+        reviews: [],
+        commits: simpleCommits,
+        collaborators
+      };
+
+      const checker = new PRChecker(cli, options, argv);
+      const status = checker.checkPRState();
+      assert.strictEqual(status, false);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should warn if PR is merged', () => {
+      const expectedLogs = {
+        warn: [
+          [ 'This PR is merged' ]
+        ]
+      };
+
+      const options = {
+        pr: mergedPR,
+        reviewers: allGreenReviewers,
+        comments: [],
+        reviews: [],
+        commits: simpleCommits,
+        collaborators
+      };
+
+      const checker = new PRChecker(cli, options, argv);
+      const status = checker.checkPRState();
+      assert.strictEqual(status, false);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should return true if pr is not closed or merged', () => {
+      const expectedLogs = {};
+
+      const options = {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: [],
+        reviews: [],
+        commits: simpleCommits,
+        collaborators
+      };
+
+      const checker = new PRChecker(cli, options, argv);
+      const status = checker.checkPRState();
+      assert.strictEqual(status, true);
       cli.assertCalledWith(expectedLogs);
     });
   });

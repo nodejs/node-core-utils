@@ -1,0 +1,23 @@
+{
+  "createdAt": "2017-10-24T11:13:43Z",
+  "authorAssociation": "COLLABORATOR",
+  "author": {
+    "login": "pr_author",
+    "email": "pr_author@example.com"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438",
+  "bodyHTML": "<p>Awesome changes</p>",
+  "bodyText": "Awesome changes",
+  "labels": {
+    "nodes": [
+      {
+        "name": "semver-major"
+      }
+    ]
+  },
+  "title": "lib: awesome changes",
+  "baseRefName": "master",
+  "headRefName": "awesome-changes",
+  "closed": true,
+  "merged": true
+}
