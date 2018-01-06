@@ -13,7 +13,7 @@ CLI tools for Node.js Core collaborators.
 npm install -g node-core-utils
 ```
 
-After running any of the tools for the first-time, you will be asked to provide a
+After running any of the tools for the first time, you will be asked to provide a
 GitHub username and password in order to create a personal access token.
 
 If you prefer not to provide your login credentials, [follow these instructions](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
@@ -23,9 +23,9 @@ Note: We need to read the email of the PR author in order to check if it matches
 the email of the commit author. This requires checking the box `user:email` when
 you create the personal access token (you can edit the permission later as well).
 
-Then create a file named `.ncurc` under your `$HOME` directory (`~/.ncurc`);
+Then create an rc file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`):
 
-```
+```json
 {
   "username": "your_github_username",
   "token": "token_that_you_created"
@@ -34,7 +34,7 @@ Then create a file named `.ncurc` under your `$HOME` directory (`~/.ncurc`);
 
 If you would prefer to build from the source, install and link:
 
-```
+```bash
 git clone git@github.com:nodejs/node-core-utils.git
 cd node-core-utils
 npm install
