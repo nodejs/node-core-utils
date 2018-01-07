@@ -10,6 +10,9 @@
         "email": "pr_author@example.com",
         "name": "Their Github Account email"
       },
+      "status": {
+        "state": "SUCESS"
+      },
       "oid": "ffdef335209c77f66d933bd873950747bfe42264",
       "message": "Normal commit, same email for everything",
       "authoredByCommitter": true

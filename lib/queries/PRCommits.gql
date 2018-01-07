@@ -18,6 +18,9 @@ query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
               email
               name
             }
+            status {
+              state
+            }
             oid
             message
             messageHeadline

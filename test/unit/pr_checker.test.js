@@ -440,7 +440,9 @@ describe('PRChecker', () => {
           ['Commits were pushed after the last Full CI run:'],
           ['- fixup: adjust spelling'],
           ['- doc: add api description README'],
-          ['- feat: add something']
+          ['- feat: add something'],
+          [ 'CI tests have some failures, ' +
+            'perhaps maybe unrelated or flasky error.' ]
         ],
         info: [
           ['Last Full CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
@@ -478,7 +480,8 @@ describe('PRChecker', () => {
           [
             'Last Full CI on 2017-08-24T11:19:25Z: ' +
             'https://ci.nodejs.org/job/node-test-pull-request/12984/'
-          ]
+          ],
+          [ 'All CI tests are successful.' ]
         ],
         error: []
       };
@@ -510,7 +513,8 @@ describe('PRChecker', () => {
           [
             'Last Full CI on 2017-08-24T11:19:25Z: ' +
             'https://ci.nodejs.org/job/node-test-pull-request/12984/'
-          ]
+          ],
+          [ 'All CI tests are successful.' ]
         ],
         error: []
       };
@@ -527,6 +531,155 @@ describe('PRChecker', () => {
       const status = checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
+    });
+
+    describe('checkCI CI Status', () => {
+      const commits = [{
+        commit: {
+          committedDate: '2010-10-26T12:35:26Z'
+        }
+      }];
+      const ciLog =
+        [ 'Last Full CI on 2017-08-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/12984/' ];
+      const states = ['', 'EXPECTED', 'PENDING', 'SUCCESS', 'FAILURE', 'ERROR'];
+
+      beforeEach(() => {
+        states.shift(0);
+        const newStatus = {
+          state: states[0]
+        };
+        commits[0].commit.status = newStatus;
+      });
+
+      it('should log as expected for CI status EXPECTED', () => {
+        const cli = new TestCLI();
+        const { comment } = mulipleCommitsAfterCi;
+
+        const expectedLogs = {
+          warn: [
+            [ 'CI results are still pending.' ]
+          ],
+          info: [
+            ciLog
+          ]
+        };
+
+        const checker = new PRChecker(cli, {
+          pr: firstTimerPR,
+          reviewers: allGreenReviewers,
+          comments: comment,
+          reviews: approvingReviews,
+          commits: commits,
+          collaborators
+        }, argv);
+
+        const status = checker.checkCI();
+        assert(status);
+        cli.assertCalledWith(expectedLogs);
+      });
+
+      it('should log as expected for CI status PENDING', () => {
+        const cli = new TestCLI();
+        const { comment } = mulipleCommitsAfterCi;
+
+        const expectedLogs = {
+          info: [
+            ciLog
+          ],
+          warn: [
+            [ 'CI results are still pending.' ]
+          ]
+        };
+        const checker = new PRChecker(cli, {
+          pr: firstTimerPR,
+          reviewers: allGreenReviewers,
+          comments: comment,
+          reviews: approvingReviews,
+          commits: commits,
+          collaborators
+        }, argv);
+
+        const status = checker.checkCI();
+        assert(status);
+        cli.assertCalledWith(expectedLogs);
+      });
+
+      it('should log as expected for CI status SUCESS', () => {
+        const cli = new TestCLI();
+        const { comment } = mulipleCommitsAfterCi;
+
+        const expectedLogs = {
+          info: [
+            ciLog,
+            [ 'All CI tests are successful.' ]
+          ]
+        };
+        const checker = new PRChecker(cli, {
+          pr: firstTimerPR,
+          reviewers: allGreenReviewers,
+          comments: comment,
+          reviews: approvingReviews,
+          commits: commits,
+          collaborators
+        }, argv);
+
+        const status = checker.checkCI();
+        assert(status);
+        cli.assertCalledWith(expectedLogs);
+      });
+
+      it('should log as expected for CI status FAILURE', () => {
+        const cli = new TestCLI();
+        const { comment } = mulipleCommitsAfterCi;
+
+        const expectedLogs = {
+          info: [
+            ciLog
+          ],
+          warn: [
+            [ 'CI tests have some failures, ' +
+              'perhaps maybe unrelated or flasky error.' ]
+          ]
+        };
+        const checker = new PRChecker(cli, {
+          pr: firstTimerPR,
+          reviewers: allGreenReviewers,
+          comments: comment,
+          reviews: approvingReviews,
+          commits: commits,
+          collaborators
+        }, argv);
+
+        const status = checker.checkCI();
+        assert(status);
+        cli.assertCalledWith(expectedLogs);
+      });
+
+      it('should log as expected for CI status ERROR', () => {
+        const cli = new TestCLI();
+        const { comment } = mulipleCommitsAfterCi;
+
+        const expectedLogs = {
+          info: [
+            ciLog
+          ],
+          error: [
+            [ 'CI tests have failed.' ]
+          ]
+        };
+        const checker = new PRChecker(cli, {
+          pr: firstTimerPR,
+          reviewers: allGreenReviewers,
+          comments: comment,
+          reviews: approvingReviews,
+          commits: commits,
+          collaborators
+        }, argv);
+
+        const status = checker.checkCI();
+        assert(status);
+        cli.assertCalledWith(expectedLogs);
+      });
     });
   });
 

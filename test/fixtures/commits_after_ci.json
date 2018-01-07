@@ -33,6 +33,9 @@
       "messageHeadline": "style: format code",
       "author": {
         "login": "Quo"
+      },
+      "status": {
+        "state": "FAILURE"
       }
     }
   }],
