@@ -7,16 +7,47 @@
 
 CLI tools for Node.js Core collaborators.
 
+<!-- TOC -->
+
+- [Usage](#usage)
+  - [Install](#install)
+  - [Setting up credentials](#setting-up-credentials)
+- [`ncu-config`](#ncu-config)
+- [`get-metadata`](#get-metadata)
+  - [Git bash for Windows](#git-bash-for-windows)
+  - [Features](#features)
+- [Contributing](#contributing)
+- [License](#license)
+
+<!-- /TOC -->
+
 ## Usage
+
+### Install
 
 ```
 npm install -g node-core-utils
 ```
 
-After running any of the tools for the first time, you will be asked to provide a
-GitHub username and password in order to create a personal access token.
+If you would prefer to build from the source, install and link:
 
-If you prefer not to provide your login credentials, [follow these instructions](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
+```
+git clone git@github.com:nodejs/node-core-utils.git
+cd node-core-utils
+npm install
+npm link
+```
+
+### Setting up credentials
+
+Most of the tools need your GitHub credentials to work. You can either
+
+1. Run any of the tools and you will be asked in a prompt to provide your
+  username and password in order to create a personal access token.
+2. Or, create a personal access token yourself on Github, then set them up
+  using an editor.
+
+If you prefer option 2, [follow these instructions](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
 to create the token.
 
 Note: We need to read the email of the PR author in order to check if it matches
@@ -32,18 +63,31 @@ Then create an rc file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`):
 }
 ```
 
-If you would prefer to build from the source, install and link:
+Note: you could use `ncu-config` to configure these variables, but it's not
+recommended to leave your tokens in your command line history.
 
-```bash
-git clone git@github.com:nodejs/node-core-utils.git
-cd node-core-utils
-npm install
-npm link
+## `ncu-config`
+
+Configure variables for node-core-utils to use. Global variables are stored
+in `~/.ncurc` while local variabels are stored in `$PWD/.ncu/config`.
+
+```
+ncu-config <command>
+
+Commands:
+  ncu-config set <key> <value>  Set a config variable
+  ncu-config get <key>          Get a config variable
+  ncu-config list               List the configurations
+
+Options:
+  --version  Show version number                                       [boolean]
+  --help     Show help                                                 [boolean]
+  --global                                            [boolean] [default: false]
 ```
 
 ## `get-metadata`
 
-This one is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/node-review),
+This tool is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/node-review),
 although it is a CLI implemented with the Github GraphQL API.
 
 ```
@@ -102,10 +146,10 @@ current known issues with git bash:
 - [x] Warn new commits after reviews
 - [ ] Check number of files changed (request pre-backport)
 
-### Contributing
+## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-### License
+## License
 
 MIT. See [LICENSE](./LICENSE).
