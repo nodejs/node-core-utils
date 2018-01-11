@@ -1,0 +1,71 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const {
+  getConfig, updateConfig
+} = require('../lib/config');
+
+const yargs = require('yargs');
+const argv = yargs
+  .command({
+    command: 'set <key> <value>',
+    desc: 'Set a config variable',
+    builder: (yargs) => {
+      yargs
+        .positional('key', {
+          describe: 'key of the configuration',
+          type: 'string'
+        })
+        .positional('value', {
+          describe: 'value of the configuration'
+        });
+    },
+    handler: setHandler
+  })
+  .command({
+    command: 'get <key>',
+    desc: 'Get a config variable',
+    builder: (yargs) => {
+      yargs
+        .positional('key', {
+          describe: 'key of the configuration',
+          type: 'string'
+        });
+    },
+    handler: getHandler
+  })
+  .command({
+    command: 'list',
+    desc: 'List the configurations',
+    handler: listHandler
+  })
+  .demandCommand(1, 'must provide a valid command')
+  .boolean('global')
+  .default({ global: false })
+  .help()
+  .argv;
+
+function setHandler(argv) {
+  const config = getConfig(argv.global);
+  console.log(
+    `Updating ${argv.global ? 'global' : 'local'} configuration ` +
+    `[${argv.key}]: ${config[argv.key]} -> ${argv.value}`);
+  updateConfig(argv.global, { [argv.key]: argv.value });
+}
+
+function getHandler(argv) {
+  const config = getConfig(argv.global);
+  console.log(config[argv.key]);
+}
+
+function listHandler(argv) {
+  const config = getConfig(argv.global);
+  for (const key of Object.keys(config)) {
+    console.log(`${key}: ${config[key]}`);
+  }
+}
+
+if (!['get', 'set', 'list'].includes(argv._[0])) {
+  yargs.showHelp();
+}
