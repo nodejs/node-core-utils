@@ -48,7 +48,7 @@ Most of the tools need your GitHub credentials to work. You can either
 
 1. Run any of the tools and you will be asked in a prompt to provide your
   username and password in order to create a personal access token.
-2. Or, create a personal access token yourself on Github, then set them up
+2. Or, create a personal access token yourself on GitHub, then set them up
   using an editor.
 
 If you prefer option 2, [follow these instructions](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
@@ -82,7 +82,7 @@ Put the following entries into `~/.gitignore_global`
 Mind that`.ncu/land` could contain your access token since it contains the
 serialized configurations.
 
-If you ever accidentally commit your access token on Github, you can simply
+If you ever accidentally commit your access token on GitHub, you can simply
 revoke that token and use a new one.
 
 ## `ncu-config`
@@ -149,7 +149,7 @@ $ git node land --final          # Verify all the commit messages
 ## `get-metadata`
 
 This tool is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/node-review),
-although it is a CLI implemented with the Github GraphQL API.
+although it is a CLI implemented with the GitHub GraphQL API.
 
 ```
 get-metadata <identifier>
