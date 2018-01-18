@@ -11,6 +11,7 @@
         "name": "Their Github Account email"
       },
       "oid": "ffdef335209c77f66d933bd873950747bfe42264",
+      "messageHeadline": "doc: some changes",
       "message": "Normal commit, same email for everything",
       "authoredByCommitter": true
     }
@@ -27,6 +28,7 @@
         "name": "Their Github Account email"
       },
       "oid": "e3ad7c72e88c83b7184563e8fdb63df02e2fbacb",
+      "messageHeadline": "doc: some changes 2",
       "message": "Either they have not configured git user.email, or have not add the email to their account",
       "authoredByCommitter": false
     }
@@ -43,6 +45,7 @@
         "name": "Their Github Account email"
       },
       "oid": "ff30f335209c77f66d933bd873950747bfe42264",
+      "messageHeadline": "test: some changes",
       "message": "They have added the config email to their Github Account, so Github will set authoredByCommitter to true",
       "authoredByCommitter": true
     }
@@ -59,6 +62,7 @@
         "name": "GitHub"
       },
       "oid": "ff88f335209c77f66d933bd873950747bfe42264",
+      "messageHeadline": "test: some changes 2",
       "message": "They probably used the Github interface to update PR, the author email should their account email because...it's done on Github",
       "authoredByCommitter": false
     }
@@ -75,6 +79,7 @@
         "name": "Baz User"
       },
       "oid": "da28173e5e6b4b0d3255bfef95601890afd80709",
+      "messageHeadline": "[squash] fix typo",
       "message": "Edited by a collaborator",
       "authoredByCommitter": false
     }
@@ -91,6 +96,7 @@
         "name": "Baz User"
       },
       "oid": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "messageHeadline": "fixup! fix something",
       "message": "Edited by a collaborator, but the author is not their Github Account",
       "authoredByCommitter": false
     }

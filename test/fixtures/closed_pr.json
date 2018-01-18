@@ -3,7 +3,8 @@
   "authorAssociation": "COLLABORATOR",
   "author": {
     "login": "pr_author",
-    "email": "pr_author@example.com"
+    "email": "pr_author@example.com",
+    "name": "Their Github Account email"
   },
   "url": "https://github.com/nodejs/node/pull/16438",
   "bodyHTML": "<p>Awesome changes</p>",

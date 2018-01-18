@@ -25,7 +25,8 @@ const rawPR = toRaw({
 const rawUser = {
   user: {
     login: 'pr_author',
-    email: 'pr_author@example.com'
+    email: 'pr_author@example.com',
+    name: 'Their Github Account email'
   }
 };
 
@@ -55,32 +56,12 @@ describe('PRData', function() {
     const cli = new TestCLI();
     const data = new PRData(argv, cli, request);
     await data.getAll();
-    assert.deepStrictEqual(data.collaborators, collaborators);
-    assert.deepStrictEqual(data.pr, firstTimerPR);
-    assert.deepStrictEqual(data.reviews, approvingReviews);
-    assert.deepStrictEqual(data.comments, commentsWithLGTM);
-    assert.deepStrictEqual(data.commits, oddCommits);
-    assert.deepStrictEqual(data.reviewers, allGreenReviewers);
-  });
-
-  it('logIntro', async() => {
-    const cli = new TestCLI();
-    const data = new PRData(argv, cli, request);
-    await data.getAll();
-    cli.clearCalls();
-
-    const expectedLogs = {
-      table: [
-        ['Title', 'test: awesome changes #16348'],
-        ['Author', 'pr_author'],
-        ['Commits', '6'],
-        ['Branch', 'pr_author:awesome-changes -> nodejs:master'],
-        ['Labels', 'test, doc']
-      ]
-    };
-
-    data.logIntro();
-    cli.assertCalledWith(expectedLogs);
+    assert.deepStrictEqual(data.collaborators, collaborators, 'collaborators');
+    assert.deepStrictEqual(data.pr, firstTimerPR, 'pr');
+    assert.deepStrictEqual(data.reviews, approvingReviews, 'reviews');
+    assert.deepStrictEqual(data.comments, commentsWithLGTM, 'comments');
+    assert.deepStrictEqual(data.commits, oddCommits, 'commits');
+    assert.deepStrictEqual(data.reviewers, allGreenReviewers, 'reviewers');
   });
 });
 
@@ -110,11 +91,11 @@ describe('PRData', function() {
     const argv2 = Object.assign({ readme: readmePath });
     const data = new PRData(argv2, cli, request);
     await data.getAll();
-    assert.deepStrictEqual(data.collaborators, collaborators);
-    assert.deepStrictEqual(data.pr, firstTimerPR);
-    assert.deepStrictEqual(data.reviews, approvingReviews);
-    assert.deepStrictEqual(data.comments, commentsWithLGTM);
-    assert.deepStrictEqual(data.commits, oddCommits);
-    assert.deepStrictEqual(data.reviewers, allGreenReviewers);
+    assert.deepStrictEqual(data.collaborators, collaborators, 'collaborators');
+    assert.deepStrictEqual(data.pr, firstTimerPR, 'pr');
+    assert.deepStrictEqual(data.reviews, approvingReviews, 'reviews');
+    assert.deepStrictEqual(data.comments, commentsWithLGTM, 'comments');
+    assert.deepStrictEqual(data.commits, oddCommits, 'commits');
+    assert.deepStrictEqual(data.reviewers, allGreenReviewers, 'reviewers');
   });
 });

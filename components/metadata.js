@@ -3,6 +3,7 @@
 const Request = require('../lib/request');
 const auth = require('../lib/auth');
 const PRData = require('../lib/pr_data');
+const PRSummary = require('../lib/pr_summary');
 const PRChecker = require('../lib/pr_checker');
 const MetadataGenerator = require('../lib/metadata_gen');
 
@@ -15,8 +16,9 @@ module.exports = async function getMetadata(argv, cli) {
   const data = new PRData(argv, cli, request);
   await data.getAll();
 
+  const summary = new PRSummary(argv, cli, data);
   cli.separator('PR info');
-  data.logIntro();
+  summary.display();
 
   const metadata = new MetadataGenerator(data).getMetadata();
   if (!process.stdout.isTTY) {
