@@ -38,6 +38,7 @@
     "read": "^1.0.7",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
+    "rimraf": "^2.6.2",
     "yargs": "^10.0.3"
   },
   "devDependencies": {
@@ -53,7 +54,6 @@
     "mocha": "^4.0.1",
     "nyc": "^11.2.1",
     "power-assert": "^1.4.4",
-    "rimraf": "^2.6.2",
     "sinon": "^4.0.2"
   }
 }
