@@ -12,6 +12,7 @@ CLI tools for Node.js Core collaborators.
 - [Usage](#usage)
   - [Install](#install)
   - [Setting up credentials](#setting-up-credentials)
+  - [Make sure your credentials won't be committed](#make-sure-your-credentials-wont-be-committed)
 - [`ncu-config`](#ncu-config)
 - [`git-node`](#git-node)
   - [Prerequistes](#prerequistes)
@@ -69,6 +70,21 @@ Then create an rc file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`):
 Note: you could use `ncu-config` to configure these variables, but it's not
 recommended to leave your tokens in your command line history.
 
+### Make sure your credentials won't be committed
+
+Put the following entries into `~/.gitignore_global`
+
+```
+.ncurc  # node-core-utils configuration file
+.ncu    # node-core-utils working directory
+```
+
+Mind that`.ncu/land` could contain your access token since it contains the
+serialized configurations.
+
+If you ever accidentally commit your access token on Github, you can simply
+revoke that token and use a new one.
+
 ## `ncu-config`
 
 Configure variables for node-core-utils to use. Global variables are stored
@@ -108,8 +124,8 @@ A custom Git command for landing pull requests. You can run it as
 
     ```
     $ cd path/to/node/project
-    $ ncu-config upstream your-remote-name
-    $ ncu-config branch your-branch-name 
+    $ ncu-config set upstream your-remote-name
+    $ ncu-config set branch your-branch-name 
     ```
 
 ### Demo & Usage
