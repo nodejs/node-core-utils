@@ -85,7 +85,7 @@ describe('cli', () => {
       it('should print the first element with bold style and padding', () => {
         cli.table('Title', 'description');
         assert.strictEqual(logResult(),
-          `${chalk.bold('Title   ')}description${EOL}`);
+          `${chalk.bold('Title      ')}description${EOL}`);
       });
     });
 
