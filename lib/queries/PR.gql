@@ -4,7 +4,11 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
       createdAt,
       authorAssociation,
       author {
-        login
+        ... on User {
+          login,
+          email,
+          name
+        }
       },
       url,
       bodyHTML,

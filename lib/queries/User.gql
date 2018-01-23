@@ -1,7 +1,0 @@
-query User($login: String!){
-  user(login: $login) {
-    login,
-    email,
-    name
-  }
-}

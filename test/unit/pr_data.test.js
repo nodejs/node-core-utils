@@ -22,13 +22,6 @@ function toRaw(obj) {
 const rawPR = toRaw({
   repository: { pullRequest: firstTimerPR }
 });
-const rawUser = {
-  user: {
-    login: 'pr_author',
-    email: 'pr_author@example.com',
-    name: 'Their Github Account email'
-  }
-};
 
 describe('PRData', function() {
   const request = {
@@ -41,7 +34,6 @@ describe('PRData', function() {
   }).returns(Promise.resolve(readme));
   request.promise.returns(new Error('unknown query'));
   request.gql.withArgs('PR').returns(Promise.resolve(rawPR));
-  request.gql.withArgs('User').returns(Promise.resolve(rawUser));
   request.gql.withArgs('Reviews').returns(
     Promise.resolve(toRaw(approvingReviews)));
   request.gql.withArgs('PRComments').returns(
@@ -75,7 +67,6 @@ describe('PRData', function() {
   }).returns(new Error('Should not call'));
   request.promise.returns(new Error('unknown query'));
   request.gql.withArgs('PR').returns(Promise.resolve(rawPR));
-  request.gql.withArgs('User').returns(Promise.resolve(rawUser));
   request.gql.withArgs('Reviews').returns(
     Promise.resolve(toRaw(approvingReviews)));
   request.gql.withArgs('PRComments').returns(
