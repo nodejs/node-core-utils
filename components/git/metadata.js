@@ -5,6 +5,7 @@ const yargs = require('yargs');
 const getMetadata = require('../metadata');
 const CLI = require('../../lib/cli');
 const config = require('../../lib/config').getMergedConfig();
+const { runPromise, IGNORE } = require('../../lib/run');
 
 const options = {
   owner: {
@@ -86,19 +87,13 @@ function handler(argv) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
 
-  return getMetadata(Object.assign({}, config, argv, parsed), cli)
+  const merged = Object.assign({}, argv, parsed, config);
+  return runPromise(getMetadata(merged, cli)
     .then(({status}) => {
       if (status === false) {
-        throw new Error('PR checks failed');
+        throw new Error(IGNORE);
       }
-    })
-    .catch((err) => {
-      if (cli.spinner.enabled) {
-        cli.spinner.fail();
-      }
-      cli.error(err);
-      process.exit(1);
-    });
+    }));
 }
 
 module.exports = {
