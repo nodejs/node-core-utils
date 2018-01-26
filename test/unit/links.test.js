@@ -19,6 +19,12 @@ const expected = [{
   refs: ['https://en.wikipedia.org/w/index.php?title=IPv6_address&type=revision&diff=809494791&oldid=804196124']
 }];
 
+const commitMessageOP = `
+  <span>Fixes</span>:
+  <a href="https://github.com/nodejs/node/issues/16437">#16437</a>
+  Refs: <a href="https://github.com/nodejs/node/pull/15148">#15148</a>
+`;
+
 describe('LinkParser', () => {
   it('should parse fixes and refs', () => {
     for (let i = 0; i < htmls.length; ++i) {
@@ -30,5 +36,16 @@ describe('LinkParser', () => {
       };
       assert.deepStrictEqual(actual, expected[i]);
     }
+  });
+
+  it('should remove duplicates', () => {
+    const parser = new LinkParser('nodejs', 'node', commitMessageOP);
+    const actual = {
+      fixes: parser.getFixes(),
+      refs: parser.getRefs()
+    };
+
+    console.log(actual);
+    assert.deepStrictEqual(actual, expected[0]);
   });
 });
