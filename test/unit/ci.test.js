@@ -1,6 +1,14 @@
 'use strict';
 
-const { JobParser } = require('../../lib/ci');
+const {
+  JobParser, PRBuild, BenchmarkRun, CommitBuild, jobCache
+} = require('../../lib/ci');
+
+const TestCLI = require('../fixtures/test_cli');
+const { tmpdir, copyShallow } = require('../common');
+const path = require('path');
+
+const fs = require('fs');
 const assert = require('assert');
 const {
   commentsWithCI
@@ -53,5 +61,68 @@ describe('JobParser', () => {
   it('should parse CI results', () => {
     const results = new JobParser(commentsWithCI).parse();
     assert.deepStrictEqual([...expected.entries()], [...results.entries()]);
+  });
+});
+
+describe('Jenkins', () => {
+  it('should get PR build and commit build', async() => {
+    tmpdir.refresh();
+    const fixturesDir = path.join(
+      __dirname, '..', 'fixtures', 'jenkins', 'normal-failure');
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+    const request = {
+      // any attempt to call method on this would throw
+    };
+    const prBuild = new PRBuild(cli, request, 14104);
+    await prBuild.getResults();
+    const commitBuild = new CommitBuild(cli, request, 17507);
+    await commitBuild.getResults();
+
+    assert.deepStrictEqual(prBuild.commitBuild.failures, commitBuild.failures);
+    const expectedJson = JSON.parse(
+      fs.readFileSync(path.join(fixturesDir, 'expected.json'), 'utf8')
+    );
+    assert.deepStrictEqual(prBuild.commitBuild.failures, expectedJson);
+
+    const actualPath = path.join(tmpdir.path, 'actual.md');
+    const expectedPath = path.join(fixturesDir, 'expected.md');
+
+    commitBuild.appendToMarkdown(actualPath);
+    const expected = fs.readFileSync(expectedPath, 'utf8');
+    const actual = fs.readFileSync(actualPath, 'utf8');
+    assert.strictEqual(actual, expected);
+  });
+
+  it('should get benchmark run', async() => {
+    tmpdir.refresh();
+    const fixturesDir = path.join(
+      __dirname, '..', 'fixtures', 'jenkins', 'benchmark-buffer');
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+    const request = {
+      // any attempt to call method on this would throw
+    };
+    const run = new BenchmarkRun(cli, request, 150);
+    await run.getResults();
+
+    const actualPath = path.join(tmpdir.path, 'actual.md');
+    const expectedPath = path.join(fixturesDir, 'expected.md');
+
+    run.appendToMarkdown(actualPath);
+    let expected = fs.readFileSync(expectedPath, 'utf8');
+    let actual = fs.readFileSync(actualPath, 'utf8');
+    assert.strictEqual(actual, expected);
+
+    run.appendToMarkdown(actualPath);
+    expected += expected;
+    actual = fs.readFileSync(actualPath, 'utf8');
+    assert.strictEqual(actual, expected);
   });
 });

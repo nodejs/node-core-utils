@@ -1,0 +1,145 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const {
+  PRBuild, BenchmarkRun, CommitBuild, jobCache, parseJobFromURL, constants
+} = require('../lib/ci');
+
+const {
+  PR, COMMIT, BENCHMARK
+} = constants;
+
+const { runPromise } = require('../lib/run');
+const Request = require('../lib/request');
+const CLI = require('../lib/cli');
+const yargs = require('yargs');
+
+// This is used for testing
+// Default cache dir is ${ncu-source-dir}/.ncu/cache
+jobCache.enable();
+
+// eslint-disable-next-line no-unused-vars
+const argv = yargs
+  .command({
+    command: 'url <url>',
+    desc: 'Automatically detect CI type and show results',
+    builder: (yargs) => {
+      yargs
+        .positional('url', {
+          describe: 'URL of the PR or the CI',
+          type: 'string'
+        });
+    },
+    handler
+  })
+  .command({
+    command: 'pr <jobid>',
+    desc: 'Show results of a node-test-pull-request CI job',
+    builder: (yargs) => {
+      yargs
+        .positional('jobid', {
+          describe: 'id of the job',
+          type: 'number'
+        });
+    },
+    handler
+  })
+  .command({
+    command: 'commit <jobid>',
+    desc: 'Show results of a node-test-commit CI job',
+    builder: (yargs) => {
+      yargs
+        .positional('jobid', {
+          describe: 'id of the job',
+          type: 'number'
+        });
+    },
+    handler
+  })
+  .command({
+    command: 'benchmark <jobid>',
+    desc: 'Show results of a benchmark-node-micro-benchmarks CI job',
+    builder: (yargs) => {
+      yargs
+        .positional('jobid', {
+          describe: 'id of the job',
+          type: 'number'
+        });
+    },
+    handler
+  })
+  .demandCommand(1, 'must provide a valid command')
+  .option('markdown', {
+    alias: 'm',
+    type: 'string',
+    describe: 'file to write results in markdown'
+  })
+  .help()
+  .argv;
+
+async function getResults(cli, request, job) {
+  let build;
+  const { type, jobid, markdown } = job;
+  if (type === PR) {
+    build = new PRBuild(cli, request, jobid);
+    await build.getResults();
+  } else if (type === COMMIT) {
+    build = new CommitBuild(cli, request, jobid);
+    await build.getResults();
+  } else if (type === BENCHMARK) {
+    build = new BenchmarkRun(cli, request, jobid);
+    await build.getResults();
+  } else {
+    yargs.showHelp();
+    return;
+  }
+
+  build.display();
+
+  if (markdown) {
+    build.appendToMarkdown(markdown);
+  }
+  return build;
+}
+
+async function main(command, argv) {
+  const cli = new CLI();
+  const request = new Request({});
+  const queue = [];
+
+  const commandToType = {
+    'commit': COMMIT,
+    'pr': PR,
+    'benchmark': BENCHMARK
+  };
+
+  if (command === 'url') {
+    let parsed = parseJobFromURL(argv.url);
+    if (parsed) {
+      queue.push({
+        type: parsed.type,
+        jobid: parsed.jobid,
+        markdown: argv.markdown
+      });
+    } else {
+      // TODO: parse CI links from PR thread
+      return yargs.showHelp();
+    }
+  } else {
+    queue.push({
+      type: commandToType[command],
+      jobid: argv.jobid,
+      markdown: argv.markdown
+    });
+  }
+
+  for (let job of queue) {
+    await getResults(cli, request, job);
+  }
+}
+
+function handler(argv) {
+  const [ command ] = argv._;
+  runPromise(main(command, argv));
+}

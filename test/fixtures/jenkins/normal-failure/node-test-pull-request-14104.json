@@ -1,0 +1,171 @@
+{
+  "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+  "actions": [
+    {
+      "_class": "hudson.model.ParametersAction",
+      "parameters": [
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "CERTIFY_SAFE",
+          "value": true
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "TARGET_GITHUB_ORG",
+          "value": "nodejs"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "TARGET_REPO_NAME",
+          "value": "node"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "PR_ID",
+          "value": "19823"
+        },
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "POST_STATUS_TO_PR",
+          "value": true
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "REBASE_ONTO",
+          "value": "<pr base branch>"
+        }
+      ]
+    },
+    {
+      "_class": "hudson.model.CauseAction"
+    },
+    {},
+    {
+      "_class": "hudson.plugins.git.util.BuildData"
+    },
+    {
+      "_class": "hudson.plugins.git.GitTagAction"
+    },
+    {},
+    {
+      "_class": "hudson.plugins.parameterizedtrigger.BuildInfoExporterAction"
+    },
+    {},
+    {},
+    {},
+    {},
+    {
+      "_class": "hudson.tasks.test.AggregatedTestResultPublisher$TestResultAction"
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "number": 14104,
+  "result": "FAILURE",
+  "url": "https://ci.nodejs.org/job/node-test-pull-request/14104/",
+  "changeSet": {
+    "_class": "hudson.plugins.git.GitChangeSetList",
+    "items": [
+      {
+        "_class": "hudson.plugins.git.GitChangeSet",
+        "commitId": "010c26ce08c36b2d366326dfc8f3be4072f0382a",
+        "author": {
+          "absoluteUrl": "https://ci.nodejs.org/user/mcollina",
+          "fullName": "Matteo Collina"
+        },
+        "authorEmail": "hello@matteocollina.com",
+        "date": "2018-04-07 00:10:39 +0200",
+        "msg": "test,http: fix http dump test"
+      }
+    ]
+  },
+  "subBuilds": [
+    {
+      "build": {
+        "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+        "subBuilds": [
+          {
+            "buildNumber": 16785,
+            "jobName": "node-test-commit-freebsd",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-freebsd/16785/"
+          },
+          {
+            "buildNumber": 17710,
+            "jobName": "node-test-commit-linux",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-linux/17710/"
+          },
+          {
+            "buildNumber": 17585,
+            "jobName": "node-test-commit-osx",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-osx/17585/"
+          },
+          {
+            "buildNumber": 16649,
+            "jobName": "node-test-commit-smartos",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-smartos/16649/"
+          },
+          {
+            "buildNumber": 16673,
+            "jobName": "node-test-commit-plinux",
+            "result": "FAILURE",
+            "url": "job/node-test-commit-plinux/16673/"
+          },
+          {
+            "buildNumber": 13971,
+            "jobName": "node-test-commit-aix",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-aix/13971/"
+          },
+          {
+            "buildNumber": 3489,
+            "jobName": "node-test-commit-linux-containered",
+            "result": "FAILURE",
+            "url": "job/node-test-commit-linux-containered/3489/"
+          },
+          {
+            "buildNumber": 15179,
+            "jobName": "node-test-commit-arm",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-arm/15179/"
+          },
+          {
+            "buildNumber": 30,
+            "jobName": "node-test-commit-linuxone",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-linuxone/30/"
+          },
+          {
+            "buildNumber": 17812,
+            "jobName": "node-test-linter",
+            "result": "SUCCESS",
+            "url": "job/node-test-linter/17812/"
+          },
+          {
+            "buildNumber": 238,
+            "jobName": "node-test-commit-arm-fanned",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-arm-fanned/238/"
+          },
+          {
+            "buildNumber": 17010,
+            "jobName": "node-test-commit-windows-fanned",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-windows-fanned/17010/"
+          }
+        ]
+      },
+      "buildNumber": 17507,
+      "jobName": "node-test-commit",
+      "result": "FAILURE",
+      "url": "job/node-test-commit/17507/"
+    }
+  ]
+}
