@@ -1,0 +1,17 @@
+query team($org: String!, $team: String!) {
+  organization(login: $org) {
+    login
+    team(slug: $team) {
+      name,
+      description,
+      members(first: 100) {
+        nodes {
+          login,
+          name,
+          email,
+          url
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "organization": {
+    "login": "nodejs",
+    "team": {
+      "name": "automation-collaborators",
+      "description": "People who has write access to automation-related repos",
+      "members": {
+        "nodes": [
+          {
+            "login": "foo",
+            "name": "Mr. foo",
+            "email": "foo@example.com",
+            "url": "https://github.com/foo"
+          },
+          {
+            "login": "Bar",
+            "name": "Bar Bar",
+            "email": "",
+            "url": "https://github.com/Bar"
+          },
+          {
+            "login": "quo",
+            "name": "Ms. Quo",
+            "email": "quo@me.com",
+            "url": "https://github.com/quo"
+          }
+        ]
+      }
+    }
+  }
+}
