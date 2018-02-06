@@ -4,7 +4,7 @@ node_js:
   - "8"
 sudo: false
 cache:
- directories:
+  directories:
     - node_modules
 script:
   - npm run lint
