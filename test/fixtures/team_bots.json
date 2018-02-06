@@ -1,0 +1,19 @@
+{
+  "organization": {
+    "login": "nodejs",
+    "team": {
+      "name": "Bots",
+      "description": "Various bots",
+      "members": {
+        "nodes": [
+          {
+            "login": "nodejs-github-bot",
+            "name": "Node.js GitHub Bot",
+            "email": "",
+            "url": "https://github.com/nodejs-github-bot"
+          }
+        ]
+      }
+    }
+  }
+}

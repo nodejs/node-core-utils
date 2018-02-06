@@ -18,3 +18,7 @@ exports.patchPrototype = function(arr, key, proto) {
     Object.setPrototypeOf(item[key], proto);
   }
 };
+
+exports.path = function(file) {
+  return path.resolve(__dirname, file);
+};
