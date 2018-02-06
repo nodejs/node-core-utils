@@ -26,6 +26,8 @@ CLI tools for Node.js Core collaborators.
   core, e.g. landing Pull Requests.
 - [`ncu-config`](./docs/ncu-config.md): Configure variables for node-core-utils
   to use.
+- [`ncu-team`](./docs/ncu-team.md): Listing members of a team, synchronizing
+  special blocks in files with the list of members.
 
 ## Usage
 
@@ -53,14 +55,20 @@ Most of the tools need your GitHub credentials to work. You can either
 2. Or, create a personal access token yourself on GitHub, then set them up
   using an editor.
 
+
 If you prefer option 2, [follow these instructions](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
 to create the token.
 
-Note: We need to read the email of the PR author in order to check if it matches
-the email of the commit author. This requires checking the box `user:email` when
-you create the personal access token (you can edit the permission later as well).
+When creating the token, the following boxes need to be checked:
 
-Then create an rc file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`):
+- `user:email`: Used by `git-node` and `get-metadata` to read the email of the
+  PR author in order to check if it matches the email of the commit author.
+- `read:org`: Used by `ncu-team` to read the list of team members.
+
+You can also edit the permission of existing tokens later.
+
+After the token is generated, create an rc file with the following content:
+(`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`):
 
 ```json
 {
