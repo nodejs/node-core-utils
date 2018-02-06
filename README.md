@@ -21,10 +21,10 @@ CLI tools for Node.js Core collaborators.
 
 ## Tools
 
-- [`get-metadata`](./doc/get-metadata.md): Retrieving metadata for a Pull Request.
-- [`git-node`](./doc/git-node.md): Custom Git commands for working with Node.js
+- [`get-metadata`](./docs/get-metadata.md): Retrieving metadata for a Pull Request.
+- [`git-node`](./docs/git-node.md): Custom Git commands for working with Node.js
   core, e.g. landing Pull Requests.
-- [`ncu-config`](./doc/ncu-config.md): Configure variables for node-core-utils
+- [`ncu-config`](./docs/ncu-config.md): Configure variables for node-core-utils
   to use.
 
 ## Usage
