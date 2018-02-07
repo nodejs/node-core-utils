@@ -3,13 +3,13 @@
 const fs = require('fs');
 const path = require('path');
 
-exports.readFile = function(filePath) {
-  const file = path.resolve(__dirname, filePath);
+exports.readFile = function(...args) {
+  const file = path.resolve(__dirname, ...args);
   return fs.readFileSync(file, 'utf8');
 };
 
-exports.readJSON = function(filePath) {
-  const file = exports.readFile(filePath);
+exports.readJSON = function(...args) {
+  const file = exports.readFile(...args);
   return JSON.parse(file);
 };
 
@@ -19,6 +19,6 @@ exports.patchPrototype = function(arr, key, proto) {
   }
 };
 
-exports.path = function(file) {
-  return path.resolve(__dirname, file);
+exports.path = function(...args) {
+  return path.resolve(__dirname, ...args);
 };
