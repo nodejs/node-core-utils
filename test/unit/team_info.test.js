@@ -62,4 +62,20 @@ describe('TeamInfo', function() {
     const actual = readFile('ncu_team_sync_out.md');
     assert.strictEqual(expected, actual);
   });
+
+  it('syncFile() with a file without special blocks', async() => {
+    const expected = readFile('README', 'README.md');
+    let thrown = null;
+    try {
+      await TeamInfo.syncFile(cli, request, getPath('README', 'README.md'));
+    } catch (err) {
+      thrown = err;
+    }
+
+    assert(thrown instanceof Error);
+    assert(thrown.message, 'Could not find blocks matching ' +
+      '<!-- ncu-team-sync.team($org/$team)>');
+    const actual = readFile('README', 'README.md');
+    assert.strictEqual(expected, actual);
+  });
 });
