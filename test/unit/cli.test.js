@@ -12,7 +12,7 @@ describe('cli', () => {
   let cli = null;
   let stream = null;
 
-  const logResult = () => stream.toString().replace(/\r?\n|\r/, EOL);
+  const logResult = () => stream.toString().replace(/\r?\n|\r/g, EOL);
 
   describe('instantiation', () => {
     it('should set `process.stderr` as stream if no stream is specified',
@@ -28,7 +28,7 @@ describe('cli', () => {
       cli = new CLI(stream);
     });
 
-    describe('startSpinner', () => {
+    describe('spinners', () => {
       beforeEach(() => {
         cli.startSpinner('foo');
       });
@@ -36,16 +36,12 @@ describe('cli', () => {
       it('should set the text and start the spinner', () => {
         assert.strictEqual(cli.spinner.text, 'foo');
       });
-    });
 
-    describe('updateSpinner', () => {
       it('should update the spinner text', () => {
         cli.updateSpinner('bar');
         assert.strictEqual(cli.spinner.text, 'bar');
       });
-    });
 
-    describe('stopSpinner', () => {
       it('should log the error symbol and the specified text', () => {
         cli.stopSpinner('error', cli.SPINNER_STATUS.FAILED);
         assert.strictEqual(logResult(), `${error}  error${EOL}`);
