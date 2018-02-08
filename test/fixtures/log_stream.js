@@ -6,6 +6,7 @@ const writtenSym = Symbol('written');
 class LogStream extends Writable {
   constructor(options) {
     super(options);
+    this.isTTY = false;
     this[writtenSym] = '';
   }
 
@@ -16,6 +17,10 @@ class LogStream extends Writable {
   toString() {
     return this[writtenSym];
   }
+
+  clearLine() {}
+
+  cursorTo() {}
 }
 
 module.exports = LogStream;
