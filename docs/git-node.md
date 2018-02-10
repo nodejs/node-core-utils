@@ -1,6 +1,6 @@
 # git-node
 
-A custom Git command for landing pull requests. You can run it as
+A custom Git command for managing pull requests. You can run it as
 `git-node` or `git node`. To see the help text, run `git node help`.
 
 ### Prerequistes
@@ -19,7 +19,7 @@ A custom Git command for landing pull requests. You can run it as
     ```
     $ cd path/to/node/project
     $ ncu-config set upstream your-remote-name
-    $ ncu-config set branch your-branch-name 
+    $ ncu-config set branch your-branch-name
     ```
 
 ### Demo & Usage
