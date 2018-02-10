@@ -34,6 +34,10 @@ const expected = new Map([
   ['LINTER', {
     link: 'https://ci.nodejs.org/job/node-test-linter/13127/',
     date: '2017-10-22T04:16:36.458Z'
+  }],
+  ['LITE', {
+    link: 'https://ci.nodejs.org/job/node-test-commit-lite/246/',
+    date: '2018-02-09T21:38:30Z'
   }]
 ]);
 
