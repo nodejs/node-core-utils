@@ -7,8 +7,7 @@ const { runPromise } = require('../lib/run');
 const CLI = require('../lib/cli');
 const TeamInfo = require('../lib/team_info');
 
-const yargs = require('yargs');
-const argv = yargs
+require('yargs') // eslint-disable-line
   .command({
     command: 'list <team> [org]',
     desc: 'Get the list of members in a team',
@@ -22,19 +21,20 @@ const argv = yargs
           describe: 'Name of the organization',
           type: 'string',
           default: 'nodejs'
-        })
+        });
     },
     handler: handler
   })
   .command({
     command: 'sync <file>',
-    desc: 'Synchronize the <!-- ncu-team-sync.team($org/$team) --> block in a file',
+    desc:
+      'Synchronize the <!-- ncu-team-sync.team($org/$team) --> block in a file',
     builder: (yargs) => {
       yargs
         .positional('file', {
           describe: 'Path to the file to update',
           type: 'string'
-        })
+        });
     },
     handler: handler
   })
@@ -52,7 +52,7 @@ async function main(argv) {
   const request = new Request(credentials);
 
   const [ command ] = argv._;
-  switch(command) {
+  switch (command) {
     case 'list':
       const info = new TeamInfo(cli, request, argv.org, argv.team);
       await info.listMembers();
