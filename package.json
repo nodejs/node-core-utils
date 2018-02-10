@@ -17,7 +17,7 @@
     "coverage-all": "nyc --reporter=lcov --reporter=text --reporter=text-summary npm run test-all",
     "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "lint": "eslint . 'bin/*' --cache",
-    "lint-fix": "npm run lint -- --fix"
+    "lint-fix": "eslint . 'bin/*' --fix"
   },
   "author": "Joyee Cheung <joyeec9h3@gmail.com>",
   "repository": {
