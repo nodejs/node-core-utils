@@ -1,6 +1,13 @@
 #!/usr/bin/env node
 
 console.log(`
+Steps to get metadata for a pull request:
+==============================================================================
+$ cd path/to/node/project
+$ git node metadata $PRID        # Retrieves metadata for a PR and validates
+                                 # them against nodejs/node PR rules
+==============================================================================
+
 Steps to land a pull request:
 ==============================================================================
 $ cd path/to/node/project
