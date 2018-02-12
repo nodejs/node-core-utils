@@ -18,4 +18,4 @@ if (!fs.existsSync(script)) {
   process.exit(1);
 }
 
-runAsync(script, process.argv.slice(3));
+runAsync(process.execPath, [script, ...process.argv.slice(3)]);
