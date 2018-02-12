@@ -6,21 +6,16 @@ A custom Git command for managing pull requests. You can run it as
 ### Prerequistes
 
 1. It's a Git command, so make sure you have Git installed, of course.
-2. Install [core-validate-commit](https://github.com/nodejs/core-validate-commit)
+1. Configure your upstream remote and branch name. By default it assumes your
+   remote pointing to https://github.com/nodejs/node is called `upstream`, and
+   the branch that you are trying to land PRs on is `master`. If that's not the
+   case:
 
-    ```
-    $ npm install -g core-validate-commit
-    ```
-3. Configure your upstream remote and branch name. By default it assumes your
-  remote pointing to https://github.com/nodejs/node is called `upstream`, and
-  the branch that you are trying to land PRs on is `master`. If that's not the
-  case:
-
-    ```
-    $ cd path/to/node/project
-    $ ncu-config set upstream your-remote-name
-    $ ncu-config set branch your-branch-name
-    ```
+   ```
+   $ cd path/to/node/project
+   $ ncu-config set upstream your-remote-name
+   $ ncu-config set branch your-branch-name
+   ```
 
 ### Demo & Usage
 
