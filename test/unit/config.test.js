@@ -31,6 +31,17 @@ const newUsername = 'bar';
 const newToken = 'asdfghj';
 
 describe('config', () => {
+  let xdgConfigHomeValue = process.env.XDG_CONFIG_HOME;
+  before(() => {
+    // Delete env var to isolate test cases
+    delete process.env.XDG_CONFIG_HOME;
+  });
+
+  after(() => {
+    // Restore env var in order to maintain the integrity
+    process.env.XDG_CONFIG_HOME = xdgConfigHomeValue;
+  });
+
   beforeEach(() => {
     mockFs({
       // Mock global .ncurc
