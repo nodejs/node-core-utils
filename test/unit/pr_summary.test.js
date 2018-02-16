@@ -111,8 +111,8 @@ describe('PRSummary', () => {
         ['Committers', '1']
       ],
       warn: [
-        ['The author of the PR does not have correct ' +
-          'email and name setup locally!']
+        ['Could not retrieve the email or name ' +
+        "of the PR author's from user's GitHub profile!"]
       ]
     };
 
