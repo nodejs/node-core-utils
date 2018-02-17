@@ -1,0 +1,22 @@
+{
+  "createdAt": "2017-10-24T11:13:43Z",
+  "authorAssociation": "COLLABORATOR",
+  "author": {
+    "login": "pr_author",
+    "email": "",
+    "name": null
+  },
+  "url": "https://github.com/nodejs/node/pull/18721",
+  "bodyHTML": "<p>Fix mdn links</p>",
+  "bodyText": "Fix mdn links",
+  "labels": {
+    "nodes": [
+      {
+        "name": "doc"
+      }
+    ]
+  },
+  "title": "doc: fix mdn links",
+  "baseRefName": "master",
+  "headRefName": "fix-links"
+}

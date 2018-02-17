@@ -4,7 +4,8 @@ const {
   oddCommits,
   simpleCommits,
   firstTimerPR,
-  semverMajorPR
+  semverMajorPR,
+  emptyProfilePR
 } = require('../fixtures/data');
 const TestCLI = require('../fixtures/test_cli');
 const PRSummary = require('../../lib/pr_summary');
@@ -83,6 +84,39 @@ describe('PRSummary', () => {
       ]
     };
 
+    summary.display();
+    cli.assertCalledWith(expectedLogs);
+  });
+
+  it('displays warning if pr author/email is not present', () => {
+    const cli = new TestCLI();
+    const prData = {
+      pr: emptyProfilePR,
+      commits: simpleCommits,
+      authorIsNew() {
+        return false;
+      }
+    };
+
+    const expectedLogs = {
+      log: [
+        [' - doc: some changes'],
+        [' - Their Github Account email <pr_author@example.com>']
+      ],
+      table: [
+        ['Title', 'doc: fix mdn links (#16348)'],
+        ['Branch', 'pr_author:fix-links -> nodejs:master'],
+        ['Labels', 'doc'],
+        ['Commits', '1'],
+        ['Committers', '1']
+      ],
+      warn: [
+        ['Could not retrieve the email or name ' +
+        "of the PR author's from user's GitHub profile!"]
+      ]
+    };
+
+    const summary = new PRSummary(argv, cli, prData);
     summary.display();
     cli.assertCalledWith(expectedLogs);
   });
