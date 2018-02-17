@@ -5,7 +5,7 @@ const {
   simpleCommits,
   firstTimerPR,
   semverMajorPR,
-  incorrectConfigPR
+  emptyProfilePR
 } = require('../fixtures/data');
 const TestCLI = require('../fixtures/test_cli');
 const PRSummary = require('../../lib/pr_summary');
@@ -91,7 +91,7 @@ describe('PRSummary', () => {
   it('displays warning if pr author/email is not present', () => {
     const cli = new TestCLI();
     const prData = {
-      pr: incorrectConfigPR,
+      pr: emptyProfilePR,
       commits: simpleCommits,
       authorIsNew() {
         return false;
