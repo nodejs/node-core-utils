@@ -28,5 +28,11 @@
     "name": "Quux User",
     "email": "quux@example.com",
     "type": "COLLABORATOR"
+  },
+  {
+    "login": "ExtraSpace",
+    "name": "Extra Space",
+    "email": "extraspace@example.com",
+    "type": "COLLABORATOR"
   }
 ]

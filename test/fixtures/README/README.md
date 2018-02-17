@@ -254,6 +254,8 @@ For more information about the governance of the Node.js project, see
 **Quo User** &lt;quo@example.com&gt; (she/her)
 * [Quux](https://github.com/quux) -
 **Quux User** &lt;quux@example.com&gt; (he/him)
+* [ExtraSpace](https://github.com/extraspace) -
+**Extra Space**  &lt;extraspace@example.com&gt; (he/him)
 
 ### Collaborator Emeriti
 
