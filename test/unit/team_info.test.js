@@ -26,12 +26,14 @@ describe('TeamInfo', function() {
     const bots = readJSON('team_bots.json');
     request.gql.withArgs(
       'Team',
-      { org: 'nodejs', team: 'automation-collaborators' }
-    ).returns(Promise.resolve(collab));
+      { org: 'nodejs', team: 'automation-collaborators' },
+      [ 'organization', 'team', 'members' ]
+    ).returns(Promise.resolve(collab.organization.team.members.nodes));
     request.gql.withArgs(
       'Team',
-      { org: 'nodejs', team: 'bots' }
-    ).returns(Promise.resolve(bots));
+      { org: 'nodejs', team: 'bots' },
+      [ 'organization', 'team', 'members' ]
+    ).returns(Promise.resolve(bots.organization.team.members.nodes));
     request.gql.returns(new Error('unknown query'));
   });
 
