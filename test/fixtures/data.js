@@ -27,6 +27,7 @@ const commentsWithCI = readJSON('comments_with_ci.json');
 const commentsWithLGTM = readJSON('comments_with_lgtm.json');
 
 const oddCommits = readJSON('odd_commits.json');
+const incorrectGitConfigCommits = readJSON('incorrect_git_config_commits.json');
 const simpleCommits = readJSON('simple_commits.json');
 
 const collabArr = readJSON('collaborators.json');
@@ -79,6 +80,7 @@ module.exports = {
   commentsWithCI,
   commentsWithLGTM,
   oddCommits,
+  incorrectGitConfigCommits,
   simpleCommits,
   singleCommitAfterReview,
   multipleCommitsAfterReview,
