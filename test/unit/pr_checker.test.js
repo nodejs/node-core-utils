@@ -18,6 +18,7 @@ const {
   multipleCommitsAfterReview,
   moreThanThreeCommitsAfterReview,
   oddCommits,
+  incorrectGitConfigCommits,
   simpleCommits,
   commitsAfterCi,
   mulipleCommitsAfterCi,
@@ -53,6 +54,7 @@ describe('PRChecker', () => {
     let checkCommitsAfterReviewStub;
     let checkMergeableStateStub;
     let checkPRState;
+    let checkGitConfigStub;
 
     before(() => {
       checkReviewsStub = sinon.stub(checker, 'checkReviews');
@@ -63,6 +65,7 @@ describe('PRChecker', () => {
         sinon.stub(checker, 'checkCommitsAfterReview');
       checkMergeableStateStub = sinon.stub(checker, 'checkMergeableState');
       checkPRState = sinon.stub(checker, 'checkPRState');
+      checkGitConfigStub = sinon.stub(checker, 'checkGitConfig');
     });
 
     after(() => {
@@ -73,6 +76,7 @@ describe('PRChecker', () => {
       checkCommitsAfterReviewStub.restore();
       checkMergeableStateStub.restore();
       checkPRState.restore();
+      checkGitConfigStub.restore();
     });
 
     it('should run necessary checks', () => {
@@ -85,6 +89,7 @@ describe('PRChecker', () => {
       assert.strictEqual(checkCommitsAfterReviewStub.calledOnce, true);
       assert.strictEqual(checkMergeableStateStub.calledOnce, true);
       assert.strictEqual(checkPRState.calledOnce, true);
+      assert.strictEqual(checkGitConfigStub.calledOnce, true);
     });
   });
 
@@ -585,6 +590,54 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
       const status = checker.checkAuthor();
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+  });
+
+  describe('checkGitConfig', () => {
+    it('should log an error is user has wrong git config', () => {
+      const cli = new TestCLI();
+      const expectedLogs = {
+        error: [
+          [ 'Author does not have correct git config!' ]
+        ]
+      };
+
+      const data = {
+        pr: firstTimerPrivatePR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: incorrectGitConfigCommits,
+        collaborators,
+        authorIsNew: () => true
+      };
+
+      const checker = new PRChecker(cli, data, argv);
+      const status = checker.checkGitConfig();
+
+      assert.deepStrictEqual(status, false);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should return the status of true if user had correct config', () => {
+      const cli = new TestCLI();
+      const expectedLogs = {};
+
+      const data = {
+        pr: firstTimerPrivatePR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true
+      };
+
+      const checker = new PRChecker(cli, data, argv);
+      const status = checker.checkGitConfig();
+
       assert(status);
       cli.assertCalledWith(expectedLogs);
     });

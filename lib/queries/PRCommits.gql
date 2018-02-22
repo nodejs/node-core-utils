@@ -11,6 +11,9 @@ query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
           commit {
             committedDate
             author {
+              user {
+                login
+              }
               email
               name
             }
