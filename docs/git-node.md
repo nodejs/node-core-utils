@@ -87,6 +87,9 @@ Examples:
 
 ### `git node metadata`
 
+This tool is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/node-review),
+although it is a CLI implemented with the GitHub GraphQL API.
+
 ```
 git-node metadata <identifier>
 
@@ -104,16 +107,38 @@ Options:
   --readme          Path to file that contains collaborator contacts              [string]
   --check-comments  Check for 'LGTM' in comments                                 [boolean]
   --max-commits     Number of commits to warn                        [number] [default: 3]
+```
 
 Examples:
-  git node metadata 12344                        Retrieve the metadata of
-                                                 https://github.com/nodejs/node/pull/12344
-                                                 and validate the PR
-  git node metadata                              Retrieve the metadata of
-  https://github.com/nodejs/node/pull/12344      https://github.com/nodejs/node/pull/12344
-                                                 and validate it
-  git node metadata 167 --repo llnode --readme   Retrieve the metadata of
-  ../node/README.md                              https://github.com/nodejs/llnode/pull/167
-                                                 and validate it using the README in
-                                                 ../node/README.md
+
+```bash
+PRID=12345
+
+# fetch metadata and run checks on nodejs/node/pull/$PRID
+$ git node metadata $PRID
+# is equivalent to
+$ git node metadata https://github.com/nodejs/node/pull/$PRID
+# is equivalent to
+$ git node metadata $PRID -o nodejs -r node
+
+# Or, redirect the metadata to a file while see the checks in stderr
+$ git node metadata $PRID > msg.txt
+
+# Using it to amend commit messages:
+$ git node metadata $PRID -f msg.txt
+$ echo -e "$(git show -s --format=%B)\n\n$(cat msg.txt)" > msg.txt
+$ git commit --amend -F msg.txt
+
+# fetch metadata and run checks on https://github.com/nodejs/llnode/pull/167
+# using the contact in ../node/README.md
+git node metadata 167 --repo llnode --readme ../node/README.md
 ```
+
+#### Git bash for Windows
+
+If you are using `git bash` and having trouble with output use
+`winpty git-node.cmd metadata $PRID`.
+
+current known issues with git bash:
+- git bash Lacks colors.
+- git bash output duplicates metadata.
