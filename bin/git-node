@@ -1,21 +1,19 @@
 #!/usr/bin/env node
 'use strict';
 
-const CMD = process.argv[2];
+const yargs = require('yargs');
 const path = require('path');
-const { runAsync } = require('../lib/run');
-const fs = require('fs');
+const epilogue = require('../components/git/epilogue');
 
-if (!CMD) {
-  console.log('Run `git node help` to see how to use this');
-  process.exit(1);
-}
+const commandDir = path.join(__dirname, '..', 'components', 'git');
 
-const script = path.join(
-  __dirname, '..', 'components', 'git', `git-node-${CMD}`);
-if (!fs.existsSync(script)) {
-  console.error(`No such command: git node ${CMD}`);
-  process.exit(1);
-}
-
-runAsync(process.execPath, [script, ...process.argv.slice(3)]);
+/* eslint-disable no-unused-expressions */
+yargs
+  .commandDir(commandDir, {
+    exclude: /epilogue/
+  })
+  .command('help', false, () => {}, (yargs) => { yargs.showHelp(); })
+  .demandCommand(1)
+  .epilogue(epilogue)
+  .help('help')
+  .argv;

@@ -1,14 +1,6 @@
-#!/usr/bin/env node
+'use strict';
 
-console.log(`
-Steps to get metadata for a pull request:
-==============================================================================
-$ cd path/to/node/project
-$ git node metadata $PRID        # Retrieves metadata for a PR and validates
-                                 # them against nodejs/node PR rules
-==============================================================================
-
-Steps to land a pull request:
+module.exports = `Steps to land a pull request:
 ==============================================================================
 $ cd path/to/node/project
 $ git node land --abort          # Abort a landing session, just in case
@@ -21,4 +13,4 @@ $ git rebase --continue          # Repeat until the rebase is done
 
 $ git node land --final          # Verify all the commit messages
 ==============================================================================
-Watch https://asciinema.org/a/148627 for a complete demo`);
+Watch https://asciinema.org/a/148627 for a complete demo`;
