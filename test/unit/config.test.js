@@ -3,7 +3,12 @@
 const path = require('path');
 const assert = require('assert');
 const os = require('os');
-const mockFs = require('mock-fs');
+const fs = require('fs');
+const mkdirp = require('mkdirp');
+
+const MockFs = require('../fixtures/fs');
+const parsedFileExample = require('../fixtures/fs_config_file');
+const parsedLocalConfigExample = require('../fixtures/fs_local_config_file');
 
 const {
   getHomeDir,
@@ -15,24 +20,26 @@ const {
   updateConfig
 } = require('../../lib/config');
 
-const username = 'foo';
-const token = '123456789';
-const globalFileContent =
-  `{
-    "username": "${username}",
-    "token": "${token}"
-  }`;
-const localUsername = 'local';
-const localFileContent =
-  `{
-    "username": "${localUsername}"
-  }`;
 const newUsername = 'bar';
 const newToken = 'asdfghj';
 
 describe('config', () => {
   let xdgConfigHomeValue = process.env.XDG_CONFIG_HOME;
+  let mockFs = null;
+
+  // Original fs and mkdirp methods to be mocked
+  let originalExistsSync = fs.existsSync;
+  let originalReadFileSyc = fs.readFileSync;
+  let originalWriteFileSync = fs.writeFileSync;
+  let originalSync = mkdirp.sync;
+
   before(() => {
+    mockFs = new MockFs();
+    fs.existsSync = mockFs.existsSync;
+    fs.readFileSync = mockFs.readFileSync;
+    fs.writeFileSync = mockFs.writeFileSync;
+    mkdirp.sync = mockFs.sync;
+
     // Delete env var to isolate test cases
     delete process.env.XDG_CONFIG_HOME;
   });
@@ -40,19 +47,16 @@ describe('config', () => {
   after(() => {
     // Restore env var in order to maintain the integrity
     process.env.XDG_CONFIG_HOME = xdgConfigHomeValue;
-  });
 
-  beforeEach(() => {
-    mockFs({
-      // Mock global .ncurc
-      [path.join(os.homedir(), '.ncurc')]: globalFileContent,
-      // Mock local .ncu/config
-      [path.join(process.cwd(), '.ncu', 'config')]: localFileContent
-    });
+    // Restore original methods
+    fs.existsSync = originalExistsSync;
+    fs.readFileSync = originalReadFileSyc;
+    fs.writeFileSync = originalWriteFileSync;
+    mkdirp.sync = originalSync;
   });
 
   afterEach(() => {
-    mockFs.restore();
+    mockFs.restoreFs();
   });
 
   describe('getHomeDir', () => {
@@ -130,8 +134,8 @@ describe('config', () => {
       const isGlobal = true;
       const configContent = getConfig(isGlobal);
 
-      assert.strictEqual(configContent.username, username);
-      assert.strictEqual(configContent.token, token);
+      assert.strictEqual(configContent.username, parsedFileExample.username);
+      assert.strictEqual(configContent.token, parsedFileExample.token);
     });
   });
 
@@ -139,8 +143,11 @@ describe('config', () => {
     it('should return both local and global config merged', () => {
       const configContent = getMergedConfig();
 
-      assert.strictEqual(configContent.username, localUsername);
-      assert.strictEqual(configContent.token, token);
+      assert.strictEqual(
+        configContent.username,
+        parsedLocalConfigExample.username
+      );
+      assert.strictEqual(configContent.token, parsedFileExample.token);
     });
   });
 
@@ -166,13 +173,13 @@ describe('config', () => {
       const isGlobal = true;
       // First, check that config has the old values
       const configContent = getConfig(isGlobal);
-      assert.strictEqual(configContent.username, username);
-      assert.strictEqual(configContent.token, token);
+      assert.strictEqual(configContent.username, parsedFileExample.username);
+      assert.strictEqual(configContent.token, parsedFileExample.token);
 
       updateConfig(isGlobal, {token: newToken});
 
       const newConfigContent = getConfig(isGlobal);
-      assert.strictEqual(newConfigContent.username, username);
+      assert.strictEqual(newConfigContent.username, parsedFileExample.username);
       assert.strictEqual(newConfigContent.token, newToken);
     });
   });
