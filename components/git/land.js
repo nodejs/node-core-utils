@@ -103,6 +103,9 @@ module.exports = {
 
 async function main(state, argv, cli, req, dir) {
   let session = new LandingSession(cli, req, dir);
+  if (session.warnForMissing() || session.warnForWrongBranch()) {
+    return;
+  }
 
   try {
     session.restore();
