@@ -83,15 +83,19 @@ function handler(argv) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
 
-  return getMetadata(Object.assign(
-    {}, config, argv, parsed
-  ), cli).catch((err) => {
-    if (cli.spinner.enabled) {
-      cli.spinner.fail();
-    }
-    cli.error(err);
-    process.exit(-1);
-  });
+  return getMetadata(Object.assign({}, config, argv, parsed), cli)
+    .then(({status}) => {
+      if (status === false) {
+        throw new Error('PR checks failed');
+      }
+    })
+    .catch((err) => {
+      if (cli.spinner.enabled) {
+        cli.spinner.fail();
+      }
+      cli.error(err);
+      process.exit(1);
+    });
 }
 
 module.exports = {
