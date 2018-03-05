@@ -86,7 +86,7 @@ function handler(argv) {
   return getMetadata(Object.assign({}, config, argv, parsed), cli)
     .then(({status}) => {
       if (status === false) {
-        process.exit(1);
+        throw new Error('PR checks failed');
       }
     })
     .catch((err) => {
@@ -94,7 +94,7 @@ function handler(argv) {
         cli.spinner.fail();
       }
       cli.error(err);
-      process.exit(-1);
+      process.exit(1);
     });
 }
 
