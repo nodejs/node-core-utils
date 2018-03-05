@@ -59,6 +59,7 @@ const firstTimerPR = readJSON('first_timer_pr.json');
 const firstTimerPrivatePR = readJSON('first_timer_pr_with_private_email.json');
 const semverMajorPR = readJSON('semver_major_pr.json');
 const fixAndRefPR = readJSON('pr_with_fixes_and_refs.json');
+const fixCrossPR = readJSON('pr_with_fixes_cross.json');
 const conflictingPR = readJSON('conflicting_pr.json');
 const emptyProfilePR = readJSON('empty_profile_pr.json');
 const closedPR = readJSON('./closed_pr.json');
@@ -92,6 +93,7 @@ module.exports = {
   firstTimerPrivatePR,
   semverMajorPR,
   fixAndRefPR,
+  fixCrossPR,
   conflictingPR,
   emptyProfilePR,
   readme,
