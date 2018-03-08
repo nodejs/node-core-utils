@@ -5,4 +5,4 @@ const path = require('path');
 const { runAsync } = require('../lib/run');
 
 const script = path.join(__dirname, 'git-node');
-runAsync(script, ['metadata'].concat(process.argv.slice(2)));
+runAsync(process.execPath, [script, 'metadata', ...process.argv.slice(2)]);
