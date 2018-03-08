@@ -63,6 +63,9 @@ const PR_RE = new RegExp(
   '([0-9]+)(?:/(?:files)?)?$');
 
 function handler(argv) {
+  // remove hashes from PR link
+  argv.identifier = argv.identifier.replace(/#.*$/, '');
+
   const parsed = {};
   const prid = Number.parseInt(argv.identifier);
   if (!Number.isNaN(prid)) {
