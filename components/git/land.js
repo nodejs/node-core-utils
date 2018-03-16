@@ -7,6 +7,7 @@ const { runPromise } = require('../../lib/run');
 const LandingSession = require('../../lib/landing_session');
 const epilogue = require('./epilogue');
 const yargs = require('yargs');
+const isUrl = require('is-url');
 
 const landOptions = {
   apply: {
@@ -35,10 +36,11 @@ const landOptions = {
 function builder(yargs) {
   return yargs
     .options(landOptions).positional('prid', {
-      describe: 'ID of the Pull Request',
-      type: 'number'
+      describe: 'ID or URL of the Pull Request'
     })
     .epilogue(epilogue)
+    .example('git node land https://github.com/nodejs/node/pull/12344',
+      'Land https://github.com/nodejs/node/pull/12344 in the current directory')
     .example('git node land 12344',
       'Land https://github.com/nodejs/node/pull/12344 in the current directory')
     .example('git node land --abort',
@@ -59,7 +61,7 @@ const CONTINUE = 'continue';
 const ABORT = 'abort';
 
 function handler(argv) {
-  if (argv.prid && Number.isInteger(argv.prid)) {
+  if (argv.prid && (Number.isInteger(argv.prid) || isUrl(argv.prid))) {
     return land(START, argv);
   }
   const provided = [];
@@ -124,6 +126,10 @@ async function main(state, argv, cli, req, dir) {
   }
 
   if (state === START) {
+    if (isUrl(argv.prid)) {
+      argv.prid = Number(argv.prid.split('/').pop());
+    }
+
     if (session.hasStarted()) {
       cli.warn(
         'Previous `git node land` session for ' +
