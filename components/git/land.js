@@ -7,7 +7,6 @@ const { runPromise } = require('../../lib/run');
 const LandingSession = require('../../lib/landing_session');
 const epilogue = require('./epilogue');
 const yargs = require('yargs');
-const isUrl = require('is-url');
 
 const landOptions = {
   apply: {
@@ -60,8 +59,12 @@ const FINAL = 'final';
 const CONTINUE = 'continue';
 const ABORT = 'abort';
 
+const GITHUB_PULL_REQUEST_URL = /github.com\/[^/]+\/[^/]+\/pull\/(\d+)/;
+
 function handler(argv) {
-  if (argv.prid && (Number.isInteger(argv.prid) || isUrl(argv.prid))) {
+  if (argv.prid &&
+    (Number.isInteger(argv.prid) || argv.prid.match(GITHUB_PULL_REQUEST_URL))
+  ) {
     return land(START, argv);
   }
   const provided = [];
@@ -126,7 +129,7 @@ async function main(state, argv, cli, req, dir) {
   }
 
   if (state === START) {
-    if (isUrl(argv.prid)) {
+    if (argv.prid.match && argv.prid.match(GITHUB_PULL_REQUEST_URL)) {
       argv.prid = Number(argv.prid.split('/').pop());
     }
 
