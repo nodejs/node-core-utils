@@ -161,8 +161,8 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [['49 hours left to land']],
-        info: [['This PR was created on Fri Oct 27 2017 (weekend in UTC)']]
+        warn: [['25 hours left to land']],
+        info: [['This PR was created on Fri Oct 27 2017 (weekday in UTC)']]
       };
 
       const now = new Date('2017-10-28T13:00:41.682Z');
