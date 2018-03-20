@@ -6,3 +6,4 @@ tmp
 coverage.lcov
 tmp-*
 .eslintcache
+.ncu
