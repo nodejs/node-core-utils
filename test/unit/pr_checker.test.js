@@ -162,12 +162,12 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [['49 hours left to land']],
-        info: [['This PR was created on Fri Oct 27 2017 (weekend in UTC)']]
+        info: [['This PR was created on Sat Oct 28 2017 (weekend in UTC)']]
       };
 
-      const now = new Date('2017-10-28T13:00:41.682Z');
+      const now = new Date('2017-10-29T13:00:41.682Z');
       const youngPR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-27T14:25:41.682Z'
+        createdAt: '2017-10-28T14:25:41.682Z'
       });
 
       const data = {
