@@ -25,14 +25,14 @@ const rawPR = toRaw({
 
 describe('PRData', function() {
   const request = {
-    promise: sinon.stub(),
+    text: sinon.stub(),
     gql: sinon.stub()
   };
 
-  request.promise.withArgs({
-    url: 'https://raw.githubusercontent.com/nodejs/node/master/README.md'
-  }).returns(Promise.resolve(readme));
-  request.promise.returns(new Error('unknown query'));
+  request.text
+    .withArgs('https://raw.githubusercontent.com/nodejs/node/master/README.md')
+    .returns(Promise.resolve(readme));
+  request.text.returns(new Error('unknown query'));
   request.gql.withArgs('PR').returns(Promise.resolve(rawPR));
   request.gql.withArgs('Reviews').returns(
     Promise.resolve(toRaw(approvingReviews)));
@@ -59,13 +59,13 @@ describe('PRData', function() {
 
 describe('PRData', function() {
   const request = {
-    promise: sinon.stub(),
+    text: sinon.stub(),
     gql: sinon.stub()
   };
-  request.promise.withArgs({
-    url: 'https://raw.githubusercontent.com/nodejs/node/master/README.md'
-  }).returns(new Error('Should not call'));
-  request.promise.returns(new Error('unknown query'));
+  request.text
+    .withArgs('https://raw.githubusercontent.com/nodejs/node/master/README.md')
+    .returns(new Error('Should not call'));
+  request.text.returns(new Error('unknown query'));
   request.gql.withArgs('PR').returns(Promise.resolve(rawPR));
   request.gql.withArgs('Reviews').returns(
     Promise.resolve(toRaw(approvingReviews)));
