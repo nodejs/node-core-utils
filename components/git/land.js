@@ -35,10 +35,11 @@ const landOptions = {
 function builder(yargs) {
   return yargs
     .options(landOptions).positional('prid', {
-      describe: 'ID of the Pull Request',
-      type: 'number'
+      describe: 'ID or URL of the Pull Request'
     })
     .epilogue(epilogue)
+    .example('git node land https://github.com/nodejs/node/pull/12344',
+      'Land https://github.com/nodejs/node/pull/12344 in the current directory')
     .example('git node land 12344',
       'Land https://github.com/nodejs/node/pull/12344 in the current directory')
     .example('git node land --abort',
@@ -58,8 +59,12 @@ const FINAL = 'final';
 const CONTINUE = 'continue';
 const ABORT = 'abort';
 
+const GITHUB_PULL_REQUEST_URL = /github.com\/[^/]+\/[^/]+\/pull\/(\d+)/;
+
 function handler(argv) {
-  if (argv.prid && Number.isInteger(argv.prid)) {
+  if (argv.prid &&
+    (Number.isInteger(argv.prid) || argv.prid.match(GITHUB_PULL_REQUEST_URL))
+  ) {
     return land(START, argv);
   }
   const provided = [];
@@ -124,6 +129,10 @@ async function main(state, argv, cli, req, dir) {
   }
 
   if (state === START) {
+    if (argv.prid.match && argv.prid.match(GITHUB_PULL_REQUEST_URL)) {
+      argv.prid = Number(argv.prid.split('/').pop());
+    }
+
     if (session.hasStarted()) {
       cli.warn(
         'Previous `git node land` session for ' +

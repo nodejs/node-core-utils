@@ -41,26 +41,6 @@ describe('cli', () => {
         cli.updateSpinner('bar');
         assert.strictEqual(cli.spinner.text, 'bar');
       });
-
-      it('should log the error symbol and the specified text', () => {
-        cli.stopSpinner('error', cli.SPINNER_STATUS.FAILED);
-        assert.strictEqual(logResult(), `${error}  error${EOL}`);
-      });
-
-      it('should log the success symbol and the specified text', () => {
-        cli.stopSpinner('success');
-        assert.strictEqual(logResult(), `${success}  success${EOL}`);
-      });
-
-      it('should log the warn symbol and the specified text', () => {
-        cli.stopSpinner('warn', cli.SPINNER_STATUS.WARN);
-        assert.strictEqual(logResult(), `${warning}  warn${EOL}`);
-      });
-
-      it('should log the info symbol and the specified text', () => {
-        cli.stopSpinner('info', cli.SPINNER_STATUS.INFO);
-        assert.strictEqual(logResult(), `${info}  info${EOL}`);
-      });
     });
 
     describe('write', () => {
