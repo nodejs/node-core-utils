@@ -141,8 +141,7 @@ async function main(state, argv, cli, req, dir) {
       return;
     }
     session = new LandingSession(cli, req, dir, argv.prid);
-    const { repo, owner, prid } = session;
-    const metadata = await getMetadata({ repo, owner, prid }, cli);
+    const metadata = await getMetadata(session.argv, cli);
     return session.start(metadata);
   } else if (state === APPLY) {
     return session.apply();
