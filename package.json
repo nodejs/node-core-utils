@@ -6,7 +6,9 @@
     "get-metadata": "./bin/get-metadata",
     "ncu-config": "./bin/ncu-config",
     "git-node": "./bin/git-node",
-    "ncu-team": "./bin/ncu-team"
+    "ncu-team": "./bin/ncu-team",
+    "ncu-git-hooks": "./bin/ncu-git-hooks",
+    "ncu-run-hook": "./bin/ncu-run-hook"
   },
   "scripts": {
     "test": "npm run test-unit && npm run lint",

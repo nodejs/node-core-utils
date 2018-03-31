@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+'use strict';
+
+const yargs = require('yargs');
+const gitHooks = require('../lib/git-hooks');
+
+/* eslint-disable no-unused-expressions */
+yargs
+  .command({
+    command: 'install <hook>',
+    desc: 'Install a git hook',
+    aliases: ['i'],
+    builder: (yargs) => {
+      yargs
+        .positional('hook', {
+          describe: 'The hook to install',
+          choices: gitHooks.possibleGitHooks
+        });
+    },
+    handler: installHandler
+  })
+  .command({
+    command: 'uninstall <hook>',
+    desc: 'Uninstall a git hook',
+    builder: (yargs) => {
+      yargs
+        .positional('hook', {
+          describe: 'The hook to uninstall',
+          choices: gitHooks.possibleGitHooks
+        });
+    },
+    handler: uninstallHandler
+  })
+  .demandCommand(1, 'must provide a valid command')
+  .help()
+  .argv;
+
+function installHandler(argv) {
+  gitHooks.install(argv.hook);
+}
+
+function uninstallHandler(argv) {
+  gitHooks.uninstall(argv.hook);
+}
