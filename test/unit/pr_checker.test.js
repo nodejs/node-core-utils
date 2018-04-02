@@ -13,6 +13,7 @@ const {
   approvingReviews,
   requestingChangesReviews,
   commentsWithCI,
+  commentsWithLiteCI,
   commentsWithLGTM,
   singleCommitAfterReview,
   multipleCommitsAfterReview,
@@ -546,6 +547,33 @@ describe('PRChecker', () => {
 
       const status = checker.checkCI();
       assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should count LITE CI as valid ci requirement', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        info: [
+          [
+            'Last Lite CI on 2018-02-09T21:38:30Z: ' +
+            'https://ci.nodejs.org/job/node-test-commit-lite/246/'
+          ]
+        ]
+      };
+
+      const checker = new PRChecker(cli, {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLiteCI,
+        reviews: approvingReviews,
+        commits: [],
+        collaborators,
+        authorIsNew: () => true
+      }, { maxCommits: 0 });
+
+      const status = checker.checkCI();
+      assert(status);
       cli.assertCalledWith(expectedLogs);
     });
   });
