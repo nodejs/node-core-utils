@@ -17,15 +17,25 @@ class TestCLI {
   constructor() {
     this.spinner = {};
     this._calls = newCalls();
+    this.SPINNER_STATUS = CLI.SPINNER_STATUS;
   }
 
   clearCalls() {
     this._calls = newCalls();
   }
 
-  assertCalledWith(calls, msg) {
+  assertCalledWith(calls, options = {}) {
     const expected = Object.assign(newCalls(), calls);
-    assert.deepStrictEqual(this._calls, expected);
+    const actual = {};
+    const ignore = options.ignore || [];
+    for (const func of Object.keys(this._calls)) {
+      if (!ignore.includes(func)) {
+        actual[func] = this._calls[func];
+      } else {
+        actual[func] = [];
+      }
+    }
+    assert.deepStrictEqual(actual, expected);
   }
 }
 
