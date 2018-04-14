@@ -1,0 +1,96 @@
+'use strict';
+
+const path = require('path');
+
+const execa = require('execa');
+const logSymbols = require('log-symbols');
+
+const updateV8 = require('../../lib/update-v8');
+const constants = require('../../lib/update-v8/constants');
+const common = require('../../lib/update-v8/common');
+
+module.exports = {
+  command: 'v8 [major|minor|backport]',
+  describe: 'Update or patch the V8 engine',
+  builder: (yargs) => {
+    yargs
+      .command({
+        command: 'major',
+        desc: 'Do a major upgrade. Replaces the whole deps/v8 directory',
+        handler: main,
+        builder: (yargs) => {
+          yargs.option('branch', {
+            describe: 'Branch of the V8 repository to use for the upgrade',
+            default: 'lkgr'
+          });
+        }
+      })
+      .command({
+        command: 'minor',
+        desc: 'Do a minor patch of the current V8 version',
+        handler: main
+      })
+      .command({
+        command: 'backport <sha>',
+        desc: 'Backport a single commit from the V8 repository',
+        handler: main,
+        builder: (yargs) => {
+          yargs.option('bump', {
+            describe: 'Bump V8 embedder version number or patch version',
+            default: true
+          });
+        }
+      })
+      .demandCommand(1, 'Please provide a valid command')
+      .option('node-dir', {
+        describe: 'Directory of a Node.js clone',
+        default: process.cwd()
+      })
+      .option('base-dir', {
+        describe: 'Directory where V8 should be cloned',
+        default: constants.defaultBaseDir
+      })
+      .option('verbose', {
+        describe: 'Enable verbose output',
+        boolean: true,
+        default: false
+      });
+  },
+  handler: main
+};
+
+function main(argv) {
+  const options = Object.assign({}, argv);
+  options.nodeDir = path.resolve(options.nodeDir);
+  options.baseDir = path.resolve(options.baseDir);
+  options.v8CloneDir = path.join(options.baseDir, 'v8');
+
+  options.execGitNode = function execGitNode(...args) {
+    return execa('git', args, { cwd: options.nodeDir });
+  };
+  options.execGitV8 = function execGitV8(...args) {
+    return execa('git', args, { cwd: options.v8CloneDir });
+  };
+
+  Promise.resolve()
+    .then(async() => {
+      await common.checkCwd(options);
+      const kind = argv._[0];
+      options[kind] = true;
+      switch (kind) {
+        case 'minor':
+          return updateV8.minor(options);
+        case 'major':
+          return updateV8.major(options);
+        case 'backport':
+          return updateV8.backport(options);
+      }
+    })
+    .catch((err) => {
+      console.error(
+        logSymbols.error,
+        options.verbose ? err.stack : err.message
+      );
+      process.exitCode = 1;
+    });
+}

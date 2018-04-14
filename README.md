@@ -27,8 +27,6 @@ CLI tools for Node.js Core collaborators.
   to use.
 - [`ncu-team`](./docs/ncu-team.md): Listing members of a team, synchronizing
   special blocks in files with the list of members.
-- [`update-v8`](./docs/update-v8.md): Commands that allow to update and patch
-  the V8 engine in Node.js core.
 - [`get-metadata`](./docs/get-metadata.md): Retrieving metadata for a Pull Request.
   **DEPRECATED**: use [`git node metadata`](./docs/git-node.md#git-node-metadata)
   instead.
