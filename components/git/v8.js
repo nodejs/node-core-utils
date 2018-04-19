@@ -50,6 +50,9 @@ module.exports = {
         describe: 'Directory where V8 should be cloned',
         default: constants.defaultBaseDir
       })
+      .option('v8-dir', {
+        describe: 'Directory of an existing V8 clone'
+      })
       .option('verbose', {
         describe: 'Enable verbose output',
         boolean: true,
@@ -63,19 +66,24 @@ function main(argv) {
   const options = Object.assign({}, argv);
   options.nodeDir = path.resolve(options.nodeDir);
   options.baseDir = path.resolve(options.baseDir);
-  options.v8CloneDir = path.join(options.baseDir, 'v8');
+  if (!options.v8Dir) {
+    options.v8Dir = path.join(options.baseDir, 'v8');
+  } else {
+    options.v8Dir = path.resolve(options.v8Dir);
+  }
 
   options.execGitNode = function execGitNode(...args) {
     return execa('git', args, { cwd: options.nodeDir });
   };
   options.execGitV8 = function execGitV8(...args) {
-    return execa('git', args, { cwd: options.v8CloneDir });
+    return execa('git', args, { cwd: options.v8Dir });
   };
 
   Promise.resolve()
     .then(async() => {
       await common.checkCwd(options);
-      const kind = argv._[0];
+      // First element of argv is 'v8'
+      const kind = argv._[1];
       options[kind] = true;
       switch (kind) {
         case 'minor':

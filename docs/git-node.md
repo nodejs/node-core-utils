@@ -197,6 +197,11 @@ Defaults to current working directory.
 Specify the path where V8 the clone will be maintained.  
 Defaults to `~/.update-v8`.
 
+##### `--v8-dir=/path/to/v8/`
+
+Specify the path of an existing V8 clone. This will be used instead of cloning
+V8 to `baseDir`.
+
 ##### `--verbose`
 
 Enable verbose output.
