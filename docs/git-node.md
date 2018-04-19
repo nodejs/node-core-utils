@@ -54,6 +54,7 @@ Commands:
                                   new one for a pull request
   git-node metadata <identifier>  Retrieves metadata for a PR and validates them
                                   against nodejs/node PR rules
+  git-node v8 [major|minor|backport]  Update or patch the V8 engine
 
 Options:
   --version  Show version number                                       [boolean]
@@ -145,3 +146,57 @@ If you are using `git bash` and having trouble with output use
 current known issues with git bash:
 - git bash Lacks colors.
 - git bash output duplicates metadata.
+
+### `git node v8`
+
+Update or patch the V8 engine.  
+This tool will maintain a clone of the V8 repository in `~/.update-v8/v8`.
+
+#### `git node v8 major`
+
+* Replaces `deps/v8` with a newer major version.
+* Resets the embedder version number to `-node.0`.
+* Updates `NODE_MODULE_VERSION` according to the V8 version.
+
+##### Options
+
+###### `--branch=branchName`
+
+Branch of the V8 repository to use for the upgrade.  
+Defaults to `lkgr`.
+
+#### `git node v8 minor`
+
+Compare current V8 version with latest upstream of the same major. Applies a
+patch if necessary.  
+If the `git apply` command fails, a patch file will be written in the Node.js
+clone directory.
+
+#### `git node v8 backport <sha>`
+
+Fetches and applies the patch corresponding to `sha`. Increments the V8
+embedder version number or patch version and commits the changes.  
+If the `git apply` command fails, a patch file will be written in the Node.js
+clone directory.
+
+##### Options
+
+###### `--no-bump`
+
+Set this flag to skip bumping the V8 embedder version number or patch version.
+
+#### General options
+
+##### `--node-dir=/path/to/node`
+
+Specify the path to the Node.js git repository.  
+Defaults to current working directory.
+
+##### `--base-dir=/path/to/base/dir`
+
+Specify the path where V8 the clone will be maintained.  
+Defaults to `~/.update-v8`.
+
+##### `--verbose`
+
+Enable verbose output.
