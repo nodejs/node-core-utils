@@ -1,15 +1,15 @@
 [
   {
     "publishedAt": "2017-10-27T04:16:36.458Z",
-    "bodyText": "CI: https://ci.nodejs.org/job/node-test-pull-request/10984/\ncitgm: https://ci.nodejs.org/view/Node.js-citgm/job/citgm-smoker/1030/"
+    "bodyText": "CI: https://ci.nodejs.org/job/node-test-pull-request/10984/\ncitgm: https://ci.nodejs.org/job/citgm-smoker/1030/"
   },
   {
     "publishedAt": "2017-10-24T04:16:36.458Z",
-    "bodyText": "https://ci.nodejs.org/view/libuv/job/libuv-test-commit/537/"
+    "bodyText": "https://ci.nodejs.org/job/libuv-test-commit/537/"
   },
   {
     "publishedAt": "2017-10-23T04:16:36.458Z",
-    "bodyText": "https://ci.nodejs.org/job/node-test-commit-linux-nointl/7"
+    "bodyText": "https://ci.nodejs.org/job/node-test-commit-nointl/7/"
   },
   {
     "publishedAt": "2017-10-22T04:16:36.458Z",
