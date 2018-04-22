@@ -2,6 +2,7 @@
 
 const yargs = require('yargs');
 
+const { parsePRFromURL } = require('../../lib/links');
 const getMetadata = require('../metadata');
 const CLI = require('../../lib/cli');
 const config = require('../../lib/config').getMergedConfig();
@@ -59,25 +60,16 @@ function builder(yargs) {
     .wrap(90);
 }
 
-const PR_RE = new RegExp(
-  '^https://github.com/(\\w+)/([a-zA-Z.-]+)/pull/' +
-  '([0-9]+)(?:/(?:files)?)?$');
-
 function handler(argv) {
-  // remove hashes from PR link
-  argv.identifier = argv.identifier.replace(/#.*$/, '');
-
-  const parsed = {};
+  let parsed = {};
   const prid = Number.parseInt(argv.identifier);
   if (!Number.isNaN(prid)) {
     parsed.prid = prid;
-  } else if (PR_RE.test(argv.identifier)) {
-    const match = argv.identifier.match(PR_RE);
-    parsed.owner = match[1];
-    parsed.repo = match[2];
-    parsed.prid = Number.parseInt(match[3]);
   } else {
-    return yargs.showHelp();
+    parsed = parsePRFromURL(argv.identifier);
+    if (!parsed) {
+      return yargs.showHelp();
+    }
   }
 
   if (!Number.isInteger(argv.maxCommits) || argv.maxCommits < 0) {

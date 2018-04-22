@@ -1,5 +1,6 @@
 'use strict';
 
+const { parsePRFromURL } = require('../../lib/links');
 const getMetadata = require('../metadata');
 const CLI = require('../../lib/cli');
 const Request = require('../../lib/request');
@@ -59,30 +60,35 @@ const FINAL = 'final';
 const CONTINUE = 'continue';
 const ABORT = 'abort';
 
-const GITHUB_PULL_REQUEST_URL = /github.com\/[^/]+\/[^/]+\/pull\/(\d+)/;
-
 function handler(argv) {
-  if (argv.prid &&
-    (Number.isInteger(argv.prid) || argv.prid.match(GITHUB_PULL_REQUEST_URL))
-  ) {
-    return land(START, argv);
+  if (argv.prid) {
+    if (Number.isInteger(argv.prid)) {
+      return land(START, argv);
+    } else {
+      const parsed = parsePRFromURL(argv.prid);
+      if (parsed) {
+        Object.assign(argv, parsed);
+        return land(START, argv);
+      }
+    }
+    yargs.showHelp();
+    return;
   }
+
   const provided = [];
   for (const type of Object.keys(landOptions)) {
     if (argv[type]) {
       provided.push(type);
     }
   }
-  if (provided.length === 0) {
-    yargs.showHelp();
-    return;
-  }
-  if (provided.length > 1) {
-    yargs.showHelp();
-    return;
+
+  if (provided.length === 1) {
+    return land(provided[0], argv);
   }
 
-  return land(provided[0], argv);
+  // If the more than one action is provided or no valid action
+  // is provided, show help.
+  yargs.showHelp();
 }
 
 function land(state, argv) {
@@ -129,10 +135,6 @@ async function main(state, argv, cli, req, dir) {
   }
 
   if (state === START) {
-    if (argv.prid.match && argv.prid.match(GITHUB_PULL_REQUEST_URL)) {
-      argv.prid = Number(argv.prid.split('/').pop());
-    }
-
     if (session.hasStarted()) {
       cli.warn(
         'Previous `git node land` session for ' +
