@@ -3,7 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const { readFile } = require('./../../lib/file');
+const { readJson } = require('./../../lib/file');
 const { getNcuDir } = require('./../../lib/config');
 
 const CLI = require('../../lib/cli');
@@ -14,9 +14,12 @@ const landPath = path.join(getNcuDir(dir), 'land');
 
 function handler(argv) {
   if (fs.existsSync(landPath)) {
-    const result = readFile(landPath);
-    cli.ok(`Your land status: \n`);
-    cli.log(result);
+    const result = readJson(landPath);
+    cli.ok(`Your land status:`);
+    cli.info(`state:\t${result.state}`);
+    cli.info(`prid:\t${result.prid}`);
+    cli.info(`upstream:\t${result.config.upstream}`);
+    cli.info(`branch:\t${result.branch}`);
   } else {
     cli.warn("You don't have a land status");
   }
