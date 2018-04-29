@@ -399,20 +399,20 @@ describe('PRChecker', () => {
       const expectedLogs = {
         info: [
           [
-            'Last Full CI on 2017-10-27T04:16:36.458Z: ' +
+            'Last Full PR CI on 2017-10-27T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/node-test-pull-request/10984/'
           ],
           [
             'Last CITGM CI on 2017-10-27T04:16:36.458Z: ' +
-            'https://ci.nodejs.org/view/Node.js-citgm/job/citgm-smoker/1030/'
+            'https://ci.nodejs.org/job/citgm-smoker/1030/'
           ],
           [
             'Last libuv CI on 2017-10-24T04:16:36.458Z: ' +
-            'https://ci.nodejs.org/view/libuv/job/libuv-test-commit/537/'
+            'https://ci.nodejs.org/job/libuv-test-commit/537/'
           ],
           [
             'Last No Intl CI on 2017-10-23T04:16:36.458Z: ' +
-            'https://ci.nodejs.org/job/node-test-commit-linux-nointl/7'
+            'https://ci.nodejs.org/job/node-test-commit-nointl/7/'
           ],
           [
             'Last V8 CI on 2017-10-22T04:16:36.458Z: ' +
@@ -427,7 +427,7 @@ describe('PRChecker', () => {
             'https://ci.nodejs.org/job/node-test-linter/13127/'
           ],
           [
-            'Last Lite CI on 2018-02-09T21:38:30Z: ' +
+            'Last Lite Commit CI on 2018-02-09T21:38:30Z: ' +
             'https://ci.nodejs.org/job/node-test-commit-lite/246/'
           ]
         ]
@@ -455,13 +455,13 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          ['Commits were pushed after the last Full CI run:'],
+          ['Commits were pushed after the last Full PR CI run:'],
           ['- fixup: adjust spelling'],
           ['- doc: add api description README'],
           ['- feat: add something']
         ],
         info: [
-          ['Last Full CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
+          ['Last Full PR CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
         ]
       };
 
@@ -487,7 +487,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Commits were pushed after the last Full CI run:' ],
+          [ 'Commits were pushed after the last Full PR CI run:' ],
           [ '- doc: add api description README' ],
           [ '- feat: add something' ],
           [ '- style: format code' ],
@@ -495,7 +495,7 @@ describe('PRChecker', () => {
         ],
         info: [
           [
-            'Last Full CI on 2017-08-24T11:19:25Z: ' +
+            'Last Full PR CI on 2017-08-24T11:19:25Z: ' +
             'https://ci.nodejs.org/job/node-test-pull-request/12984/'
           ]
         ],
@@ -523,12 +523,12 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Commits were pushed after the last Full CI run:' ],
+          [ 'Commits were pushed after the last Full PR CI run:' ],
           [ '...(use `--max-commits 4` to see the full list of commits)' ]
         ],
         info: [
           [
-            'Last Full CI on 2017-08-24T11:19:25Z: ' +
+            'Last Full PR CI on 2017-08-24T11:19:25Z: ' +
             'https://ci.nodejs.org/job/node-test-pull-request/12984/'
           ]
         ],
@@ -556,7 +556,7 @@ describe('PRChecker', () => {
       const expectedLogs = {
         info: [
           [
-            'Last Lite CI on 2018-02-09T21:38:30Z: ' +
+            'Last Lite Commit CI on 2018-02-09T21:38:30Z: ' +
             'https://ci.nodejs.org/job/node-test-commit-lite/246/'
           ]
         ]
