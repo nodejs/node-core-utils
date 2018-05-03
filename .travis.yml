@@ -10,4 +10,5 @@ script:
   - npm run lint
   - npm run coverage-all
 after_success:
+  - npm install codecov
   - npm run report-coverage
