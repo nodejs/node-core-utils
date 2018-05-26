@@ -35,9 +35,9 @@
     "core-validate-commit": "^3.5.0",
     "execa": "^0.10.0",
     "figures": "^2.0.0",
-    "fs-extra": "^5.0.0",
+    "fs-extra": "^6.0.1",
     "ghauth": "^3.2.1",
-    "listr": "^0.13.0",
+    "listr": "^0.14.1",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.1.1",
     "ora": "^2.0.0",
@@ -56,6 +56,6 @@
     "mocha": "^5.1.1",
     "nyc": "^11.7.3",
     "power-assert": "^1.4.4",
-    "sinon": "^4.3.0"
+    "sinon": "^5.0.10"
   }
 }
