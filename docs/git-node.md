@@ -221,3 +221,20 @@ V8 to `baseDir`.
 ##### `--verbose`
 
 Enable verbose output.
+
+### `git node wpt`
+
+Update or patch the Web Platform Tests in core.
+The updated files are placed under `./test/fixtures/wpt` by default. In addition
+to the assets, this also updates:
+
+- `./test/fixtures/wpt/versions.json`
+- `./test/fixtures/wpt/README.md`
+- `./test/fixtures/wpt/LICENSE.md`
+
+#### Example
+
+```
+$ cd /path/to/node/project
+$ git node wpt url  # Will update test/fixtures/wpt/url and related files
+```
