@@ -3,7 +3,9 @@
 'use strict';
 
 const {
-  PRBuild, BenchmarkRun, CommitBuild, jobCache, parseJobFromURL, constants
+  PRBuild, BenchmarkRun, CommitBuild, parseJobFromURL,
+  constants, JobParser
+  // , jobCache
 } = require('../lib/ci');
 const clipboardy = require('clipboardy');
 
@@ -12,13 +14,14 @@ const {
 } = constants;
 
 const { runPromise } = require('../lib/run');
+const auth = require('../lib/auth');
 const Request = require('../lib/request');
 const CLI = require('../lib/cli');
 const yargs = require('yargs');
 
 // This is used for testing
 // Default cache dir is ${ncu-source-dir}/.ncu/cache
-jobCache.enable();
+// jobCache.enable();
 
 // eslint-disable-next-line no-unused-vars
 const argv = yargs
@@ -99,7 +102,8 @@ async function getResults(cli, request, job) {
 
 async function main(command, argv) {
   const cli = new CLI();
-  const request = new Request({});
+  const credentials = await auth();
+  const request = new Request(credentials);
   const queue = [];
 
   const commandToType = {
@@ -114,31 +118,45 @@ async function main(command, argv) {
       queue.push({
         type: parsed.type,
         jobid: parsed.jobid,
-        markdown: argv.markdown
+        copy: argv.copy
       });
     } else {
-      // TODO: parse CI links from PR thread
-      return yargs.showHelp();
+      const parser = await JobParser.fromPR(argv.url, cli, request);
+      if (!parser) {  // Not a valid PR URL
+        return yargs.showHelp();
+      }
+      const ciMap = parser.parse();
+      for (const [type, ci] of ciMap) {
+        queue.push({
+          type: type,
+          jobid: ci.jobid,
+          copy: argv.copy
+        });
+      }
     }
   } else {
     queue.push({
       type: commandToType[command],
       jobid: argv.jobid,
-      markdown: argv.markdown
+      copy: argv.copy
     });
   }
+
+  let dataToCopy = '';
 
   for (let job of queue) {
     const build = await getResults(cli, request, job);
     build.display();
 
     if (argv.copy) {
-      clipboardy.writeSync(build.formatAsMarkdown());
+      dataToCopy += build.formatAsMarkdown();
     }
+  }
 
+  if (argv.copy) {
+    clipboardy.writeSync(dataToCopy);
     cli.separator('');
     cli.log(`Written markdown to clipboard`);
-    return build;
   }
 }
 

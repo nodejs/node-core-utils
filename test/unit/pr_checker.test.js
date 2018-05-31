@@ -5,6 +5,7 @@ const sinon = require('sinon');
 
 const TestCLI = require('../fixtures/test_cli');
 
+const PRData = require('../../lib/pr_data');
 const PRChecker = require('../../lib/pr_checker');
 
 const {
@@ -44,7 +45,10 @@ describe('PRChecker', () => {
       reviews: approvingReviews,
       commits: simpleCommits,
       collaborators,
-      authorIsNew: () => true
+      authorIsNew: () => true,
+      getThread() {
+        return PRData.prototype.getThread.call(this);
+      }
     };
     const checker = new PRChecker(cli, data, argv);
 
@@ -119,7 +123,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators,
-        authorIsNew: () => false
+        authorIsNew: () => false,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -178,7 +185,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -207,7 +217,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -242,7 +255,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: [],
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -280,7 +296,10 @@ describe('PRChecker', () => {
         reviews: requestingChangesReviews,
         commits: simpleCommits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -318,7 +337,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: [],
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -355,7 +377,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -384,7 +409,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -440,7 +468,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: [],
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -472,7 +503,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: commits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -509,7 +543,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: commits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       }, argv);
 
       const status = checker.checkCI();
@@ -542,7 +579,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: commits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       }, { maxCommits: 0 });
 
       const status = checker.checkCI();
@@ -569,7 +609,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: [],
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       }, { maxCommits: 0 });
 
       const status = checker.checkCI();
@@ -597,7 +640,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: oddCommits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
       const status = checker.checkAuthor();
@@ -643,7 +689,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: incorrectGitConfigCommits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
 
       const checker = new PRChecker(cli, data, argv);
@@ -701,7 +750,10 @@ describe('PRChecker', () => {
         collaborators,
         reviews,
         commits,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
 
       const checker = new PRChecker(cli, data, argv);
@@ -731,7 +783,10 @@ describe('PRChecker', () => {
         collaborators,
         reviews,
         commits,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -761,7 +816,10 @@ describe('PRChecker', () => {
         collaborators,
         reviews,
         commits,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
       const checker = new PRChecker(cli, data, argv);
 
@@ -798,7 +856,10 @@ describe('PRChecker', () => {
         reviews: approvingReviews,
         commits: simpleCommits,
         collaborators,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       }, argv);
 
       const status = checker.checkCommitsAfterReview();
@@ -824,7 +885,10 @@ describe('PRChecker', () => {
         collaborators,
         reviews,
         commits,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
 
       const checker = new PRChecker(cli, data, { maxCommits: 1 });
@@ -851,7 +915,10 @@ describe('PRChecker', () => {
         collaborators,
         reviews,
         commits,
-        authorIsNew: () => true
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
       };
 
       const checker = new PRChecker(cli, data, { maxCommits: 0 });

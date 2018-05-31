@@ -40,7 +40,6 @@ describe('MetadataGenerator', () => {
 
   it('should handle cross-owner and cross-repo fixes properly', () => {
     const results = new MetadataGenerator(crossData).getMetadata();
-    console.log(results);
     assert.strictEqual(crossExpected, results);
   });
 });
