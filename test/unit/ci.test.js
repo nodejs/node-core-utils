@@ -88,13 +88,11 @@ describe('Jenkins', () => {
     );
     assert.deepStrictEqual(prBuild.commitBuild.failures, expectedJson);
 
-    const actualPath = path.join(tmpdir.path, 'actual.md');
     const expectedPath = path.join(fixturesDir, 'expected.md');
 
-    commitBuild.appendToMarkdown(actualPath);
+    const markdown = commitBuild.formatAsMarkdown();
     const expected = fs.readFileSync(expectedPath, 'utf8');
-    const actual = fs.readFileSync(actualPath, 'utf8');
-    assert.strictEqual(actual, expected);
+    assert.strictEqual(markdown, expected);
   });
 
   it('should get benchmark run', async() => {
@@ -112,17 +110,10 @@ describe('Jenkins', () => {
     const run = new BenchmarkRun(cli, request, 150);
     await run.getResults();
 
-    const actualPath = path.join(tmpdir.path, 'actual.md');
     const expectedPath = path.join(fixturesDir, 'expected.md');
 
-    run.appendToMarkdown(actualPath);
-    let expected = fs.readFileSync(expectedPath, 'utf8');
-    let actual = fs.readFileSync(actualPath, 'utf8');
-    assert.strictEqual(actual, expected);
-
-    run.appendToMarkdown(actualPath);
-    expected += expected;
-    actual = fs.readFileSync(actualPath, 'utf8');
-    assert.strictEqual(actual, expected);
+    const markdown = run.formatAsMarkdown();
+    const expected = fs.readFileSync(expectedPath, 'utf8');
+    assert.strictEqual(markdown, expected);
   });
 });

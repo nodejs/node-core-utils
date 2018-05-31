@@ -5,6 +5,7 @@
 const {
   PRBuild, BenchmarkRun, CommitBuild, jobCache, parseJobFromURL, constants
 } = require('../lib/ci');
+const clipboardy = require('clipboardy');
 
 const {
   PR, COMMIT, BENCHMARK
@@ -70,17 +71,16 @@ const argv = yargs
     handler
   })
   .demandCommand(1, 'must provide a valid command')
-  .option('markdown', {
-    alias: 'm',
-    type: 'string',
-    describe: 'file to write results in markdown'
+  .option('copy', {
+    default: false,
+    describe: 'Write the results as markdown to clipboard'
   })
   .help()
   .argv;
 
 async function getResults(cli, request, job) {
   let build;
-  const { type, jobid, markdown } = job;
+  const { type, jobid } = job;
   if (type === PR) {
     build = new PRBuild(cli, request, jobid);
     await build.getResults();
@@ -93,12 +93,6 @@ async function getResults(cli, request, job) {
   } else {
     yargs.showHelp();
     return;
-  }
-
-  build.display();
-
-  if (markdown) {
-    build.appendToMarkdown(markdown);
   }
   return build;
 }
@@ -135,7 +129,16 @@ async function main(command, argv) {
   }
 
   for (let job of queue) {
-    await getResults(cli, request, job);
+    const build = await getResults(cli, request, job);
+    build.display();
+
+    if (argv.copy) {
+      clipboardy.writeSync(build.formatAsMarkdown());
+    }
+
+    cli.separator('');
+    cli.log(`Written markdown to clipboard`);
+    return build;
   }
 }
 
