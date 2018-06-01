@@ -74,7 +74,7 @@ async function main(argv) {
       throw new Error(`Unknown command ${command}`);
   }
   if (argv.output) {
-    const txt = analyzer.formatContributionList(result);
+    const txt = analyzer.formatContributionList(result, 'csv');
     writeFile(argv.output, txt);
   }
 }
