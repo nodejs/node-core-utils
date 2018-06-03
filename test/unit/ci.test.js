@@ -65,7 +65,7 @@ describe('JobParser', () => {
 });
 
 describe('Jenkins', () => {
-  it('should get PR build and commit build', async() => {
+  it('should get failures in PR build and commit build', async() => {
     tmpdir.refresh();
     const fixturesDir = path.join(
       __dirname, '..', 'fixtures', 'jenkins', 'normal-failure');
@@ -80,6 +80,36 @@ describe('Jenkins', () => {
     const prBuild = new PRBuild(cli, request, 14104);
     await prBuild.getResults();
     const commitBuild = new CommitBuild(cli, request, 17507);
+    await commitBuild.getResults();
+
+    assert.deepStrictEqual(prBuild.commitBuild.failures, commitBuild.failures);
+    const expectedJson = JSON.parse(
+      fs.readFileSync(path.join(fixturesDir, 'expected.json'), 'utf8')
+    );
+    assert.deepStrictEqual(prBuild.commitBuild.failures, expectedJson);
+
+    const expectedPath = path.join(fixturesDir, 'expected.md');
+
+    const markdown = commitBuild.formatAsMarkdown();
+    const expected = fs.readFileSync(expectedPath, 'utf8');
+    assert.strictEqual(markdown, expected);
+  });
+
+  it('should get successful PR build and commit build', async() => {
+    tmpdir.refresh();
+    const fixturesDir = path.join(
+      __dirname, '..', 'fixtures', 'jenkins', 'success');
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+    const request = {
+      // any attempt to call method on this would throw
+    };
+    const prBuild = new PRBuild(cli, request, 15237);
+    await prBuild.getResults();
+    const commitBuild = new CommitBuild(cli, request, 18960);
     await commitBuild.getResults();
 
     assert.deepStrictEqual(prBuild.commitBuild.failures, commitBuild.failures);

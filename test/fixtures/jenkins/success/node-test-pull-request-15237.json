@@ -1,0 +1,170 @@
+{
+  "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+  "actions": [
+    {
+      "_class": "hudson.model.ParametersAction",
+      "parameters": [
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "CERTIFY_SAFE",
+          "value": true
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "TARGET_GITHUB_ORG",
+          "value": "nodejs"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "TARGET_REPO_NAME",
+          "value": "node"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "PR_ID",
+          "value": "20985"
+        },
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "POST_STATUS_TO_PR",
+          "value": true
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "REBASE_ONTO",
+          "value": "<pr base branch>"
+        }
+      ]
+    },
+    {
+      "_class": "hudson.model.CauseAction"
+    },
+    {},
+    {
+      "_class": "hudson.plugins.git.util.BuildData"
+    },
+    {
+      "_class": "hudson.plugins.git.GitTagAction"
+    },
+    {},
+    {
+      "_class": "hudson.plugins.parameterizedtrigger.BuildInfoExporterAction"
+    },
+    {},
+    {},
+    {},
+    {
+      "_class": "hudson.tasks.test.AggregatedTestResultPublisher$TestResultAction"
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "number": 15237,
+  "result": "SUCCESS",
+  "url": "https://ci.nodejs.org/job/node-test-pull-request/15237/",
+  "changeSet": {
+    "_class": "hudson.plugins.git.GitChangeSetList",
+    "items": [
+      {
+        "_class": "hudson.plugins.git.GitChangeSet",
+        "commitId": "5f7e0565bb22a33a99fcfecad063dc7b15873bb5",
+        "author": {
+          "absoluteUrl": "https://ci.nodejs.org/user/joyeecheung",
+          "fullName": "Foo Bar"
+        },
+        "authorEmail": "foo@gmail.com",
+        "date": "2018-05-27 13:05:05 +0800",
+        "msg": "fs: do not crash when using a closed fs event watcher"
+      }
+    ]
+  },
+  "subBuilds": [
+    {
+      "build": {
+        "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+        "subBuilds": [
+          {
+            "buildNumber": 18232,
+            "jobName": "node-test-commit-freebsd",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-freebsd/18232/"
+          },
+          {
+            "buildNumber": 19290,
+            "jobName": "node-test-commit-linux",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-linux/19290/"
+          },
+          {
+            "buildNumber": 19038,
+            "jobName": "node-test-commit-osx",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-osx/19038/"
+          },
+          {
+            "buildNumber": 18125,
+            "jobName": "node-test-commit-plinux",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-plinux/18125/"
+          },
+          {
+            "buildNumber": 18095,
+            "jobName": "node-test-commit-smartos",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-smartos/18095/"
+          },
+          {
+            "buildNumber": 4899,
+            "jobName": "node-test-commit-linux-containered",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-linux-containered/4899/"
+          },
+          {
+            "buildNumber": 16584,
+            "jobName": "node-test-commit-arm",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-arm/16584/"
+          },
+          {
+            "buildNumber": 1847,
+            "jobName": "node-test-commit-linuxone",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-linuxone/1847/"
+          },
+          {
+            "buildNumber": 15488,
+            "jobName": "node-test-commit-aix",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-aix/15488/"
+          },
+          {
+            "buildNumber": 19664,
+            "jobName": "node-test-linter",
+            "result": "SUCCESS",
+            "url": "job/node-test-linter/19664/"
+          },
+          {
+            "buildNumber": 18488,
+            "jobName": "node-test-commit-windows-fanned",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-windows-fanned/18488/"
+          },
+          {
+            "buildNumber": 1669,
+            "jobName": "node-test-commit-arm-fanned",
+            "result": "SUCCESS",
+            "url": "job/node-test-commit-arm-fanned/1669/"
+          }
+        ]
+      },
+      "buildNumber": 18960,
+      "jobName": "node-test-commit",
+      "result": "SUCCESS",
+      "url": "job/node-test-commit/18960/"
+    }
+  ]
+}
