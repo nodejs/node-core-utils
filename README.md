@@ -30,6 +30,7 @@ CLI tools for Node.js Core collaborators.
 - [`get-metadata`](./docs/get-metadata.md): Retrieving metadata for a Pull Request.
   **DEPRECATED**: use [`git node metadata`](./docs/git-node.md#git-node-metadata)
   instead.
+- [`ncu-ci`](./docs/ncu-ci.md): Parse the results of a Jenkins CI run and display a summary for all the failures.
 
 ## Usage
 
