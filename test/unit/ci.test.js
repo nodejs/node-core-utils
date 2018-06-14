@@ -5,7 +5,7 @@ const {
 } = require('../../lib/ci');
 
 const TestCLI = require('../fixtures/test_cli');
-const { tmpdir, copyShallow } = require('../common');
+const { tmpdir, copyShallow, raw } = require('../common');
 const path = require('path');
 
 const fs = require('fs');
@@ -63,10 +63,6 @@ describe('JobParser', () => {
     assert.deepStrictEqual([...expected.entries()], [...results.entries()]);
   });
 });
-
-function raw(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
 
 describe('Jenkins', () => {
   it('should get failures in PR build and commit build', async() => {

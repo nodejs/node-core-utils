@@ -1,0 +1,16 @@
+{
+  "_class": "hudson.matrix.MatrixBuild",
+  "result": "FAILURE",
+  "runs": [
+    {
+      "number": 2220,
+      "result": "FAILURE",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linuxone/label=rhel72-s390x/2220/"
+    },
+    {
+      "number": 2069,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linuxone/nodes=rhel72-s390x/2069/"
+    }
+  ]
+}

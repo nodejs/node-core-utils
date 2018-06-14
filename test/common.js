@@ -22,3 +22,7 @@ exports.copyShallow = function(src, dest) {
     fs.copyFileSync(path.join(src, file), path.join(dest, file));
   }
 };
+
+exports.raw = function(obj) {
+  return JSON.parse(JSON.stringify(obj));
+};
