@@ -4,10 +4,11 @@
 
 const {
   PRBuild, BenchmarkRun, CommitBuild, parseJobFromURL,
-  constants, JobParser
+  constants, JobParser, listBuilds
   // , jobCache
 } = require('../lib/ci');
 const clipboardy = require('clipboardy');
+const { writeJson } = require('../lib/file');
 
 const {
   PR, COMMIT, BENCHMARK
@@ -25,6 +26,18 @@ const yargs = require('yargs');
 
 // eslint-disable-next-line no-unused-vars
 const argv = yargs
+  .command({
+    command: 'walk <type>',
+    desc: 'Walk the CI and store the failures',
+    builder: (yargs) => {
+      yargs
+        .positional('type', {
+          describe: 'type of CI',
+          choices: ['commit', 'pr']
+        });
+    },
+    handler
+  })
   .command({
     command: 'url <url>',
     desc: 'Automatically detect CI type and show results',
@@ -78,6 +91,10 @@ const argv = yargs
     default: false,
     describe: 'Write the results as markdown to clipboard'
   })
+  .option('json', {
+    type: 'string',
+    describe: 'Write the results as json to the path'
+  })
   .help()
   .argv;
 
@@ -112,13 +129,18 @@ async function main(command, argv) {
     'benchmark': BENCHMARK
   };
 
-  if (command === 'url') {
+  if (command === 'walk') {
+    const type = commandToType[argv.type];
+    const builds = await listBuilds(cli, request, type);
+    for (const build of builds.failed) {
+      queue.push(build);
+    }
+  } else if (command === 'url') {
     let parsed = parseJobFromURL(argv.url);
     if (parsed) {
       queue.push({
         type: parsed.type,
-        jobid: parsed.jobid,
-        copy: argv.copy
+        jobid: parsed.jobid
       });
     } else {
       const parser = await JobParser.fromPR(argv.url, cli, request);
@@ -129,27 +151,37 @@ async function main(command, argv) {
       for (const [type, ci] of ciMap) {
         queue.push({
           type: type,
-          jobid: ci.jobid,
-          copy: argv.copy
+          jobid: ci.jobid
         });
       }
     }
   } else {
     queue.push({
       type: commandToType[command],
-      jobid: argv.jobid,
-      copy: argv.copy
+      jobid: argv.jobid
     });
   }
 
   let dataToCopy = '';
+  let dataToJson = [];
 
   for (let job of queue) {
+    cli.separator('');
+    if (job.link) {
+      cli.log(`Running ${job.link}`);
+    } else {
+      cli.log(`Running ${job.type}: ${job.jobid}`);
+    }
+    cli.separator('');
     const build = await getResults(cli, request, job);
     build.display();
 
     if (argv.copy) {
       dataToCopy += build.formatAsMarkdown();
+    }
+
+    if (argv.json) {
+      dataToJson = dataToJson.concat(build.formatAsJson());
     }
   }
 
@@ -157,6 +189,12 @@ async function main(command, argv) {
     clipboardy.writeSync(dataToCopy);
     cli.separator('');
     cli.log(`Written markdown to clipboard`);
+  }
+
+  if (argv.json) {
+    writeJson(argv.json, dataToJson);
+    cli.separator('');
+    cli.log(`Written JSON to ${argv.json}`);
   }
 }
 
