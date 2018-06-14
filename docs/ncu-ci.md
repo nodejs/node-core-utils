@@ -13,6 +13,7 @@ Supported jobs:
 ncu-ci <command>
 
 Commands:
+  ncu-ci walk <type>        Walk the CI and store the failures
   ncu-ci url <url>          Automatically detect CI type and show results
   ncu-ci pr <jobid>         Show results of a node-test-pull-request CI job
   ncu-ci commit <jobid>     Show results of a node-test-commit CI job
@@ -22,6 +23,7 @@ Commands:
 Options:
   --version  Show version number                                       [boolean]
   --copy     Write the results as markdown to clipboard         [default: false]
+  --json     Write the results as json to the path                      [string]
   --help     Show help                                                 [boolean]
 ```
 
@@ -38,6 +40,13 @@ Get the results of job #12345 of  `node-test-pull-request`:
 
 ```
 ncu-ci pr 12345
+```
+
+Walk the CI for the latest 100 runs of `node-test-pull-request`, write the
+failures into a JSON file
+
+```
+ncu-ci walk pr --json database.json
 ```
 
 ## Caveats
