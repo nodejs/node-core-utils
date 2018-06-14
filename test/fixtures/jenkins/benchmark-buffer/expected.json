@@ -1,0 +1,32 @@
+[
+  {
+    "file": "buffers/buffer-creation.js",
+    "config": [
+      "n=1024",
+      "len=10",
+      "type='fast-allocUnsafe'"
+    ],
+    "confidence": "**",
+    "improvement": "-6.73%",
+    "accuracy": [
+      "±4.48%",
+      "±5.99%",
+      "±7.86%"
+    ]
+  },
+  {
+    "file": "buffers/buffer-creation.js",
+    "config": [
+      "n=1024",
+      "len=10",
+      "type='slow-allocUnsafe'"
+    ],
+    "confidence": "*",
+    "improvement": "-7.52%",
+    "accuracy": [
+      "±6.27%",
+      "±8.37%",
+      "±10.95%"
+    ]
+  }
+]

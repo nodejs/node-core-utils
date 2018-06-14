@@ -5,7 +5,7 @@ const {
 } = require('../../lib/ci');
 
 const TestCLI = require('../fixtures/test_cli');
-const { tmpdir, copyShallow, raw } = require('../common');
+const { tmpdir, copyShallow } = require('../common');
 const path = require('path');
 
 const fs = require('fs');
@@ -86,7 +86,8 @@ describe('Jenkins', () => {
     const expectedJson = JSON.parse(
       fs.readFileSync(path.join(fixturesDir, 'expected.json'), 'utf8')
     );
-    assert.deepStrictEqual(raw(prBuild.commitBuild.failures), expectedJson);
+    assert.deepStrictEqual(prBuild.formatAsJson(), expectedJson);
+    assert.deepStrictEqual(prBuild.commitBuild.formatAsJson(), expectedJson);
 
     const expectedPath = path.join(fixturesDir, 'expected.md');
 
@@ -145,5 +146,10 @@ describe('Jenkins', () => {
     const markdown = run.formatAsMarkdown();
     const expected = fs.readFileSync(expectedPath, 'utf8');
     assert.strictEqual(markdown, expected);
+
+    const expectedJson = JSON.parse(
+      fs.readFileSync(path.join(fixturesDir, 'expected.json'), 'utf8')
+    );
+    assert.deepStrictEqual(run.formatAsJson(), expectedJson);
   });
 });
