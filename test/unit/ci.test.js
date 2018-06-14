@@ -64,6 +64,10 @@ describe('JobParser', () => {
   });
 });
 
+function raw(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 describe('Jenkins', () => {
   it('should get failures in PR build and commit build', async() => {
     tmpdir.refresh();
@@ -86,7 +90,7 @@ describe('Jenkins', () => {
     const expectedJson = JSON.parse(
       fs.readFileSync(path.join(fixturesDir, 'expected.json'), 'utf8')
     );
-    assert.deepStrictEqual(prBuild.commitBuild.failures, expectedJson);
+    assert.deepStrictEqual(raw(prBuild.commitBuild.failures), expectedJson);
 
     const expectedPath = path.join(fixturesDir, 'expected.md');
 
