@@ -68,7 +68,7 @@ describe('Jenkins', () => {
   it('should get failures in PR build and commit build', async() => {
     tmpdir.refresh();
     const fixturesDir = path.join(
-      __dirname, '..', 'fixtures', 'jenkins', 'normal-failure');
+      __dirname, '..', 'fixtures', 'jenkins', 'js-flake-1');
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -77,9 +77,9 @@ describe('Jenkins', () => {
     const request = {
       // any attempt to call method on this would throw
     };
-    const prBuild = new PRBuild(cli, request, 14104);
+    const prBuild = new PRBuild(cli, request, 15363);
     await prBuild.getResults();
-    const commitBuild = new CommitBuild(cli, request, 17507);
+    const commitBuild = new CommitBuild(cli, request, 19123);
     await commitBuild.getResults();
 
     assert.deepStrictEqual(prBuild.commitBuild.failures, commitBuild.failures);

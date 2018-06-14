@@ -1,0 +1,106 @@
+{
+  "_class": "hudson.matrix.MatrixBuild",
+  "result": "FAILURE",
+  "runs": [
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=alpine-last-latest-x64/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=alpine-latest-x64/19446/"
+    },
+    {
+      "number": 19443,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=centos5-32/19443/"
+    },
+    {
+      "number": 19443,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=centos5-64/19443/"
+    },
+    {
+      "number": 19444,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=centos6-64-gcc48/19444/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=centos6-64-gcc6/19446/"
+    },
+    {
+      "number": 19444,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=centos7-64-gcc48/19444/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=centos7-64-gcc6/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=debian8-64/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=debian8-x86/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "FAILURE",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=debian9-64/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=fedora-last-latest-x64/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=fedora-latest-x64/19446/"
+    },
+    {
+      "number": 19444,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=ubuntu1204-64/19444/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=ubuntu1404-32/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=ubuntu1404-64/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=ubuntu1604-32/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=ubuntu1604-64/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=ubuntu1710-x64/19446/"
+    },
+    {
+      "number": 19446,
+      "result": "SUCCESS",
+      "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=ubuntu1804-docker/19446/"
+    }
+  ]
+}

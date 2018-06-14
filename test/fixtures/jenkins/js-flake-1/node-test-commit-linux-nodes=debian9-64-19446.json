@@ -1,0 +1,38 @@
+{
+  "_class": "hudson.matrix.MatrixRun",
+  "actions": [
+    {},
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.model.Cause$UpstreamCause",
+          "upstreamBuild": 19446,
+          "upstreamProject": "node-test-commit-linux"
+        }
+      ]
+    },
+    {},
+    {
+      "_class": "hudson.plugins.git.util.BuildData"
+    },
+    {
+      "_class": "hudson.plugins.git.GitTagAction"
+    },
+    {},
+    {
+      "_class": "hudson.model.ParametersAction"
+    },
+    {},
+    {
+      "_class": "hudson.tasks.junit.TestResultAction"
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ]
+}

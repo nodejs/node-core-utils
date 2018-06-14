@@ -17,7 +17,7 @@
         {
           "_class": "hudson.model.StringParameterValue",
           "name": "GIT_REMOTE_REF",
-          "value": "refs/pull/19823/head"
+          "value": "refs/pull/21227/head"
         },
         {
           "_class": "hudson.model.StringParameterValue",
@@ -103,97 +103,97 @@
     {},
     {}
   ],
-  "number": 17507,
+  "number": 19123,
   "result": "FAILURE",
-  "url": "https://ci.nodejs.org/job/node-test-commit/17507/",
+  "url": "https://ci.nodejs.org/job/node-test-commit/19123/",
   "changeSet": {
     "_class": "hudson.plugins.git.GitChangeSetList",
     "items": [
       {
         "_class": "hudson.plugins.git.GitChangeSet",
-        "commitId": "010c26ce08c36b2d366326dfc8f3be4072f0382a",
+        "commitId": "44a6095e52ceed26ab33a74206a3ec988c331ac6",
         "author": {
-          "absoluteUrl": "https://ci.nodejs.org/user/mcollina",
-          "fullName": "Matteo Collina"
+          "absoluteUrl": "https://ci.nodejs.org/user/trott",
+          "fullName": "Rich Trott"
         },
-        "authorEmail": "hello@matteocollina.com",
-        "date": "2018-04-07 00:10:39 +0200",
-        "msg": "test,http: fix http dump test"
+        "authorEmail": "rtrott@gmail.com",
+        "date": "2018-06-08 23:04:02 -0700",
+        "msg": "test: move inspector-stress-http to sequential"
       }
     ]
   },
   "subBuilds": [
     {
-      "buildNumber": 16785,
-      "jobName": "node-test-commit-freebsd",
+      "buildNumber": 18270,
+      "jobName": "node-test-commit-plinux",
       "result": "SUCCESS",
-      "url": "job/node-test-commit-freebsd/16785/"
+      "url": "job/node-test-commit-plinux/18270/"
     },
     {
-      "buildNumber": 17710,
-      "jobName": "node-test-commit-linux",
-      "result": "SUCCESS",
-      "url": "job/node-test-commit-linux/17710/"
-    },
-    {
-      "buildNumber": 17585,
-      "jobName": "node-test-commit-osx",
-      "result": "SUCCESS",
-      "url": "job/node-test-commit-osx/17585/"
-    },
-    {
-      "buildNumber": 16649,
+      "buildNumber": 18253,
       "jobName": "node-test-commit-smartos",
       "result": "SUCCESS",
-      "url": "job/node-test-commit-smartos/16649/"
+      "url": "job/node-test-commit-smartos/18253/"
     },
     {
-      "buildNumber": 16673,
-      "jobName": "node-test-commit-plinux",
+      "buildNumber": 5041,
+      "jobName": "node-test-commit-linux-containered",
+      "result": "SUCCESS",
+      "url": "job/node-test-commit-linux-containered/5041/"
+    },
+    {
+      "buildNumber": 19446,
+      "jobName": "node-test-commit-linux",
       "result": "FAILURE",
-      "url": "job/node-test-commit-plinux/16673/"
+      "url": "job/node-test-commit-linux/19446/"
     },
     {
-      "buildNumber": 13971,
+      "buildNumber": 15659,
       "jobName": "node-test-commit-aix",
       "result": "SUCCESS",
-      "url": "job/node-test-commit-aix/13971/"
+      "url": "job/node-test-commit-aix/15659/"
     },
     {
-      "buildNumber": 3489,
-      "jobName": "node-test-commit-linux-containered",
-      "result": "FAILURE",
-      "url": "job/node-test-commit-linux-containered/3489/"
+      "buildNumber": 18377,
+      "jobName": "node-test-commit-freebsd",
+      "result": "SUCCESS",
+      "url": "job/node-test-commit-freebsd/18377/"
     },
     {
-      "buildNumber": 15179,
+      "buildNumber": 19182,
+      "jobName": "node-test-commit-osx",
+      "result": "SUCCESS",
+      "url": "job/node-test-commit-osx/19182/"
+    },
+    {
+      "buildNumber": 16726,
       "jobName": "node-test-commit-arm",
       "result": "SUCCESS",
-      "url": "job/node-test-commit-arm/15179/"
+      "url": "job/node-test-commit-arm/16726/"
     },
     {
-      "buildNumber": 30,
+      "buildNumber": 2059,
       "jobName": "node-test-commit-linuxone",
       "result": "SUCCESS",
-      "url": "job/node-test-commit-linuxone/30/"
+      "url": "job/node-test-commit-linuxone/2059/"
     },
     {
-      "buildNumber": 17812,
+      "buildNumber": 19879,
       "jobName": "node-test-linter",
       "result": "SUCCESS",
-      "url": "job/node-test-linter/17812/"
+      "url": "job/node-test-linter/19879/"
     },
     {
-      "buildNumber": 238,
-      "jobName": "node-test-commit-arm-fanned",
-      "result": "SUCCESS",
-      "url": "job/node-test-commit-arm-fanned/238/"
-    },
-    {
-      "buildNumber": 17010,
+      "buildNumber": 18633,
       "jobName": "node-test-commit-windows-fanned",
       "result": "SUCCESS",
-      "url": "job/node-test-commit-windows-fanned/17010/"
+      "url": "job/node-test-commit-windows-fanned/18633/"
+    },
+    {
+      "buildNumber": 1830,
+      "jobName": "node-test-commit-arm-fanned",
+      "result": "SUCCESS",
+      "url": "job/node-test-commit-arm-fanned/1830/"
     }
   ]
 }
