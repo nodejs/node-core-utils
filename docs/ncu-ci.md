@@ -13,6 +13,8 @@ Supported jobs:
 ncu-ci <command>
 
 Commands:
+  ncu-ci rate <type>        Calculate the green rate of a CI job in the last 100
+                            runs
   ncu-ci walk <type>        Walk the CI and store the failures
   ncu-ci url <url>          Automatically detect CI type and show results
   ncu-ci pr <jobid>         Show results of a node-test-pull-request CI job
@@ -47,6 +49,13 @@ failures into a JSON file
 
 ```
 ncu-ci walk pr --json database.json
+```
+
+Calculate the green rate of the CI for
+[CI Health History](https://github.com/nodejs/reliability#ci-health-history)
+
+```
+ncu-ci rate pr
 ```
 
 ## Caveats

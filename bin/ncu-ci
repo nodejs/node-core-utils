@@ -27,6 +27,18 @@ const yargs = require('yargs');
 // eslint-disable-next-line no-unused-vars
 const argv = yargs
   .command({
+    command: 'rate <type>',
+    desc: 'Calculate the green rate of a CI job in the last 100 runs',
+    builder: (yargs) => {
+      yargs
+        .positional('type', {
+          describe: 'type of CI',
+          choices: ['commit', 'pr']
+        });
+    },
+    handler
+  })
+  .command({
     command: 'walk <type>',
     desc: 'Walk the CI and store the failures',
     builder: (yargs) => {
@@ -117,51 +129,7 @@ async function getResults(cli, request, job) {
   return build;
 }
 
-async function main(command, argv) {
-  const cli = new CLI();
-  const credentials = await auth();
-  const request = new Request(credentials);
-  const queue = [];
-
-  const commandToType = {
-    'commit': COMMIT,
-    'pr': PR,
-    'benchmark': BENCHMARK
-  };
-
-  if (command === 'walk') {
-    const type = commandToType[argv.type];
-    const builds = await listBuilds(cli, request, type);
-    for (const build of builds.failed) {
-      queue.push(build);
-    }
-  } else if (command === 'url') {
-    let parsed = parseJobFromURL(argv.url);
-    if (parsed) {
-      queue.push({
-        type: parsed.type,
-        jobid: parsed.jobid
-      });
-    } else {
-      const parser = await JobParser.fromPR(argv.url, cli, request);
-      if (!parser) {  // Not a valid PR URL
-        return yargs.showHelp();
-      }
-      const ciMap = parser.parse();
-      for (const [type, ci] of ciMap) {
-        queue.push({
-          type: type,
-          jobid: ci.jobid
-        });
-      }
-    }
-  } else {
-    queue.push({
-      type: commandToType[command],
-      jobid: argv.jobid
-    });
-  }
-
+async function runQueue(queue, cli, request, argv) {
   let dataToCopy = '';
   let dataToJson = [];
 
@@ -195,6 +163,86 @@ async function main(command, argv) {
     writeJson(argv.json, dataToJson);
     cli.separator('');
     cli.log(`Written JSON to ${argv.json}`);
+  }
+}
+
+function pad(any, length) {
+  return (any + '').padEnd(length);
+}
+
+// Produces a row for https://github.com/nodejs/reliability#ci-health-history
+function displayHealth(builds, cli) {
+  const [
+    count, success, pending, aborted, failed, unstable
+  ] = [
+    builds.count, builds.success.length, builds.pending.length,
+    builds.aborted.length, builds.failed.length, builds.unstable.length
+  ];
+  const rate = `${(success / (count - pending - aborted) * 100).toFixed(2)}%`;
+  // eslint-disable-next-line max-len
+  cli.log('| UTC Time         | RUNNING | SUCCESS | UNSTABLE | ABORTED | FAILURE | Green Rate |');
+  // eslint-disable-next-line max-len
+  cli.log('| ---------------- | ------- | ------- | -------- | ------- | ------- | ---------- |');
+  const time = new Date().toISOString().slice(0, 16).replace('T', ' ');
+  let result = `| ${time} | ${pad(pending, 7)} | ${pad(success, 8)}|`;
+  result += ` ${pad(unstable, 8)} | ${pad(aborted, 7)} | ${pad(failed, 7)} |`;
+  result += ` ${pad(rate, 10)} |`;
+  cli.log(result);
+}
+
+async function main(command, argv) {
+  const cli = new CLI();
+  const credentials = await auth();
+  const request = new Request(credentials);
+  const queue = [];
+
+  const commandToType = {
+    'commit': COMMIT,
+    'pr': PR,
+    'benchmark': BENCHMARK
+  };
+
+  if (command === 'rate' || command === 'walk') {
+    const type = commandToType[argv.type];
+    const builds = await listBuilds(cli, request, type);
+    if (command === 'walk') {
+      for (const build of builds.failed) {
+        queue.push(build);
+      }
+    } else {
+      displayHealth(builds, cli);
+    }
+  }
+
+  if (command === 'url') {
+    let parsed = parseJobFromURL(argv.url);
+    if (parsed) {
+      queue.push({
+        type: parsed.type,
+        jobid: parsed.jobid
+      });
+    } else {
+      const parser = await JobParser.fromPR(argv.url, cli, request);
+      if (!parser) {  // Not a valid PR URL
+        return yargs.showHelp();
+      }
+      const ciMap = parser.parse();
+      for (const [type, ci] of ciMap) {
+        queue.push({
+          type: type,
+          jobid: ci.jobid
+        });
+      }
+    }
+  } else if (commandToType[command]) {
+    queue.push({
+      type: commandToType[command],
+      jobid: argv.jobid
+    });
+  }
+
+  if (queue.length > 0) {
+    await runQueue(queue, cli, request, argv);
   }
 }
 
