@@ -1,0 +1,10 @@
+[
+  {
+    "source": "https://github.com/nodejs/node/pull/21246/",
+    "upstream": "https://ci.nodejs.org/job/node-test-pull-request/15470/",
+    "type": "BUILD_FAILURE",
+    "url": "https://ci.nodejs.org/job/node-test-commit-osx/nodes=osx1010/19307/console",
+    "reason": "ERROR: No acceptable C compiler found!\n\n       Please make sure you have a C compiler installed on your system and/or\n       consider adjusting the CC environment variable if you installed\n       it in a non-standard prefix.\nmake: *** [build-ci] Error 1",
+    "highlight": 0
+  }
+]

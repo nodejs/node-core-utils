@@ -1,0 +1,11 @@
+{
+  "_class": "hudson.matrix.MatrixBuild",
+  "result": "FAILURE",
+  "runs": [
+    {
+      "number": 19307,
+      "result": "FAILURE",
+      "url": "https://ci.nodejs.org/job/node-test-commit-osx/nodes=osx1010/19307/"
+    }
+  ]
+}

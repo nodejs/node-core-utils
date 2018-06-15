@@ -1,0 +1,126 @@
+Started by upstream project "node-test-commit-osx" build number 19307
+originally caused by:
+ Started by upstream project "node-test-commit" build number 19254
+ originally caused by:
+  Started by upstream project "node-test-pull-request" build number 15470
+  originally caused by:
+   Started by user James M Snell
+[EnvInject] - Loading node environment variables.
+Building remotely on test-macstadium-macos10.10-x64-1 (osx1010) in workspace /Users/iojs/build/workspace/node-test-commit-osx/nodes/osx1010
+Cloning the remote Git repository
+Avoid fetching tags
+Cloning repository git@github.com:nodejs/node.git
+ > git init /Users/iojs/build/workspace/node-test-commit-osx/nodes/osx1010 # timeout=10
+ERROR: Reference path does not exist: /Users/iojs/git/io.js.reference
+Fetching upstream changes from git@github.com:nodejs/node.git
+ > git --version # timeout=10
+using GIT_SSH to set credentials 
+ > git fetch --no-tags --progress git@github.com:nodejs/node.git +refs/heads/*:refs/remotes/origin/* # timeout=20
+ > git config remote.origin.url git@github.com:nodejs/node.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url git@github.com:nodejs/node.git # timeout=10
+Fetching upstream changes from git@github.com:nodejs/node.git
+using GIT_SSH to set credentials 
+ > git fetch --no-tags --progress git@github.com:nodejs/node.git +refs/heads/*:refs/remotes/origin/* +refs/pull/21246/head:refs/remotes/origin/_jenkins_local_branch # timeout=20
+Checking out Revision 06aea6a5f78339c71571e148c8f3bf2a48d4edf4 (refs/remotes/origin/_jenkins_local_branch)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 06aea6a5f78339c71571e148c8f3bf2a48d4edf4
+Commit message: "workers,trace_events: set thread name for workers"
+Using 'Changelog to branch' strategy.
+Cleaning workspace
+ > git rev-parse --verify HEAD # timeout=10
+Resetting working tree
+ > git reset --hard # timeout=10
+ > git clean -fdx # timeout=10
+[osx1010] $ /bin/sh -xe /var/folders/dr/m8hrvy3d71172187rtx7vm380000gp/T/jenkins17599764209366008267.sh
++ curl https://raw.githubusercontent.com/nodejs/build/master/jenkins/scripts/node-test-commit-pre.sh
++ bash -ex
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  1165  100  1165    0     0   1525      0 --:--:-- --:--:-- --:--:--  1526
++ git --version
+git version 2.5.4 (Apple Git-61)
++ git config --replace-all user.name Dummy
++ git config --replace-all user.email dummy@dummy.com
++ git config user.name
+Dummy
++ git config user.email
+dummy@dummy.com
++ echo
+
++ echo
+
++ git rebase --abort
+No rebase in progress?
++ true
++ git checkout -f refs/remotes/origin/_jenkins_local_branch
+HEAD is now at 06aea6a... workers,trace_events: set thread name for workers
++ git config user.name
+Dummy
++ git config user.email
+dummy@dummy.com
++ echo
+
++ echo
+
++ git status
+HEAD detached at 06aea6a
+nothing to commit, working directory clean
++ git rev-parse HEAD
+06aea6a5f78339c71571e148c8f3bf2a48d4edf4
++ git rev-parse baadc7ade3184560c5fbffe0be6c2446541936f5
+baadc7ade3184560c5fbffe0be6c2446541936f5
++ '[' -n baadc7ade3184560c5fbffe0be6c2446541936f5 ']'
++ git rebase --committer-date-is-author-date baadc7ade3184560c5fbffe0be6c2446541936f5
+Current branch HEAD is up to date, rebase forced.
+First, rewinding head to replay your work on top of it...
+Applying: workers,trace_events: set thread name for workers
++ '[' -n '' ']'
++ curl https://raw.githubusercontent.com/nodejs/build/master/jenkins/scripts/node-test-commit-diagnostics.sh
++ bash -ex -s before
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   985  100   985    0     0   5474      0 --:--:-- --:--:-- --:--:--  5502
++ set +x
+Thu Jun 14 19:12:23 EDT 2018
++ pgrep node
++ true
+Triggering projects: post-build-status-update
+[osx1010] $ /bin/sh -xe /var/folders/dr/m8hrvy3d71172187rtx7vm380000gp/T/jenkins9777574944423078346.sh
++ test true = true
++ FLAKY_TESTS_MODE=dontcare
++ echo FLAKY_TESTS_MODE=dontcare
+FLAKY_TESTS_MODE=dontcare
+++ getconf _NPROCESSORS_ONLN
++ NODE_TEST_DIR=/Users/iojs/node-tmp
++ FLAKY_TESTS=dontcare
++ make run-ci -j 2
+python ./configure 
+WARNING: failed to autodetect C compiler version (CC=/bin/xlc)
+ERROR: No acceptable C compiler found!
+
+       Please make sure you have a C compiler installed on your system and/or
+       consider adjusting the CC environment variable if you installed
+       it in a non-standard prefix.
+make: *** [build-ci] Error 1
+Build step 'Execute shell' marked build as failure
+Checking ^not ok
+Jenkins Text Finder: File set '*.tap' is empty
+Performing Post build task...
+Match found for : : True
+Logical operation result is TRUE
+Running script  : #/bin/bash
+
+set -x
+mkdir out/junit
+/Users/iojs/Library/Python/2.7/bin/tap2junit -i test.tap -o out/junit/test.xml
+/Users/iojs/Library/Python/2.7/bin/tap2junit -i cctest.tap -o out/junit/cctest.xml
+[osx1010] $ /bin/sh -xe /var/folders/dr/m8hrvy3d71172187rtx7vm380000gp/T/jenkins5185603241757124191.sh
++ set -x
++ mkdir out/junit
+mkdir: out: No such file or directory
+POST BUILD TASK : FAILURE
+END OF POST BUILD TASK : 0
+Recording test results
+Notifying upstream projects of job completion
+Finished: FAILURE

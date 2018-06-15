@@ -1,0 +1,36 @@
+{
+  "_class": "hudson.matrix.MatrixRun",
+  "actions": [
+    {
+      "_class": "hudson.matrix.MatrixChildParametersAction"
+    },
+    {},
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.model.Cause$UpstreamCause",
+          "upstreamBuild": 19307,
+          "upstreamProject": "node-test-commit-osx"
+        }
+      ]
+    },
+    {},
+    {
+      "_class": "hudson.plugins.git.util.BuildData"
+    },
+    {
+      "_class": "hudson.plugins.git.GitTagAction"
+    },
+    {},
+    {
+      "_class": "hudson.plugins.parameterizedtrigger.BuildInfoExporterAction"
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ]
+}
