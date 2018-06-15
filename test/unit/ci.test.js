@@ -7,8 +7,8 @@ const {
 const TestCLI = require('../fixtures/test_cli');
 const { tmpdir, copyShallow } = require('../common');
 const path = require('path');
+const fixtures = require('../fixtures');
 
-const fs = require('fs');
 const assert = require('assert');
 const {
   commentsWithCI
@@ -67,8 +67,8 @@ describe('JobParser', () => {
 describe('Jenkins', () => {
   it('should get failures in PR build and commit build', async() => {
     tmpdir.refresh();
-    const fixturesDir = path.join(
-      __dirname, '..', 'fixtures', 'jenkins', 'js-flake-1');
+    const prefix = ['jenkins', 'js-flake-1'];
+    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -83,23 +83,37 @@ describe('Jenkins', () => {
     await commitBuild.getResults();
 
     assert.deepStrictEqual(prBuild.commitBuild.failures, commitBuild.failures);
-    const expectedJson = JSON.parse(
-      fs.readFileSync(path.join(fixturesDir, 'expected.json'), 'utf8')
+    const expectedPrJson = fixtures.readJSON(
+      ...prefix, 'expected-pr.json'
     );
-    assert.deepStrictEqual(prBuild.formatAsJson(), expectedJson);
-    assert.deepStrictEqual(prBuild.commitBuild.formatAsJson(), expectedJson);
+    assert.deepStrictEqual(prBuild.formatAsJson(), expectedPrJson);
 
-    const expectedPath = path.join(fixturesDir, 'expected.md');
+    const expectedCommitJson = fixtures.readJSON(
+      ...prefix, 'expected-commit.json'
+    );
+    assert.deepStrictEqual(
+      prBuild.commitBuild.formatAsJson(),
+      expectedCommitJson
+    );
 
-    const markdown = commitBuild.formatAsMarkdown();
-    const expected = fs.readFileSync(expectedPath, 'utf8');
-    assert.strictEqual(markdown, expected);
+    assert.deepStrictEqual(prBuild.commitBuild.failures, commitBuild.failures);
+    const expectedPrMd = fixtures.readFile(
+      ...prefix, 'expected-pr.md'
+    );
+    assert.deepStrictEqual(prBuild.formatAsMarkdown(), expectedPrMd);
+    const expectedCommitMd = fixtures.readFile(
+      ...prefix, 'expected-commit.md'
+    );
+    assert.deepStrictEqual(
+      prBuild.commitBuild.formatAsMarkdown(),
+      expectedCommitMd
+    );
   });
 
   it('should get successful PR build and commit build', async() => {
     tmpdir.refresh();
-    const fixturesDir = path.join(
-      __dirname, '..', 'fixtures', 'jenkins', 'success');
+    const prefix = ['jenkins', 'success'];
+    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -114,22 +128,19 @@ describe('Jenkins', () => {
     await commitBuild.getResults();
 
     assert.deepStrictEqual(prBuild.commitBuild.failures, commitBuild.failures);
-    const expectedJson = JSON.parse(
-      fs.readFileSync(path.join(fixturesDir, 'expected.json'), 'utf8')
-    );
+
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
     assert.deepStrictEqual(prBuild.commitBuild.failures, expectedJson);
 
-    const expectedPath = path.join(fixturesDir, 'expected.md');
-
     const markdown = commitBuild.formatAsMarkdown();
-    const expected = fs.readFileSync(expectedPath, 'utf8');
+    const expected = fixtures.readFile(...prefix, 'expected.md');
     assert.strictEqual(markdown, expected);
   });
 
   it('should get benchmark run', async() => {
     tmpdir.refresh();
-    const fixturesDir = path.join(
-      __dirname, '..', 'fixtures', 'jenkins', 'benchmark-buffer');
+    const prefix = ['jenkins', 'benchmark-buffer'];
+    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -141,15 +152,11 @@ describe('Jenkins', () => {
     const run = new BenchmarkRun(cli, request, 150);
     await run.getResults();
 
-    const expectedPath = path.join(fixturesDir, 'expected.md');
-
     const markdown = run.formatAsMarkdown();
-    const expected = fs.readFileSync(expectedPath, 'utf8');
+    const expected = fixtures.readFile(...prefix, 'expected.md');
     assert.strictEqual(markdown, expected);
 
-    const expectedJson = JSON.parse(
-      fs.readFileSync(path.join(fixturesDir, 'expected.json'), 'utf8')
-    );
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
     assert.deepStrictEqual(run.formatAsJson(), expectedJson);
   });
 });
