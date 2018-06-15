@@ -1,0 +1,27 @@
+{
+  "_class": "hudson.matrix.MatrixRun",
+  "actions": [
+    {
+      "_class": "hudson.matrix.MatrixChildParametersAction"
+    },
+    {},
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.model.Cause$UpstreamCause",
+          "upstreamBuild": 2220,
+          "upstreamProject": "node-test-commit-linuxone"
+        }
+      ]
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ]
+}
