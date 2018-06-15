@@ -1,0 +1,81 @@
+{
+  "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+  "actions": [
+    {
+      "_class": "hudson.model.ParametersAction",
+      "parameters": [
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "CERTIFY_SAFE",
+          "value": false
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "TARGET_GITHUB_ORG",
+          "value": "nodejs"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "TARGET_REPO_NAME",
+          "value": "node"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "PR_ID",
+          "value": "21055"
+        },
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "POST_STATUS_TO_PR",
+          "value": true
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "REBASE_ONTO",
+          "value": "<pr base branch>"
+        }
+      ]
+    },
+    {
+      "_class": "hudson.model.CauseAction"
+    },
+    {},
+    {
+      "_class": "hudson.plugins.git.util.BuildData"
+    },
+    {
+      "_class": "hudson.plugins.git.GitTagAction"
+    },
+    {},
+    {},
+    {
+      "_class": "hudson.tasks.test.AggregatedTestResultPublisher$TestResultAction"
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "number": 15442,
+  "result": "FAILURE",
+  "url": "https://ci.nodejs.org/job/node-test-pull-request/15442/",
+  "changeSet": {
+    "_class": "hudson.plugins.git.GitChangeSetList",
+    "items": [
+      {
+        "_class": "hudson.plugins.git.GitChangeSet",
+        "commitId": "adf43eeaca8ad53007efc1e56cb126c360f4fe3b",
+        "author": {
+          "absoluteUrl": "https://ci.nodejs.org/user/jan.krems",
+          "fullName": "jan.krems"
+        },
+        "authorEmail": "jan.krems@gmail.com",
+        "date": "2018-06-01 17:02:57 +0200",
+        "msg": "deps: Upgrade node-inspect to 1.11.5"
+      }
+    ]
+  },
+  "subBuilds": []
+}

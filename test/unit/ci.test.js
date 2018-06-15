@@ -137,6 +137,29 @@ describe('Jenkins', () => {
     assert.strictEqual(markdown, expected);
   });
 
+  it('should handle node-test-commit trigger failure', async() => {
+    tmpdir.refresh();
+    const prefix = ['jenkins', 'trigger-failure'];
+    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+    const request = {
+      // any attempt to call method on this would throw
+    };
+    const prBuild = new PRBuild(cli, request, 15442);
+    await prBuild.getResults();
+
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
+    assert.deepStrictEqual(prBuild.formatAsJson(), expectedJson);
+
+    const markdown = prBuild.formatAsMarkdown();
+    const expected = fixtures.readFile(...prefix, 'expected.md');
+    assert.strictEqual(markdown, expected);
+  });
+
   it('should get benchmark run', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'benchmark-buffer'];
