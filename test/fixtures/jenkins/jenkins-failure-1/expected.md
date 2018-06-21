@@ -1,9 +1,9 @@
-Failures in job https://ci.nodejs.org/job/node-test-pull-request/15449/ 
+Failures in job https://ci.nodejs.org/job/node-test-pull-request/15449/
 
 #### [label=rhel72-s390x](https://ci.nodejs.org/job/node-test-commit-linuxone/label=rhel72-s390x/2220/console)
 
 <details>
-<summary>See failures</summary>
+<summary>See failures on test-linuxonecc-rhel72-s390x-3:</summary>
 
 ```
 ERROR: Error fetching remote repo 'origin'

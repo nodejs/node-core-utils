@@ -1,9 +1,9 @@
-Failures in job https://ci.nodejs.org/job/node-test-pull-request/15363/ 
+Failures in job https://ci.nodejs.org/job/node-test-pull-request/15363/
 
 #### [debian9-64](https://ci.nodejs.org/job/node-test-commit-linux/nodes=debian9-64/19446/console)
 
 <details>
-<summary>See failures</summary>
+<summary>See failures on test-softlayer-debian9-x64-1:</summary>
 
 ```
 not ok 2178 sequential/test-inspector-port-zero-cluster
