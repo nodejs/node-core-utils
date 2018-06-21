@@ -1,8 +1,0 @@
-[
-  {
-    "type": "JENKINS_FAILURE",
-    "url": "https://ci.nodejs.org/job/node-test-commit/19225",
-    "reason": "ERROR: Error fetching remote repo 'origin'\nhudson.plugins.git.GitException: Failed to fetch from git@github.com:nodejs/node.git\n\tat hudson.plugins.git.GitSCM.fetchFrom(GitSCM.java:889)\n\tat hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1146)\n\tat hudson.plugins.git.GitSCM.checkout(GitSCM.java:1177)\n\tat hudson.scm.SCM.checkout(SCM.java:504)",
-    "highlight": 0
-  }
-]

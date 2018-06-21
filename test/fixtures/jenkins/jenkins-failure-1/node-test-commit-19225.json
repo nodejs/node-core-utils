@@ -1,5 +1,6 @@
 {
   "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+  "builtOn": "test-packetnet-ubuntu1604-x64-1",
   "actions": [
     {
       "_class": "com.tikal.jenkins.plugins.multijob.MultiJobParametersAction",

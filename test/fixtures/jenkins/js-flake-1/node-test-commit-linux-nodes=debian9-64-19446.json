@@ -34,5 +34,6 @@
     {},
     {},
     {}
-  ]
+  ],
+  "builtOn": "test-softlayer-debian9-x64-1"
 }

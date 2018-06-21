@@ -3,7 +3,9 @@
     "source": "https://github.com/nodejs/node/pull/21055/",
     "upstream": "https://ci.nodejs.org/job/node-test-pull-request/15442/",
     "type": "BUILD_FAILURE",
-    "url": "https://ci.nodejs.org/job/node-test-pull-request/15442/",
-    "reason": "Failed to trigger node-test-commit"
+    "url": "https://ci.nodejs.org/job/node-test-pull-request/15442/console",
+    "reason": "Failed to trigger node-test-commit",
+    "highlight": 0,
+    "builtOn": "test-softlayer-ubuntu1604-x64-1"
   }
 ]

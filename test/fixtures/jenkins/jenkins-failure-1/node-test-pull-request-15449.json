@@ -1,5 +1,6 @@
 {
   "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+  "builtOn": "test-softlayer-ubuntu1604-x64-1",
   "actions": [
     {
       "_class": "hudson.model.ParametersAction",

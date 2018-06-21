@@ -1,6 +1,7 @@
 {
   "_class": "hudson.matrix.MatrixBuild",
   "result": "FAILURE",
+  "builtOn": "test-softlayer-ubuntu1604-x64-1",
   "runs": [
     {
       "number": 19307,

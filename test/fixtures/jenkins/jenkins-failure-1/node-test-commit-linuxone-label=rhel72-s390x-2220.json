@@ -23,5 +23,6 @@
     {},
     {},
     {}
-  ]
+  ],
+  "builtOn": "test-linuxonecc-rhel72-s390x-3"
 }
