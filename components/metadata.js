@@ -10,7 +10,9 @@ const MetadataGenerator = require('../lib/metadata_gen');
 const fs = require('fs');
 
 module.exports = async function getMetadata(argv, cli) {
-  const credentials = await auth();
+  const credentials = await auth({
+    github: true
+  });
   const request = new Request(credentials);
 
   const data = new PRData(argv, cli, request);

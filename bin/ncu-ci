@@ -195,7 +195,10 @@ function displayHealth(builds, cli) {
 
 async function main(command, argv) {
   const cli = new CLI();
-  const credentials = await auth();
+  const credentials = await auth({
+    github: true,
+    jenkins: true
+  });
   const request = new Request(credentials);
   const queue = [];
 

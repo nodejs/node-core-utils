@@ -48,7 +48,9 @@ function handler(argv) {
 
 async function main(argv) {
   const cli = new CLI();
-  const credentials = await auth();
+  const credentials = await auth({
+    github: true
+  });
   const request = new Request(credentials);
 
   const [ command ] = argv._;

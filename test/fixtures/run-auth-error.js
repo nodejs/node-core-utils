@@ -6,5 +6,5 @@ async function mockCredentials() {
 
 (async function() {
   const auth = require('../../lib/auth');
-  await auth(mockCredentials);
+  await auth({ github: true }, mockCredentials);
 })();

@@ -15,12 +15,16 @@ const FIRST_TIME_MSG =
   'If you prefer to create it yourself on Github, ' +
   'see https://github.com/nodejs/node-core-utils/blob/master/README.md.';
 
+const MOCKED_TOKEN = JSON.stringify({
+  github: 'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'
+});
+
 describe('auth', async function() {
   it('asks for auth data if no ncurc is found', async function() {
     this.timeout(2000);
     await runAuthScript(
       undefined,
-      [FIRST_TIME_MSG, 'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm']
+      [FIRST_TIME_MSG, MOCKED_TOKEN]
     );
   });
 
@@ -28,7 +32,7 @@ describe('auth', async function() {
     this.timeout(2000);
     await runAuthScript(
       { HOME: 'this is not json' },
-      [FIRST_TIME_MSG, 'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm']
+      [FIRST_TIME_MSG, MOCKED_TOKEN]
     );
   });
 
@@ -36,7 +40,7 @@ describe('auth', async function() {
     this.timeout(2000);
     await runAuthScript(
       { HOME: { username: 'nyancat', token: '0123456789abcdef' } },
-      [ 'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm' ]
+      [ MOCKED_TOKEN ]
     );
   });
 
@@ -44,7 +48,7 @@ describe('auth', async function() {
     this.timeout(2000);
     await runAuthScript(
       { HOME: { username: 'nyancat', token: '0123456789abcdef' } },
-      ['bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm']
+      [MOCKED_TOKEN]
     );
   });
 
@@ -55,7 +59,7 @@ describe('auth', async function() {
         HOME: { username: 'notnyancat', token: 'somewrongtoken' },
         XDG_CONFIG_HOME: { username: 'nyancat', token: '0123456789abcdef' }
       },
-      ['bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm']
+      [MOCKED_TOKEN]
     );
   });
 
@@ -72,7 +76,7 @@ describe('auth', async function() {
 // ncurc: { HOME: 'text to put in home ncurc',
 //          XDG_CONFIG_HOME: 'text to put in this ncurc' }
 function runAuthScript(
-  ncurc = {}, expect = [], error = '', fixture = 'run-auth') {
+  ncurc = {}, expect = [], error = '', fixture = 'run-auth-github') {
   return new Promise((resolve, reject) => {
     const newEnv = { HOME: undefined, XDG_CONFIG_HOME: undefined };
     if (ncurc.HOME === undefined) ncurc.HOME = ''; // HOME must always be set.
