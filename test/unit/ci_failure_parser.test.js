@@ -1,7 +1,7 @@
 
 'use strict';
 
-const CIFailureParser = require('../../lib/ci_failure_parser');
+const CIFailureParser = require('../../lib/ci/ci_failure_parser');
 const fixtures = require('../fixtures');
 const assert = require('assert');
 const { raw } = require('../common');
