@@ -49,6 +49,11 @@ const expected = new Map([
     link: 'https://ci.nodejs.org/job/node-test-commit-lite/246/',
     date: '2018-02-09T21:38:30Z',
     jobid: 246
+  }],
+  ['LITE_PR_PIPELINE', {
+    link: 'https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/7213/pipeline/',
+    date: '2017-10-21T04:16:36.458Z',
+    jobid: 7213
   }]
 ]);
 
