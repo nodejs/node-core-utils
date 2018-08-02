@@ -3,6 +3,10 @@
 'use strict';
 
 const {
+  parsePRFromURL
+} = require('../lib/links');
+
+const {
   JobParser,
   parseJobFromURL,
   CI_TYPES_KEYS: {
@@ -12,7 +16,7 @@ const {
 
 const {
   PRBuild, BenchmarkRun, CommitBuild, listBuilds
-  // , jobCache
+  , jobCache
 } = require('../lib/ci/ci_result_parser');
 const clipboardy = require('clipboardy');
 const { writeJson } = require('../lib/file');
@@ -22,10 +26,12 @@ const auth = require('../lib/auth');
 const Request = require('../lib/request');
 const CLI = require('../lib/cli');
 const yargs = require('yargs');
+const _ = require('lodash');
+const chalk = require('chalk');
 
 // This is used for testing
 // Default cache dir is ${ncu-source-dir}/.ncu/cache
-// jobCache.enable();
+jobCache.enable();
 
 // eslint-disable-next-line no-unused-vars
 const argv = yargs
@@ -151,9 +157,7 @@ async function runQueue(queue, cli, request, argv) {
       dataToCopy += build.formatAsMarkdown();
     }
 
-    if (argv.json) {
-      dataToJson = dataToJson.concat(build.formatAsJson());
-    }
+    dataToJson = dataToJson.concat(build.formatAsJson());
   }
 
   if (argv.copy) {
@@ -167,6 +171,8 @@ async function runQueue(queue, cli, request, argv) {
     cli.separator('');
     cli.log(`Written JSON to ${argv.json}`);
   }
+
+  return dataToJson;
 }
 
 function pad(any, length) {
@@ -191,6 +197,55 @@ function displayHealth(builds, cli) {
   result += ` ${pad(unstable, 8)} | ${pad(aborted, 7)} | ${pad(failed, 7)} |`;
   result += ` ${pad(rate, 10)} |`;
   cli.log(result);
+}
+
+function getHighlight(f) {
+  return f.reason.split('\n')[f.highlight]
+    .replace(/not ok \d+ /, '')
+    .replace(
+      /'JNLP4-connect connection from .+?'/, 'JNLP4-connect connection from ...'
+    )
+    .replace(/FATAL: Could not checkout \w+/, 'FATAL: Could not checkout ...');
+}
+
+function aggregateFailures(cli, failures) {
+  const grouped = _.chain(failures)
+    .groupBy(getHighlight)
+    .toPairs()
+    .sortBy()
+    .value();
+  let results = [];
+  for (const item of grouped) {
+    const [ key, failures ] = item;
+    const cleaned = _.chain(failures)
+      .uniqBy('source')
+      .sortBy((f) => parseJobFromURL(f.upstream).jobid)
+      .value();
+    results.push([ key, failures, cleaned ]);
+  };
+
+  results = _.sortBy(results, r => 0 - (r[2].length));
+
+  cli.separator(chalk.bold('Stats'));
+  for (const item of results) {
+    const [ key, failures, cleaned ] = item;
+    const machines = _.uniq(failures.map(f => f.builtOn)).join(', ');
+    cli.table('Reason', key);
+    cli.table('Type', failures[0].type);
+    const prs = cleaned
+      .map(f => {
+        const parsed = parsePRFromURL(f.source);
+        return parsed ? `#${parsed.prid}` : f.source;
+      })
+      .join(', ');
+    cli.table('Failed PR', `${cleaned.length} (${prs})`);
+    cli.table('Appeared', machines);
+    if (cleaned.length > 1) {
+      cli.table('First CI', `${cleaned[0].upstream}`);
+    }
+    cli.table('Last CI', `${cleaned[cleaned.length - 1].upstream}`);
+    cli.separator();
+  }
 }
 
 async function main(command, argv) {
@@ -248,7 +303,10 @@ async function main(command, argv) {
   }
 
   if (queue.length > 0) {
-    await runQueue(queue, cli, request, argv);
+    const data = await runQueue(queue, cli, request, argv);
+    if (command === 'walk' && argv.stats) {
+      aggregateFailures(cli, data);
+    }
   }
 }
 
