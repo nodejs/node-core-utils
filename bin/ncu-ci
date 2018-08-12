@@ -16,7 +16,7 @@ const {
 
 const {
   PRBuild, BenchmarkRun, CommitBuild, listBuilds
-  , jobCache
+  // , jobCache
 } = require('../lib/ci/ci_result_parser');
 const clipboardy = require('clipboardy');
 const { writeJson } = require('../lib/file');
@@ -31,7 +31,7 @@ const chalk = require('chalk');
 
 // This is used for testing
 // Default cache dir is ${ncu-source-dir}/.ncu/cache
-jobCache.enable();
+// jobCache.enable();
 
 // eslint-disable-next-line no-unused-vars
 const argv = yargs
