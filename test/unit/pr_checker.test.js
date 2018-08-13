@@ -427,39 +427,39 @@ describe('PRChecker', () => {
       const expectedLogs = {
         info: [
           [
-            'Last Full PR CI on 2017-10-27T04:16:36.458Z: ' +
-            'https://ci.nodejs.org/job/node-test-pull-request/10984/'
+            'Last Full PR CI on 2017-10-25T04:16:36.458Z: ' +
+            'https://ci.nodejs.org/job/node-test-pull-request/10992/'
           ],
           [
-            'Last CITGM CI on 2017-10-27T04:16:36.458Z: ' +
+            'Last CITGM CI on 2017-10-22T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/citgm-smoker/1030/'
           ],
           [
-            'Last libuv CI on 2017-10-24T04:16:36.458Z: ' +
+            'Last libuv CI on 2017-10-23T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/libuv-test-commit/537/'
           ],
           [
-            'Last No Intl CI on 2017-10-23T04:16:36.458Z: ' +
+            'Last No Intl CI on 2017-10-24T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/node-test-commit-nointl/7/'
           ],
           [
-            'Last V8 CI on 2017-10-22T04:16:36.458Z: ' +
+            'Last V8 CI on 2017-10-25T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/node-test-commit-v8-linux/1018/'
           ],
           [
-            'Last Benchmark CI on 2017-10-21T04:16:36.458Z: ' +
+            'Last Benchmark CI on 2017-10-26T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/benchmark-node-micro-benchmarks/20/'
           ],
           [
-            'Last Linter CI on 2017-10-22T04:16:36.458Z: ' +
+            'Last Linter CI on 2017-10-27T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/node-test-linter/13127/'
           ],
           [
-            'Last Lite Commit CI on 2018-02-09T21:38:30Z: ' +
+            'Last Lite Commit CI on 2017-10-28T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/node-test-commit-lite/246/'
           ],
           [
-            'Last Lite PR Pipeline CI on 2017-10-21T04:16:36.458Z: ' +
+            'Last Lite PR Pipeline CI on 2017-10-29T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/7213/pipeline/'
           ]
         ]
