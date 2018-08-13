@@ -457,6 +457,10 @@ describe('PRChecker', () => {
           [
             'Last Lite Commit CI on 2018-02-09T21:38:30Z: ' +
             'https://ci.nodejs.org/job/node-test-commit-lite/246/'
+          ],
+          [
+            'Last Lite PR Pipeline CI on 2017-10-21T04:16:36.458Z: ' +
+            'https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/7213/pipeline/'
           ]
         ]
       };
