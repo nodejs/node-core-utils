@@ -3,10 +3,6 @@
 'use strict';
 
 const {
-  parsePRFromURL
-} = require('../lib/links');
-
-const {
   JobParser,
   parseJobFromURL,
   CI_TYPES_KEYS: {
@@ -15,7 +11,7 @@ const {
 } = require('../lib/ci/ci_type_parser');
 
 const {
-  PRBuild, BenchmarkRun, CommitBuild, listBuilds
+  PRBuild, BenchmarkRun, CommitBuild, listBuilds, FailureAggregator
   // , jobCache
 } = require('../lib/ci/ci_result_parser');
 const clipboardy = require('clipboardy');
@@ -26,8 +22,6 @@ const auth = require('../lib/auth');
 const Request = require('../lib/request');
 const CLI = require('../lib/cli');
 const yargs = require('yargs');
-const _ = require('lodash');
-const chalk = require('chalk');
 
 // This is used for testing
 // Default cache dir is ${ncu-source-dir}/.ncu/cache
@@ -49,12 +43,20 @@ const argv = yargs
   })
   .command({
     command: 'walk <type>',
-    desc: 'Walk the CI and store the failures',
+    desc: 'Walk the CI and display the failures',
     builder: (yargs) => {
       yargs
         .positional('type', {
           describe: 'type of CI',
           choices: ['commit', 'pr']
+        })
+        .option('stats', {
+          default: false,
+          describe: 'Aggregate the results'
+        })
+        .option('limit', {
+          default: 99,
+          describe: 'Maximum number of CIs to get data from'
         });
     },
     handler
@@ -160,19 +162,10 @@ async function runQueue(queue, cli, request, argv) {
     dataToJson = dataToJson.concat(build.formatAsJson());
   }
 
-  if (argv.copy) {
-    clipboardy.writeSync(dataToCopy);
-    cli.separator('');
-    cli.log(`Written markdown to clipboard`);
-  }
-
-  if (argv.json) {
-    writeJson(argv.json, dataToJson);
-    cli.separator('');
-    cli.log(`Written JSON to ${argv.json}`);
-  }
-
-  return dataToJson;
+  return {
+    json: dataToJson,
+    copy: dataToCopy
+  };
 }
 
 function pad(any, length) {
@@ -199,55 +192,6 @@ function displayHealth(builds, cli) {
   cli.log(result);
 }
 
-function getHighlight(f) {
-  return f.reason.split('\n')[f.highlight]
-    .replace(/not ok \d+ /, '')
-    .replace(
-      /'JNLP4-connect connection from .+?'/, 'JNLP4-connect connection from ...'
-    )
-    .replace(/FATAL: Could not checkout \w+/, 'FATAL: Could not checkout ...');
-}
-
-function aggregateFailures(cli, failures) {
-  const grouped = _.chain(failures)
-    .groupBy(getHighlight)
-    .toPairs()
-    .sortBy()
-    .value();
-  let results = [];
-  for (const item of grouped) {
-    const [ key, failures ] = item;
-    const cleaned = _.chain(failures)
-      .uniqBy('source')
-      .sortBy((f) => parseJobFromURL(f.upstream).jobid)
-      .value();
-    results.push([ key, failures, cleaned ]);
-  };
-
-  results = _.sortBy(results, r => 0 - (r[2].length));
-
-  cli.separator(chalk.bold('Stats'));
-  for (const item of results) {
-    const [ key, failures, cleaned ] = item;
-    const machines = _.uniq(failures.map(f => f.builtOn)).join(', ');
-    cli.table('Reason', key);
-    cli.table('Type', failures[0].type);
-    const prs = cleaned
-      .map(f => {
-        const parsed = parsePRFromURL(f.source);
-        return parsed ? `#${parsed.prid}` : f.source;
-      })
-      .join(', ');
-    cli.table('Failed PR', `${cleaned.length} (${prs})`);
-    cli.table('Appeared', machines);
-    if (cleaned.length > 1) {
-      cli.table('First CI', `${cleaned[0].upstream}`);
-    }
-    cli.table('Last CI', `${cleaned[cleaned.length - 1].upstream}`);
-    cli.separator();
-  }
-}
-
 async function main(command, argv) {
   const cli = new CLI();
   const credentials = await auth({
@@ -267,7 +211,7 @@ async function main(command, argv) {
     const type = commandToType[argv.type];
     const builds = await listBuilds(cli, request, type);
     if (command === 'walk') {
-      for (const build of builds.failed) {
+      for (const build of builds.failed.slice(0, argv.limit)) {
         queue.push(build);
       }
     } else {
@@ -304,8 +248,29 @@ async function main(command, argv) {
 
   if (queue.length > 0) {
     const data = await runQueue(queue, cli, request, argv);
+
     if (command === 'walk' && argv.stats) {
-      aggregateFailures(cli, data);
+      const aggregator = new FailureAggregator(cli, data.json);
+      data.json = aggregator.aggregate();
+      cli.log('');
+      cli.separator('Stats');
+      cli.log('');
+      aggregator.display();
+      if (argv.copy) {
+        data.copy = aggregator.formatAsMarkdown();
+      }
+    }
+
+    if (argv.copy) {
+      clipboardy.writeSync(data.copy);
+      cli.separator('');
+      cli.log(`Written markdown to clipboard`);
+    }
+
+    if (argv.json) {
+      writeJson(argv.json, data.json);
+      cli.separator('');
+      cli.log(`Written JSON to ${argv.json}`);
     }
   }
 }
