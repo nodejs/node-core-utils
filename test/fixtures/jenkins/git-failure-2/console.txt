@@ -1,0 +1,90 @@
+19:15:49 Started by upstream project "node-test-commit-linuxone" build number 3915
+19:15:49 originally caused by:
+19:15:49  Started by upstream project "node-test-commit" build number 20504
+19:15:49  originally caused by:
+19:15:49   Started by upstream project "node-test-pull-request" build number 16429
+19:15:49   originally caused by:
+19:15:49    Started by user mscdex
+19:15:49 [EnvInject] - Loading node environment variables.
+19:15:50 Building remotely on test-linuxonecc-rhel72-s390x-3 (rhel72-s390x v8test2) in workspace /data/iojs/build/workspace/node-test-commit-linuxone/nodes/rhel72-s390x
+19:15:50  > git rev-parse --is-inside-work-tree # timeout=10
+19:15:50 Fetching changes from the remote Git repository
+19:15:50  > git config remote.origin.url git@github.com:nodejs/node.git # timeout=10
+19:15:50 Fetching upstream changes from git@github.com:nodejs/node.git
+19:15:50  > git --version # timeout=10
+19:15:50 using GIT_SSH to set credentials 
+19:15:50  > git fetch --no-tags --progress git@github.com:nodejs/node.git +refs/heads/*:refs/remotes/origin/* +refs/pull/22273/head:refs/remotes/origin/_jenkins_local_branch # timeout=20
+19:15:54 Checking out Revision f6438c66a065bc2a43f24f636e46e688ae0f4eee (refs/remotes/origin/_jenkins_local_branch)
+19:15:54  > git config core.sparsecheckout # timeout=10
+19:15:54  > git checkout -f f6438c66a065bc2a43f24f636e46e688ae0f4eee
+19:15:54 Commit message: "fixup: remove branch entirely instead of asserting"
+19:15:54  > git rev-list --no-walk 4757c91dc4e270aed9add3a65d3aa32a7b24a479 # timeout=10
+19:15:55 Cleaning workspace
+19:15:55  > git rev-parse --verify HEAD # timeout=10
+19:15:55 Resetting working tree
+19:15:55  > git reset --hard # timeout=10
+19:15:55  > git clean -fdx # timeout=10
+19:15:56 Exporting environment variable NODEJS_VERSION with Node.js version '11.0.0'
+19:15:56 Exporting environment variable NODEJS_MAJOR_VERSION with Node.js major version '11'
+19:15:56 Exporting parameter NODEJS_VERSION with Node.js version '11.0.0'
+19:15:56 Exporting parameter NODEJS_MAJOR_VERSION with Node.js major version '11'
+19:15:56 [rhel72-s390x] $ /bin/sh -xe /tmp/jenkins7325057057705257195.sh
+19:15:56 + curl https://raw.githubusercontent.com/nodejs/build/master/jenkins/scripts/node-test-commit-pre.sh
+19:15:56 + bash -ex -s before
+19:15:56   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+19:15:56                                  Dload  Upload   Total   Spent    Left  Speed
+19:15:57 
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  1165  100  1165    0     0   4034      0 --:--:-- --:--:-- --:--:--  4045
+19:15:57 + git --version
+19:15:57 git version 1.8.3.1
+19:15:57 + git config --replace-all user.name Dummy
+19:15:57 + git config --replace-all user.email dummy@dummy.com
+19:15:57 + git config user.name
+19:15:57 Dummy
+19:15:57 + git config user.email
+19:15:57 dummy@dummy.com
+19:15:57 + echo
+19:15:57 
+19:15:57 + echo
+19:15:57 
+19:15:57 + git rebase --abort
+19:15:57 No rebase in progress?
+19:15:57 + true
+19:15:57 + git checkout -f refs/remotes/origin/_jenkins_local_branch
+19:15:57 HEAD is now at f6438c6... fixup: remove branch entirely instead of asserting
+19:15:57 + git config user.name
+19:15:57 Dummy
+19:15:57 + git config user.email
+19:15:57 dummy@dummy.com
+19:15:57 + echo
+19:15:57 
+19:15:57 + echo
+19:15:57 
+19:15:57 + git status
+19:15:57 # HEAD detached at f6438c6
+19:15:57 # Changes not staged for commit:
+19:15:57 #   (use "git add <file>..." to update what will be committed)
+19:15:57 #   (use "git checkout -- <file>..." to discard changes in working directory)
+19:15:57 #
+19:15:57 #	modified:   deps/v8/third_party/jinja2/LICENSE
+19:15:57 #
+19:15:57 # Untracked files:
+19:15:57 #   (use "git add <file>..." to include in what will be committed)
+19:15:57 #
+19:15:57 #	build/
+19:15:57 no changes added to commit (use "git add" and/or "git commit -a")
+19:15:57 + git rev-parse HEAD
+19:15:57 f6438c66a065bc2a43f24f636e46e688ae0f4eee
+19:15:57 + git rev-parse 78584b64d88c0567c46e3cf7bae42aa73927df40
+19:15:57 78584b64d88c0567c46e3cf7bae42aa73927df40
+19:15:57 + '[' -n 78584b64d88c0567c46e3cf7bae42aa73927df40 ']'
+19:15:57 + git rebase --committer-date-is-author-date 78584b64d88c0567c46e3cf7bae42aa73927df40
+19:15:57 Cannot rebase: You have unstaged changes.
+19:15:58 Please commit or stash them.
+19:15:58 Build step 'Execute shell' marked build as failure
+19:15:58 Recording test results
+19:15:58 ERROR: Step ‘Publish JUnit test result report’ failed: No test report files were found. Configuration error?
+19:15:58 Sending e-mails to: michael_dawson@ca.ibm.com George.Adams@uk.ibm.com
+19:16:00 Notifying upstream projects of job completion
+19:16:00 Finished: FAILURE

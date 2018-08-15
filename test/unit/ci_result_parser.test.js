@@ -107,9 +107,9 @@ describe('Jenkins', () => {
     assert.strictEqual(markdown, expected);
   });
 
-  it('should handle jenkins failure', async() => {
+  it('should handle git failure', async() => {
     tmpdir.refresh();
-    const prefix = ['jenkins', 'jenkins-failure-1'];
+    const prefix = ['jenkins', 'git-failure-1'];
     const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;

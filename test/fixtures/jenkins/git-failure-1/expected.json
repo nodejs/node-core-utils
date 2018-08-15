@@ -2,7 +2,7 @@
   {
     "source": "https://github.com/nodejs/node/pull/21273/",
     "upstream": "https://ci.nodejs.org/job/node-test-pull-request/15449/",
-    "type": "JENKINS_FAILURE",
+    "type": "GIT_FAILURE",
     "url": "https://ci.nodejs.org/job/node-test-commit-linuxone/label=rhel72-s390x/2220/console",
     "reason": "ERROR: Error fetching remote repo 'origin'\nhudson.plugins.git.GitException: Failed to fetch from git@github.com:nodejs/node.git\n\tat hudson.plugins.git.GitSCM.fetchFrom(GitSCM.java:889)\n\tat hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1146)\n\tat hudson.plugins.git.GitSCM.checkout(GitSCM.java:1177)\n\tat hudson.scm.SCM.checkout(SCM.java:504)",
     "highlight": 0,
