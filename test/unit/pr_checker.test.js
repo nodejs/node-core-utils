@@ -678,11 +678,18 @@ describe('PRChecker', () => {
   });
 
   describe('checkGitConfig', () => {
-    it('should log an error is user has wrong git config', () => {
+    it('should log an warning is user has wrong git config', () => {
       const cli = new TestCLI();
       const expectedLogs = {
-        error: [
-          [ 'Author does not have correct git config!' ]
+        warn: [
+          [
+            'GitHub cannot link the author of \'doc: some changes\' ' +
+            'to their GitHub account.'
+          ],
+          [
+            'Please suggest them to take a look at ' +
+            'https://github.com/nodejs/node/blob/99b1ada/doc/guides/contributing/pull-requests.md#step-1-fork'
+          ]
         ]
       };
 
@@ -702,7 +709,7 @@ describe('PRChecker', () => {
       const checker = new PRChecker(cli, data, argv);
       const status = checker.checkGitConfig();
 
-      assert.deepStrictEqual(status, false);
+      assert.deepStrictEqual(status, true);
       cli.assertCalledWith(expectedLogs);
     });
 
