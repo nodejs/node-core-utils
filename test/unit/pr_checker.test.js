@@ -169,7 +169,7 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [['49 hours left to land']],
+        warn: [['Wait at least 49 more hours before landing']],
         info: [['This PR was created on Sat Oct 28 2017 (weekend in UTC)']]
       };
 
@@ -201,7 +201,7 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [['22 hours left to land']],
+        warn: [['Wait at least 22 more hours before landing']],
         info: [['This PR was created on Tue Oct 31 2017 (weekday in UTC)']]
       };
 
