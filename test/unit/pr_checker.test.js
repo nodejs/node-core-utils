@@ -10,6 +10,7 @@ const PRChecker = require('../../lib/pr_checker');
 
 const {
   allGreenReviewers,
+  singleGreenReviewer,
   requestedChangesReviewers,
   approvingReviews,
   requestingChangesReviews,
@@ -169,7 +170,9 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [['Wait at least 22 more hours before landing']],
+        warn: [
+          ['Wait at least 22 more hours before landing']
+        ],
         info: [['This PR was created on Tue Oct 31 2017']]
       };
 
@@ -181,6 +184,78 @@ describe('PRChecker', () => {
       const data = {
         pr: youngPR,
         reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, argv);
+
+      const status = checker.checkPRWait(now);
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should warn about PR with single approval (<48h)', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        warn: [
+          ['Wait at one of the following:'],
+          ['* another approval and 22 more hours'],
+          ['* 142 more hours with existing single approval']
+        ],
+        info: [['This PR was created on Tue Oct 31 2017']]
+      };
+
+      const now = new Date('2017-11-01T14:25:41.682Z');
+      const youngPR = Object.assign({}, firstTimerPR, {
+        createdAt: '2017-10-31T13:00:41.682Z'
+      });
+
+      const data = {
+        pr: youngPR,
+        reviewers: singleGreenReviewer,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, argv);
+
+      const status = checker.checkPRWait(now);
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should warn about PR with single approval (>48h)', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        warn: [
+          ['Wait at one of the following:'],
+          ['* another approval'],
+          ['* 94 more hours with existing single approval']
+        ],
+        info: [['This PR was created on Tue Oct 31 2017']]
+      };
+
+      const now = new Date('2017-11-03T14:25:41.682Z');
+      const youngPR = Object.assign({}, firstTimerPR, {
+        createdAt: '2017-10-31T13:00:41.682Z'
+      });
+
+      const data = {
+        pr: youngPR,
+        reviewers: singleGreenReviewer,
         comments: commentsWithLGTM,
         reviews: approvingReviews,
         commits: simpleCommits,
