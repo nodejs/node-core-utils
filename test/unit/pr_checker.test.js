@@ -165,44 +165,12 @@ describe('PRChecker', () => {
   });
 
   describe('checkPRWait', () => {
-    it('should warn about PR younger than 72h on weekends', () => {
-      const cli = new TestCLI();
-
-      const expectedLogs = {
-        warn: [['Wait at least 49 more hours before landing']],
-        info: [['This PR was created on Sat Oct 28 2017 (weekend in UTC)']]
-      };
-
-      const now = new Date('2017-10-29T13:00:41.682Z');
-      const youngPR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-28T14:25:41.682Z'
-      });
-
-      const data = {
-        pr: youngPR,
-        reviewers: allGreenReviewers,
-        comments: commentsWithLGTM,
-        reviews: approvingReviews,
-        commits: simpleCommits,
-        collaborators,
-        authorIsNew: () => true,
-        getThread() {
-          return PRData.prototype.getThread.call(this);
-        }
-      };
-      const checker = new PRChecker(cli, data, argv);
-
-      const status = checker.checkPRWait(now);
-      assert(!status);
-      cli.assertCalledWith(expectedLogs);
-    });
-
-    it('should warn about PR younger than 48h on weekdays', () => {
+    it('should warn about PR younger than 48h', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         warn: [['Wait at least 22 more hours before landing']],
-        info: [['This PR was created on Tue Oct 31 2017 (weekday in UTC)']]
+        info: [['This PR was created on Tue Oct 31 2017']]
       };
 
       const now = new Date('2017-11-01T14:25:41.682Z');
