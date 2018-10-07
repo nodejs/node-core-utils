@@ -274,7 +274,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'This PR is being fast-tracked, but awating ' +
+          [ 'This PR is being fast-tracked, but awaiting ' +
           'approvals of 2 contributors and a CI run' ]
         ]
       };
@@ -315,7 +315,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'This PR is being fast-tracked, but awating ' +
+          [ 'This PR is being fast-tracked, but awaiting ' +
           'approvals of 2 contributors' ]
         ]
       };
@@ -356,7 +356,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'This PR is being fast-tracked, but awating a CI run' ]
+          [ 'This PR is being fast-tracked, but awaiting a CI run' ]
         ]
       };
 
