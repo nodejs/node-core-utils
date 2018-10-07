@@ -15,6 +15,10 @@ const allGreenReviewers = {
   approved,
   requestedChanges: []
 };
+const singleGreenReviewer = {
+  approved: [approved[0]],
+  requestedChanges: []
+};
 const requestedChangesReviewers = {
   requestedChanges,
   approved: []
@@ -76,6 +80,7 @@ module.exports = {
   approved,
   requestedChanges,
   allGreenReviewers,
+  singleGreenReviewer,
   requestedChangesReviewers,
   approvingReviews,
   requestingChangesReviews,
