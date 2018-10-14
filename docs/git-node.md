@@ -9,10 +9,29 @@ A custom Git command for managing pull requests. You can run it as
   [set up credentials](../README.md#setting-up-credentials).
 1. It's a Git command, so make sure you have Git installed, of course.
 1. Configure your upstream remote and branch name.
+
    ```
    $ cd path/to/node/project
    $ ncu-config set upstream your-remote-name
    $ ncu-config set branch your-branch-name
+   ```
+
+   For example
+
+   ```
+   # Add a remote called "upstream"
+   $ git remote add upstream git@github.com:nodejs/node.git
+   # See your remote names
+   $ git remote -v
+
+   upstream	git@github.com:nodejs/node.git (fetch)
+   upstream	git@github.com:nodejs/node.git (push)
+
+   # Tell ncu that your upstream remote is named "upstream"
+   $ ncu-config set upstream upstream
+
+   # Tell ncu that you are landing patches to "master" branch
+   $ ncu-config set branch master
    ```
 
 ## Demo & Usage
