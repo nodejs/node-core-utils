@@ -7,13 +7,14 @@ const auth = require('../../lib/auth');
 const { WPTUpdater, HarnessUpdater } = require('../../lib/wpt');
 const { runPromise } = require('../../lib/run');
 
+// TODO: read this from test/wpt/status/*.json
 const SUPPORTED_TESTS = ['url', 'console', 'encoding'];
 function builder(yargs) {
   return yargs
     .positional('name', {
       describe: 'Subset of the WPT to update, e.g. \'url\'',
       type: 'string',
-      choices: ['harness'].concat(SUPPORTED_TESTS)
+      choices: ['all', 'harness'].concat(SUPPORTED_TESTS)
     })
     .options({
       nodedir: {
@@ -32,18 +33,25 @@ async function main(argv) {
   });
   const request = new Request(credentials);
 
-  let updater;
-  if (SUPPORTED_TESTS.includes(name)) {
-    updater = new WPTUpdater(name, cli, request, nodedir);
+  const updaters = [];
+  if (name === 'all') {
+    updaters.push(new HarnessUpdater(cli, request, nodedir));
+    for (const item of SUPPORTED_TESTS) {
+      updaters.push(new WPTUpdater(item, cli, request, nodedir));
+    }
+  } else if (SUPPORTED_TESTS.includes(name)) {
+    updaters.push(new WPTUpdater(name, cli, request, nodedir));
   } else if (name === 'harness') {
-    updater = new HarnessUpdater(cli, request, nodedir);
+    updaters.push(new HarnessUpdater(cli, request, nodedir));
   } else {
     yargs.showHelp();
     return;
   }
 
-  await updater.update();
-  await updater.updateLicense();
+  for (const updater of updaters) {
+    await updater.update();
+  }
+  updaters[0].updateLicense();
 }
 
 function handler(argv) {
