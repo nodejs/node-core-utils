@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const { ascending, descending } = require('../../lib/comp');
+const { ascending, descending } = require('../../lib/utils');
 
 const arr = [
   '2017-10-30T15:47:52Z',

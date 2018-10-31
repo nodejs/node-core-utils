@@ -1,0 +1,16 @@
+query LastCommit($owner: String!, $repo: String!,  $branch: String!, $path: String) {
+  repository(owner: $owner, name: $repo) {
+    ref(qualifiedName: $branch) {
+      target {
+        ... on Commit {
+          history(first: 1, path: $path) {
+            nodes {
+              oid
+              messageHeadline
+            }
+          }
+        }
+      }
+    }
+  }
+}
