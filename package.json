@@ -1,6 +1,6 @@
 {
   "name": "node-core-utils",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "description": "Utilities for Node.js core collaborators",
   "bin": {
     "get-metadata": "./bin/get-metadata",
