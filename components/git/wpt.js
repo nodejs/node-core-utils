@@ -1,20 +1,18 @@
 'use strict';
 
-const yargs = require('yargs');
+const fs = require('fs');
+const path = require('path');
 const Request = require('../../lib/request');
 const CLI = require('../../lib/cli');
 const auth = require('../../lib/auth');
 const { WPTUpdater, HarnessUpdater } = require('../../lib/wpt');
 const { runPromise } = require('../../lib/run');
 
-// TODO: read this from test/wpt/status/*.json
-const SUPPORTED_TESTS = ['url', 'console', 'encoding'];
 function builder(yargs) {
   return yargs
     .positional('name', {
-      describe: 'Subset of the WPT to update, e.g. \'url\'',
-      type: 'string',
-      choices: ['all', 'harness'].concat(SUPPORTED_TESTS)
+      describe: 'Subset of the WPT to update, e.g. \'harness\', \'url\'',
+      type: 'string'
     })
     .options({
       nodedir: {
@@ -34,18 +32,28 @@ async function main(argv) {
   const request = new Request(credentials);
 
   const updaters = [];
+
+  const statusFolder = path.join(nodedir, 'test', 'wpt', 'status');
+  let supported = [];
+  if (fs.existsSync(statusFolder)) {
+    const jsons = fs.readdirSync(statusFolder);
+    supported = jsons.map(item => item.replace('.json', ''));
+  } else {
+    cli.warn(`Please create the status JSON files in ${statusFolder}`);
+  }
+
   if (name === 'all') {
     updaters.push(new HarnessUpdater(cli, request, nodedir));
-    for (const item of SUPPORTED_TESTS) {
+    for (const item of supported) {
       updaters.push(new WPTUpdater(item, cli, request, nodedir));
     }
-  } else if (SUPPORTED_TESTS.includes(name)) {
-    updaters.push(new WPTUpdater(name, cli, request, nodedir));
   } else if (name === 'harness') {
     updaters.push(new HarnessUpdater(cli, request, nodedir));
   } else {
-    yargs.showHelp();
-    return;
+    if (!supported.includes(name)) {
+      cli.warn(`Please create ${name}.json in ${statusFolder}`);
+    }
+    updaters.push(new WPTUpdater(name, cli, request, nodedir));
   }
 
   for (const updater of updaters) {
