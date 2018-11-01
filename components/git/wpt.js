@@ -5,13 +5,17 @@ const path = require('path');
 const Request = require('../../lib/request');
 const CLI = require('../../lib/cli');
 const auth = require('../../lib/auth');
-const { WPTUpdater, HarnessUpdater } = require('../../lib/wpt');
+const {
+  WPTUpdater,
+  ResourcesUpdater,
+  InterfacesUpdater
+} = require('../../lib/wpt');
 const { runPromise } = require('../../lib/run');
 
 function builder(yargs) {
   return yargs
     .positional('name', {
-      describe: 'Subset of the WPT to update, e.g. \'harness\', \'url\'',
+      describe: 'Subset of the WPT to update',
       type: 'string'
     })
     .options({
@@ -42,14 +46,18 @@ async function main(argv) {
     cli.warn(`Please create the status JSON files in ${statusFolder}`);
   }
 
+  if (name === 'all' || name === 'resources') {
+    updaters.push(new ResourcesUpdater(cli, request, nodedir));
+  }
+  if (name === 'all' || name === 'interfaces') {
+    updaters.push(new InterfacesUpdater(cli, request, nodedir, supported));
+  }
+
   if (name === 'all') {
-    updaters.push(new HarnessUpdater(cli, request, nodedir));
     for (const item of supported) {
       updaters.push(new WPTUpdater(item, cli, request, nodedir));
     }
-  } else if (name === 'harness') {
-    updaters.push(new HarnessUpdater(cli, request, nodedir));
-  } else {
+  } else if (name !== 'resources' && name !== 'interfaces') {
     if (!supported.includes(name)) {
       cli.warn(`Please create ${name}.json in ${statusFolder}`);
     }
