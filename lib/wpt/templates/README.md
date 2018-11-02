@@ -12,5 +12,5 @@ Last update:
 <% for (const [path, url] of map) { %>
 - <%= path %>: <%= url %><% } %>
 
-[Web Platform Test]: https://github.com/web-platform-tests/wpt
+[Web Platform Tests]: https://github.com/web-platform-tests/wpt
 [`git node wpt`]: https://github.com/nodejs/node-core-utils/blob/master/docs/git-node.md#git-node-wpt
