@@ -2,17 +2,26 @@
 
 const assert = require('assert');
 const { EOL } = require('os');
-const chalk = require('chalk');
 
 const CLI = require('../../lib/cli');
 const LogStream = require('../fixtures/log_stream');
-const { warning, error, info, success } = require('../../lib/figures');
+let figures = require('../../lib/figures');
+
+function strip(text) {
+  // eslint-disable-next-line
+  return text.replace(/\u001b\[.*?m/g, '').replace(/\r?\n|\r/g, EOL);
+}
+
+const warning = strip(figures.warning);
+const error = strip(figures.error);
+const info = strip(figures.info);
+const success = strip(figures.success);
 
 describe('cli', () => {
   let cli = null;
   let stream = null;
 
-  const logResult = () => stream.toString().replace(/\r?\n|\r/g, EOL);
+  const logResult = () => strip(stream.toString());
 
   describe('instantiation', () => {
     it('should set `process.stderr` as stream if no stream is specified',
@@ -61,7 +70,7 @@ describe('cli', () => {
       it('should print the first element with bold style and padding', () => {
         cli.table('Title', 'description');
         assert.strictEqual(logResult(),
-          `${chalk.bold('Title      ')}description${EOL}`);
+          `Title      description${EOL}`);
       });
     });
 
@@ -70,7 +79,7 @@ describe('cli', () => {
         cli.separator('Separator');
         assert.strictEqual(
           logResult(),
-          '---------------------------------- ' + chalk.bold('Separator') +
+          '---------------------------------- Separator' +
             ' -----------------------------------' + EOL);
       });
 
@@ -78,7 +87,7 @@ describe('cli', () => {
         cli.separator('PR', 20, '+');
         assert.strictEqual(
           logResult(),
-          '++++++++ ' + chalk.bold('PR') + ' ++++++++' + EOL);
+          '++++++++ PR ++++++++' + EOL);
       });
 
       it('should print a separator line without text', () => {
@@ -93,38 +102,38 @@ describe('cli', () => {
     describe('ok', () => {
       it('should print a success message', () => {
         cli.ok('Perfect!');
-        assert.strictEqual(logResult(), `${success}  Perfect!${EOL}`);
+        assert.strictEqual(logResult(), `   ${success}  Perfect!${EOL}`);
       });
 
       it('should print a success message in a new line if specified', () => {
         cli.ok('Perfect!', { newline: true });
         assert.strictEqual(logResult(),
-          `${EOL}${success}  Perfect!${EOL}`);
+          `${EOL}   ${success}  Perfect!${EOL}`);
       });
     });
 
     describe('warn', () => {
       it('should print a warning message', () => {
         cli.warn('Warning!');
-        assert.strictEqual(logResult(), `${warning}  Warning!${EOL}`);
+        assert.strictEqual(logResult(), `   ${warning}  Warning!${EOL}`);
       });
 
       it('should print a warning message in a new line if specified', () => {
         cli.warn('Warning!', { newline: true });
         assert.strictEqual(logResult(),
-          `${EOL}${warning}  Warning!${EOL}`);
+          `${EOL}   ${warning}  Warning!${EOL}`);
       });
     });
 
     describe('info', () => {
       it('should print an info message', () => {
         cli.info('Info!');
-        assert.strictEqual(logResult(), `${info}  Info!${EOL}`);
+        assert.strictEqual(logResult(), `   ${info}  Info!${EOL}`);
       });
 
       it('should print an info message in a new line if specified', () => {
         cli.info('Info!', { newline: true });
-        assert.strictEqual(logResult(), `${EOL}${info}  Info!${EOL}`);
+        assert.strictEqual(logResult(), `${EOL}   ${info}  Info!${EOL}`);
       });
     });
 
@@ -132,12 +141,12 @@ describe('cli', () => {
     describe('error', () => {
       it('should print an error message', () => {
         cli.error('Error!');
-        assert.strictEqual(logResult(), `${error}  Error!${EOL}`);
+        assert.strictEqual(logResult(), `   ${error}  Error!${EOL}`);
       });
 
       it('should print an error message in a new line if specified', () => {
         cli.error('Error!', { newline: true });
-        assert.strictEqual(logResult(), `${EOL}${error}  Error!${EOL}`);
+        assert.strictEqual(logResult(), `${EOL}   ${error}  Error!${EOL}`);
       });
     });
   });
