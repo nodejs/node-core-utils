@@ -454,7 +454,7 @@ describe('PRChecker', () => {
 
     it('should check commits after last ci', () => {
       const cli = new TestCLI();
-      const {commits, comment} = commitsAfterCi;
+      const { commits, comment } = commitsAfterCi;
 
       const expectedLogs = {
         warn: [

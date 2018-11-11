@@ -81,7 +81,7 @@ function handler(argv) {
 
   const merged = Object.assign({}, argv, parsed, config);
   return runPromise(getMetadata(merged, cli)
-    .then(({status}) => {
+    .then(({ status }) => {
       if (status === false) {
         throw new Error(IGNORE);
       }
