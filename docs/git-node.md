@@ -188,18 +188,24 @@ patch if necessary.
 If the `git apply` command fails, a patch file will be written in the Node.js
 clone directory.
 
-#### `git node v8 backport <sha>`
+#### `git node v8 backport <sha..>`
 
-Fetches and applies the patch corresponding to `sha`. Increments the V8
-embedder version number or patch version and commits the changes.  
-If the `git apply` command fails, a patch file will be written in the Node.js
-clone directory.
+Fetches and applies the patch corresponding to `sha`. Multiple commit SHAs can
+be provided to this command. Increments the V8 embedder version number or patch
+version and commits the changes for each commit (unless the command is
+called with `--squash`). If a patch fails to be applied, the command will pause
+and let you fix the conflicts in another terminal.
 
 ##### Options
 
 ###### `--no-bump`
 
 Set this flag to skip bumping the V8 embedder version number or patch version.
+
+###### `--squash`
+
+Set this flag to squash multiple commits into one. This should only be done if
+individual commits would break the build.
 
 #### General options
 
