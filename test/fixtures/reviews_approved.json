@@ -5,7 +5,7 @@
     "login": "foo"
   },
   "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624",
-  "publishedAt": "2017-10-24T11:19:25Z"
+  "publishedAt": "2017-10-24T11:19:00Z"
 },
 {
   "bodyText": "Very close",
@@ -27,21 +27,21 @@
 },
 {
   "bodyText": "LGTM",
-  "state": "APPROVED",
-  "author": {
-    "login": "Baz"
-  },
-  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236",
-  "publishedAt": "2017-10-24T14:49:52Z"
-},
-{
-  "bodyText": "LGTM",
   "state": "COMMENTED",
   "author": {
     "login": "Quux"
   },
   "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71817236",
-  "publishedAt": "2017-10-24T14:49:52Z"
+  "publishedAt": "2017-10-24T14:49:01Z"
+},
+{
+  "bodyText": "LGTM",
+  "state": "APPROVED",
+  "author": {
+    "login": "Baz"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236",
+  "publishedAt": "2017-10-24T14:49:02Z"
 },
 {
   "bodyText": "A few nits",
