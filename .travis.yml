@@ -1,11 +1,14 @@
 language: node_js
-os:
-  - windows
-  - linux
 node_js:
   - "8"
   - "10"
   - "11"
+matrix:
+  include:
+    - os: osx
+      node_js: "11"
+    - os: windows
+      node_js: "11"
 cache:
   directories:
     - node_modules
