@@ -1,6 +1,5 @@
 'use strict';
 
-const { EOL } = require('os');
 const assert = require('assert');
 
 async function mockCredentials(options) {
@@ -18,7 +17,7 @@ async function mockCredentials(options) {
 (async function() {
   const auth = require('../../lib/auth');
   const authParams = await auth({ github: true }, mockCredentials);
-  process.stdout.write(`${JSON.stringify(authParams)}${EOL}`);
+  process.stdout.write(`${JSON.stringify(authParams)}\n`);
 })().catch(err => {
   console.error(err);
   process.exit(1);

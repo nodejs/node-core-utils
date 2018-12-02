@@ -5,7 +5,6 @@ const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
-const { EOL } = require('os');
 const assert = require('assert');
 let testCounter = 0; // for tmp directories
 
@@ -68,7 +67,7 @@ describe('auth', async function() {
     await runAuthScript(
       {},
       [FIRST_TIME_MSG],
-      `Could not get token: Bad credentials${EOL}`, 'run-auth-error'
+      `Could not get token: Bad credentials\n`, 'run-auth-error'
     );
   });
 });
@@ -131,9 +130,9 @@ function runAuthScript(
 
       try {
         let newlineIndex;
-        while ((newlineIndex = pendingStdout.indexOf(EOL)) !== -1) {
+        while ((newlineIndex = pendingStdout.indexOf('\n')) !== -1) {
           const line = pendingStdout.substr(0, newlineIndex);
-          pendingStdout = pendingStdout.substr(newlineIndex + EOL.length);
+          pendingStdout = pendingStdout.substr(newlineIndex + 1);
 
           onLine(line);
         }
@@ -166,7 +165,7 @@ function runAuthScript(
 
       assert(line.match(expected), `${line} should match ${expected}`);
       if (reply !== undefined) {
-        proc.stdin.write(`${reply}${EOL}`);
+        proc.stdin.write(`${reply}\n`);
       }
       if (expect.length === 0) {
         proc.stdin.end();
