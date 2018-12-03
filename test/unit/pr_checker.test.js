@@ -8,6 +8,11 @@ const TestCLI = require('../fixtures/test_cli');
 const PRData = require('../../lib/pr_data');
 const PRChecker = require('../../lib/pr_checker');
 
+const GT_7D = '2018-11-23T17:50:44.477Z';
+const LT_7D_GT_48H = '2018-11-27T17:50:44.477Z';
+const LT_48H = '2018-11-30T17:50:44.477Z';
+const NOW = '2018-11-31T17:50:44.477Z';
+
 const {
   allGreenReviewers,
   singleGreenReviewer,
@@ -53,8 +58,7 @@ describe('PRChecker', () => {
     };
     const checker = new PRChecker(cli, data, argv);
 
-    let checkReviewsStub;
-    let checkPRWaitStub;
+    let checkReviewsAndWaitStub;
     let checkCIStub;
     let checkAuthorStub;
     let checkCommitsAfterReviewStub;
@@ -63,8 +67,7 @@ describe('PRChecker', () => {
     let checkGitConfigStub;
 
     before(() => {
-      checkReviewsStub = sinon.stub(checker, 'checkReviews');
-      checkPRWaitStub = sinon.stub(checker, 'checkPRWait');
+      checkReviewsAndWaitStub = sinon.stub(checker, 'checkReviewsAndWait');
       checkCIStub = sinon.stub(checker, 'checkCI');
       checkAuthorStub = sinon.stub(checker, 'checkAuthor');
       checkCommitsAfterReviewStub =
@@ -75,8 +78,7 @@ describe('PRChecker', () => {
     });
 
     after(() => {
-      checkReviewsStub.restore();
-      checkPRWaitStub.restore();
+      checkReviewsAndWaitStub.restore();
       checkCIStub.restore();
       checkAuthorStub.restore();
       checkCommitsAfterReviewStub.restore();
@@ -88,8 +90,7 @@ describe('PRChecker', () => {
     it('should run necessary checks', () => {
       const status = checker.checkAll();
       assert.strictEqual(status, false);
-      assert.strictEqual(checkReviewsStub.calledOnce, true);
-      assert.strictEqual(checkPRWaitStub.calledOnce, true);
+      assert.strictEqual(checkReviewsAndWaitStub.calledOnce, true);
       assert.strictEqual(checkCIStub.calledOnce, true);
       assert.strictEqual(checkAuthorStub.calledOnce, true);
       assert.strictEqual(checkCommitsAfterReviewStub.calledOnce, true);
@@ -99,26 +100,33 @@ describe('PRChecker', () => {
     });
   });
 
-  describe('checkReviews', () => {
-    it('should warn about semver-major PR without enough TSC approvals', () => {
+  describe('checkReviewsAndWait', () => {
+    it('should error when semver-major PR has only 1 TSC approval', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['semver-major requires at least two TSC approvals']
+          ['semver-major requires at least 2 TSC approvals']
         ],
         ok: [
-          ['Requested Changes: 0'],
-          ['Approvals: 4, 1 from TSC (bar)']
+          ['Approvals: 4'],
+          ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+          ['- Quux User (@Quux): LGTM'],
+          ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+          ['- Bar User (@bar) (TSC): lgtm']
         ],
         info: [
-          ['- Quux User(Quux) approved in via LGTM in comments'],
-          ['- Bar User(bar) approved in via LGTM in comments']
+          ['This PR was created on Fri, 23 Nov 2018 17:50:44 GMT'],
+          ['- Quux User (@Quux) approved in via LGTM in comments'],
+          ['- Bar User (@bar) approved in via LGTM in comments']
         ]
       };
+      const pr = Object.assign({}, semverMajorPR, {
+        createdAt: GT_7D
+      });
 
       const data = {
-        pr: semverMajorPR,
+        pr,
         reviewers: allGreenReviewers,
         comments: commentsWithLGTM,
         reviews: approvingReviews,
@@ -131,25 +139,32 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      const status = checker.checkReviews(true);
+      const status = checker.checkReviewsAndWait(new Date(NOW), true);
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should warn about PR with rejections & without approvals', () => {
+    it('should error when PR has change requests', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['Requested Changes: 2, 1 from TSC (bar)'],
-          ['- Foo User(foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
-          ['- Bar User(bar): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624'],
+          ['Requested Changes: 2'],
+          ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+          ['- Bar User (@bar) (TSC): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624'],
           ['Approvals: 0']
+        ],
+        info: [
+          ['This PR was created on Fri, 23 Nov 2018 17:50:44 GMT']
         ]
       };
 
+      const pr = Object.assign({}, firstTimerPR, {
+        createdAt: GT_7D
+      });
+
       const data = {
-        pr: firstTimerPR,
+        pr,
         reviewers: requestedChangesReviewers,
         comments: [],
         reviews: requestingChangesReviews,
@@ -159,26 +174,27 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      const status = checker.checkReviews();
+      const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
-  });
 
-  describe('checkPRWait', () => {
-    it('should warn about PR younger than 48h', () => {
+    it('should error when PR is younger than 48h', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [
-          ['Wait at least 22 more hours before landing']
-        ],
-        info: [['This PR was created on Tue Oct 31 2017']]
+        ok:
+         [ [ 'Approvals: 4' ],
+           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
+           [ '- Quux User (@Quux): LGTM' ],
+           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
+           [ '- Bar User (@bar) (TSC): lgtm' ] ],
+        info: [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ],
+        error: [ [ 'This PR needs to wait 24 more hours to land' ] ]
       };
 
-      const now = new Date('2017-11-01T14:25:41.682Z');
       const youngPR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-31T13:00:41.682Z'
+        createdAt: LT_48H
       });
 
       const data = {
@@ -195,26 +211,26 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      const status = checker.checkPRWait(now);
+      const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should warn about PR with single approval (<48h)', () => {
+    it('should error when PR has only 1 approval < 48h', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [
-          ['Wait at one of the following:'],
-          ['* another approval and 22 more hours'],
-          ['* 142 more hours with existing single approval']
-        ],
-        info: [['This PR was created on Tue Oct 31 2017']]
+        ok:
+         [ [ 'Approvals: 1' ],
+           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ] ],
+        info:
+         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ],
+        error: [ [ 'This PR needs to wait 144 more hours to land ' +
+                   '(or 24 hours if there is one more approval)' ] ]
       };
 
-      const now = new Date('2017-11-01T14:25:41.682Z');
       const youngPR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-31T13:00:41.682Z'
+        createdAt: LT_48H
       });
 
       const data = {
@@ -231,26 +247,26 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      const status = checker.checkPRWait(now);
+      const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should warn about PR with single approval (>48h)', () => {
+    it('should error when PR has only 1 approval >48h', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [
-          ['Wait at one of the following:'],
-          ['* another approval'],
-          ['* 94 more hours with existing single approval']
-        ],
-        info: [['This PR was created on Tue Oct 31 2017']]
+        ok:
+        [ [ 'Approvals: 1' ],
+          [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ] ],
+        info:
+        [ [ 'This PR was created on Tue, 27 Nov 2018 17:50:44 GMT' ] ],
+        error: [ [ 'This PR needs to wait 72 more hours to land ' +
+                   '(or 0 hours if there is one more approval)' ] ]
       };
 
-      const now = new Date('2017-11-03T14:25:41.682Z');
       const youngPR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-31T13:00:41.682Z'
+        createdAt: LT_7D_GT_48H
       });
 
       const data = {
@@ -267,7 +283,7 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      const status = checker.checkPRWait(now);
+      const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
@@ -276,14 +292,19 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        info: [
-          [ 'This PR is being fast-tracked' ]
-        ]
+        ok:
+         [ [ 'Approvals: 4' ],
+           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
+           [ '- Quux User (@Quux): LGTM' ],
+           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
+           [ '- Bar User (@bar) (TSC): lgtm' ] ],
+        info:
+         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ],
+           [ 'This PR is being fast-tracked' ] ]
       };
 
-      const now = new Date('2017-11-01T14:25:41.682Z');
-      const PR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-31T13:00:41.682Z',
+      const pr = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H,
         labels: {
           nodes: [
             { name: 'fast-track' }
@@ -292,7 +313,7 @@ describe('PRChecker', () => {
       });
 
       const data = {
-        pr: PR,
+        pr,
         reviewers: allGreenReviewers,
         comments: commentsWithCI,
         reviews: approvingReviews,
@@ -305,9 +326,8 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      checker.checkCI();
       cli.clearCalls();
-      const status = checker.checkPRWait(now);
+      const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(status);
       cli.assertCalledWith(expectedLogs);
     });
@@ -316,15 +336,18 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [
-          [ 'This PR is being fast-tracked, but awaiting ' +
-          'approvals of 2 contributors and a CI run' ]
-        ]
+        info:
+         [ ['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+           ['This PR is being fast-tracked'] ],
+        error:
+         [ [ 'Requested Changes: 2' ],
+           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
+           [ '- Bar User (@bar) (TSC): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624' ],
+           [ 'Approvals: 0' ] ]
       };
 
-      const now = new Date('2017-11-01T14:25:41.682Z');
-      const PR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-31T13:00:41.682Z',
+      const pr = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H,
         labels: {
           nodes: [
             { name: 'fast-track' }
@@ -333,7 +356,7 @@ describe('PRChecker', () => {
       });
 
       const data = {
-        pr: PR,
+        pr,
         reviewers: requestedChangesReviewers,
         comments: [],
         reviews: requestingChangesReviews,
@@ -346,9 +369,8 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      checker.checkCI();
       cli.clearCalls();
-      const status = checker.checkPRWait(now);
+      const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
@@ -357,15 +379,18 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        warn: [
-          [ 'This PR is being fast-tracked, but awaiting ' +
-          'approvals of 2 contributors' ]
-        ]
+        info:
+          [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ],
+            [ 'This PR is being fast-tracked' ] ],
+        error:
+         [ [ 'Requested Changes: 2' ],
+           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
+           [ '- Bar User (@bar) (TSC): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624' ],
+           [ 'Approvals: 0' ] ]
       };
 
-      const now = new Date('2017-11-01T14:25:41.682Z');
       const PR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-31T13:00:41.682Z',
+        createdAt: LT_48H,
         labels: {
           nodes: [
             { name: 'fast-track' }
@@ -387,56 +412,15 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      checker.checkCI();
       cli.clearCalls();
-      const status = checker.checkPRWait(now);
-      assert(!status);
-      cli.assertCalledWith(expectedLogs);
-    });
-
-    it('should warn if the PR has no CI and cannot be fast-tracked', () => {
-      const cli = new TestCLI();
-
-      const expectedLogs = {
-        warn: [
-          [ 'This PR is being fast-tracked, but awaiting a CI run' ]
-        ]
-      };
-
-      const now = new Date('2017-11-01T14:25:41.682Z');
-      const PR = Object.assign({}, firstTimerPR, {
-        createdAt: '2017-10-31T13:00:41.682Z',
-        labels: {
-          nodes: [
-            { name: 'fast-track' }
-          ]
-        }
-      });
-
-      const data = {
-        pr: PR,
-        reviewers: allGreenReviewers,
-        comments: [],
-        reviews: approvingReviews,
-        commits: simpleCommits,
-        collaborators,
-        authorIsNew: () => true,
-        getThread() {
-          return PRData.prototype.getThread.call(this);
-        }
-      };
-      const checker = new PRChecker(cli, data, argv);
-
-      checker.checkCI();
-      cli.clearCalls();
-      const status = checker.checkPRWait(now);
+      const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
   });
 
   describe('checkCI', () => {
-    it('should warn if no CI runs detected', () => {
+    it('should error if no CI runs detected', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
