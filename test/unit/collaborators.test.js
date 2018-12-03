@@ -62,7 +62,7 @@ describe('collaborators', function() {
         collaborators.forEach(collaborator => {
           assert.strictEqual(
             collaborator.getName(),
-            `${collaborator.name}(${collaborator.login})`);
+            `${collaborator.name} (@${collaborator.login})`);
         });
       });
     });
