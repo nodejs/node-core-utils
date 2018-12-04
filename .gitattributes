@@ -1,5 +1,1 @@
-# Auto-detect text files
-* text=auto
-
-# We don't have actual binary files in this repo so just checkout everything with LF
-*.* text eol=lf
+* text=auto eol=lf
