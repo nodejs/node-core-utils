@@ -30,6 +30,10 @@ const landOptions = {
   abort: {
     describe: 'Abort the current landing session',
     type: 'boolean'
+  },
+  rebase: {
+    describe: 'Rebase the current branch and add edit',
+    type: 'boolean'
   }
 };
 
@@ -50,7 +54,9 @@ function builder(yargs) {
     .example('git node land --final',
       'Verify the landed PR and clean up')
     .example('git node land --continue',
-      'Continue the current landing session');
+      'Continue the current landing session')
+    .example('git node land --rebase',
+      'Rebase the current branch and add edit');
 }
 
 const START = 'start';
@@ -59,6 +65,7 @@ const AMEND = 'amend';
 const FINAL = 'final';
 const CONTINUE = 'continue';
 const ABORT = 'abort';
+const REBASE = 'rebase';
 
 function handler(argv) {
   if (argv.prid) {
@@ -155,5 +162,7 @@ async function main(state, argv, cli, req, dir) {
     return session.abort();
   } else if (state === CONTINUE) {
     return session.continue();
+  } else if (state === REBASE) {
+    return session.rebase();
   }
 }
