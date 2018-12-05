@@ -11,8 +11,8 @@ const {
 } = require('../lib/ci/ci_type_parser');
 
 const {
-  PRBuild, BenchmarkRun, CommitBuild, listBuilds, FailureAggregator
-  // , jobCache
+  PRBuild, BenchmarkRun, CommitBuild,
+  listBuilds, FailureAggregator, jobCache
 } = require('../lib/ci/ci_result_parser');
 const clipboardy = require('clipboardy');
 const { writeJson } = require('../lib/file');
@@ -22,10 +22,6 @@ const auth = require('../lib/auth');
 const Request = require('../lib/request');
 const CLI = require('../lib/cli');
 const yargs = require('yargs');
-
-// This is used for testing
-// Default cache dir is ${ncu-source-dir}/.ncu/cache
-// jobCache.enable();
 
 // eslint-disable-next-line no-unused-vars
 const argv = yargs
@@ -53,6 +49,11 @@ const argv = yargs
         .option('stats', {
           default: false,
           describe: 'Aggregate the results'
+        })
+        .option('cache', {
+          default: false,
+          describe: 'Cache the responses from Jenkins in .ncu/cache/ under' +
+                    ' the node-core-utils installation directory'
         })
         .option('limit', {
           default: 99,
@@ -144,12 +145,14 @@ async function runQueue(queue, cli, request, argv) {
   let dataToCopy = '';
   let dataToJson = [];
 
-  for (let job of queue) {
+  for (let i = 0; i < queue.length; ++i) {
+    const job = queue[i];
     cli.separator('');
+    const progress = `[${i + 1}/${queue.length}]`;
     if (job.link) {
-      cli.log(`Running ${job.link}`);
+      cli.log(`${progress} Running ${job.link}`);
     } else {
-      cli.log(`Running ${job.type}: ${job.jobid}`);
+      cli.log(`${progress} Running ${job.type}: ${job.jobid}`);
     }
     cli.separator('');
     const build = await getResults(cli, request, job);
@@ -211,6 +214,9 @@ async function main(command, argv) {
     const type = commandToType[argv.type];
     const builds = await listBuilds(cli, request, type);
     if (command === 'walk') {
+      if (argv.cache) {
+        jobCache.enable();
+      }
       for (const build of builds.failed.slice(0, argv.limit)) {
         queue.push(build);
       }
