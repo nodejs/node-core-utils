@@ -7,16 +7,19 @@ const { runPromise } = require('../../lib/run');
 const BackportSession = require('../../lib/backport_session');
 
 const epilogue = `====================== Example =======================
-Backporting https://github.com/nodejs/node/pull/12344 to v10.x
+Demo: https://asciinema.org/a/221244
+Backporting https://github.com/nodejs/node/pull/24816 to v11.x
 
 # Sync master with upstream for the commits, if they are not yet there
 $ git checkout master
+$ ncu-config set branch master
 $ git node sync
 
-# Backport existing commits from master to v10.x-staging
-$ git checkout v10.x-staging
+# Backport existing commits from master to v11.x-staging
+$ git checkout v11.x-staging
+$ ncu-config set branch v11.x-staging
 $ git node sync
-$ git node backport 12344 --to 10
+$ git node backport 24816 --to 11
 =====================================================
 `;
 
@@ -40,6 +43,7 @@ function builder(yargs) {
 async function main(config) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
+  cli.setFigureIndent(0);
   const dir = process.cwd();
   const session = new BackportSession(cli, dir, config.prid, config.to);
   return session.backport();
@@ -64,7 +68,7 @@ function handler(argv) {
 
 module.exports = {
   command: 'backport <identifier>',
-  describe: 'Backport a PR',
+  describe: 'Backport a PR to a release staging branch.',
   builder,
   handler
 };
