@@ -6,6 +6,7 @@ const SyncSession = require('../../lib/sync_session');
 
 function builder(yargs) {
   return yargs
+    .epilogue('Demo: https://asciinema.org/a/221230')
     .wrap(90);
 }
 
@@ -23,7 +24,7 @@ function handler(argv) {
 
 module.exports = {
   command: 'sync',
-  describe: 'Sync the branch specified by ncu-config',
+  describe: 'Sync the branch specified by ncu-config.',
   builder,
   handler
 };
