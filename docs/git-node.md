@@ -3,7 +3,22 @@
 A custom Git command for managing pull requests. You can run it as
 `git-node` or `git node`. To see the help text, run `git node`.
 
+- [Prerequistes](#prerequistes)
+- [`git node land`](#git-node-land)
+  - [Git bash for Windows](#git-bash-for-windows)
+  - [Demo & Usage](#demo--usage)
+- [`git node metadata`](#git-node-metadata)
+- [`git node v8`](#git-node-v8)
+  - [`git node v8 major`](#git-node-v8-major)
+  - [`git node v8 minor`](#git-node-v8-minor)
+  - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
+  - [General options](#general-options)
+- [`git node wpt`](#git-node-wpt)
+  - [Example](#example)
+
 ## Prerequistes
+
+Note: the prerequistes are not required for `git node v8`.
 
 1. See the readme on how to
   [set up credentials](../README.md#setting-up-credentials).
@@ -34,7 +49,44 @@ A custom Git command for managing pull requests. You can run it as
    $ ncu-config set branch master
    ```
 
-## Demo & Usage
+## `git node land`
+
+```
+git-node land [prid|options]
+
+Manage the current landing session or start a new one for a pull request
+
+Positionals:
+  prid, options  ID of the Pull Request                                 [number]
+
+Options:
+  --version       Show version number                                  [boolean]
+  --help          Show help                                            [boolean]
+  --apply         Apply a patch with the given PR id                    [number]
+  --amend         Amend the current commit                             [boolean]
+  --continue, -c  Continue the landing session                         [boolean]
+  --final         Verify the landed PR and clean up                    [boolean]
+  --abort         Abort the current landing session                    [boolean]
+
+Examples:
+  git node land 12344       Land https://github.com/nodejs/node/pull/12344 in
+                            the current directory
+  git node land --abort     Abort the current session
+  git node land --amend     Append metadata to the current commit message
+  git node land --final     Verify the landed PR and clean up
+  git node land --continue  Continue the current landing session
+```
+
+### Git bash for Windows
+
+If you are using `git bash` and having trouble with output use
+`winpty git-node.cmd metadata $PRID`.
+
+current known issues with git bash:
+- git bash Lacks colors.
+- git bash output duplicates metadata.
+
+### Demo & Usage
 
 1. Landing multiple commits: https://asciinema.org/a/148627
 2. Landing one commit: https://asciinema.org/a/157445
@@ -77,35 +129,7 @@ Options:
   --help     Show help                                                 [boolean]
 ```
 
-### `git node land`
-
-```
-git-node land [prid|options]
-
-Manage the current landing session or start a new one for a pull request
-
-Positionals:
-  prid, options  ID of the Pull Request                                 [number]
-
-Options:
-  --version       Show version number                                  [boolean]
-  --help          Show help                                            [boolean]
-  --apply         Apply a patch with the given PR id                    [number]
-  --amend         Amend the current commit                             [boolean]
-  --continue, -c  Continue the landing session                         [boolean]
-  --final         Verify the landed PR and clean up                    [boolean]
-  --abort         Abort the current landing session                    [boolean]
-
-Examples:
-  git node land 12344       Land https://github.com/nodejs/node/pull/12344 in
-                            the current directory
-  git node land --abort     Abort the current session
-  git node land --amend     Append metadata to the current commit message
-  git node land --final     Verify the landed PR and clean up
-  git node land --continue  Continue the current landing session
-```
-
-### `git node metadata`
+## `git node metadata`
 
 This tool is inspired by Evan Lucas's [node-review](https://github.com/evanlucas/node-review),
 although it is a CLI implemented with the GitHub GraphQL API.
@@ -154,41 +178,30 @@ $ git commit --amend -F msg.txt
 git node metadata 167 --repo llnode --readme ../node/README.md
 ```
 
-#### Git bash for Windows
-
-If you are using `git bash` and having trouble with output use
-`winpty git-node.cmd metadata $PRID`.
-
-current known issues with git bash:
-- git bash Lacks colors.
-- git bash output duplicates metadata.
-
-### `git node v8`
+## `git node v8`
 
 Update or patch the V8 engine.  
 This tool will maintain a clone of the V8 repository in `~/.update-v8/v8`.
 
-#### `git node v8 major`
+### `git node v8 major`
 
-* Replaces `deps/v8` with a newer major version.
-* Resets the embedder version number to `-node.0`.
-* Updates `NODE_MODULE_VERSION` according to the V8 version.
+- Replaces `deps/v8` with a newer major version.
+- Resets the embedder version number to `-node.0`.
+- Updates `NODE_MODULE_VERSION` according to the V8 version.
 
-##### Options
+Options:
 
-###### `--branch=branchName`
+- `--branch=branchName`: Branch of the V8 repository to use for the upgrade.
+  Defaults to `lkgr`.
 
-Branch of the V8 repository to use for the upgrade.  
-Defaults to `lkgr`.
-
-#### `git node v8 minor`
+### `git node v8 minor`
 
 Compare current V8 version with latest upstream of the same major. Applies a
 patch if necessary.  
 If the `git apply` command fails, a patch file will be written in the Node.js
 clone directory.
 
-#### `git node v8 backport <sha..>`
+### `git node v8 backport <sha..>`
 
 Fetches and applies the patch corresponding to `sha`. Multiple commit SHAs can
 be provided to this command. Increments the V8 embedder version number or patch
@@ -196,39 +209,24 @@ version and commits the changes for each commit (unless the command is
 called with `--squash`). If a patch fails to be applied, the command will pause
 and let you fix the conflicts in another terminal.
 
-##### Options
+Options:
 
-###### `--no-bump`
+- `--no-bump`: Set this flag to skip bumping the V8 embedder version number or
+  patch version.
+- `--squash`: Set this flag to squash multiple commits into one. This should
+  only be done if individual commits would break the build.
 
-Set this flag to skip bumping the V8 embedder version number or patch version.
+### General options
 
-###### `--squash`
+- `--node-dir=/path/to/node`: Specify the path to the Node.js git repository.
+  Defaults to current working directory.
+- `--base-dir=/path/to/base/dir`: Specify the path where V8 the clone will
+  be maintained. Defaults to `~/.update-v8`.
+- `--v8-dir=/path/to/v8/`: Specify the path of an existing V8 clone. This
+  will be used instead of cloning V8 to `baseDir`.
+- `--verbose`: Enable verbose output.
 
-Set this flag to squash multiple commits into one. This should only be done if
-individual commits would break the build.
-
-#### General options
-
-##### `--node-dir=/path/to/node`
-
-Specify the path to the Node.js git repository.  
-Defaults to current working directory.
-
-##### `--base-dir=/path/to/base/dir`
-
-Specify the path where V8 the clone will be maintained.  
-Defaults to `~/.update-v8`.
-
-##### `--v8-dir=/path/to/v8/`
-
-Specify the path of an existing V8 clone. This will be used instead of cloning
-V8 to `baseDir`.
-
-##### `--verbose`
-
-Enable verbose output.
-
-### `git node wpt`
+## `git node wpt`
 
 Update or patch the Web Platform Tests in core.
 The updated files are placed under `./test/fixtures/wpt` by default. In addition
@@ -238,7 +236,7 @@ to the assets, this also updates:
 - `./test/fixtures/wpt/README.md`
 - `./test/fixtures/wpt/LICENSE.md`
 
-#### Example
+### Example
 
 ```
 $ cd /path/to/node/project
