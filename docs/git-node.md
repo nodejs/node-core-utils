@@ -7,6 +7,9 @@ A custom Git command for managing pull requests. You can run it as
 - [`git node land`](#git-node-land)
   - [Git bash for Windows](#git-bash-for-windows)
   - [Demo & Usage](#demo--usage)
+- [`git node backport`](#git-node-backport)
+  - [Example](#example)
+- [`git node sync`](#git-node-sync)
 - [`git node metadata`](#git-node-metadata)
 - [`git node v8`](#git-node-v8)
   - [`git node v8 major`](#git-node-v8-major)
@@ -14,7 +17,7 @@ A custom Git command for managing pull requests. You can run it as
   - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
   - [General options](#general-options)
 - [`git node wpt`](#git-node-wpt)
-  - [Example](#example)
+  - [Example](#example-1)
 
 ## Prerequistes
 
@@ -127,6 +130,53 @@ Commands:
 Options:
   --version  Show version number                                       [boolean]
   --help     Show help                                                 [boolean]
+```
+
+## `git node backport`
+
+Demo: https://asciinema.org/a/221244
+
+```
+git node backport <identifier>
+
+Backport a PR to a release staging branch.
+
+Positionals:
+  identifier  ID or URL of the pull request                            [string] [required]
+
+Options:
+  --version  Show version number                                                 [boolean]
+  --help     Show help                                                           [boolean]
+  --to       release to backport the commits to                        [number] [required]
+```
+
+### Example
+
+```
+Backporting https://github.com/nodejs/node/pull/12344 to v10.x
+
+# Sync master with upstream for the commits, if they are not yet there
+$ git checkout master
+$ git node sync
+
+# Backport existing commits from master to v10.x-staging
+$ git checkout v10.x-staging
+$ git node sync
+$ git node backport 12344 --to 10
+```
+
+## `git node sync`
+
+Demo: https://asciinema.org/a/221230
+
+```
+git node sync
+
+Sync the branch specified by ncu-config.
+
+Options:
+  --version  Show version number                                                 [boolean]
+  --help     Show help                                                           [boolean]
 ```
 
 ## `git node metadata`
