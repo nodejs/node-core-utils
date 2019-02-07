@@ -11,6 +11,7 @@ const PRChecker = require('../../lib/pr_checker');
 const GT_7D = '2018-11-23T17:50:44.477Z';
 const LT_7D_GT_48H = '2018-11-27T17:50:44.477Z';
 const LT_48H = '2018-11-30T17:50:44.477Z';
+const LT_48H_GT_47H = '2018-11-29T17:55:44.477Z';
 const NOW = '2018-11-31T17:50:44.477Z';
 
 const {
@@ -195,6 +196,43 @@ describe('PRChecker', () => {
 
       const youngPR = Object.assign({}, firstTimerPR, {
         createdAt: LT_48H
+      });
+
+      const data = {
+        pr: youngPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, argv);
+
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error when PR is younger than 48h and older than 47h', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok:
+         [ [ 'Approvals: 4' ],
+           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
+           [ '- Quux User (@Quux): LGTM' ],
+           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
+           [ '- Bar User (@bar) (TSC): lgtm' ] ],
+        info: [ [ 'This PR was created on Thu, 29 Nov 2018 17:55:44 GMT' ] ],
+        error: [ [ 'This PR needs to wait 5 more minutes to land' ] ]
+      };
+
+      const youngPR = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H_GT_47H
       });
 
       const data = {
