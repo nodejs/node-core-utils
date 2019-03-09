@@ -88,8 +88,10 @@ recommended to leave your tokens in your command line history.
 Put the following entries into `~/.gitignore_global`
 
 ```
-.ncurc  # node-core-utils configuration file
-.ncu    # node-core-utils working directory
+# node-core-utils configuration file
+.ncurc
+# node-core-utils working directory
+.ncu
 ```
 
 Mind that`.ncu/land` could contain your access token since it contains the
