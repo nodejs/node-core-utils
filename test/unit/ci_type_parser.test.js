@@ -56,10 +56,23 @@ const expected = new Map([
     jobid: 7213
   }]
 ]);
-
 describe('JobParser', () => {
   it('should parse CI results', () => {
     const results = new JobParser(commentsWithCI).parse();
     assert.deepStrictEqual([...results.entries()], [...expected.entries()]);
+  });
+
+  it('should parse pipeline links', () => {
+    const data = [{
+      'publishedAt': '2017-10-29T04:16:36.458Z',
+      'bodyText': '@contributer build started: https://ci.nodejs.org/blue/organizations/jenkins/node-test-pull-request-lite-pipeline/detail/node-test-pull-request-lite-pipeline/3009/pipeline/'
+    }];
+    const results = new JobParser(data).parse();
+    assert.deepStrictEqual([...results.entries()], [
+      ['LITE_PR_PIPELINE', {
+        link: 'https://ci.nodejs.org/blue/organizations/jenkins/node-test-pull-request-lite-pipeline/detail/node-test-pull-request-lite-pipeline/3009/pipeline/',
+        date: '2017-10-29T04:16:36.458Z',
+        jobid: 3009
+      }]]);
   });
 });
