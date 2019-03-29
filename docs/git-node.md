@@ -24,7 +24,7 @@ A custom Git command for managing pull requests. You can run it as
 Note: the prerequistes are not required for `git node v8`.
 
 1. See the readme on how to
-  [set up credentials](../README.md#setting-up-credentials).
+   [set up credentials](../README.md#setting-up-credentials).
 1. It's a Git command, so make sure you have Git installed, of course.
 1. Configure your upstream remote and branch name.
 
@@ -85,7 +85,8 @@ Examples:
 If you are using `git bash` and having trouble with output use
 `winpty git-node.cmd metadata $PRID`.
 
-current known issues with git bash:
+Current known issues with git bash:
+
 - git bash Lacks colors.
 - git bash output duplicates metadata.
 
@@ -243,6 +244,9 @@ Options:
 
 - `--branch=branchName`: Branch of the V8 repository to use for the upgrade.
   Defaults to `lkgr`.
+
+- `--no-version-bump`: Disable automatic bump of the `NODE_MODULE_VERSION`
+  constant.
 
 ### `git node v8 minor`
 

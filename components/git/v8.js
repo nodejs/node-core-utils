@@ -23,6 +23,10 @@ module.exports = {
             describe: 'Branch of the V8 repository to use for the upgrade',
             default: 'lkgr'
           });
+          yargs.option('version-bump', {
+            describe: 'Bump the NODE_MODULE_VERSION constant by one',
+            default: true
+          });
         }
       })
       .command({
@@ -35,14 +39,16 @@ module.exports = {
         desc: 'Backport one or more commits from the V8 repository',
         handler: main,
         builder: (yargs) => {
-          yargs.option('bump', {
-            describe: 'Bump V8 embedder version number or patch version',
-            default: true
-          }).option('squash', {
-            describe:
-              'If multiple commits are backported, squash them into one',
-            default: false
-          });
+          yargs
+            .option('bump', {
+              describe: 'Bump V8 embedder version number or patch version',
+              default: true
+            })
+            .option('squash', {
+              describe:
+                'If multiple commits are backported, squash them into one',
+              default: false
+            });
         }
       })
       .demandCommand(1, 'Please provide a valid command')
