@@ -15,7 +15,7 @@ ncu-ci <command>
 Commands:
   ncu-ci rate <type>        Calculate the green rate of a CI job in the last 100
                             runs
-  ncu-ci walk <type>        Walk the CI and store the failures
+  ncu-ci walk <type>        Walk the CI and display the failures
   ncu-ci url <url>          Automatically detect CI type and show results
   ncu-ci pr <jobid>         Show results of a node-test-pull-request CI job
   ncu-ci commit <jobid>     Show results of a node-test-commit CI job
@@ -23,10 +23,11 @@ Commands:
                             job
 
 Options:
-  --version  Show version number                                       [boolean]
-  --copy     Write the results as markdown to clipboard         [default: false]
-  --json     Write the results as json to the path                      [string]
-  --help     Show help                                                 [boolean]
+  --version   Show version number                                      [boolean]
+  --copy      Write the results as markdown to clipboard        [default: false]
+  --json      Write the results as json to the path                     [string]
+  --markdown  Write the results as markdown to the path                 [string]
+  --help      Show help                                                [boolean]
 ```
 
 ## Example
@@ -42,6 +43,20 @@ Get the results of job #12345 of  `node-test-pull-request`:
 
 ```
 ncu-ci pr 12345
+```
+
+
+Walk the CI for the latest 100 runs of `node-test-pull-request`,
+aggregate the failures, then write the results into a Markdown file,
+and cache the responses from Jenkins so that the next time the command
+is run, it picks up cached data written on disk for jobs whose results
+are known.
+
+Note: results are cached in `${ncu_intallation_path}/.ncu/cache`, you
+may want to clean it up from time to time.
+
+```
+ncu-ci walk pr --stats --cache --markdown results.md
 ```
 
 Walk the CI for the latest 100 runs of `node-test-pull-request`, write the
