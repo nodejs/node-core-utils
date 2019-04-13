@@ -15,7 +15,7 @@ const {
   listBuilds, FailureAggregator, jobCache
 } = require('../lib/ci/ci_result_parser');
 const clipboardy = require('clipboardy');
-const { writeJson } = require('../lib/file');
+const { writeJson, writeFile } = require('../lib/file');
 
 const { runPromise } = require('../lib/run');
 const auth = require('../lib/auth');
@@ -119,6 +119,10 @@ const argv = yargs
     type: 'string',
     describe: 'Write the results as json to the path'
   })
+  .option('markdown', {
+    type: 'string',
+    describe: 'Write the results as markdown to the path'
+  })
   .help()
   .argv;
 
@@ -142,8 +146,8 @@ async function getResults(cli, request, job) {
 }
 
 async function runQueue(queue, cli, request, argv) {
-  let dataToCopy = '';
-  let dataToJson = [];
+  let json = [];
+  let markdown = '';
 
   for (let i = 0; i < queue.length; ++i) {
     const job = queue[i];
@@ -158,16 +162,15 @@ async function runQueue(queue, cli, request, argv) {
     const build = await getResults(cli, request, job);
     build.display();
 
-    if (argv.copy) {
-      dataToCopy += build.formatAsMarkdown();
+    json = json.concat(build.formatAsJson());
+    if ((argv.copy || argv.markdown) && !argv.stats) {
+      markdown += build.formatAsMarkdown();
     }
-
-    dataToJson = dataToJson.concat(build.formatAsJson());
   }
 
   return {
-    json: dataToJson,
-    copy: dataToCopy
+    json,
+    markdown
   };
 }
 
@@ -262,15 +265,22 @@ async function main(command, argv) {
       cli.separator('Stats');
       cli.log('');
       aggregator.display();
-      if (argv.copy) {
-        data.copy = aggregator.formatAsMarkdown();
+
+      if (argv.markdown || argv.copy) {
+        data.markdown = aggregator.formatAsMarkdown();
       }
     }
 
     if (argv.copy) {
-      clipboardy.writeSync(data.copy);
+      clipboardy.writeSync(data.markdown);
       cli.separator('');
       cli.log(`Written markdown to clipboard`);
+    }
+
+    if (argv.markdown) {
+      writeFile(argv.markdown, data.markdown);
+      cli.separator('');
+      cli.log(`Written markdown to ${argv.markdown}`);
     }
 
     if (argv.json) {
