@@ -3,8 +3,8 @@
 A custom Git command for managing pull requests. You can run it as
 `git-node` or `git node`. To see the help text, run `git node`.
 
-- [Prerequistes](#prerequistes)
 - [`git node land`](#git-node-land)
+  - [Prerequistes](#git-node-land-prerequistes)
   - [Git bash for Windows](#git-bash-for-windows)
   - [Demo & Usage](#demo--usage)
 - [`git node backport`](#git-node-backport)
@@ -12,6 +12,7 @@ A custom Git command for managing pull requests. You can run it as
 - [`git node sync`](#git-node-sync)
 - [`git node metadata`](#git-node-metadata)
 - [`git node v8`](#git-node-v8)
+  - [Prerequistes](#git-node-v8-prerequistes)
   - [`git node v8 major`](#git-node-v8-major)
   - [`git node v8 minor`](#git-node-v8-minor)
   - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
@@ -19,9 +20,37 @@ A custom Git command for managing pull requests. You can run it as
 - [`git node wpt`](#git-node-wpt)
   - [Example](#example-1)
 
-## Prerequistes
+## `git node land`
 
-Note: the prerequistes are not required for `git node v8`.
+```
+git-node land [prid|options]
+
+Manage the current landing session or start a new one for a pull request
+
+Positionals:
+  prid, options  ID of the Pull Request                                 [number]
+
+Options:
+  --version       Show version number                                  [boolean]
+  --help          Show help                                            [boolean]
+  --apply         Apply a patch with the given PR id                    [number]
+  --amend         Amend the current commit                             [boolean]
+  --continue, -c  Continue the landing session                         [boolean]
+  --final         Verify the landed PR and clean up                    [boolean]
+  --abort         Abort the current landing session                    [boolean]
+
+Examples:
+  git node land 12344       Land https://github.com/nodejs/node/pull/12344 in
+                            the current directory
+  git node land --abort     Abort the current session
+  git node land --amend     Append metadata to the current commit message
+  git node land --final     Verify the landed PR and clean up
+  git node land --continue  Continue the current landing session
+```
+
+<a id="git-node-land-prerequistes"></a>
+
+### Prerequistes
 
 1. See the readme on how to
    [set up credentials](../README.md#setting-up-credentials).
@@ -51,34 +80,6 @@ Note: the prerequistes are not required for `git node v8`.
    # Tell ncu that you are landing patches to "master" branch
    $ ncu-config set branch master
    ```
-
-## `git node land`
-
-```
-git-node land [prid|options]
-
-Manage the current landing session or start a new one for a pull request
-
-Positionals:
-  prid, options  ID of the Pull Request                                 [number]
-
-Options:
-  --version       Show version number                                  [boolean]
-  --help          Show help                                            [boolean]
-  --apply         Apply a patch with the given PR id                    [number]
-  --amend         Amend the current commit                             [boolean]
-  --continue, -c  Continue the landing session                         [boolean]
-  --final         Verify the landed PR and clean up                    [boolean]
-  --abort         Abort the current landing session                    [boolean]
-
-Examples:
-  git node land 12344       Land https://github.com/nodejs/node/pull/12344 in
-                            the current directory
-  git node land --abort     Abort the current session
-  git node land --amend     Append metadata to the current commit message
-  git node land --final     Verify the landed PR and clean up
-  git node land --continue  Continue the current landing session
-```
 
 ### Git bash for Windows
 
@@ -232,7 +233,24 @@ git node metadata 167 --repo llnode --readme ../node/README.md
 ## `git node v8`
 
 Update or patch the V8 engine.  
-This tool will maintain a clone of the V8 repository in `~/.update-v8/v8`.
+This tool will maintain a clone of the V8 repository in `~/.update-v8/v8`
+if it's used without `--v8-dir`.
+
+<a id="git-node-v8-prerequistes"></a>
+
+### Prerequistes
+
+If you are on macOS, the version of `patch` command bundled in the system may
+be too old for `git node v8` to work. Try installing a newer version of patch
+before using this tool. For instance, with homebrew:
+
+```
+$ brew install gpatch
+```
+
+And make sure `which patch` points to `/usr/local/bin/patch` installed by
+homebrew instead of `/usr/bin/patch` that comes with the system (e.g. by
+modifying yoru `PATH` environment variable).
 
 ### `git node v8 major`
 
