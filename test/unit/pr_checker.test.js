@@ -383,7 +383,7 @@ describe('PRChecker', () => {
         info:
          [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ],
            [
-             'This PR is being fast-tracked because it is from Code and Learn'
+             'This PR is being fast-tracked because it is from a Code and Learn event'
            ]
          ]
       };
