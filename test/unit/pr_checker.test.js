@@ -370,6 +370,52 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
+    it('should fast track code-and-learn PRs', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok:
+         [ [ 'Approvals: 4' ],
+           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
+           [ '- Quux User (@Quux): LGTM' ],
+           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
+           [ '- Bar User (@bar) (TSC): lgtm' ] ],
+        info:
+         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ],
+           [ 'This PR is being fast-tracked because ' +
+             'it is from a Code and Learn event' ]
+         ]
+      };
+
+      const pr = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H,
+        labels: {
+          nodes: [
+            { name: 'code-and-learn' }
+          ]
+        }
+      });
+
+      const data = {
+        pr,
+        reviewers: allGreenReviewers,
+        comments: commentsWithCI,
+        reviews: approvingReviews,
+        commits: [],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, argv);
+
+      cli.clearCalls();
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
     it('should warn about approvals and CI for fast-tracked PR', () => {
       const cli = new TestCLI();
 
