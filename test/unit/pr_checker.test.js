@@ -382,9 +382,8 @@ describe('PRChecker', () => {
            [ '- Bar User (@bar) (TSC): lgtm' ] ],
         info:
          [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ],
-           [
-             'This PR is being fast-tracked because it is from a Code and Learn event'
-           ]
+           [ 'This PR is being fast-tracked because ' +
+             'it is from a Code and Learn event' ]
          ]
       };
 
