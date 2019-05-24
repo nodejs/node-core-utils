@@ -24,7 +24,7 @@ module.exports = {
             default: 'lkgr'
           });
           yargs.option('version-bump', {
-            describe: 'Bump the NODE_MODULE_VERSION constant by one',
+            describe: 'Bump the NODE_MODULE_VERSION constant',
             default: true
           });
         }
