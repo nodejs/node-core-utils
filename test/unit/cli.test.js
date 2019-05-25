@@ -27,6 +27,9 @@ describe('cli', () => {
       () => {
         cli = new CLI();
         assert.strictEqual(cli.stream, process.stderr);
+
+        cli.setFigureIndent(2);
+        assert.strictEqual(cli.figureIndent, '  ');
       });
   });
 
@@ -48,6 +51,10 @@ describe('cli', () => {
       it('should update the spinner text', () => {
         cli.updateSpinner('bar');
         assert.strictEqual(cli.spinner.text, 'bar');
+      });
+
+      afterEach(() => {
+        cli.stopSpinner('stop', 'info');
       });
     });
 
@@ -136,7 +143,6 @@ describe('cli', () => {
       });
     });
 
-    // TODO: `Error` instance test
     describe('error', () => {
       it('should print an error message', () => {
         cli.error('Error!');
@@ -146,6 +152,16 @@ describe('cli', () => {
       it('should print an error message in a new line if specified', () => {
         cli.error('Error!', { newline: true });
         assert.strictEqual(logResult(), `\n   ${error}  Error!\n`);
+      });
+
+      it('should print an error message', () => {
+        cli.error(new Error('Error!'));
+        assert.ok(logResult().startsWith(`   ${error}  Error!\n`));
+      });
+
+      it('should print an error message in a new line if specified', () => {
+        cli.error(new Error('Error!'), { newline: true });
+        assert.ok(logResult().startsWith(`\n   ${error}  Error!\n`));
       });
     });
   });
