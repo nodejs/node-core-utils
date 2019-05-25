@@ -256,7 +256,7 @@ modifying yoru `PATH` environment variable).
 
 - Replaces `deps/v8` with a newer major version.
 - Resets the embedder version number to `-node.0`.
-- Updates `NODE_MODULE_VERSION` according to the V8 version.
+- Bumps `NODE_MODULE_VERSION` according to the [Node.js ABI version registry][].
 
 Options:
 
@@ -314,3 +314,5 @@ to the assets, this also updates:
 $ cd /path/to/node/project
 $ git node wpt url  # Will update test/fixtures/wpt/url and related files
 ```
+
+[node.js abi version registry]: https://github.com/nodejs/node/blob/master/doc/abi_version_registry.json
