@@ -9,12 +9,14 @@ const {
 } = require('../../lib/collaborators');
 const {
   readme,
+  readmeAlternative,
   readmeNoTsc,
   readmeNoTscE,
   readmeNoCollaborators,
   readmeNoCollaboratorE,
   readmeUnordered,
-  collaborators
+  collaborators,
+  collaboratorsAlternative
 } = require('../fixtures/data');
 const TestCLI = require('../fixtures/test_cli');
 const assertThrowsAsync = require('../fixtures/assert_throws_async');
@@ -112,6 +114,14 @@ describe('collaborators', function() {
       const parsed = await getCollaborators(cli, request, argv);
       assert.deepStrictEqual(parsed, collaborators);
     });
+
+    it('should parse names with parentheses',
+      async() => {
+        const argv = { owner: 'nodejs', repo: 'node' };
+        const request = mockRequest(readmeAlternative, argv);
+        const parsed = await getCollaborators(cli, request, argv);
+        assert.deepStrictEqual(parsed, collaboratorsAlternative);
+      });
 
     it('should throw error if there is no TSC section in the README',
       async() => {

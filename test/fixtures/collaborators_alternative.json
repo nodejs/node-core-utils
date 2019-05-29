@@ -1,0 +1,14 @@
+[
+  {
+    "login": "bar",
+    "name": "Bar User (张三)",
+    "email": "bar@example.com",
+    "type": "TSC"
+  },
+  {
+    "login": "Baz",
+    "name": "Baz User",
+    "email": "baz@example.com",
+    "type": "COLLABORATOR"
+  }
+]

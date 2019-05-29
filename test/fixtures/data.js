@@ -35,8 +35,6 @@ const oddCommits = readJSON('odd_commits.json');
 const incorrectGitConfigCommits = readJSON('incorrect_git_config_commits.json');
 const simpleCommits = readJSON('simple_commits.json');
 
-const collabArr = readJSON('collaborators.json');
-
 const singleCommitAfterReview = {
   commits: readJSON('single_commit_after_review_commits.json'),
   reviews: readJSON('single_commit_after_review_reviews.json')
@@ -53,11 +51,18 @@ const moreThanThreeCommitsAfterReview = {
 const commitsAfterCi = readJSON('commits_after_ci.json');
 const mulipleCommitsAfterCi = readJSON('multiple_commits_after_ci.json');
 
-collabArr.forEach((c) => {
-  Object.setPrototypeOf(c, Collaborator.prototype);
-});
-const collaborators = new Map(
-  collabArr.map((c) => [c.login.toLowerCase(), c])
+function makeCollaborators(arr) {
+  arr.forEach((c) => {
+    Object.setPrototypeOf(c, Collaborator.prototype);
+  });
+  return new Map(
+    arr.map((c) => [c.login.toLowerCase(), c])
+  );
+}
+
+const collaborators = makeCollaborators(readJSON('collaborators.json'));
+const collaboratorsAlternative = makeCollaborators(
+  readJSON('collaborators_alternative.json')
 );
 
 const firstTimerPR = readJSON('first_timer_pr.json');
@@ -70,6 +75,7 @@ const emptyProfilePR = readJSON('empty_profile_pr.json');
 const closedPR = readJSON('./closed_pr.json');
 const mergedPR = readJSON('./merged_pr.json');
 const readme = readFile('./README/README.md');
+const readmeAlternative = readFile('./README/README_alternative.md');
 const readmeNoTsc = readFile('./README/README_no_TSC.md');
 const readmeNoTscE = readFile('./README/README_no_TSCE.md');
 const readmeNoCollaborators = readFile('./README/README_no_collaborators.md');
@@ -96,6 +102,7 @@ module.exports = {
   commitsAfterCi,
   mulipleCommitsAfterCi,
   collaborators,
+  collaboratorsAlternative,
   firstTimerPR,
   firstTimerPrivatePR,
   semverMajorPR,
@@ -104,6 +111,7 @@ module.exports = {
   conflictingPR,
   emptyProfilePR,
   readme,
+  readmeAlternative,
   readmeNoTsc,
   readmeNoTscE,
   readmeNoCollaborators,
