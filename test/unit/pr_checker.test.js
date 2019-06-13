@@ -607,7 +607,7 @@ describe('PRChecker', () => {
           ['- feat: add something']
         ],
         info: [
-          ['Last Lite PR Pipeline CI on 2017-10-22T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/10984/pipeline'],
+          ['Last Lite PR Pipeline CI on 2017-10-22T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/10984'],
           ['Last Full PR CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
         ]
       };
