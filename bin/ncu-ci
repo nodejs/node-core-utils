@@ -11,7 +11,7 @@ const {
 } = require('../lib/ci/ci_type_parser');
 
 const {
-  PRBuild, BenchmarkRun, CommitBuild,
+  PRBuild, BenchmarkRun, CommitBuild, HealthBuild,
   listBuilds, FailureAggregator, jobCache
 } = require('../lib/ci/ci_result_parser');
 const clipboardy = require('clipboardy');
@@ -126,76 +126,195 @@ const argv = yargs
   .help()
   .argv;
 
-async function getResults(cli, request, job) {
-  let build;
-  const { type, jobid } = job;
-  if (type === PR) {
-    build = new PRBuild(cli, request, jobid);
-    await build.getResults();
-  } else if (type === COMMIT) {
-    build = new CommitBuild(cli, request, jobid);
-    await build.getResults();
-  } else if (type === BENCHMARK) {
-    build = new BenchmarkRun(cli, request, jobid);
-    await build.getResults();
-  } else {
-    yargs.showHelp();
-    return;
-  }
-  return build;
-}
+const commandToType = {
+  'commit': COMMIT,
+  'pr': PR,
+  'benchmark': BENCHMARK
+};
 
-async function runQueue(queue, cli, request, argv) {
-  let json = [];
-  let markdown = '';
-
-  for (let i = 0; i < queue.length; ++i) {
-    const job = queue[i];
-    cli.separator('');
-    const progress = `[${i + 1}/${queue.length}]`;
-    if (job.link) {
-      cli.log(`${progress} Running ${job.link}`);
-    } else {
-      cli.log(`${progress} Running ${job.type}: ${job.jobid}`);
-    }
-    cli.separator('');
-    const build = await getResults(cli, request, job);
-    build.display();
-
-    json = json.concat(build.formatAsJson());
-    if ((argv.copy || argv.markdown) && !argv.stats) {
-      markdown += build.formatAsMarkdown();
-    }
+class CICommand {
+  constructor(cli, request, argv) {
+    this.cli = cli;
+    this.request = request;
+    this.argv = argv;
+    this.queue = [];
+    this.json = [];
+    this.markdown = '';
   }
 
-  return {
-    json,
-    markdown
-  };
+  async drain() {
+    if (this.queue.length === 0) {
+      return;
+    }
+
+    const { cli, queue, argv, request } = this;
+
+    for (let i = 0; i < queue.length; ++i) {
+      const job = queue[i];
+      cli.separator('');
+      const progress = `[${i + 1}/${queue.length}]`;
+      if (job.link) {
+        cli.log(`${progress} Running ${job.link}`);
+      } else if (job.jobid) {
+        cli.log(`${progress} Running ${job.type}: ${job.jobid}`);
+      } else {
+        cli.log(`${progress} Running ${job.type}`);
+      }
+      cli.separator('');
+
+      let build;
+      switch (job.type) {
+        case 'health':
+          build = new HealthBuild(cli, request, job.ciType, job.builds);
+          break;
+        case PR:
+          build = new PRBuild(cli, request, job.jobid);
+          break;
+        case COMMIT:
+          build = new CommitBuild(cli, request, job.jobid);
+          break;
+        case BENCHMARK:
+          build = new BenchmarkRun(cli, request, job.jobid);
+          break;
+        default:
+          throw new Error(`Unknown job type ${job.type}`);
+      }
+
+      await build.getResults();
+      build.display();
+
+      const json = build.formatAsJson();
+      if (json !== undefined) {
+        this.json = this.json.concat(json);
+      }
+      if ((argv.copy || argv.markdown) && !argv.stats) {
+        this.markdown += build.formatAsMarkdown();
+      }
+    }
+  }
+
+  async aggregate() {  // noop
+  }
+
+  async serialize() {
+    const { argv, cli } = this;
+
+    if (argv.copy) {
+      if (this.markdown) {
+        clipboardy.writeSync(this.markdown);
+        cli.separator('');
+        cli.log(`Written markdown to clipboard`);
+      } else {
+        cli.error('No markdown generated');
+      }
+    }
+
+    if (argv.markdown) {
+      if (this.markdown) {
+        writeFile(argv.markdown, this.markdown);
+        cli.separator('');
+        cli.log(`Written markdown to ${argv.markdown}`);
+      } else {
+        cli.error('No markdown generated');
+      }
+    }
+
+    if (argv.json) {
+      if (this.json.length) {
+        writeJson(argv.json, this.json);
+        cli.separator('');
+        cli.log(`Written JSON to ${argv.json}`);
+      } else {
+        cli.error('No JSON generated');
+      }
+    }
+  }
 }
 
-function pad(any, length) {
-  return (any + '').padEnd(length);
+class RateCommand extends CICommand {
+  async initialize() {
+    this.queue.push({
+      type: 'health',
+      ciType: commandToType[this.argv.type]
+    });
+  }
 }
 
-// Produces a row for https://github.com/nodejs/reliability#ci-health-history
-function displayHealth(builds, cli) {
-  const [
-    count, success, pending, aborted, failed, unstable
-  ] = [
-    builds.count, builds.success.length, builds.pending.length,
-    builds.aborted.length, builds.failed.length, builds.unstable.length
-  ];
-  const rate = `${(success / (count - pending - aborted) * 100).toFixed(2)}%`;
-  // eslint-disable-next-line max-len
-  cli.log('| UTC Time         | RUNNING | SUCCESS | UNSTABLE | ABORTED | FAILURE | Green Rate |');
-  // eslint-disable-next-line max-len
-  cli.log('| ---------------- | ------- | ------- | -------- | ------- | ------- | ---------- |');
-  const time = new Date().toISOString().slice(0, 16).replace('T', ' ');
-  let result = `| ${time} | ${pad(pending, 7)} | ${pad(success, 8)}|`;
-  result += ` ${pad(unstable, 8)} | ${pad(aborted, 7)} | ${pad(failed, 7)} |`;
-  result += ` ${pad(rate, 10)} |`;
-  cli.log(result);
+class WalkCommand extends CICommand {
+  constructor(cli, request, argv) {
+    super(cli, request, argv);
+    if (argv.cache) {
+      jobCache.enable();
+    }
+  }
+
+  async initialize() {
+    const ciType = commandToType[this.argv.type];
+    const builds = await listBuilds(this.cli, this.request, ciType);
+    this.queue.push({ type: 'health', ciType, builds });
+    for (const build of builds.failed.slice(0, this.argv.limit)) {
+      this.queue.push(build);
+    }
+  }
+
+  async aggregate() {
+    const { argv, cli } = this;
+    const aggregator = new FailureAggregator(cli, this.json);
+    this.json = aggregator.aggregate();
+    cli.log('');
+    cli.separator('Stats');
+    cli.log('');
+    aggregator.display();
+
+    if (argv.markdown || argv.copy) {
+      this.markdown = aggregator.formatAsMarkdown();
+    }
+  }
+}
+
+class JobCommand extends CICommand {
+  constructor(cli, request, argv, command) {
+    super(cli, request, argv);
+    this.command = command;
+  }
+
+  async initialize() {
+    this.queue.push({
+      type: commandToType[this.command],
+      jobid: this.argv.jobid
+    });
+  }
+}
+
+class URLCommand extends CICommand {
+  async initialize() {
+    const { argv, cli, request, queue } = this;
+    let parsed = parseJobFromURL(argv.url);
+    if (parsed) {
+      queue.push({
+        type: parsed.type,
+        jobid: parsed.jobid
+      });
+      return;
+    }
+
+    // Parse CI links from PR.
+    const parser = await JobParser.fromPR(argv.url, cli, request);
+    if (!parser) {  // Not a valid PR URL
+      cli.error(`${argv.url} is not a valid PR URL`);
+      return;
+    }
+    const ciMap = parser.parse();
+    if (ciMap.size === 0) {
+      cli.info(`No CI run detected from ${argv.url}`);
+    }
+    for (const [type, ci] of ciMap) {
+      queue.push({
+        type: type,
+        jobid: ci.jobid
+      });
+    }
+  }
 }
 
 async function main(command, argv) {
@@ -205,90 +324,36 @@ async function main(command, argv) {
     jenkins: true
   });
   const request = new Request(credentials);
-  const queue = [];
 
-  const commandToType = {
-    'commit': COMMIT,
-    'pr': PR,
-    'benchmark': BENCHMARK
-  };
-
-  if (command === 'rate' || command === 'walk') {
-    const type = commandToType[argv.type];
-    const builds = await listBuilds(cli, request, type);
-    if (command === 'walk') {
-      if (argv.cache) {
-        jobCache.enable();
-      }
-      for (const build of builds.failed.slice(0, argv.limit)) {
-        queue.push(build);
-      }
-    } else {
-      displayHealth(builds, cli);
+  let commandHandler;
+  // Prepare queue.
+  switch (command) {
+    case 'rate': {
+      commandHandler = new RateCommand(cli, request, argv);
+      break;
     }
+    case 'walk': {
+      commandHandler = new WalkCommand(cli, request, argv);
+      break;
+    }
+    case 'url': {
+      commandHandler = new URLCommand(cli, request, argv);
+      break;
+    }
+    case 'pr':
+    case 'commit':
+    case 'benchmark': {
+      commandHandler = new JobCommand(cli, request, argv, command);
+      break;
+    }
+    default:
+      return yargs.showHelp();
   }
 
-  if (command === 'url') {
-    let parsed = parseJobFromURL(argv.url);
-    if (parsed) {
-      queue.push({
-        type: parsed.type,
-        jobid: parsed.jobid
-      });
-    } else {
-      const parser = await JobParser.fromPR(argv.url, cli, request);
-      if (!parser) {  // Not a valid PR URL
-        return yargs.showHelp();
-      }
-      const ciMap = parser.parse();
-      for (const [type, ci] of ciMap) {
-        queue.push({
-          type: type,
-          jobid: ci.jobid
-        });
-      }
-    }
-  } else if (commandToType[command]) {
-    queue.push({
-      type: commandToType[command],
-      jobid: argv.jobid
-    });
-  }
-
-  if (queue.length > 0) {
-    const data = await runQueue(queue, cli, request, argv);
-
-    if (command === 'walk' && argv.stats) {
-      const aggregator = new FailureAggregator(cli, data.json);
-      data.json = aggregator.aggregate();
-      cli.log('');
-      cli.separator('Stats');
-      cli.log('');
-      aggregator.display();
-
-      if (argv.markdown || argv.copy) {
-        data.markdown = aggregator.formatAsMarkdown();
-      }
-    }
-
-    if (argv.copy) {
-      clipboardy.writeSync(data.markdown);
-      cli.separator('');
-      cli.log(`Written markdown to clipboard`);
-    }
-
-    if (argv.markdown) {
-      writeFile(argv.markdown, data.markdown);
-      cli.separator('');
-      cli.log(`Written markdown to ${argv.markdown}`);
-    }
-
-    if (argv.json) {
-      writeJson(argv.json, data.json);
-      cli.separator('');
-      cli.log(`Written JSON to ${argv.json}`);
-    }
-  }
+  await commandHandler.initialize();
+  await commandHandler.drain();
+  await commandHandler.aggregate();
+  await commandHandler.serialize();
 }
 
 function handler(argv) {
