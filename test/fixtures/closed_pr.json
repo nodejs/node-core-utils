@@ -20,5 +20,7 @@
   "baseRefName": "master",
   "headRefName": "awesome-changes",
   "closed": true,
-  "merged": false
+  "closedAt": "2017-10-28T11:13:43Z",
+  "merged": false,
+  "mergedAt": null
 }

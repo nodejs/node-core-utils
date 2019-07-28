@@ -1110,7 +1110,7 @@ describe('PRChecker', () => {
     it('should warn if PR is closed', () => {
       const expectedLogs = {
         warn: [
-          [ 'This PR is closed' ]
+          [ 'This PR was closed on Sat, 28 Oct 2017 11:13:43 GMT' ]
         ]
       };
 
@@ -1133,7 +1133,7 @@ describe('PRChecker', () => {
     it('should warn if PR is merged', () => {
       const expectedLogs = {
         warn: [
-          [ 'This PR is merged' ]
+          [ 'This PR was merged on Sat, 28 Oct 2017 11:13:43 GMT' ]
         ]
       };
 
