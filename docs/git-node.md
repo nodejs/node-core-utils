@@ -4,7 +4,7 @@ A custom Git command for managing pull requests. You can run it as
 `git-node` or `git node`. To see the help text, run `git node`.
 
 - [`git node land`](#git-node-land)
-  - [Prerequistes](#git-node-land-prerequistes)
+  - [Prerequisites](#git-node-land-prerequisites)
   - [Git bash for Windows](#git-bash-for-windows)
   - [Demo & Usage](#demo--usage)
 - [`git node backport`](#git-node-backport)
@@ -12,7 +12,7 @@ A custom Git command for managing pull requests. You can run it as
 - [`git node sync`](#git-node-sync)
 - [`git node metadata`](#git-node-metadata)
 - [`git node v8`](#git-node-v8)
-  - [Prerequistes](#git-node-v8-prerequistes)
+  - [Prerequisites](#git-node-v8-prerequisites)
   - [`git node v8 major`](#git-node-v8-major)
   - [`git node v8 minor`](#git-node-v8-minor)
   - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
@@ -48,9 +48,9 @@ Examples:
   git node land --continue  Continue the current landing session
 ```
 
-<a id="git-node-land-prerequistes"></a>
+<a id="git-node-land-prerequisites"></a>
 
-### Prerequistes
+### Prerequisites
 
 1. See the readme on how to
    [set up credentials](../README.md#setting-up-credentials).
@@ -236,9 +236,9 @@ Update or patch the V8 engine.
 This tool will maintain a clone of the V8 repository in `~/.update-v8/v8`
 if it's used without `--v8-dir`.
 
-<a id="git-node-v8-prerequistes"></a>
+<a id="git-node-v8-prerequisites"></a>
 
-### Prerequistes
+### Prerequisites
 
 If you are on macOS, the version of `patch` command bundled in the system may
 be too old for `git node v8` to work. Try installing a newer version of patch
