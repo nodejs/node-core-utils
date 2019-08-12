@@ -1,7 +1,7 @@
 # ncu-config
 
 Configure variables for node-core-utils to use. Global variables are stored
-in `~/.ncurc` while local variabels are stored in `$PWD/.ncu/config`.
+in `~/.ncurc` while local variables are stored in `$PWD/.ncu/config`.
 
 ```
 ncu-config <command>
