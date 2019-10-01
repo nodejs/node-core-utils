@@ -40,6 +40,11 @@ Options:
   --continue, -c  Continue the landing session                         [boolean]
   --final         Verify the landed PR and clean up                    [boolean]
   --abort         Abort the current landing session                    [boolean]
+  --yes           Assume "yes" as answer to all prompts and run
+                  non-interactively. If an undesirable situation occurs, such as
+                  a pull request or commit check fails, then git node land will
+                  abort.                              [boolean] [default: false]
+
 
 Examples:
   git node land 12344       Land https://github.com/nodejs/node/pull/12344 in

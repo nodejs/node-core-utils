@@ -165,4 +165,24 @@ describe('cli', () => {
       });
     });
   });
+
+  describe('prompt assume yes', () => {
+    beforeEach(() => {
+      stream = new LogStream();
+      cli = new CLI(stream);
+      cli.setAssumeYes();
+    });
+
+    it('should return true if no default is given', async() => {
+      assert.strictEqual(await cli.prompt('Question?'), true);
+    });
+
+    it('should return true if default is set to true', async() => {
+      assert.strictEqual(await cli.prompt('Question?', true), true);
+    });
+
+    it('should return false if default is set to false', async() => {
+      assert.strictEqual(await cli.prompt('Question?', false), false);
+    });
+  });
 });

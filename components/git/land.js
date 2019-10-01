@@ -30,6 +30,13 @@ const landOptions = {
   abort: {
     describe: 'Abort the current landing session',
     type: 'boolean'
+  },
+  yes: {
+    type: 'boolean',
+    default: false,
+    describe: 'Assume "yes" as answer to all prompts and run ' +
+    'non-interactively. If an undesirable situation occurs, such as a pull ' +
+    'request or commit check fails, then git node land will abort.'
   }
 };
 
@@ -93,6 +100,9 @@ function handler(argv) {
 
 function land(state, argv) {
   const cli = new CLI(process.stderr);
+  if (argv.yes) {
+    cli.setAssumeYes();
+  }
   const req = new Request();
   const dir = process.cwd();
 
