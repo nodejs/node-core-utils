@@ -24,6 +24,11 @@ const requestedChangesReviewers = {
   approved: []
 };
 
+const noReviewers = {
+  requestedChanges: [],
+  approved: []
+};
+
 const approvingReviews = readJSON('reviews_approved.json');
 const requestingChangesReviews = readJSON('reviews_requesting_changes.json');
 
@@ -87,6 +92,7 @@ module.exports = {
   requestedChanges,
   allGreenReviewers,
   singleGreenReviewer,
+  noReviewers,
   requestedChangesReviewers,
   approvingReviews,
   requestingChangesReviews,

@@ -20,6 +20,7 @@ const {
   requestedChangesReviewers,
   approvingReviews,
   requestingChangesReviews,
+  noReviewers,
   commentsWithCI,
   commentsWithLiteCI,
   commentsWithLGTM,
@@ -217,6 +218,42 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
+    it('should succeed if waitTimeMultiApproval is set', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok:
+         [ [ 'Approvals: 4' ],
+           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
+           [ '- Quux User (@Quux): LGTM' ],
+           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
+           [ '- Bar User (@bar) (TSC): lgtm' ] ],
+        info: [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ]
+      };
+
+      const youngPR = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H
+      });
+
+      const data = {
+        pr: youngPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, { waitTimeMultiApproval: 23 });
+
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
     it('should error when PR is younger than 48h and older than 47h', () => {
       const cli = new TestCLI();
 
@@ -320,6 +357,73 @@ describe('PRChecker', () => {
         }
       };
       const checker = new PRChecker(cli, data, argv);
+
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should succeed with 1 approval with waitTimeSingleApproval set', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok:
+         [ [ 'Approvals: 1' ],
+           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ] ],
+        info:
+         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ]
+      };
+
+      const youngPR = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H
+      });
+
+      const data = {
+        pr: youngPR,
+        reviewers: singleGreenReviewer,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, { waitTimeSingleApproval: 0 });
+
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error with 0 approval and waitTimeSingleApproval=0', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        info:
+         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ],
+        error:
+         [ [ 'Approvals: 0' ] ]
+      };
+
+      const youngPR = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H
+      });
+
+      const data = {
+        pr: youngPR,
+        reviewers: noReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, { waitTimeSingleApproval: 0 });
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);

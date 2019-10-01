@@ -7,10 +7,12 @@ A custom Git command for managing pull requests. You can run it as
   - [Prerequisites](#git-node-land-prerequisites)
   - [Git bash for Windows](#git-bash-for-windows)
   - [Demo & Usage](#demo--usage)
+  - [Optional Settings](#git-node-land-optional-settings)
 - [`git node backport`](#git-node-backport)
   - [Example](#example)
 - [`git node sync`](#git-node-sync)
 - [`git node metadata`](#git-node-metadata)
+  - [Optional Settings](#git-node-metadata-optional-settings)
 - [`git node v8`](#git-node-v8)
   - [Prerequisites](#git-node-v8-prerequisites)
   - [`git node v8 major`](#git-node-v8-major)
@@ -134,6 +136,14 @@ Options:
   --help     Show help                                                 [boolean]
 ```
 
+<a id="git-node-land-optional-settings"></a>
+
+### Optional Settings
+
+The same Settings used by 
+[`git node metadata`](#git-node-metadata-optional-settings) are also used by 
+`git node land`.
+
 ## `git node backport`
 
 Demo: https://asciinema.org/a/221244
@@ -228,6 +238,24 @@ $ git commit --amend -F msg.txt
 # fetch metadata and run checks on https://github.com/nodejs/llnode/pull/167
 # using the contact in ../node/README.md
 git node metadata 167 --repo llnode --readme ../node/README.md
+```
+
+<a id="git-node-metadata-optional-settings"></a>
+
+### Optional Settings
+
+Some projects might not follow the same rules as nodejs/node. To properly
+validate Pull Requests for these projects, node-core-utils accept the following
+optional settings:
+
+```bash
+cd path/to/project
+# waitTimeSingleApproval is the minimum wait time (in hours) before
+# landing a PR with only one approval. Default to 7 days.
+ncu-config set waitTimeSingleApproval 168
+# waitTimeMultiApproval is the minimum wait time (in hours) before
+# landing a PR with only two or more approvals. Default to 48 hours.
+ncu-config set waitTimeMultiApproval 48
 ```
 
 ## `git node v8`
