@@ -24,7 +24,9 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
       changedFiles,
       mergeable,
       closed,
-      merged
+      closedAt,
+      merged,
+      mergedAt
     }
   }
 }
