@@ -1,0 +1,25 @@
+[
+  {
+    "commit": {
+      "committedDate": "2017-10-25T11:27:02Z",
+      "oid": "6c0945cbeea2cbbc97d13a3d9e3fe68bd145b985",
+      "messageHeadline": "fixup: adjust spelling",
+      "author": {
+        "login": "bar"
+      },
+      "status": {
+        "state": "SUCCESS"
+      }
+    }
+  },{
+    "commit": {
+      "committedDate": "2017-10-26T12:10:20Z",
+      "oid": "9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d",
+      "messageHeadline": "doc: add api description README",
+      "author": {
+        "login": "foo"
+      }
+    }
+  }
+]
+

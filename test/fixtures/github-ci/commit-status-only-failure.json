@@ -1,0 +1,16 @@
+[
+  {
+    "commit": {
+      "committedDate": "2017-10-26T12:10:20Z",
+      "oid": "9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d",
+      "messageHeadline": "doc: add api description README",
+      "author": {
+        "login": "foo"
+      },
+      "status": {
+        "state": "FAILURE"
+      }
+    }
+  }
+]
+

@@ -19,6 +19,7 @@ const {
   singleGreenReviewer,
   requestedChangesReviewers,
   approvingReviews,
+  githubCI,
   requestingChangesReviews,
   noReviewers,
   commentsWithCI,
@@ -834,6 +835,268 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       }, { maxCommits: 0 });
+
+      const status = checker.checkCI();
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+  });
+
+  describe('checkGitHubCI', () => {
+    const baseData = {
+      pr: firstTimerPR,
+      reviewers: allGreenReviewers,
+      comments: commentsWithLGTM,
+      reviews: approvingReviews,
+      collaborators,
+      authorIsNew: () => true,
+      getThread() {
+        return PRData.prototype.getThread.call(this);
+      }
+    };
+    const testArgv = Object.assign({}, argv, { ciType: 'github-check' });
+
+    it('should error if no CI runs detected', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['No CI runs detected']
+        ]
+      };
+
+      const commits = githubCI['no-status'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error if both statuses failed', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['Last CI failed']
+        ]
+      };
+
+      const commits = githubCI['both-apis-failure'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should succeed if both statuses succeeded', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        info: [
+          ['Last CI run was successful']
+        ]
+      };
+
+      const commits = githubCI['both-apis-success'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error if Check suite failed', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['Last CI failed']
+        ]
+      };
+
+      const commits = githubCI['check-suite-failure'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error if Check suite pending', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['CI is still running']
+        ]
+      };
+
+      const commits = githubCI['check-suite-pending'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should succeed if Check suite succeeded', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        info: [
+          ['Last CI run was successful']
+        ]
+      };
+
+      const commits = githubCI['check-suite-success'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error if commit status failed', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['Last CI failed']
+        ]
+      };
+
+      const commits = githubCI['commit-status-only-failure'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error if commit status pending', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['CI is still running']
+        ]
+      };
+
+      const commits = githubCI['commit-status-only-pending'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should succeed if commit status succeeded', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        info: [
+          ['Last CI run was successful']
+        ]
+      };
+
+      const commits = githubCI['commit-status-only-success'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error if Check succeeded but commit status failed ', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['Last CI failed']
+        ]
+      };
+
+      const commits = githubCI['status-failure-check-suite-succeed'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error if commit status succeeded but Check failed ', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['Last CI failed']
+        ]
+      };
+
+      const commits = githubCI['status-succeed-check-suite-failure'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error if last commit doesnt have CI', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['No CI runs detected']
+        ]
+      };
+
+      const commits = githubCI['two-commits-first-ci'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
+
+      const status = checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should succeed with two commits if last one has CI', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        info: [
+          ['Last CI run was successful']
+        ]
+      };
+
+      const commits = githubCI['two-commits-last-ci'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, testArgv);
 
       const status = checker.checkCI();
       assert(status);
