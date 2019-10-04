@@ -3,7 +3,7 @@
 'use strict';
 
 const {
-  getConfig, updateConfig
+  getConfig, updateConfig, GLOBAL_CONFIG, PROJECT_CONFIG, LOCAL_CONFIG
 } = require('../lib/config');
 
 const yargs = require('yargs');
@@ -41,26 +41,51 @@ const argv = yargs
     handler: listHandler
   })
   .demandCommand(1, 'must provide a valid command')
-  .boolean('global')
-  .default({ global: false })
+  // Can't set default of boolean variables if using conflict
+  // https://github.com/yargs/yargs/issues/929
+  // default: false
+  .option('global', {
+    alias: 'g',
+    type: 'boolean',
+    describe: 'Use global config (~/.ncurc)'
+  })
+  .option('project', {
+    alias: 'p',
+    type: 'boolean',
+    describe: 'Use project config (./.ncurc)'
+  })
+  .conflicts('global', 'project')
   .help()
   .argv;
 
+function getConfigType(argv) {
+  if (argv.global) {
+    return { configName: 'global', configType: GLOBAL_CONFIG };
+  }
+  if (argv.project) {
+    return { configName: 'project', configType: PROJECT_CONFIG };
+  }
+  return { configName: 'local', configType: LOCAL_CONFIG };
+}
+
 function setHandler(argv) {
-  const config = getConfig(argv.global);
+  const { configName, configType } = getConfigType(argv);
+  const config = getConfig(configType);
   console.log(
-    `Updating ${argv.global ? 'global' : 'local'} configuration ` +
+    `Updating ${configName} configuration ` +
     `[${argv.key}]: ${config[argv.key]} -> ${argv.value}`);
-  updateConfig(argv.global, { [argv.key]: argv.value });
+  updateConfig(configType, { [argv.key]: argv.value });
 }
 
 function getHandler(argv) {
-  const config = getConfig(argv.global);
+  const { configType } = getConfigType(argv);
+  const config = getConfig(configType);
   console.log(config[argv.key]);
 }
 
 function listHandler(argv) {
-  const config = getConfig(argv.global);
+  const { configType } = getConfigType(argv);
+  const config = getConfig(configType);
   for (const key of Object.keys(config)) {
     console.log(`${key}: ${config[key]}`);
   }
