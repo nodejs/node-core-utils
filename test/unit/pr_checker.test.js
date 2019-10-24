@@ -185,13 +185,13 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok:
-         [ [ 'Approvals: 4' ],
-           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
-           [ '- Quux User (@Quux): LGTM' ],
-           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
-           [ '- Bar User (@bar) (TSC): lgtm' ] ],
-        info: [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ],
-        error: [ [ 'This PR needs to wait 24 more hours to land' ] ]
+         [['Approvals: 4'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Quux User (@Quux): LGTM'],
+           ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+           ['- Bar User (@bar) (TSC): lgtm']],
+        info: [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT']],
+        error: [['This PR needs to wait 24 more hours to land']]
       };
 
       const youngPR = Object.assign({}, firstTimerPR, {
@@ -222,13 +222,13 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok:
-         [ [ 'Approvals: 4' ],
-           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
-           [ '- Quux User (@Quux): LGTM' ],
-           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
-           [ '- Bar User (@bar) (TSC): lgtm' ] ],
-        info: [ [ 'This PR was created on Thu, 29 Nov 2018 17:55:44 GMT' ] ],
-        error: [ [ 'This PR needs to wait 5 more minutes to land' ] ]
+         [['Approvals: 4'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Quux User (@Quux): LGTM'],
+           ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+           ['- Bar User (@bar) (TSC): lgtm']],
+        info: [['This PR was created on Thu, 29 Nov 2018 17:55:44 GMT']],
+        error: [['This PR needs to wait 5 more minutes to land']]
       };
 
       const youngPR = Object.assign({}, firstTimerPR, {
@@ -259,12 +259,12 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok:
-         [ [ 'Approvals: 1' ],
-           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ] ],
+         [['Approvals: 1'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624']],
         info:
-         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ],
-        error: [ [ 'This PR needs to wait 144 more hours to land ' +
-                   '(or 24 hours if there is one more approval)' ] ]
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT']],
+        error: [['This PR needs to wait 144 more hours to land ' +
+                   '(or 24 hours if there is one more approval)']]
       };
 
       const youngPR = Object.assign({}, firstTimerPR, {
@@ -295,12 +295,12 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok:
-        [ [ 'Approvals: 1' ],
-          [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ] ],
+        [['Approvals: 1'],
+          ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624']],
         info:
-        [ [ 'This PR was created on Tue, 27 Nov 2018 17:50:44 GMT' ] ],
-        error: [ [ 'This PR needs to wait 72 more hours to land ' +
-                   '(or 0 hours if there is one more approval)' ] ]
+        [['This PR was created on Tue, 27 Nov 2018 17:50:44 GMT']],
+        error: [['This PR needs to wait 72 more hours to land ' +
+                   '(or 0 hours if there is one more approval)']]
       };
 
       const youngPR = Object.assign({}, firstTimerPR, {
@@ -331,14 +331,14 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok:
-         [ [ 'Approvals: 4' ],
-           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
-           [ '- Quux User (@Quux): LGTM' ],
-           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
-           [ '- Bar User (@bar) (TSC): lgtm' ] ],
+         [['Approvals: 4'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Quux User (@Quux): LGTM'],
+           ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+           ['- Bar User (@bar) (TSC): lgtm']],
         info:
-         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ],
-           [ 'This PR is being fast-tracked' ] ]
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+           ['This PR is being fast-tracked']]
       };
 
       const pr = Object.assign({}, firstTimerPR, {
@@ -375,15 +375,15 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok:
-         [ [ 'Approvals: 4' ],
-           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
-           [ '- Quux User (@Quux): LGTM' ],
-           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
-           [ '- Bar User (@bar) (TSC): lgtm' ] ],
+         [['Approvals: 4'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Quux User (@Quux): LGTM'],
+           ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+           ['- Bar User (@bar) (TSC): lgtm']],
         info:
-         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ],
-           [ 'This PR is being fast-tracked because ' +
-             'it is from a Code and Learn event' ]
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+           ['This PR is being fast-tracked because ' +
+             'it is from a Code and Learn event']
          ]
       };
 
@@ -421,13 +421,13 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         info:
-         [ ['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
-           ['This PR is being fast-tracked'] ],
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+           ['This PR is being fast-tracked']],
         error:
-         [ [ 'Requested Changes: 2' ],
-           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
-           [ '- Bar User (@bar) (TSC): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624' ],
-           [ 'Approvals: 0' ] ]
+         [['Requested Changes: 2'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Bar User (@bar) (TSC): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624'],
+           ['Approvals: 0']]
       };
 
       const pr = Object.assign({}, firstTimerPR, {
@@ -464,13 +464,13 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         info:
-          [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ],
-            [ 'This PR is being fast-tracked' ] ],
+          [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+            ['This PR is being fast-tracked']],
         error:
-         [ [ 'Requested Changes: 2' ],
-           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
-           [ '- Bar User (@bar) (TSC): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624' ],
-           [ 'Approvals: 0' ] ]
+         [['Requested Changes: 2'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Bar User (@bar) (TSC): https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624'],
+           ['Approvals: 0']]
       };
 
       const PR = Object.assign({}, firstTimerPR, {
@@ -637,11 +637,11 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Commits were pushed after the last Full PR CI run:' ],
-          [ '- doc: add api description README' ],
-          [ '- feat: add something' ],
-          [ '- style: format code' ],
-          [ '...(use `--max-commits 4` to see the full list of commits)' ]
+          ['Commits were pushed after the last Full PR CI run:'],
+          ['- doc: add api description README'],
+          ['- feat: add something'],
+          ['- style: format code'],
+          ['...(use `--max-commits 4` to see the full list of commits)']
         ],
         info: [
           [
@@ -676,8 +676,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Commits were pushed after the last Full PR CI run:' ],
-          [ '...(use `--max-commits 4` to see the full list of commits)' ]
+          ['Commits were pushed after the last Full PR CI run:'],
+          ['...(use `--max-commits 4` to see the full list of commits)']
         ],
         info: [
           [
@@ -848,7 +848,7 @@ describe('PRChecker', () => {
   });
 
   describe('checkCommitsAfterReview', () => {
-    let cli = new TestCLI();
+    const cli = new TestCLI();
 
     afterEach(() => {
       cli.clearCalls();
@@ -859,8 +859,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Commits were pushed since the last review:' ],
-          [ '- src: fix issue with es-modules' ]
+          ['Commits were pushed since the last review:'],
+          ['- src: fix issue with es-modules']
         ],
         info: [],
         error: []
@@ -881,7 +881,7 @@ describe('PRChecker', () => {
 
       const checker = new PRChecker(cli, data, argv);
 
-      let status = checker.checkCommitsAfterReview();
+      const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
       cli.assertCalledWith(expectedLogs);
     });
@@ -891,9 +891,9 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Commits were pushed since the last review:' ],
-          [ '- src: add requested feature' ],
-          [ '- nit: edit mistakes' ]
+          ['Commits were pushed since the last review:'],
+          ['- src: add requested feature'],
+          ['- nit: edit mistakes']
         ],
         info: [],
         error: []
@@ -913,7 +913,7 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      let status = checker.checkCommitsAfterReview();
+      const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
       cli.assertCalledWith(expectedLogs);
     });
@@ -922,11 +922,11 @@ describe('PRChecker', () => {
       const { commits, reviews } = moreThanThreeCommitsAfterReview;
       const expectedLogs = {
         warn: [
-          [ 'Commits were pushed since the last review:' ],
-          [ '- src: add requested feature' ],
-          [ '- nit: edit mistakes' ],
-          [ '- final: we should be good to go' ],
-          [ '...(use `--max-commits 4` to see the full list of commits)' ]
+          ['Commits were pushed since the last review:'],
+          ['- src: add requested feature'],
+          ['- nit: edit mistakes'],
+          ['- final: we should be good to go'],
+          ['...(use `--max-commits 4` to see the full list of commits)']
         ],
         info: [],
         error: []
@@ -946,7 +946,7 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      let status = checker.checkCommitsAfterReview();
+      const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
       cli.assertCalledWith(expectedLogs);
     });
@@ -966,7 +966,7 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      let status = checker.checkCommitsAfterReview();
+      const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
       cli.assertCalledWith(expectedLogs);
     });
@@ -993,9 +993,9 @@ describe('PRChecker', () => {
       const { commits, reviews } = moreThanThreeCommitsAfterReview;
       const expectedLogs = {
         warn: [
-          [ 'Commits were pushed since the last review:' ],
-          [ '- final: we should be good to go' ],
-          [ '...(use `--max-commits 4` to see the full list of commits)' ]
+          ['Commits were pushed since the last review:'],
+          ['- final: we should be good to go'],
+          ['...(use `--max-commits 4` to see the full list of commits)']
         ],
         info: [],
         error: []
@@ -1024,8 +1024,8 @@ describe('PRChecker', () => {
       const { commits, reviews } = moreThanThreeCommitsAfterReview;
       const expectedLogs = {
         warn: [
-          [ 'Commits were pushed since the last review:' ],
-          [ '...(use `--max-commits 4` to see the full list of commits)' ]
+          ['Commits were pushed since the last review:'],
+          ['...(use `--max-commits 4` to see the full list of commits)']
         ],
         info: [],
         error: []
@@ -1052,7 +1052,7 @@ describe('PRChecker', () => {
   });
 
   describe('checkMergeableState', () => {
-    let cli = new TestCLI();
+    const cli = new TestCLI();
 
     afterEach(() => {
       cli.clearCalls();
@@ -1074,7 +1074,7 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      let status = checker.checkMergeableState();
+      const status = checker.checkMergeableState();
       assert.deepStrictEqual(status, false);
       cli.assertCalledWith(expectedLogs);
     });
@@ -1094,14 +1094,14 @@ describe('PRChecker', () => {
       };
       const checker = new PRChecker(cli, data, argv);
 
-      let status = checker.checkMergeableState();
+      const status = checker.checkMergeableState();
       assert.deepStrictEqual(status, true);
       cli.assertCalledWith(expectedLogs);
     });
   });
 
   describe('checkPRStatus - check PR status (closed || merged)', () => {
-    let cli = new TestCLI();
+    const cli = new TestCLI();
 
     afterEach(() => {
       cli.clearCalls();
@@ -1110,7 +1110,7 @@ describe('PRChecker', () => {
     it('should warn if PR is closed', () => {
       const expectedLogs = {
         warn: [
-          [ 'This PR was closed on Sat, 28 Oct 2017 11:13:43 GMT' ]
+          ['This PR was closed on Sat, 28 Oct 2017 11:13:43 GMT']
         ]
       };
 
@@ -1133,7 +1133,7 @@ describe('PRChecker', () => {
     it('should warn if PR is merged', () => {
       const expectedLogs = {
         warn: [
-          [ 'This PR was merged on Sat, 28 Oct 2017 11:13:43 GMT' ]
+          ['This PR was merged on Sat, 28 Oct 2017 11:13:43 GMT']
         ]
       };
 

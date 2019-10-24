@@ -39,7 +39,7 @@ describe('auth', async function() {
     this.timeout(2000);
     await runAuthScript(
       { HOME: { username: 'nyancat', token: '0123456789abcdef' } },
-      [ MOCKED_TOKEN ]
+      [MOCKED_TOKEN]
     );
   });
 
@@ -67,7 +67,7 @@ describe('auth', async function() {
     await runAuthScript(
       {},
       [FIRST_TIME_MSG],
-      `Could not get token: Bad credentials\n`, 'run-auth-error'
+      'Could not get token: Bad credentials\n', 'run-auth-error'
     );
   });
 });
@@ -99,9 +99,11 @@ function runAuthScript(
     newEnv.USERPROFILE = newEnv.HOME;
 
     const proc = spawn(process.execPath,
-      [ require.resolve(`../fixtures/${fixture}`) ],
-      { timeout: 1500,
-        env: Object.assign({}, process.env, newEnv) });
+      [require.resolve(`../fixtures/${fixture}`)],
+      {
+        timeout: 1500,
+        env: Object.assign({}, process.env, newEnv)
+      });
     let stderr = '';
     proc.stderr.setEncoding('utf8');
     proc.stderr.on('data', (chunk) => { stderr += chunk; });

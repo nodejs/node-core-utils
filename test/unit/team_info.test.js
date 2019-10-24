@@ -27,12 +27,12 @@ describe('TeamInfo', function() {
     request.gql.withArgs(
       'Team',
       { org: 'nodejs', team: 'automation-collaborators' },
-      [ 'organization', 'team', 'members' ]
+      ['organization', 'team', 'members']
     ).returns(Promise.resolve(collab.organization.team.members.nodes));
     request.gql.withArgs(
       'Team',
       { org: 'nodejs', team: 'bots' },
-      [ 'organization', 'team', 'members' ]
+      ['organization', 'team', 'members']
     ).returns(Promise.resolve(bots.organization.team.members.nodes));
     request.gql.returns(new Error('unknown query'));
   });
