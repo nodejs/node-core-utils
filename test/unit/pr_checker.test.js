@@ -744,8 +744,8 @@ describe('PRChecker', () => {
       const expectedLogs = {
         warn: [
           ['PR author is a new contributor: @pr_author(pr_author@example.com)'],
-          ['- commit e3ad7c7 is authored by test@example.com'],
-          ['- commit da39a3e is authored by test@example.com']
+          ['- commit e3ad7c72e88c is authored by test@example.com'],
+          ['- commit da39a3ee5e6b is authored by test@example.com']
         ]
       };
 
