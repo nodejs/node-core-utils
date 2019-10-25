@@ -64,8 +64,8 @@ describe('JobParser', () => {
 
   it('should parse pipeline links', () => {
     const data = [{
-      'publishedAt': '2017-10-29T04:16:36.458Z',
-      'bodyText': '@contributer build started: https://ci.nodejs.org/blue/organizations/jenkins/node-test-pull-request-lite-pipeline/detail/node-test-pull-request-lite-pipeline/3009/pipeline/'
+      publishedAt: '2017-10-29T04:16:36.458Z',
+      bodyText: '@contributer build started: https://ci.nodejs.org/blue/organizations/jenkins/node-test-pull-request-lite-pipeline/detail/node-test-pull-request-lite-pipeline/3009/pipeline/'
     }];
     const results = new JobParser(data).parse();
     assert.deepStrictEqual([...results.entries()], [

@@ -53,12 +53,13 @@ async function main(argv) {
   });
   const request = new Request(credentials);
 
-  const [ command ] = argv._;
+  const [command] = argv._;
   switch (command) {
-    case 'list':
+    case 'list': {
       const info = new TeamInfo(cli, request, argv.org, argv.team);
       await info.listMembers();
       break;
+    }
     case 'sync':
       await TeamInfo.syncFile(cli, request, argv.file);
       break;

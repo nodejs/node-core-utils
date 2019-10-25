@@ -72,7 +72,7 @@ describe('LinkParser', () => {
       output: undefined
     }];
 
-    for (let test of tests) {
+    for (const test of tests) {
       const actual = LinkParser.parsePRFromURL(test.input);
       assert.deepStrictEqual(actual, test.output);
     }

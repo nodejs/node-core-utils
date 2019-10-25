@@ -127,9 +127,9 @@ const argv = yargs
   .argv;
 
 const commandToType = {
-  'commit': COMMIT,
-  'pr': PR,
-  'benchmark': BENCHMARK
+  commit: COMMIT,
+  pr: PR,
+  benchmark: BENCHMARK
 };
 
 class CICommand {
@@ -203,7 +203,7 @@ class CICommand {
       if (this.markdown) {
         clipboardy.writeSync(this.markdown);
         cli.separator('');
-        cli.log(`Written markdown to clipboard`);
+        cli.log('Written markdown to clipboard');
       } else {
         cli.error('No markdown generated');
       }
@@ -289,7 +289,7 @@ class JobCommand extends CICommand {
 class URLCommand extends CICommand {
   async initialize() {
     const { argv, cli, request, queue } = this;
-    let parsed = parseJobFromURL(argv.url);
+    const parsed = parseJobFromURL(argv.url);
     if (parsed) {
       queue.push({
         type: parsed.type,
@@ -357,6 +357,6 @@ async function main(command, argv) {
 }
 
 function handler(argv) {
-  const [ command ] = argv._;
+  const [command] = argv._;
   runPromise(main(command, argv));
 }

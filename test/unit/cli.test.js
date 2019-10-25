@@ -4,7 +4,7 @@ const assert = require('assert');
 
 const CLI = require('../../lib/cli');
 const LogStream = require('../fixtures/log_stream');
-let figures = require('../../lib/figures');
+const figures = require('../../lib/figures');
 
 function strip(text) {
   // eslint-disable-next-line
@@ -68,7 +68,7 @@ describe('cli', () => {
     describe('log', () => {
       it('should write in stream', () => {
         cli.log('Getting commits...');
-        assert.strictEqual(logResult(), `Getting commits...\n`);
+        assert.strictEqual(logResult(), 'Getting commits...\n');
       });
     });
 
@@ -76,7 +76,7 @@ describe('cli', () => {
       it('should print the first element with bold style and padding', () => {
         cli.table('Title', 'description');
         assert.strictEqual(logResult(),
-          `Title      description\n`);
+          'Title      description\n');
       });
     });
 
