@@ -223,12 +223,12 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok:
-         [ [ 'Approvals: 4' ],
-           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ],
-           [ '- Quux User (@Quux): LGTM' ],
-           [ '- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236' ],
-           [ '- Bar User (@bar) (TSC): lgtm' ] ],
-        info: [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ]
+         [['Approvals: 4'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Quux User (@Quux): LGTM'],
+           ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+           ['- Bar User (@bar) (TSC): lgtm']],
+        info: [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT']]
       };
 
       const youngPR = Object.assign({}, firstTimerPR, {
@@ -368,10 +368,10 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok:
-         [ [ 'Approvals: 1' ],
-           [ '- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624' ] ],
+         [['Approvals: 1'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624']],
         info:
-         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ]
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT']]
       };
 
       const youngPR = Object.assign({}, firstTimerPR, {
@@ -402,9 +402,9 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         info:
-         [ [ 'This PR was created on Fri, 30 Nov 2018 17:50:44 GMT' ] ],
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT']],
         error:
-         [ [ 'Approvals: 0' ] ]
+         [['Approvals: 0']]
       };
 
       const youngPR = Object.assign({}, firstTimerPR, {
