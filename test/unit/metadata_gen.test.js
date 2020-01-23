@@ -4,6 +4,7 @@ const MetadataGenerator = require('../../lib/metadata_gen');
 const {
   fixAndRefPR,
   fixCrossPR,
+  backportPR,
   allGreenReviewers
 } = require('../fixtures/data');
 
@@ -15,6 +16,21 @@ const data = {
   reviewers: allGreenReviewers
 };
 const crossData = Object.assign({}, data, { pr: fixCrossPR });
+const backportArgv = {
+  argv: {
+    owner: 'nodejs',
+    repo: 'node',
+    upstream: 'upstream',
+    branch: 'v12.x-staging',
+    readme: undefined,
+    waitTimeSingleApproval: undefined,
+    waitTimeMultiApproval: undefined,
+    prid: 30072,
+    backport: true
+  }
+};
+
+const backportData = Object.assign({}, data, { pr: backportPR }, backportArgv);
 
 const expected = `PR-URL: https://github.com/nodejs/node/pull/16438
 Fixes: https://github.com/nodejs/node/issues/16437
@@ -31,6 +47,11 @@ Reviewed-By: Quux User <quux@example.com>
 Reviewed-By: Baz User <baz@example.com>
 Reviewed-By: Bar User <bar@example.com>
 `;
+const backportExpected = `PR-URL: https://github.com/nodejs/node/pull/29995
+Backport-PR-URL: https://github.com/nodejs/node/pull/30072
+Fixes: https://github.com/nodejs/build/issues/1961
+Refs: https://github.com/nodejs/node/commit/53ca0b9ae145c430842bf78e553e3b6cbd2823aa#commitcomment-35494896
+`;
 
 describe('MetadataGenerator', () => {
   it('should generate metadata properly', () => {
@@ -41,5 +62,10 @@ describe('MetadataGenerator', () => {
   it('should handle cross-owner and cross-repo fixes properly', () => {
     const results = new MetadataGenerator(crossData).getMetadata();
     assert.strictEqual(crossExpected, results);
+  });
+
+  it('should generate correct metadata for a backport', () => {
+    const backportResults = new MetadataGenerator(backportData).getMetadata();
+    assert.strictEqual(backportExpected, backportResults);
   });
 });

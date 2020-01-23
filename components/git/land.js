@@ -37,6 +37,11 @@ const landOptions = {
     describe: 'Assume "yes" as answer to all prompts and run ' +
     'non-interactively. If an undesirable situation occurs, such as a pull ' +
     'request or commit check fails, then git node land will abort.'
+  },
+  backport: {
+    describe: 'Land a backport PR onto a staging branch',
+    default: false,
+    type: 'boolean'
   }
 };
 
@@ -152,8 +157,14 @@ async function main(state, argv, cli, req, dir) {
       cli.log('run `git node land --abort` before starting a new session');
       return;
     }
-    session = new LandingSession(cli, req, dir, argv.prid);
+    session = new LandingSession(cli, req, dir, argv.prid, argv.backport);
     const metadata = await getMetadata(session.argv, cli);
+    if (argv.backport) {
+      const split = metadata.metadata.split('\n')[0];
+      if (split === 'PR-URL: ') {
+        cli.error('Commit message is missing PR-URL');
+      }
+    }
     return session.start(metadata);
   } else if (state === APPLY) {
     return session.apply();
