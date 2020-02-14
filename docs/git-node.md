@@ -40,6 +40,7 @@ Options:
   --continue, -c  Continue the landing session                         [boolean]
   --final         Verify the landed PR and clean up                    [boolean]
   --abort         Abort the current landing session                    [boolean]
+  --backport      Land a backport PR on a staging branch               [boolean]
   --yes           Assume "yes" as answer to all prompts and run
                   non-interactively. If an undesirable situation occurs, such as
                   a pull request or commit check fails, then git node land will
@@ -47,12 +48,14 @@ Options:
 
 
 Examples:
-  git node land 12344       Land https://github.com/nodejs/node/pull/12344 in
-                            the current directory
-  git node land --abort     Abort the current session
-  git node land --amend     Append metadata to the current commit message
-  git node land --final     Verify the landed PR and clean up
-  git node land --continue  Continue the current landing session
+  git node land 12344            Land https://github.com/nodejs/node/pull/12344
+                                 in the current directory
+  git node land --abort          Abort the current session
+  git node land --amend          Append metadata to the current commit message
+  git node land --final          Verify the landed PR and clean up
+  git node land --continue       Continue the current landing session
+  git node land --backport 30072 Land https://github.com/nodejs/node/pull/30072
+                                 as a backport in the current directory
 ```
 
 <a id="git-node-land-prerequisites"></a>
