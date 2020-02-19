@@ -14,6 +14,7 @@ yargs
   })
   .command('help', false, () => {}, (yargs) => { yargs.showHelp(); })
   .demandCommand(1)
+  .strict()
   .epilogue(epilogue)
   .help('help')
   .argv;
