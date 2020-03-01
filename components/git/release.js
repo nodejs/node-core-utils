@@ -1,14 +1,19 @@
 'use strict';
 
 const semver = require('semver');
+const yargs = require('yargs');
+
+const auth = require('../../lib/auth');
 const CLI = require('../../lib/cli');
 const Release = require('../../lib/release');
 const Request = require('../../lib/request');
+const TeamInfo = require('../../lib/team_info');
 const { runPromise } = require('../../lib/run');
-const yargs = require('yargs');
 
 const PREPARE = 'prepare';
 const PROMOTE = 'promote';
+
+const RELEASERS = 'releasers';
 
 const releaseOptions = {
   prepare: {
@@ -69,8 +74,16 @@ module.exports = {
 async function main(state, argv, cli, req, dir) {
   const release = new Release(state, argv, cli, req, dir);
 
-  // TODO(codebytere): check if this command is being run by
-  // someone on the Releasers team in GitHub before proceeding.
+  cli.startSpinner('Verifying Releaser status');
+  const credentials = await auth({ github: true });
+  const request = new Request(credentials);
+  const info = new TeamInfo(cli, request, 'nodejs', RELEASERS);
+  const releasers = await info.getMembers();
+  if (!releasers.some(r => r.login === release.username)) {
+    cli.stopSpinner(`${release.username} is not a Releaser; aborting release`);
+    return;
+  }
+  cli.stopSpinner('Verified Releaser status');
 
   if (state === PREPARE) {
     if (release.warnForWrongBranch()) return;
@@ -91,7 +104,7 @@ async function main(state, argv, cli, req, dir) {
     if (!proceed) {
       const seeDiff = await cli.prompt(
         'Do you want to see the branch diff?', true);
-      if (seeDiff) console.log(raw);
+      if (seeDiff) cli.log(raw);
       return;
     }
 
