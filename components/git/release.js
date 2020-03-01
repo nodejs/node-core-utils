@@ -91,7 +91,7 @@ async function main(state, argv, cli, req, dir) {
     // Check the branch diff to determine if the releaser
     // wants to backport any more commits before proceeding.
     cli.startSpinner('Fetching branch-diff');
-    const raw = release.checkBranchDiff();
+    const raw = release.getBranchDiff();
     const diff = raw.split('*');
     cli.stopSpinner('Got branch diff');
 
