@@ -178,11 +178,15 @@ describe('cli', () => {
     });
 
     it('should return true if default is set to true', async() => {
-      assert.strictEqual(await cli.prompt('Question?', true), true);
+      assert.strictEqual(await cli.prompt('Question?', {
+        defaultAnswer: true
+      }), true);
     });
 
     it('should return false if default is set to false', async() => {
-      assert.strictEqual(await cli.prompt('Question?', false), false);
+      assert.strictEqual(await cli.prompt('Question?', {
+        defaultAnswer: false
+      }), false);
     });
   });
 });
