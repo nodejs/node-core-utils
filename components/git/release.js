@@ -3,25 +3,24 @@
 const semver = require('semver');
 const yargs = require('yargs');
 
-const auth = require('../../lib/auth');
 const CLI = require('../../lib/cli');
-const Release = require('../../lib/release');
-const Request = require('../../lib/request');
-const TeamInfo = require('../../lib/team_info');
+const ReleasePreparation = require('../../lib/prepare_release');
 const { runPromise } = require('../../lib/run');
 
 const PREPARE = 'prepare';
 const PROMOTE = 'promote';
-
-const RELEASERS = 'releasers';
 
 const releaseOptions = {
   prepare: {
     describe: 'Prepare a new release with the given version number',
     type: 'boolean'
   },
+  promote: {
+    describe: 'Promote new release with the given version number',
+    type: 'boolean'
+  },
   security: {
-    describe: 'Prepare a new security release',
+    describe: 'Demarcate the new security release as a security release',
     type: 'boolean'
   }
 };
@@ -29,9 +28,9 @@ const releaseOptions = {
 function builder(yargs) {
   return yargs
     .options(releaseOptions).positional('newVersion', {
-      describe: 'Version number of the release to be created'
+      describe: 'Version number of the release to be prepared or promoted'
     })
-    .example('git node release 1.2.3',
+    .example('git node release --prepare 1.2.3',
       'Prepare a new release of Node.js tagged v1.2.3');
 }
 
@@ -39,7 +38,11 @@ function handler(argv) {
   if (argv.newVersion) {
     const newVersion = semver.coerce(argv.newVersion);
     if (semver.valid(newVersion)) {
-      return release(PREPARE, argv);
+      if (argv.prepare) {
+        return release(PREPARE, argv);
+      } else if (argv.promote) {
+        return release(PROMOTE, argv);
+      }
     }
   }
 
@@ -51,11 +54,9 @@ function handler(argv) {
 function release(state, argv) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
-
-  const req = new Request();
   const dir = process.cwd();
 
-  return runPromise(main(state, argv, cli, req, dir)).catch((err) => {
+  return runPromise(main(state, argv, cli, dir)).catch((err) => {
     if (cli.spinner.enabled) {
       cli.spinner.fail();
     }
@@ -71,34 +72,23 @@ module.exports = {
   handler
 };
 
-async function main(state, argv, cli, req, dir) {
-  const release = new Release(state, argv, cli, req, dir);
-
-  cli.startSpinner('Verifying Releaser status');
-  const credentials = await auth({ github: true });
-  const request = new Request(credentials);
-  const info = new TeamInfo(cli, request, 'nodejs', RELEASERS);
-  const releasers = await info.getMembers();
-  if (!releasers.some(r => r.login === release.username)) {
-    cli.stopSpinner(`${release.username} is not a Releaser; aborting release`);
-    return;
-  }
-  cli.stopSpinner('Verified Releaser status');
-
+async function main(state, argv, cli, dir) {
   if (state === PREPARE) {
-    if (release.warnForWrongBranch()) return;
+    const prep = new ReleasePreparation(argv, cli, dir);
+
+    if (prep.warnForWrongBranch()) return;
 
     // Check the branch diff to determine if the releaser
     // wants to backport any more commits before proceeding.
     cli.startSpinner('Fetching branch-diff');
-    const raw = release.getBranchDiff();
+    const raw = prep.getBranchDiff();
     const diff = raw.split('*');
     cli.stopSpinner('Got branch diff');
 
     const staging = `v${semver.major(argv.newVersion)}.x-staging`;
     const proceed = await cli.prompt(
-      `There are ${diff.length} commits that may be backported ` +
-      `to ${staging} - do you still want to proceed?`,
+      `There are ${diff.length - 1} commits that may be ` +
+      `backported to ${staging} - do you still want to proceed?`,
       false);
 
     if (!proceed) {
@@ -108,8 +98,8 @@ async function main(state, argv, cli, req, dir) {
       return;
     }
 
-    return release.prepare();
+    return prep.prepare();
   } else if (state === PROMOTE) {
-    return release.promote();
+    // TODO(codebytere): implement release promotion.
   }
 }
