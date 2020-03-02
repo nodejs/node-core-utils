@@ -89,11 +89,11 @@ async function main(state, argv, cli, dir) {
     const proceed = await cli.prompt(
       `There are ${diff.length - 1} commits that may be ` +
       `backported to ${staging} - do you still want to proceed?`,
-      false);
+      { defaultAnswer: false });
 
     if (!proceed) {
       const seeDiff = await cli.prompt(
-        'Do you want to see the branch diff?', true);
+        'Do you want to see the branch diff?');
       if (seeDiff) cli.log(raw);
       return;
     }
