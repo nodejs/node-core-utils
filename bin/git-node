@@ -4,6 +4,8 @@
 const yargs = require('yargs');
 const path = require('path');
 const epilogue = require('../components/git/epilogue');
+const { setVerbosityFromEnv } = require('../lib/verbosity');
+setVerbosityFromEnv();
 
 const commandDir = path.join(__dirname, '..', 'components', 'git');
 

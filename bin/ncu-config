@@ -6,6 +6,9 @@ const {
   getConfig, updateConfig, GLOBAL_CONFIG, PROJECT_CONFIG, LOCAL_CONFIG
 } = require('../lib/config');
 
+const { setVerbosityFromEnv } = require('../lib/verbosity');
+setVerbosityFromEnv();
+
 const yargs = require('yargs');
 const argv = yargs
   .command({

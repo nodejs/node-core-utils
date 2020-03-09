@@ -7,6 +7,9 @@ const { runPromise } = require('../lib/run');
 const CLI = require('../lib/cli');
 const TeamInfo = require('../lib/team_info');
 
+const { setVerbosityFromEnv } = require('../lib/verbosity');
+setVerbosityFromEnv();
+
 require('yargs') // eslint-disable-line
   .command({
     command: 'list <team> [org]',
