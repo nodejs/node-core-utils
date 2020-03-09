@@ -13,6 +13,7 @@ CLI tools for Node.js Core collaborators.
   - [Install](#install)
   - [Setting up credentials](#setting-up-credentials)
   - [Make sure your credentials won't be committed](#make-sure-your-credentials-wont-be-committed)
+  - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -98,6 +99,15 @@ serialized configurations.
 
 If you ever accidentally commit your access token on GitHub, you can simply
 revoke that token and use a new one.
+
+### Troubleshooting
+
+If you encounter an error that you cannot fix by yourself, please
+
+1. Make sure you update NCU to the latest version
+2. Try again with the `NCU_VERBOSITY=debug` environment variable set and
+  open an issue at https://github.com/nodejs/node-core-utils/issues with
+  detailed logs.
 
 ## Contributing
 

@@ -14,6 +14,8 @@ const {
     DAILY_MASTER
   }
 } = require('../lib/ci/ci_type_parser');
+const { setVerbosityFromEnv } = require('../lib/verbosity');
+setVerbosityFromEnv();
 
 const { listBuilds } = require('../lib/ci/ci_utils');
 
