@@ -1,6 +1,9 @@
 'use strict';
 
-const { readJSON, patchPrototype, readFile } = require('./index');
+const { basename } = require('path');
+const { readdirSync } = require('fs');
+
+const { readJSON, patchPrototype, readFile, path } = require('./index');
 const { Collaborator } = require('../../lib/collaborators');
 const { Review } = require('../../lib/reviews');
 
@@ -88,6 +91,15 @@ const readmeNoCollaborators = readFile('./README/README_no_collaborators.md');
 const readmeNoCollaboratorE = readFile('./README/README_no_collaboratorE.md');
 const readmeUnordered = readFile('./README/README_unordered.md');
 
+const githubCI = {};
+
+for (const item of readdirSync(path('./github-ci'))) {
+  if (!item.endsWith('.json')) {
+    continue;
+  }
+  githubCI[basename(item, '.json')] = readJSON(`./github-ci/${item}`);
+};
+
 module.exports = {
   approved,
   requestedChanges,
@@ -101,6 +113,7 @@ module.exports = {
   commentsWithLiteCI,
   commentsWithLGTM,
   oddCommits,
+  githubCI,
   incorrectGitConfigCommits,
   simpleCommits,
   singleCommitAfterReview,
