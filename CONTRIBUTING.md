@@ -69,7 +69,7 @@ $ git rebase upstream/master
 Bug fixes and features should come with tests. Add your tests in the
 `test` directory. The general rule is, if the test does not need to send
 any requests to external servers, put it in `test/unit`. Otherwise put it
-in `test/intergration`. Test fixtures should be placed in `test/fixtures`.
+in `test/integration`. Test fixtures should be placed in `test/fixtures`.
 
 ```bash
 $ npm install
