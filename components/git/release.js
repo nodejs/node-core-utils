@@ -12,11 +12,11 @@ const PROMOTE = 'promote';
 
 const releaseOptions = {
   prepare: {
-    describe: 'Prepare a new release with the given version number',
+    describe: 'Prepare a new release of Node.js',
     type: 'boolean'
   },
   promote: {
-    describe: 'Promote new release with the given version number',
+    describe: 'Promote new release of Node.js',
     type: 'boolean'
   },
   security: {
