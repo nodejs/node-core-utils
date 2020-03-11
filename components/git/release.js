@@ -35,15 +35,10 @@ function builder(yargs) {
 }
 
 function handler(argv) {
-  if (argv.newVersion) {
-    const newVersion = semver.clean(argv.newVersion);
-    if (semver.valid(newVersion)) {
-      if (argv.prepare) {
-        return release(PREPARE, argv);
-      } else if (argv.promote) {
-        return release(PROMOTE, argv);
-      }
-    }
+  if (argv.prepare) {
+    return release(PREPARE, argv);
+  } else if (argv.promote) {
+    return release(PROMOTE, argv);
   }
 
   // If more than one action is provided or no valid action
@@ -78,6 +73,18 @@ async function main(state, argv, cli, dir) {
 
     if (prep.warnForWrongBranch()) return;
 
+    // If the new version was automatically calculated, confirm it.
+    if (!argv.newVersion) {
+      const create = await cli.prompt(
+        `Create release with new version ${prep.newVersion}?`,
+        { defaultAnswer: true });
+
+      if (!create) {
+        cli.error('Aborting release preparation process');
+        return;
+      }
+    }
+
     // Check the branch diff to determine if the releaser
     // wants to backport any more commits before proceeding.
     cli.startSpinner('Fetching branch-diff');
@@ -85,17 +92,20 @@ async function main(state, argv, cli, dir) {
     const diff = raw.split('*');
     cli.stopSpinner('Got branch diff');
 
-    const staging = `v${semver.major(argv.newVersion)}.x-staging`;
-    const proceed = await cli.prompt(
-      `There are ${diff.length - 1} commits that may be ` +
-      `backported to ${staging} - do you still want to proceed?`,
-      { defaultAnswer: false });
+    const outstandingCommits = diff.length - 1;
+    if (outstandingCommits !== 0) {
+      const staging = `v${semver.major(prep.newVersion)}.x-staging`;
+      const proceed = await cli.prompt(
+        `There are ${outstandingCommits} commits that may be ` +
+        `backported to ${staging} - do you still want to proceed?`,
+        { defaultAnswer: false });
 
-    if (!proceed) {
-      const seeDiff = await cli.prompt(
-        'Do you want to see the branch diff?');
-      if (seeDiff) cli.log(raw);
-      return;
+      if (!proceed) {
+        const seeDiff = await cli.prompt(
+          'Do you want to see the branch diff?');
+        if (seeDiff) cli.log(raw);
+        return;
+      }
     }
 
     return prep.prepare();
