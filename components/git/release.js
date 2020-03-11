@@ -36,7 +36,7 @@ function builder(yargs) {
 
 function handler(argv) {
   if (argv.newVersion) {
-    const newVersion = semver.coerce(argv.newVersion);
+    const newVersion = semver.clean(argv.newVersion);
     if (semver.valid(newVersion)) {
       if (argv.prepare) {
         return release(PREPARE, argv);
@@ -81,7 +81,7 @@ async function main(state, argv, cli, dir) {
     // Check the branch diff to determine if the releaser
     // wants to backport any more commits before proceeding.
     cli.startSpinner('Fetching branch-diff');
-    const raw = prep.getBranchDiff();
+    const raw = prep.getBranchDiff({ onlyNotableChanges: false });
     const diff = raw.split('*');
     cli.stopSpinner('Got branch diff');
 
