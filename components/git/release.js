@@ -1,6 +1,5 @@
 'use strict';
 
-const semver = require('semver');
 const yargs = require('yargs');
 
 const CLI = require('../../lib/cli');
@@ -81,29 +80,6 @@ async function main(state, argv, cli, dir) {
 
       if (!create) {
         cli.error('Aborting release preparation process');
-        return;
-      }
-    }
-
-    // Check the branch diff to determine if the releaser
-    // wants to backport any more commits before proceeding.
-    cli.startSpinner('Fetching branch-diff');
-    const raw = prep.getBranchDiff({ onlyNotableChanges: false });
-    const diff = raw.split('*');
-    cli.stopSpinner('Got branch diff');
-
-    const outstandingCommits = diff.length - 1;
-    if (outstandingCommits !== 0) {
-      const staging = `v${semver.major(prep.newVersion)}.x-staging`;
-      const proceed = await cli.prompt(
-        `There are ${outstandingCommits} commits that may be ` +
-        `backported to ${staging} - do you still want to proceed?`,
-        { defaultAnswer: false });
-
-      if (!proceed) {
-        const seeDiff = await cli.prompt(
-          'Do you want to see the branch diff?');
-        if (seeDiff) cli.log(raw);
         return;
       }
     }
