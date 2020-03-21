@@ -3,18 +3,14 @@
 const Request = require('../lib/request');
 const auth = require('../lib/auth');
 const PRData = require('../lib/pr_data');
+const PRQuery = require('../lib/pr_query');
 const PRSummary = require('../lib/pr_summary');
 const PRChecker = require('../lib/pr_checker');
 const MetadataGenerator = require('../lib/metadata_gen');
 
 const fs = require('fs');
 
-module.exports = async function getMetadata(argv, cli) {
-  const credentials = await auth({
-    github: true
-  });
-  const request = new Request(credentials);
-
+async function getOneMetadata(argv, cli, request) {
   const data = new PRData(argv, cli, request);
   await data.getAll();
 
@@ -47,4 +43,29 @@ module.exports = async function getMetadata(argv, cli) {
     metadata,
     checker
   };
+}
+
+module.exports = async function getMetadata(argv, cli) {
+  const credentials = await auth({
+    github: true
+  });
+  const request = new Request(credentials);
+
+  if (!argv.assignee) {
+    return getOneMetadata(argv, cli, request);
+  } else {
+    // get all
+    // Example: repo:nodejs/node is:pr is:open assignee:srl295
+    const myQuery = new PRQuery(argv, cli, request);
+    const prids = await myQuery.getPRs();
+    for (const prid of prids) {
+      cli.separator(`${prid}`);
+      // new argv, with the prid
+      const nargv = Object.assign({}, argv, { prid });
+      delete nargv.assignee;
+      await getOneMetadata(nargv, cli, request);
+      cli.separator();
+    }
+    return {}; // ?
+  }
 };

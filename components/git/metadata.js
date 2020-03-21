@@ -46,7 +46,7 @@ function builder(yargs) {
     .options(options)
     .positional('identifier', {
       type: 'string',
-      describe: 'ID or URL of the pull request'
+      describe: 'ID or URL of the pull request or @userid'
     })
     .example('git node metadata 12344',
       'Retrieve the metadata of https://github.com/nodejs/node/pull/12344 ' +
@@ -57,13 +57,17 @@ function builder(yargs) {
     .example('git node metadata 167 --repo llnode --readme ../node/README.md',
       'Retrieve the metadata of https://github.com/nodejs/llnode/pull/167 ' +
       'and validate it using the README in ../node/README.md')
+    .example('git node metadata @myid',
+      'Retrieve metadata from my open PRs')
     .wrap(90);
 }
 
 function handler(argv) {
   let parsed = {};
   const prid = Number.parseInt(argv.identifier);
-  if (!Number.isNaN(prid)) {
+  if (argv.identifier[0] === '@') {
+    parsed.assignee = argv.identifier.substring(1);
+  } else if (!Number.isNaN(prid)) {
     parsed.prid = prid;
   } else {
     parsed = parsePRFromURL(argv.identifier);

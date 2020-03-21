@@ -1,0 +1,9 @@
+query PRQuery($query: String!) {
+  search(query: $query, type:ISSUE, last: 100) {
+    nodes {
+      ... on PullRequest {
+          number
+      }
+    }
+  }
+}
