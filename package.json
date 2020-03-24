@@ -33,6 +33,7 @@
   "dependencies": {
     "branch-diff": "^1.8.1",
     "chalk": "^3.0.0",
+    "changelog-maker": "^2.3.2",
     "cheerio": "^1.0.0-rc.3",
     "clipboardy": "^2.1.0",
     "core-validate-commit": "^3.13.1",
