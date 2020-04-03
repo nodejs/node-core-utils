@@ -31,7 +31,9 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "branch-diff": "^1.8.1",
     "chalk": "^3.0.0",
+    "changelog-maker": "^2.3.2",
     "cheerio": "^1.0.0-rc.3",
     "clipboardy": "^2.1.0",
     "core-validate-commit": "^3.13.1",
@@ -46,6 +48,7 @@
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.6.0",
     "ora": "^4.0.3",
+    "replace-in-file": "^5.0.2",
     "rimraf": "^3.0.0",
     "yargs": "^15.0.2"
   },
