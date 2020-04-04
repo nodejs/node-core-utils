@@ -10,6 +10,8 @@ A custom Git command for managing pull requests. You can run it as
   - [Optional Settings](#git-node-land-optional-settings)
 - [`git node backport`](#git-node-backport)
   - [Example](#example)
+- [`git node release`](#git-node-release)
+  - [Example](#example-1)
 - [`git node sync`](#git-node-sync)
 - [`git node metadata`](#git-node-metadata)
   - [Optional Settings](#git-node-metadata-optional-settings)
@@ -20,7 +22,7 @@ A custom Git command for managing pull requests. You can run it as
   - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
   - [General options](#general-options)
 - [`git node wpt`](#git-node-wpt)
-  - [Example](#example-1)
+  - [Example](#example-2)
 
 ## `git node land`
 
@@ -183,6 +185,35 @@ $ git node sync
 $ git checkout v10.x-staging
 $ git node sync
 $ git node backport 12344 --to 10
+```
+
+## `git node release`
+
+```sh
+git-node release [newVersion|options]
+
+Manage an in-progress release or start a new one.
+
+Positionals:
+  newVersion, options  Version number of the release to be prepared or promoted
+
+Options:
+  --version   Show version number                                      [boolean]
+  --help      Show help                                                [boolean]
+  --prepare   Prepare a new release of Node.js                         [boolean]
+  --security  Demarcate the new security release as a security release [boolean]
+```
+
+### Example
+
+```sh
+# Prepare a new release of Node.js tagged 1.2.3
+git node release --prepare 1.2.3
+```
+
+```sh
+# Prepare a new release of Node.js with an automatically-determined version number.
+git node release --prepare
 ```
 
 ## `git node sync`
