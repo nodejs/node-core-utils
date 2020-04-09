@@ -2,12 +2,17 @@
 
 const yargs = require('yargs');
 
+const auth = require('../../lib/auth');
 const CLI = require('../../lib/cli');
 const ReleasePreparation = require('../../lib/prepare_release');
+const ReleasePromotion = require('../../lib/promote_release');
+const TeamInfo = require('../../lib/team_info');
+const Request = require('../../lib/request');
 const { runPromise } = require('../../lib/run');
 
 const PREPARE = 'prepare';
 const PROMOTE = 'promote';
+const RELEASERS = 'releasers';
 
 const releaseOptions = {
   prepare: {
@@ -27,10 +32,14 @@ const releaseOptions = {
 function builder(yargs) {
   return yargs
     .options(releaseOptions).positional('newVersion', {
-      describe: 'Version number of the release to be prepared or promoted'
+      describe: 'Version number of the release to be prepared'
+    }).positional('prid', {
+      describe: 'PR number of the release to be promoted'
     })
     .example('git node release --prepare 1.2.3',
-      'Prepare a new release of Node.js tagged v1.2.3');
+      'Prepare a new release of Node.js tagged v1.2.3')
+    .example('git node release --promote 12345',
+      'Promote a prepared release of Node.js with PR #12345');
 }
 
 function handler(argv) {
@@ -59,7 +68,7 @@ function release(state, argv) {
 }
 
 module.exports = {
-  command: 'release [newVersion|options]',
+  command: 'release [newVersion|prid|options]',
   describe:
     'Manage an in-progress release or start a new one.',
   builder,
@@ -67,15 +76,17 @@ module.exports = {
 };
 
 async function main(state, argv, cli, dir) {
-  if (state === PREPARE) {
-    const prep = new ReleasePreparation(argv, cli, dir);
+  let release;
 
-    if (prep.warnForWrongBranch()) return;
+  if (state === PREPARE) {
+    release = new ReleasePreparation(argv, cli, dir);
+
+    if (release.warnForWrongBranch()) return;
 
     // If the new version was automatically calculated, confirm it.
     if (!argv.newVersion) {
       const create = await cli.prompt(
-        `Create release with new version ${prep.newVersion}?`,
+        `Create release with new version ${release.newVersion}?`,
         { defaultAnswer: true });
 
       if (!create) {
@@ -84,8 +95,23 @@ async function main(state, argv, cli, dir) {
       }
     }
 
-    return prep.prepare();
+    return release.prepare();
   } else if (state === PROMOTE) {
-    // TODO(codebytere): implement release promotion.
+    release = new ReleasePromotion(argv, cli, dir);
+
+    cli.startSpinner('Verifying Releaser status');
+    const credentials = await auth({ github: true });
+    const request = new Request(credentials);
+    const info = new TeamInfo(cli, request, 'nodejs', RELEASERS);
+
+    const releasers = await info.getMembers();
+    if (!releasers.some(r => r.login === release.username)) {
+      cli.stopSpinner(
+        `${release.username} is not a Releaser; aborting release`);
+      return;
+    }
+    cli.stopSpinner('Verified Releaser status');
+
+    return release.promote();
   }
 }

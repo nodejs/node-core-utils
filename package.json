@@ -41,6 +41,7 @@
     "figures": "^3.2.0",
     "fs-extra": "^9.0.0",
     "ghauth": "^4.0.0",
+    "git-secure-tag": "^2.3.1",
     "inquirer": "^7.1.0",
     "listr": "^0.14.3",
     "listr-input": "^0.2.1",
