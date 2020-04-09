@@ -26,17 +26,22 @@ const releaseOptions = {
   security: {
     describe: 'Demarcate the new security release as a security release',
     type: 'boolean'
+  },
+  newVersion: {
+    describe: 'Version number of the release to be prepared',
+    type: 'string'
   }
 };
 
 function builder(yargs) {
   return yargs
-    .options(releaseOptions).positional('newVersion', {
-      describe: 'Version number of the release to be prepared'
-    }).positional('prid', {
-      describe: 'PR number of the release to be promoted'
+    .options(releaseOptions).positional('prid', {
+      describe: 'PR number of the release to be promoted',
+      type: 'number'
     })
-    .example('git node release --prepare 1.2.3',
+    .example('git node release --prepare --security',
+      'Prepare a new security release of Node.js with auto-determined version')
+    .example('git node release --prepare --newVersion=1.2.3',
       'Prepare a new release of Node.js tagged v1.2.3')
     .example('git node release --promote 12345',
       'Promote a prepared release of Node.js with PR #12345');
@@ -68,7 +73,7 @@ function release(state, argv) {
 }
 
 module.exports = {
-  command: 'release [newVersion|prid|options]',
+  command: 'release [prid|options]',
   describe:
     'Manage an in-progress release or start a new one.',
   builder,
