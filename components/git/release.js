@@ -110,12 +110,19 @@ async function main(state, argv, cli, dir) {
     const info = new TeamInfo(cli, request, 'nodejs', RELEASERS);
 
     const releasers = await info.getMembers();
-    if (!releasers.some(r => r.login === release.username)) {
-      cli.stopSpinner(
-        `${release.username} is not a Releaser; aborting release`);
+    if (release.username === undefined) {
+      cli.stopSpinner('Failed to verify Releaser status');
+      cli.info(
+        'Username was undefined - do you have your .ncurc set up correctly?');
       return;
+    } else {
+      if (!releasers.some(r => r.login === release.username)) {
+        cli.stopSpinner(
+          `${release.username} is not a Releaser; aborting release`);
+        return;
+      }
+      cli.stopSpinner('Verified Releaser status');
     }
-    cli.stopSpinner('Verified Releaser status');
 
     return release.promote();
   }
