@@ -173,6 +173,36 @@ describe('cli', () => {
       cli.setAssumeYes();
     });
 
+    it('rejects when no default answer is provided for \'input\' type', () => {
+      return assert.rejects(async() => {
+        await cli.prompt('What is your favorite color', {
+          questionType: cli.QUESTION_TYPE.INPUT
+        });
+      }, /defaultAnswer must be provided for non-confirmation prompts/);
+    });
+
+    it('rejects when no default answer is provided for \'number\' type', () => {
+      return assert.rejects(async() => {
+        await cli.prompt('Pick a number from 1-10', {
+          questionType: cli.QUESTION_TYPE.NUMBER
+        });
+      }, /defaultAnswer must be provided for non-confirmation prompts/);
+    });
+
+    it('should return the default answer for an \'input\' type', async() => {
+      assert.strictEqual(await cli.prompt('What is your favorite color', {
+        defaultAnswer: 'blue',
+        questionType: cli.QUESTION_TYPE.INPUT
+      }), 'blue');
+    });
+
+    it('should return the default answer for a \'number\' type', async() => {
+      assert.strictEqual(await cli.prompt('Pick a number from 1-10', {
+        defaultAnswer: 10,
+        questionType: cli.QUESTION_TYPE.NUMBER
+      }), 10);
+    });
+
     it('should return true if no default is given', async() => {
       assert.strictEqual(await cli.prompt('Question?'), true);
     });
