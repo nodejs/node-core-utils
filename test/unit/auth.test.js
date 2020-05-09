@@ -2,7 +2,6 @@
 
 const { spawn } = require('child_process');
 const rimraf = require('rimraf');
-const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
 const assert = require('assert');
@@ -83,7 +82,7 @@ function runAuthScript(
       if (ncurc[envVar] === undefined) continue;
       newEnv[envVar] = path.resolve(__dirname, `tmp-${testCounter++}`);
       rimraf.sync(newEnv[envVar]);
-      mkdirp.sync(newEnv[envVar]);
+      fs.mkdirSync(newEnv[envVar], { recursive: true });
 
       const ncurcPath = path.resolve(newEnv[envVar],
         envVar === 'HOME' ? '.ncurc' : 'ncurc');

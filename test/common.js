@@ -2,7 +2,6 @@
 
 const path = require('path');
 const rimraf = require('rimraf');
-const mkdirp = require('mkdirp');
 const fs = require('fs');
 
 exports.tmpdir = {
@@ -11,12 +10,12 @@ exports.tmpdir = {
   },
   refresh() {
     rimraf.sync(this.path);
-    mkdirp.sync(this.path);
+    fs.mkdirSync(this.path, { recursive: true });
   }
 };
 
 exports.copyShallow = function(src, dest) {
-  mkdirp.sync(dest);
+  fs.mkdirSync(dest, { recursive: true });
   const list = fs.readdirSync(src);
   for (const file of list) {
     fs.copyFileSync(path.join(src, file), path.join(dest, file));
