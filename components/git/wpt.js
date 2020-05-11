@@ -19,6 +19,11 @@ function builder(yargs) {
       type: 'string'
     })
     .options({
+      commit: {
+        describe: 'A specific commit the subset should be updated to',
+        type: 'string',
+        default: undefined
+      },
       nodedir: {
         describe: 'Path to the node.js project directory',
         type: 'string',
@@ -28,7 +33,7 @@ function builder(yargs) {
 }
 
 async function main(argv) {
-  const { name, nodedir } = argv;
+  const { name, nodedir, commit } = argv;
   const cli = new CLI();
   const credentials = await auth({
     github: true
@@ -47,21 +52,22 @@ async function main(argv) {
   }
 
   if (name === 'all' || name === 'resources') {
-    updaters.push(new ResourcesUpdater(cli, request, nodedir));
+    updaters.push(new ResourcesUpdater(cli, request, nodedir, commit));
   }
   if (name === 'all' || name === 'interfaces') {
-    updaters.push(new InterfacesUpdater(cli, request, nodedir, supported));
+    updaters.push(new InterfacesUpdater(cli, request, nodedir,
+      commit, supported));
   }
 
   if (name === 'all') {
     for (const item of supported) {
-      updaters.push(new WPTUpdater(item, cli, request, nodedir));
+      updaters.push(new WPTUpdater(item, cli, request, nodedir, commit));
     }
   } else if (name !== 'resources' && name !== 'interfaces') {
     if (!supported.includes(name)) {
       cli.warn(`Please create ${name}.json in ${statusFolder}`);
     }
-    updaters.push(new WPTUpdater(name, cli, request, nodedir));
+    updaters.push(new WPTUpdater(name, cli, request, nodedir, commit));
   }
 
   for (const updater of updaters) {
