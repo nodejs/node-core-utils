@@ -375,11 +375,28 @@ to the assets, this also updates:
 - `./test/fixtures/wpt/README.md`
 - `./test/fixtures/wpt/LICENSE.md`
 
+```
+git-node wpt <name>
+
+Updates WPT suite
+
+Positionals:
+  name  Subset of the WPT to update                          [string] [required]
+
+Options:
+  --version  Show version number                                       [boolean]
+  --help     Show help                                                 [boolean]
+  --commit   A specific commit the subset should be updated to          [string]
+  --nodedir  Path to the node.js project directory       [string] [default: "."]
+```
+
 ### Example
 
 ```
 $ cd /path/to/node/project
 $ git node wpt url  # Will update test/fixtures/wpt/url and related files
+# Will update test/fixtures/wpt/url and related files to the specified commit
+$ git node wpt url --commit=43feb7f612fe9160639e09a47933a29834904d69
 ```
 
 [node.js abi version registry]: https://github.com/nodejs/node/blob/master/doc/abi_version_registry.json
