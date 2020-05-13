@@ -43,10 +43,14 @@ async function main(argv) {
   const updaters = [];
 
   const statusFolder = path.join(nodedir, 'test', 'wpt', 'status');
-  let supported = [];
+  let supported = [
+    'dom',
+    'html'
+  ];
   if (fs.existsSync(statusFolder)) {
     const jsons = fs.readdirSync(statusFolder);
-    supported = jsons.map(item => item.replace('.json', ''));
+    supported = supported.concat(
+      jsons.map(item => item.replace('.json', '')));
   } else {
     cli.warn(`Please create the status JSON files in ${statusFolder}`);
   }
