@@ -23,6 +23,14 @@ const Request = require('../lib/request');
 const CLI = require('../lib/cli');
 const yargs = require('yargs');
 
+const commandKeys = [
+  'rate',
+  'walk',
+  'url',
+  'pr',
+  'commit'
+];
+
 // eslint-disable-next-line no-unused-vars
 const argv = yargs
   .command({
@@ -115,13 +123,20 @@ const argv = yargs
     default: false,
     describe: 'Write the results as markdown to clipboard'
   })
-  .option('json', {
+  .option('json <path>', {
     type: 'string',
-    describe: 'Write the results as json to the path'
+    describe: 'Write the results as json to <path>'
   })
-  .option('markdown', {
+  .option('markdown <path>', {
     type: 'string',
-    describe: 'Write the results as markdown to the path'
+    describe: 'Write the results as markdown to <path>'
+  }).check(argv => {
+    if (argv.markdown && commandKeys.includes(argv.markdown)) {
+      throw new Error('--markdown <path> did not specify a valid path');
+    } else if (argv.json && commandKeys.includes(argv.json)) {
+      throw new Error('--json <path> did not specify a valid path');
+    }
+    return true;
   })
   .help()
   .argv;
