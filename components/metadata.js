@@ -11,7 +11,8 @@ const fs = require('fs');
 
 module.exports = async function getMetadata(argv, cli) {
   const credentials = await auth({
-    github: true
+    github: true,
+    jenkins: true
   });
   const request = new Request(credentials);
 
@@ -38,8 +39,8 @@ module.exports = async function getMetadata(argv, cli) {
   cli.write(metadata);
   cli.separator();
 
-  const checker = new PRChecker(cli, data, argv);
-  const status = checker.checkAll(argv.checkComments);
+  const checker = new PRChecker(cli, data, request, argv);
+  const status = await checker.checkAll(argv.checkComments);
   return {
     status,
     request,
