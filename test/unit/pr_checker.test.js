@@ -59,7 +59,7 @@ describe('PRChecker', () => {
         return PRData.prototype.getThread.call(this);
       }
     };
-    const checker = new PRChecker(cli, data, argv);
+    const checker = new PRChecker(cli, data, {}, argv);
 
     let checkReviewsAndWaitStub;
     let checkCIStub;
@@ -90,8 +90,8 @@ describe('PRChecker', () => {
       checkGitConfigStub.restore();
     });
 
-    it('should run necessary checks', () => {
-      const status = checker.checkAll();
+    it('should run necessary checks', async() => {
+      const status = await checker.checkAll();
       assert.strictEqual(status, false);
       assert.strictEqual(checkReviewsAndWaitStub.calledOnce, true);
       assert.strictEqual(checkCIStub.calledOnce, true);
@@ -140,7 +140,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkReviewsAndWait(new Date(NOW), true);
       assert(!status);
@@ -175,7 +175,7 @@ describe('PRChecker', () => {
         collaborators,
         authorIsNew: () => true
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
@@ -212,7 +212,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
@@ -248,7 +248,9 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, { waitTimeMultiApproval: 23 });
+      const checker = new PRChecker(cli, data, {}, {
+        waitTimeMultiApproval: 23
+      });
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(status);
@@ -285,7 +287,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
@@ -321,7 +323,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
@@ -357,7 +359,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
@@ -391,7 +393,9 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, { waitTimeSingleApproval: 0 });
+      const checker = new PRChecker(cli, data, {}, {
+        waitTimeSingleApproval: 0
+      });
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(status);
@@ -424,7 +428,9 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, { waitTimeSingleApproval: 0 });
+      const checker = new PRChecker(cli, data, {}, {
+        waitTimeSingleApproval: 0
+      });
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
@@ -467,7 +473,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       cli.clearCalls();
       const status = checker.checkReviewsAndWait(new Date(NOW));
@@ -513,7 +519,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       cli.clearCalls();
       const status = checker.checkReviewsAndWait(new Date(NOW));
@@ -556,7 +562,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       cli.clearCalls();
       const status = checker.checkReviewsAndWait(new Date(NOW));
@@ -599,7 +605,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       cli.clearCalls();
       const status = checker.checkReviewsAndWait(new Date(NOW));
@@ -609,7 +615,7 @@ describe('PRChecker', () => {
   });
 
   describe('checkCI', () => {
-    it('should error if no CI runs detected', () => {
+    it('should error if no CI runs detected', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
@@ -630,14 +636,14 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should summarize CI runs detected', () => {
+    it('should summarize CI runs detected', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
@@ -693,14 +699,16 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(status);
-      cli.assertCalledWith(expectedLogs);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
     });
 
-    it('should check commits after last ci', () => {
+    it('should check commits after last ci', async() => {
       const cli = new TestCLI();
       const { commits, comment } = commitsAfterCi;
 
@@ -729,14 +737,16 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
-      cli.assertCalledWith(expectedLogs);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
     });
 
-    it('should only log last three commits if multiple', () => {
+    it('should only log last three commits if multiple', async() => {
       const cli = new TestCLI();
       const { commits, comment } = mulipleCommitsAfterCi;
 
@@ -768,14 +778,16 @@ describe('PRChecker', () => {
         getThread() {
           return PRData.prototype.getThread.call(this);
         }
-      }, argv);
+      }, {}, argv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
-      cli.assertCalledWith(expectedLogs);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
     });
 
-    it('should log as expected if passed 0', () => {
+    it('should log as expected if passed 0', async() => {
       const cli = new TestCLI();
       const { commits, comment } = mulipleCommitsAfterCi;
 
@@ -804,14 +816,16 @@ describe('PRChecker', () => {
         getThread() {
           return PRData.prototype.getThread.call(this);
         }
-      }, { maxCommits: 0 });
+      }, {}, { maxCommits: 0 });
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
-      cli.assertCalledWith(expectedLogs);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
     });
 
-    it('should count LITE CI as valid ci requirement', () => {
+    it('should count LITE CI as valid ci requirement', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
@@ -834,11 +848,13 @@ describe('PRChecker', () => {
         getThread() {
           return PRData.prototype.getThread.call(this);
         }
-      }, { maxCommits: 0 });
+      }, {}, { maxCommits: 0 });
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(status);
-      cli.assertCalledWith(expectedLogs);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
     });
   });
 
@@ -856,7 +872,7 @@ describe('PRChecker', () => {
     };
     const testArgv = Object.assign({}, argv, { ciType: 'github-check' });
 
-    it('should error if no CI runs detected', () => {
+    it('should error if no CI runs detected', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
@@ -868,204 +884,204 @@ describe('PRChecker', () => {
       const commits = githubCI['no-status'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should error if both statuses failed', () => {
+    it('should error if both statuses failed', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['Last CI failed']
+          ['Last GitHub CI failed']
         ]
       };
 
       const commits = githubCI['both-apis-failure'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should succeed if both statuses succeeded', () => {
+    it('should succeed if both statuses succeeded', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         info: [
-          ['Last CI run was successful']
+          ['Last GitHub CI successful']
         ]
       };
 
       const commits = githubCI['both-apis-success'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should error if Check suite failed', () => {
+    it('should error if Check suite failed', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['Last CI failed']
+          ['Last GitHub CI failed']
         ]
       };
 
       const commits = githubCI['check-suite-failure'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should error if Check suite pending', () => {
+    it('should error if Check suite pending', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['CI is still running']
+          ['GitHub CI is still running']
         ]
       };
 
       const commits = githubCI['check-suite-pending'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should succeed if Check suite succeeded', () => {
+    it('should succeed if Check suite succeeded', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         info: [
-          ['Last CI run was successful']
+          ['Last GitHub CI successful']
         ]
       };
 
       const commits = githubCI['check-suite-success'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should error if commit status failed', () => {
+    it('should error if commit status failed', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['Last CI failed']
+          ['Last GitHub CI failed']
         ]
       };
 
       const commits = githubCI['commit-status-only-failure'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should error if commit status pending', () => {
+    it('should error if commit status pending', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['CI is still running']
+          ['GitHub CI is still running']
         ]
       };
 
       const commits = githubCI['commit-status-only-pending'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should succeed if commit status succeeded', () => {
+    it('should succeed if commit status succeeded', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         info: [
-          ['Last CI run was successful']
+          ['Last GitHub CI successful']
         ]
       };
 
       const commits = githubCI['commit-status-only-success'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should error if Check succeeded but commit status failed ', () => {
+    it('should error if Check succeeded but commit status failed ', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['Last CI failed']
+          ['Last GitHub CI failed']
         ]
       };
 
       const commits = githubCI['status-failure-check-suite-succeed'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should error if commit status succeeded but Check failed ', () => {
+    it('should error if commit status succeeded but Check failed ', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['Last CI failed']
+          ['Last GitHub CI failed']
         ]
       };
 
       const commits = githubCI['status-succeed-check-suite-failure'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should error if last commit doesnt have CI', () => {
+    it('should error if last commit doesnt have CI', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
@@ -1077,35 +1093,35 @@ describe('PRChecker', () => {
       const commits = githubCI['two-commits-first-ci'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should succeed with two commits if last one has CI', () => {
+    it('should succeed with two commits if last one has CI', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         info: [
-          ['Last CI run was successful']
+          ['Last GitHub CI successful']
         ]
       };
 
       const commits = githubCI['two-commits-last-ci'];
       const data = Object.assign({}, baseData, { commits });
 
-      const checker = new PRChecker(cli, data, testArgv);
+      const checker = new PRChecker(cli, data, {}, testArgv);
 
-      const status = checker.checkCI();
+      const status = await checker.checkCI();
       assert(status);
       cli.assertCalledWith(expectedLogs);
     });
   });
 
   describe('checkAuthor', () => {
-    it('should check odd commits for first timers', () => {
+    it('should check odd commits for first timers', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
@@ -1128,8 +1144,8 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
-      const status = checker.checkAuthor();
+      const checker = new PRChecker(cli, data, {}, argv);
+      const status = await checker.checkAuthor();
       assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
@@ -1149,7 +1165,7 @@ describe('PRChecker', () => {
         collaborators,
         authorIsNew: () => true
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
       const status = checker.checkAuthor();
       assert(status);
       cli.assertCalledWith(expectedLogs);
@@ -1185,7 +1201,7 @@ describe('PRChecker', () => {
         }
       };
 
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
       const status = checker.checkGitConfig();
 
       assert.deepStrictEqual(status, true);
@@ -1206,7 +1222,7 @@ describe('PRChecker', () => {
         authorIsNew: () => true
       };
 
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
       const status = checker.checkGitConfig();
 
       assert(status);
@@ -1246,7 +1262,7 @@ describe('PRChecker', () => {
         }
       };
 
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
@@ -1278,7 +1294,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
@@ -1311,7 +1327,7 @@ describe('PRChecker', () => {
           return PRData.prototype.getThread.call(this);
         }
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
@@ -1331,7 +1347,7 @@ describe('PRChecker', () => {
         commits,
         authorIsNew: () => true
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
@@ -1350,7 +1366,7 @@ describe('PRChecker', () => {
         getThread() {
           return PRData.prototype.getThread.call(this);
         }
-      }, argv);
+      }, {}, argv);
 
       const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, true);
@@ -1381,7 +1397,7 @@ describe('PRChecker', () => {
         }
       };
 
-      const checker = new PRChecker(cli, data, { maxCommits: 1 });
+      const checker = new PRChecker(cli, data, {}, { maxCommits: 1 });
       const status = checker.checkCommitsAfterReview();
       cli.assertCalledWith(expectedLogs);
       assert(!status);
@@ -1411,7 +1427,7 @@ describe('PRChecker', () => {
         }
       };
 
-      const checker = new PRChecker(cli, data, { maxCommits: 0 });
+      const checker = new PRChecker(cli, data, {}, { maxCommits: 0 });
       const status = checker.checkCommitsAfterReview();
       cli.assertCalledWith(expectedLogs);
       assert(!status);
@@ -1439,7 +1455,7 @@ describe('PRChecker', () => {
         collaborators,
         authorIsNew: () => true
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkMergeableState();
       assert.deepStrictEqual(status, false);
@@ -1459,7 +1475,7 @@ describe('PRChecker', () => {
         commits,
         authorIsNew: () => true
       };
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
 
       const status = checker.checkMergeableState();
       assert.deepStrictEqual(status, true);
@@ -1491,7 +1507,7 @@ describe('PRChecker', () => {
         authorIsNew: () => true
       };
 
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
       const status = checker.checkPRState();
       assert.strictEqual(status, false);
       cli.assertCalledWith(expectedLogs);
@@ -1514,7 +1530,7 @@ describe('PRChecker', () => {
         authorIsNew: () => true
       };
 
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
       const status = checker.checkPRState();
       assert.strictEqual(status, false);
       cli.assertCalledWith(expectedLogs);
@@ -1533,7 +1549,7 @@ describe('PRChecker', () => {
         authorIsNew: () => true
       };
 
-      const checker = new PRChecker(cli, data, argv);
+      const checker = new PRChecker(cli, data, {}, argv);
       const status = checker.checkPRState();
       assert.strictEqual(status, true);
       cli.assertCalledWith(expectedLogs);
