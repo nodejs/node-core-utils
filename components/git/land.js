@@ -129,9 +129,7 @@ module.exports = {
 
 async function main(state, argv, cli, req, dir) {
   let session = new LandingSession(cli, req, dir);
-  if (session.warnForMissing()) {
-    return;
-  }
+
   if (state !== AMEND && state !== CONTINUE && session.warnForWrongBranch()) {
     return;
   }
