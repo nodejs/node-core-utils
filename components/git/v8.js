@@ -82,9 +82,14 @@ function main(argv) {
     options.v8Dir = path.resolve(options.v8Dir);
   }
 
-  options.execGitNode = function execGitNode(...args) {
-    return execa('git', args, { cwd: options.nodeDir });
+  options.execGitNode = function execGitNode(cmd, args, input) {
+    args.unshift(cmd);
+    return execa('git', args, {
+      cwd: options.nodeDir,
+      ...input && { input }
+    });
   };
+
   options.execGitV8 = function execGitV8(...args) {
     return execa('git', args, { cwd: options.v8Dir });
   };
