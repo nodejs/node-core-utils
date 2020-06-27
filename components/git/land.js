@@ -89,6 +89,7 @@ function handler(argv) {
 
   const provided = [];
   for (const type of Object.keys(landOptions)) {
+    if (type === 'yes') continue;  // --yes is not an action
     if (argv[type]) {
       provided.push(type);
     }
@@ -134,6 +135,9 @@ async function main(state, argv, cli, req, dir) {
     return;
   }
 
+  if (argv.yes) {
+    cli.setAssumeYes();
+  }
   try {
     session.restore();
   } catch (err) { // JSON error?
