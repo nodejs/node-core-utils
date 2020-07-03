@@ -58,6 +58,46 @@ node on git:master ❯ ncu-ci rate commit
 | 2020-07-03 16:28 | 2       | 8       | 27       | 5       | 58      | 8.60%      |
 ```
 
+### `ncu-ci walk <type>`
+
+`ncu-ci walk <type>` walks CI and displays failures, where `<type>` can be either `pr` for `node-test-pull-request` or `commit` for `node-test-commit`.
+
+Example
+```sh
+node on git:master ❯ ncu-ci walk commit
+✔  Done--------------------------------------------------------------------------------
+[1/60] Running health
+--------------------------------------------------------------------------------
+| UTC Time         | RUNNING | SUCCESS | UNSTABLE | ABORTED | FAILURE | Green Rate |
+| ---------------- | ------- | ------- | -------- | ------- | ------- | ---------- |
+| 2020-07-03 16:50 | 1       | 8       | 27       | 5       | 59      | 8.51%      |
+
+--------------------------------------------------------------------------------
+[2/60] Running https://ci.nodejs.org/job/node-test-commit/39446/
+--------------------------------------------------------------------------------
+✔  Build data downloaded
+✔  Data downloaded
+----------------------------------- Summary ------------------------------------
+Result     FAILURE
+URL        https://ci.nodejs.org/job/node-test-commit/39446/
+Source     https://api.github.com/repos/libuv/ci-tmp-libuv-node/git/refs/heads/jenkins-libuv-in-node-141
+Commit     [b205f29c5b4d] Replace libuv version with refs/heads/v1.x from libuv/libuv
+Date       2020-07-03 15:44:21 +0000
+Author     ci <ci@iojs.org>
+-------------------------------- freebsd11-x64 ---------------------------------
+URL        https://ci.nodejs.org/job/node-test-commit-freebsd/nodes=freebsd11-x64/34327/console
+Type       JENKINS_FAILURE
+Built On   test-digitalocean-freebsd11-x64-2
+Reason     
+  Build timed out (after 6 minutes). Marking the build as failed.
+--------------------------------- Other builds ---------------------------------
+Unstable   https://ci.nodejs.org/job/node-test-commit-linux/35929/
+Unstable   https://ci.nodejs.org/job/node-test-commit-arm-fanned/15212/
+--------------------------------------------------------------------------------
+[3/60] Running https://ci.nodejs.org/job/node-test-commit/39444/
+...etc
+```
+
 Possible use cases:
 
 1. Walk CI for the latest 100 runs of `node-test-pull-request`,
