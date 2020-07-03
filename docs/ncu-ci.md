@@ -21,6 +21,7 @@ Commands:
   ncu-ci commit <jobid>     Show results of a node-test-commit CI job
   ncu-ci benchmark <jobid>  Show results of a benchmark-node-micro-benchmarks CI
                             job
+  ncu-ci citgm <jobid>      Show results of a citgm-smoker job
 
 Options:
   --version   Show version number                                      [boolean]
