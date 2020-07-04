@@ -260,7 +260,7 @@ class CICommand {
       if (this.json.length) {
         writeJson(argv.json, this.json);
         cli.separator('');
-        cli.log(`Written JSON to ${argv.json}`);
+        cli.log(`Wrote JSON to ${argv.json}`);
       } else {
         cli.error('No JSON generated');
       }
