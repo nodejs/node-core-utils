@@ -6,12 +6,12 @@ const {
   JobParser,
   parseJobFromURL,
   CI_TYPES_KEYS: {
-    PR, COMMIT, BENCHMARK
+    PR, COMMIT, COMMIT_V8, BENCHMARK
   }
 } = require('../lib/ci/ci_type_parser');
 
 const {
-  PRBuild, BenchmarkRun, CommitBuild, HealthBuild,
+  PRBuild, BenchmarkRun, CommitBuild, CommitV8Build, HealthBuild,
   listBuilds, FailureAggregator, jobCache
 } = require('../lib/ci/ci_result_parser');
 const clipboardy = require('clipboardy');
@@ -107,6 +107,18 @@ const argv = yargs
     handler
   })
   .command({
+    command: 'commit-v8 <jobid>',
+    desc: 'Show results of a node-test-commit-v8-linux CI job',
+    builder: (yargs) => {
+      yargs
+        .positional('jobid', {
+          describe: 'id of the job',
+          type: 'number'
+        });
+    },
+    handler
+  })
+  .command({
     command: 'benchmark <jobid>',
     desc: 'Show results of a benchmark-node-micro-benchmarks CI job',
     builder: (yargs) => {
@@ -143,6 +155,7 @@ const argv = yargs
 
 const commandToType = {
   commit: COMMIT,
+  'commit-v8': COMMIT_V8,
   pr: PR,
   benchmark: BENCHMARK
 };
@@ -187,6 +200,9 @@ class CICommand {
           break;
         case COMMIT:
           build = new CommitBuild(cli, request, job.jobid);
+          break;
+        case COMMIT_V8:
+          build = new CommitV8Build(cli, request, job.jobid);
           break;
         case BENCHMARK:
           build = new BenchmarkRun(cli, request, job.jobid);
@@ -357,6 +373,7 @@ async function main(command, argv) {
     }
     case 'pr':
     case 'commit':
+    case 'commit-v8':
     case 'benchmark': {
       commandHandler = new JobCommand(cli, request, argv, command);
       break;
