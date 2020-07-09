@@ -6,13 +6,19 @@ const {
   JobParser,
   parseJobFromURL,
   CI_TYPES_KEYS: {
-    PR, COMMIT, BENCHMARK
+    PR, COMMIT, BENCHMARK, CITGM
   }
 } = require('../lib/ci/ci_type_parser');
 
 const {
-  PRBuild, BenchmarkRun, CommitBuild, HealthBuild,
-  listBuilds, FailureAggregator, jobCache
+  PRBuild,
+  BenchmarkRun,
+  CommitBuild,
+  CITGMBuild,
+  HealthBuild,
+  listBuilds,
+  FailureAggregator,
+  jobCache
 } = require('../lib/ci/ci_result_parser');
 const clipboardy = require('clipboardy');
 const { writeJson, writeFile } = require('../lib/file');
@@ -28,7 +34,8 @@ const commandKeys = [
   'walk',
   'url',
   'pr',
-  'commit'
+  'commit',
+  'citgm'
 ];
 
 // eslint-disable-next-line no-unused-vars
@@ -118,6 +125,18 @@ const argv = yargs
     },
     handler
   })
+  .command({
+    command: 'citgm <jobid>',
+    desc: 'Show results of a citgm-smoker CI job',
+    builder: (yargs) => {
+      yargs
+        .positional('jobid', {
+          describe: 'id of the job',
+          type: 'number'
+        });
+    },
+    handler
+  })
   .demandCommand(1, 'must provide a valid command')
   .option('copy', {
     default: false,
@@ -144,7 +163,8 @@ const argv = yargs
 const commandToType = {
   commit: COMMIT,
   pr: PR,
-  benchmark: BENCHMARK
+  benchmark: BENCHMARK,
+  citgm: CITGM
 };
 
 class CICommand {
@@ -188,6 +208,9 @@ class CICommand {
         case COMMIT:
           build = new CommitBuild(cli, request, job.jobid);
           break;
+        case CITGM:
+          build = new CITGMBuild(cli, request, job.jobid);
+          break;
         case BENCHMARK:
           build = new BenchmarkRun(cli, request, job.jobid);
           break;
@@ -208,8 +231,7 @@ class CICommand {
     }
   }
 
-  async aggregate() {  // noop
-  }
+  async aggregate() {}  // noop
 
   async serialize() {
     const { argv, cli } = this;
@@ -238,7 +260,7 @@ class CICommand {
       if (this.json.length) {
         writeJson(argv.json, this.json);
         cli.separator('');
-        cli.log(`Written JSON to ${argv.json}`);
+        cli.log(`Wrote JSON to ${argv.json}`);
       } else {
         cli.error('No JSON generated');
       }
@@ -357,6 +379,7 @@ async function main(command, argv) {
     }
     case 'pr':
     case 'commit':
+    case 'citgm':
     case 'benchmark': {
       commandHandler = new JobCommand(cli, request, argv, command);
       break;

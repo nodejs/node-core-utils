@@ -21,6 +21,7 @@ Commands:
   ncu-ci commit <jobid>     Show results of a node-test-commit CI job
   ncu-ci benchmark <jobid>  Show results of a benchmark-node-micro-benchmarks CI
                             job
+  ncu-ci citgm <jobid>      Show results of a citgm-smoker job
 
 Options:
   --version   Show version number                                      [boolean]
@@ -62,7 +63,7 @@ node on git:master ❯ ncu-ci rate commit
 
 `ncu-ci walk <type>` walks CI and displays failures, where `<type>` can be either `pr` for `node-test-pull-request` or `commit` for `node-test-commit`.
 
-Example
+Example:
 ```sh
 node on git:master ❯ ncu-ci walk commit
 ✔  Done--------------------------------------------------------------------------------
@@ -224,6 +225,40 @@ Collecting metadata...
 Metadata collection done.
 Notifying upstream projects of job completion
 Finished: SUCCESS
+```
+
+### `ncu-ci citgm <jobid>`
+
+`ncu-ci citgm <jobid>` shows the results of a given citgm-smoker job.
+
+Example:
+```
+node on git:master ❯ ncu-ci citgm 2400                                         10:25AM
+--------------------------------------------------------------------------------
+[1/1] Running CITGM: 2400
+--------------------------------------------------------------------------------
+✔  Header data downloaded
+✔  Report data downloaded
+----------------------------------- Summary ------------------------------------
+Result     FAILURE
+URL        https://ci.nodejs.org/job/citgm-smoker/2400/testReport/
+Source     https://github.com/nodejs/node/pull/34093/
+Commit     [9ec07f42864c] 2020-06-30, Version 14.5.0 (Current)
+Date       2020-06-29 21:17:56 -0700
+Author     Shelley Vohr <shelley.vohr@gmail.com>
+----------------------------------- Failures -----------------------------------
+┌────────────────────────┬───────────────────────┬───────────────────────┬─────────────────────────┬─────────────────────┬─────────────────┬────────────────────┐
+│        (index)         │           0           │           1           │            2            │          3          │        4        │         5          │
+├────────────────────────┼───────────────────────┼───────────────────────┼─────────────────────────┼─────────────────────┼─────────────────┼────────────────────┤
+│       debian9-64       │ 'coffeescript-v2.5.1' │   'through2-v4.0.2'   │                         │                     │                 │                    │
+│      rhel7-s390x       │   'through2-v4.0.2'   │                       │                         │                     │                 │                    │
+│   fedora-latest-x64    │ 'coffeescript-v2.5.1' │   'through2-v4.0.2'   │                         │                     │                 │                    │
+│     ubuntu1604-64      │ 'coffeescript-v2.5.1' │   'through2-v4.0.2'   │                         │                     │                 │                    │
+│        osx1014         │    'acorn-v7.3.1'     │ 'coffeescript-v2.5.1' │     'clinic-v6.0.2'     │ 'ember-cli-v3.19.0' │ 'semver-v7.3.2' │ 'watchify-v3.11.1' │
+│     ubuntu1804-64      │ 'coffeescript-v2.5.1' │   'through2-v4.0.2'   │                         │                     │                 │                    │
+│ fedora-last-latest-x64 │ 'coffeescript-v2.5.1' │   'through2-v4.0.2'   │                         │                     │                 │                    │
+│     centos7-ppcle      │ 'coffeescript-v2.5.1' │    'clinic-v6.0.2'    │ 'torrent-stream-v1.2.0' │  'through2-v4.0.2'  │                 │                    │
+└────────────────────────┴───────────────────────┴───────────────────────┴─────────────────────────┴─────────────────────┴─────────────────┴────────────────────┘
 ```
 
 ## Caveats
