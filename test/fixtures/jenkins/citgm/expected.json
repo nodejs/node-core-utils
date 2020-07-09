@@ -1,6 +1,10 @@
 {
   "source": "https://github.com/nodejs/node/pull/34093/",
   "upstream": "https://ci.nodejs.org/job/citgm-smoker/2400/",
+  "passed": 594,
+  "total": 848,
+  "skipped": 233,
+  "failed": 21,
   "debian9-64": {
     "url": "https://ci.nodejs.org/job/citgm-smoker/nodes=debian9-64/2400/",
     "modules": [
