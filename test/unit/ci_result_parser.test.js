@@ -1,7 +1,12 @@
 'use strict';
 
 const {
-  PRBuild, BenchmarkRun, CommitBuild, jobCache, CITGMBuild
+  PRBuild,
+  BenchmarkRun,
+  CITGMBuild,
+  CITGMComparisonBuild,
+  CommitBuild,
+  jobCache
 } = require('../../lib/ci/ci_result_parser');
 
 const TestCLI = require('../fixtures/test_cli');
@@ -214,6 +219,26 @@ describe('Jenkins', () => {
     assert.deepStrictEqual(citgmBuild.formatAsJson(), expectedJson);
 
     const markdown = citgmBuild.formatAsMarkdown();
+    const expected = fixtures.readFile(...prefix, 'expected.md');
+    assert.strictEqual(markdown, expected);
+  });
+
+  it('should correctly fetch CITGM comparison build results', async() => {
+    tmpdir.refresh();
+    const prefix = ['jenkins', 'citgm-compare'];
+    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+    const comparisonBuild = new CITGMComparisonBuild(cli, {}, [2392, 2390]);
+    await comparisonBuild.getResults();
+
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
+    assert.deepStrictEqual(comparisonBuild.formatAsJson(), expectedJson);
+
+    const markdown = comparisonBuild.formatAsMarkdown();
     const expected = fixtures.readFile(...prefix, 'expected.md');
     assert.strictEqual(markdown, expected);
   });
