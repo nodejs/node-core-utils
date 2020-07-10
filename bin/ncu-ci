@@ -113,7 +113,7 @@ const argv = yargs
     builder: (yargs) => {
       yargs
         .positional('jobid', {
-          describe: 'id of the job',
+          describe: 'id of the first job',
           type: 'number'
         });
     },
@@ -361,10 +361,18 @@ class JobCommand extends CICommand {
   }
 
   async initialize() {
-    this.queue.push({
+    const { queue, argv } = this;
+
+    queue.push({
       type: commandToType[this.command],
+<<<<<<< HEAD
       jobid: this.argv.jobid,
       noBuild: this.argv.nobuild || false
+||||||| merged common ancestors
+      jobid: this.argv.jobid
+=======
+      jobid: argv.jobid
+>>>>>>> refactor: pull some builds into own files
     });
   }
 }
