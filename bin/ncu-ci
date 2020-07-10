@@ -21,6 +21,7 @@ const {
   CommitBuild,
   CITGMBuild,
   DailyBuild,
+  CITGMComparisonBuild,
   HealthBuild,
   listBuilds,
   FailureAggregator,
@@ -132,12 +133,16 @@ const argv = yargs
     handler
   })
   .command({
-    command: 'citgm <jobid>',
+    command: 'citgm <jobid> [jobid2]',
     desc: 'Show results of a citgm-smoker CI job',
     builder: (yargs) => {
       yargs
         .positional('jobid', {
           describe: 'id of the job',
+          type: 'number'
+        })
+        .positional('jobid2', {
+          describe: 'id of the second job, if doing a comparison',
           type: 'number'
         });
     },
@@ -241,7 +246,12 @@ class CICommand {
           break;
         case CITGM:
         case CITGM_NOBUILD:
-          build = new CITGMBuild(cli, request, job);
+          if (job.jobid2) {
+            const ids = [job.jobid, job.jobid2];
+            build = new CITGMComparisonBuild(cli, request, ids);
+          } else {
+            build = new CITGMBuild(cli, request, job.jobid);
+          }
           break;
         case BENCHMARK:
           build = new BenchmarkRun(cli, request, job.jobid);
@@ -366,6 +376,7 @@ class JobCommand extends CICommand {
     queue.push({
       type: commandToType[this.command],
 <<<<<<< HEAD
+<<<<<<< HEAD
       jobid: this.argv.jobid,
       noBuild: this.argv.nobuild || false
 ||||||| merged common ancestors
@@ -373,6 +384,12 @@ class JobCommand extends CICommand {
 =======
       jobid: argv.jobid
 >>>>>>> refactor: pull some builds into own files
+||||||| merged common ancestors
+      jobid: argv.jobid
+=======
+      jobid: argv.jobid,
+      jobid2: argv.jobid2
+>>>>>>> feat: enable citgm run comparisons
     });
   }
 }
