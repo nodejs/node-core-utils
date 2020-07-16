@@ -6,7 +6,7 @@ const {
   JobParser,
   parseJobFromURL,
   CI_TYPES_KEYS: {
-    PR, COMMIT, BENCHMARK, CITGM
+    PR, COMMIT, BENCHMARK, CITGM, DAILY_MASTER
   }
 } = require('../lib/ci/ci_type_parser');
 
@@ -15,6 +15,7 @@ const {
   BenchmarkRun,
   CommitBuild,
   CITGMBuild,
+  DailyBuild,
   HealthBuild,
   listBuilds,
   FailureAggregator,
@@ -137,6 +138,27 @@ const argv = yargs
     },
     handler
   })
+  .command({
+    command: 'daily',
+    desc: 'Show recent results of node-daily-master',
+    builder: (yargs) => {
+      yargs
+        .option('stats', {
+          default: false,
+          describe: 'Aggregate the results'
+        })
+        .option('cache', {
+          default: false,
+          describe: 'Cache the responses from Jenkins in .ncu/cache/ under' +
+                    ' the node-core-utils installation directory'
+        })
+        .option('limit', {
+          default: 15,
+          describe: 'Maximum number of CIs to get data from'
+        });
+    },
+    handler
+  })
   .demandCommand(1, 'must provide a valid command')
   .option('copy', {
     default: false,
@@ -214,6 +236,12 @@ class CICommand {
         case BENCHMARK:
           build = new BenchmarkRun(cli, request, job.jobid);
           break;
+        case DAILY_MASTER: {
+          const daily = new DailyBuild(cli, request, job.jobid);
+          const data = await daily.getBuildData();
+          build = new CommitBuild(cli, request, data.subBuilds[0].buildNumber);
+          break;
+        }
         default:
           throw new Error(`Unknown job type ${job.type}`);
       }
@@ -354,6 +382,38 @@ class URLCommand extends CICommand {
   }
 }
 
+class DailyCommand extends CICommand {
+  constructor(cli, request, argv) {
+    super(cli, request, argv);
+    if (argv.cache) {
+      jobCache.enable();
+    }
+  }
+
+  async initialize() {
+    const ciType = DAILY_MASTER;
+    const builds = await listBuilds(this.cli, this.request, ciType);
+    this.queue.push({ type: 'health', ciType, builds });
+    for (const build of builds.failed.slice(0, this.argv.limit)) {
+      this.queue.push(build);
+    }
+  }
+
+  async aggregate() {
+    const { argv, cli } = this;
+    const aggregator = new FailureAggregator(cli, this.json);
+    this.json = aggregator.aggregate();
+    cli.log('');
+    cli.separator('Stats');
+    cli.log('');
+    aggregator.display();
+
+    if (argv.markdown || argv.copy) {
+      this.markdown = aggregator.formatAsMarkdown();
+    }
+  }
+}
+
 async function main(command, argv) {
   const cli = new CLI();
   const credentials = await auth({
@@ -382,6 +442,10 @@ async function main(command, argv) {
     case 'citgm':
     case 'benchmark': {
       commandHandler = new JobCommand(cli, request, argv, command);
+      break;
+    }
+    case 'daily': {
+      commandHandler = new DailyCommand(cli, request, argv, command);
       break;
     }
     default:
