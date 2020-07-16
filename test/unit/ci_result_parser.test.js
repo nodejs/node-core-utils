@@ -185,7 +185,29 @@ describe('Jenkins', () => {
     jobCache.enable();
 
     const cli = new TestCLI();
-    const citgmBuild = new CITGMBuild(cli, {}, 2400);
+    const job = { jobid: 2400, noBuild: false };
+    const citgmBuild = new CITGMBuild(cli, {}, job);
+    await citgmBuild.getResults();
+
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
+    assert.deepStrictEqual(citgmBuild.formatAsJson(), expectedJson);
+
+    const markdown = citgmBuild.formatAsMarkdown();
+    const expected = fixtures.readFile(...prefix, 'expected.md');
+    assert.strictEqual(markdown, expected);
+  });
+
+  it('should correctly fetch CITGM nobuild job results', async() => {
+    tmpdir.refresh();
+    const prefix = ['jenkins', 'citgm-nobuild'];
+    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+    const job = { jobid: 866, noBuild: true };
+    const citgmBuild = new CITGMBuild(cli, {}, job);
     await citgmBuild.getResults();
 
     const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
