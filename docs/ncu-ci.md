@@ -21,19 +21,20 @@ Commands:
   ncu-ci commit <jobid>     Show results of a node-test-commit CI job
   ncu-ci benchmark <jobid>  Show results of a benchmark-node-micro-benchmarks CI
                             job
-  ncu-ci citgm <jobid>      Show results of a citgm-smoker job
+  ncu-ci citgm <jobid>      Show results of a citgm-smoker CI job
+  ncu-ci daily              Show recent results of node-daily-master
 
 Options:
-  --version   Show version number                                      [boolean]
-  --copy      Write the results as markdown to clipboard        [default: false]
-  --json      Write the results as json to the path                     [string]
-  --markdown  Write the results as markdown to the path                 [string]
-  --help      Show help                                                [boolean]
+  --version          Show version number                               [boolean]
+  --copy             Write the results as markdown to clipboard [default: false]
+  --json <path>      Write the results as json to <path>                [string]
+  --markdown <path>  Write the results as markdown to <path>            [string]
+  --help             Show help                                         [boolean]
 ```
 
 ### `ncu-ci rate <type>`
 
-`ncu-ci rate <type>` calculate the success rate for CI jobs in the last 100 runs per [CI Health History](https://github.com/nodejs/reliability#ci-health-history), where `<type>` can be either `pr` for `node-test-pull-request` or `commit` for `node-test-commit`.
+`ncu-ci rate <type>` calculate the success rate for CI jobs in the last 100 runs per [CI Health History](https://github.com/nodejs/reliability#ci-health-history), where `<type>` can be either `pr` for `node-test-pull-request` or `commit` for `node-test-commit`. See `ncu-ci rate --help` for more.
 
 Examples:
 
@@ -61,7 +62,7 @@ node on git:master ❯ ncu-ci rate commit
 
 ### `ncu-ci walk <type>`
 
-`ncu-ci walk <type>` walks CI and displays failures, where `<type>` can be either `pr` for `node-test-pull-request` or `commit` for `node-test-commit`.
+`ncu-ci walk <type>` walks CI and displays failures, where `<type>` can be either `pr` for `node-test-pull-request` or `commit` for `node-test-commit`. See `ncu-ci walk --help` for more.
 
 Example:
 ```sh
@@ -125,7 +126,7 @@ ncu-ci walk pr --json database.json
 
 `ncu-ci pr <jobid>` returns information about the results of a `node-test-pull-request` job.
 
-For example, if you would like to see the results of `node-test-pull-request` for https://github.com/nodejs/node/pull/34127, you would visit the PR and note that the `node-test-pull-request` job can be found at https://ci.nodejs.org/job/node-test-pull-request/32158, and therefore the `<jobid>` is `32158`, not `34127`.
+For example, if you would like to see the results of `node-test-pull-request` for https://github.com/nodejs/node/pull/34127, you would visit the PR and note that the `node-test-pull-request` job can be found at https://ci.nodejs.org/job/node-test-pull-request/32158, and therefore the `<jobid>` is `32158`, not `34127`. See `ncu-ci pr --help` for more.
 
 Example:
 ```sh
@@ -149,7 +150,7 @@ Unstable   https://ci.nodejs.org/job/node-test-commit-arm-fanned/15155/
 
 `ncu-ci commit <jobid>` returns information about the results of a specified `node-test-commit` job.
 
-For example, if you would like to see the results of `node-test-commit` for https://github.com/nodejs/node/pull/34086, you would visit the PR and note that the `node-test-commit` job can be found at https://ci.nodejs.org/job/node-test-commit/39377, and therefore the `<jobid>` is `39377`, not `34086`.
+For example, if you would like to see the results of `node-test-commit` for https://github.com/nodejs/node/pull/34086, you would visit the PR and note that the `node-test-commit` job can be found at https://ci.nodejs.org/job/node-test-commit/39377, and therefore the `<jobid>` is `39377`, not `34086`. See `ncu-ci commit --help` for more.
 
 Example:
 ```sh
@@ -172,7 +173,7 @@ Unstable   https://ci.nodejs.org/job/node-test-commit-arm-fanned/15148/
 
 ### `ncu-ci url <url>` 
 
-`ncu-ci url <url>` takes a url corresponding to a PR on `nodejs/node`, detects the CI type (either `node-test-commit` or `node-test-pull-request`) and corresponding job id for the latest run, and returns a summary of results about the job run.
+`ncu-ci url <url>` takes a url corresponding to a PR on `nodejs/node`, detects the CI type (either `node-test-commit` or `node-test-pull-request`) and corresponding job id for the latest run, and returns a summary of results about the job run. See `ncu-ci url --help` for more.
 
 Example:
 ```sh
@@ -194,7 +195,7 @@ Unstable   https://ci.nodejs.org/job/node-test-commit-arm-fanned/15155/
 
 ### `ncu-ci benchmark <jobid>` 
 
-`ncu-ci benchmark <jobid>` displays the results of a specified `benchmark-node-micro-benchmarks` CI job.
+`ncu-ci benchmark <jobid>` displays the results of a specified `benchmark-node-micro-benchmarks` CI job. See `ncu-ci benchmark --help` for more.
 
 Example:
 ```sh
@@ -229,7 +230,7 @@ Finished: SUCCESS
 
 ### `ncu-ci citgm <jobid>`
 
-`ncu-ci citgm <jobid>` shows the results of a given citgm-smoker job.
+`ncu-ci citgm <jobid>` shows the results of a given citgm-smoker job. See `ncu-ci citgm --help` for more.
 
 Example:
 ```
@@ -259,6 +260,99 @@ Author     Shelley Vohr <shelley.vohr@gmail.com>
 │ fedora-last-latest-x64 │ 'coffeescript-v2.5.1' │   'through2-v4.0.2'   │                         │                     │                 │                    │
 │     centos7-ppcle      │ 'coffeescript-v2.5.1' │    'clinic-v6.0.2'    │ 'torrent-stream-v1.2.0' │  'through2-v4.0.2'  │                 │                    │
 └────────────────────────┴───────────────────────┴───────────────────────┴─────────────────────────┴─────────────────────┴─────────────────┴────────────────────┘
+```
+
+### `ncu-ci daily`
+
+`ncu-ci daily` show recent results of `node-daily-master`. You can also aggregate the results by passing `--cache`, or limit the maximum number of CIs jobs to get data from with `--limit=N`. See `ncu-ci daily --help` for more.
+
+```sh
+node on git:master ❯ ncu-ci daily                                            12:14PM
+✔  Done--------------------------------------------------------------------------------
+[1/16] Running health
+--------------------------------------------------------------------------------
+| UTC Time         | RUNNING | SUCCESS | UNSTABLE | ABORTED | FAILURE | Green Rate |
+| ---------------- | ------- | ------- | -------- | ------- | ------- | ---------- |
+| 2020-07-20 19:15 | 0       | 6       | 5        | 1       | 34      | 13.33%     |
+
+--------------------------------------------------------------------------------
+[2/16] Running https://ci.nodejs.org/job/node-daily-master/2004/
+--------------------------------------------------------------------------------
+✔  Build data downloaded
+✔  Build data downloaded
+✔  Data downloaded
+----------------------------------- Summary ------------------------------------
+Result     FAILURE
+URL        https://ci.nodejs.org/job/node-test-commit/39692/
+Source     https://api.github.com/repos/nodejs/node/git/refs/heads/master
+Commit     [bf0d82c10247] test: remove common.localhostIPv6
+Date       2020-07-16 16:57:30 -0700
+Author     Rich Trott <rtrott@gmail.com>
+-------------------------------- ubuntu1604-64 ---------------------------------
+URL        https://ci.nodejs.org/job/node-test-commit-linux/nodes=ubuntu1604-64/36148/console
+Type       JS_TEST_FAILURE
+Built On   test-rackspace-ubuntu1604-x64-1
+Reason     
+  not ok 2783 benchmark/test-benchmark-streams
+    ---
+    duration_ms: 2.518
+    severity: fail
+    exitcode: 1
+    stack: |-
+      assert.js:385
+          throw err;
+          ^
+      
+      AssertionError [ERR_ASSERTION]: benchmark file not running exactly one configuration in test: 
+      streams/creation.js
+      streams/creation.js kind="duplex" n=1: 6,840.272790078869
+      
+      streams/pipe-object-mode.js
+      streams/pipe-object-mode.js n=1: 134.18694119525676
+      
+      streams/pipe.js
+      streams/pipe.js n=1: 127.79219557726546
+      
+      streams/readable-async-iterator.js
+      2
+      streams/readable-async-iterator.js sync="yes" n=1: 120.35939314793974
+      
+      streams/readable-bigread.js
+      streams/readable-bigread.js n=1: 29.298658098020184
+      
+      streams/readable-bigunevenread.js
+      streams/readable-bigunevenread.js n=1: 22.972824549899766
+      
+      streams/readable-boundaryread.js
+      streams/readable-boundaryread.js type="string" n=1: 17.122757569423193
+      
+      streams/readable-readall.js
+      streams/readable-readall.js n=1: 53.44909695078247
+      
+      streams/readable-unevenread.js
+      streams/readable-unevenread.js n=1: 15.20828514524817
+      
+      streams/writable-manywrites.js
+      streams/writable-manywrites.js len=1 callback="yes" writev="yes" sync="yes" n=1: 1,075.9039475991742
+      
+          at ChildProcess.<anonymous> (/home/iojs/build/workspace/node-test-commit-linux/nodes/ubuntu1604-64/test/common/benchmark.js:38:12)
+          at ChildProcess.emit (events.js:314:20)
+          at Process.ChildProcess._handle.onexit (internal/child_process.js:276:12) {
+        generatedMessage: false,
+        code: 'ERR_ASSERTION',
+        actual: false,
+        expected: true,
+        operator: '=='
+      }
+    ...
+  
+--------------------------------- Other builds ---------------------------------
+--------------------------------------------------------------------------------
+[3/16] Running https://ci.nodejs.org/job/node-daily-master/2003/
+--------------------------------------------------------------------------------
+✔  Build data downloaded
+✔  Build data downloaded
+⠸ Querying console text for job/node-test-commit-osx/nodes=osx1015/35280/
 ```
 
 ## Caveats
