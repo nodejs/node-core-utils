@@ -1,0 +1,38 @@
+[
+  {
+    "baseBuild": {
+      "source": "https://api.github.com/repos/nodejs/node/git/refs/heads/v10.x",
+      "upstream": "https://ci.nodejs.org/job/citgm-smoker/2417/"
+    },
+    "comparisonBuild": {
+      "source": "https://api.github.com/repos/nodejs/node/git/refs/heads/v10.22.0-proposal",
+      "upstream": "https://ci.nodejs.org/job/citgm-smoker/2421/"
+    },
+    "aix71-ppc64": [
+      "ember-cli-v3.19.0"
+    ],
+    "ubuntu1804-64": [],
+    "fedora-last-latest-x64": [
+      "spawn-wrap-v2.0.0",
+      "winston-v3.3.3"
+    ],
+    "osx1014": [
+      "fastify-v3.0.3"
+    ],
+    "ubuntu1404-64": [],
+    "rhel7-s390x": [
+      "uglify-js-v3.10.0"
+    ],
+    "osx1015": [],
+    "centos7-ppcle": [
+      "ember-cli-v3.19.0",
+      "multer-v1.4.2"
+    ],
+    "ubuntu1604-64": [
+      "clinic-v6.0.2",
+      "yargs-v15.4.1"
+    ],
+    "debian9-64": [],
+    "fedora-latest-x64": []
+  }
+]
