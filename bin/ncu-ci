@@ -239,8 +239,15 @@ class CICommand {
         case DAILY_MASTER: {
           const daily = new DailyBuild(cli, request, job.jobid);
           const data = await daily.getBuildData();
-          build = new CommitBuild(cli, request, data.subBuilds[0].buildNumber);
-          break;
+          const testCommitBuild = data.subBuilds.filter(subBuild => {
+            return subBuild.jobName === 'node-test-commit';
+          })[0];
+          if (testCommitBuild) {
+            build = new CommitBuild(cli, request, testCommitBuild.buildNumber);
+            break;
+          } else {
+            throw new Error('Could not find \'node-test-commit\' job');
+          }
         }
         default:
           throw new Error(`Unknown job type ${job.type}`);
