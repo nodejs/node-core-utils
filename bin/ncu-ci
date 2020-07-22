@@ -6,7 +6,12 @@ const {
   JobParser,
   parseJobFromURL,
   CI_TYPES_KEYS: {
-    PR, COMMIT, BENCHMARK, CITGM, DAILY_MASTER
+    PR,
+    COMMIT,
+    BENCHMARK,
+    CITGM,
+    CITGM_NOBUILD,
+    DAILY_MASTER
   }
 } = require('../lib/ci/ci_type_parser');
 
@@ -164,6 +169,10 @@ const argv = yargs
     default: false,
     describe: 'Write the results as markdown to clipboard'
   })
+  .option('nobuild', {
+    describe: 'If running cigtm, whether or not the CITGM job is citgm-nobuild',
+    type: 'boolean'
+  })
   .option('json <path>', {
     type: 'string',
     describe: 'Write the results as json to <path>'
@@ -231,7 +240,8 @@ class CICommand {
           build = new CommitBuild(cli, request, job.jobid);
           break;
         case CITGM:
-          build = new CITGMBuild(cli, request, job.jobid);
+        case CITGM_NOBUILD:
+          build = new CITGMBuild(cli, request, job);
           break;
         case BENCHMARK:
           build = new BenchmarkRun(cli, request, job.jobid);
@@ -353,7 +363,8 @@ class JobCommand extends CICommand {
   async initialize() {
     this.queue.push({
       type: commandToType[this.command],
-      jobid: this.argv.jobid
+      jobid: this.argv.jobid,
+      noBuild: this.argv.nobuild || false
     });
   }
 }
