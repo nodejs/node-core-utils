@@ -249,4 +249,31 @@ describe('Jenkins', () => {
     const expected = fixtures.readFile(...prefix, 'expected.md');
     assert.strictEqual(markdown, expected);
   });
+
+  it('should correctly fetch CITGM comparison noBuild results', async() => {
+    tmpdir.refresh();
+    const prefix = ['jenkins', 'citgm-compare-nobuild'];
+    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+
+    const job = {
+      jobid: 880,
+      jobid2: 2433,
+      noBuild: true
+    };
+
+    const comparisonBuild = new CITGMComparisonBuild(cli, {}, job);
+    await comparisonBuild.getResults();
+
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
+    assert.deepStrictEqual(comparisonBuild.formatAsJson(), expectedJson);
+
+    const markdown = comparisonBuild.formatAsMarkdown();
+    const expected = fixtures.readFile(...prefix, 'expected.md');
+    assert.strictEqual(markdown, expected);
+  });
 });

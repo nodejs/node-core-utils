@@ -1,0 +1,41 @@
+{
+  "baseBuild": {
+    "upstream": "https://ci.nodejs.org/job/citgm-smoker/2433/"
+  },
+  "comparisonBuild": {
+    "source": "https://api.github.com/repos/nodejs/node/git/refs/heads/v14.6.0-proposal",
+    "upstream": "https://ci.nodejs.org/job/citgm-smoker-nobuild/880/"
+  },
+  "ubuntu1804-64": [
+    "shot-v4.0.7"
+  ],
+  "aix71-ppc64": [
+    "shot-v4.0.7"
+  ],
+  "osx1015": [
+    "gulp-v4.0.2",
+    "shot-v4.0.7"
+  ],
+  "debian9-64": [
+    "shot-v4.0.7"
+  ],
+  "osx1014": [
+    "gulp-v4.0.2",
+    "shot-v4.0.7"
+  ],
+  "fedora-last-latest-x64": [
+    "shot-v4.0.7"
+  ],
+  "centos7-ppcle": [
+    "shot-v4.0.7"
+  ],
+  "rhel7-s390x": [
+    "shot-v4.0.7"
+  ],
+  "ubuntu1604-64": [
+    "shot-v4.0.7"
+  ],
+  "fedora-latest-x64": [
+    "shot-v4.0.7"
+  ]
+}
