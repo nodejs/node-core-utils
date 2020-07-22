@@ -232,7 +232,14 @@ describe('Jenkins', () => {
     jobCache.enable();
 
     const cli = new TestCLI();
-    const comparisonBuild = new CITGMComparisonBuild(cli, {}, [2392, 2390]);
+
+    const job = {
+      jobid: 2392,
+      jobid2: 2390,
+      noBuild: false
+    };
+
+    const comparisonBuild = new CITGMComparisonBuild(cli, {}, job);
     await comparisonBuild.getResults();
 
     const expectedJson = fixtures.readJSON(...prefix, 'expected.json');

@@ -247,10 +247,9 @@ class CICommand {
         case CITGM:
         case CITGM_NOBUILD:
           if (job.jobid2) {
-            const ids = [job.jobid, job.jobid2];
-            build = new CITGMComparisonBuild(cli, request, ids);
+            build = new CITGMComparisonBuild(cli, request, job);
           } else {
-            build = new CITGMBuild(cli, request, job.jobid);
+            build = new CITGMBuild(cli, request, job);
           }
           break;
         case BENCHMARK:
@@ -375,21 +374,9 @@ class JobCommand extends CICommand {
 
     queue.push({
       type: commandToType[this.command],
-<<<<<<< HEAD
-<<<<<<< HEAD
-      jobid: this.argv.jobid,
-      noBuild: this.argv.nobuild || false
-||||||| merged common ancestors
-      jobid: this.argv.jobid
-=======
-      jobid: argv.jobid
->>>>>>> refactor: pull some builds into own files
-||||||| merged common ancestors
-      jobid: argv.jobid
-=======
       jobid: argv.jobid,
-      jobid2: argv.jobid2
->>>>>>> feat: enable citgm run comparisons
+      jobid2: argv.jobid2,
+      noBuild: this.argv.nobuild || false
     });
   }
 }
