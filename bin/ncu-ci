@@ -27,8 +27,12 @@ const {
   FailureAggregator,
   jobCache
 } = require('../lib/ci/ci_result_parser');
+const {
+  RunPRJob
+} = require('../lib/ci/run_ci');
 const clipboardy = require('clipboardy');
 const { writeJson, writeFile } = require('../lib/file');
+const { getMergedConfig } = require('../lib/config');
 
 const { runPromise } = require('../lib/run');
 const auth = require('../lib/auth');
@@ -80,6 +84,26 @@ const argv = yargs
         .option('limit', {
           default: 99,
           describe: 'Maximum number of CIs to get data from'
+        });
+    },
+    handler
+  })
+  .command({
+    command: 'run <prid>',
+    desc: 'Run CI for given PR',
+    builder: (yargs) => {
+      yargs
+        .positional('prid', {
+          describe: 'ID of the PR',
+          type: 'number'
+        })
+        .option('owner', {
+          default: '',
+          describe: 'GitHub repository owner'
+        })
+        .option('repo', {
+          default: '',
+          describe: 'GitHub repository name'
         });
     },
     handler
@@ -204,6 +228,54 @@ const commandToType = {
   benchmark: BENCHMARK,
   citgm: CITGM
 };
+
+class RunPRJobCommand {
+  constructor(cli, request, argv) {
+    this.cli = cli;
+    this.request = request;
+    this.dir = process.cwd();
+    this.argv = argv;
+    this.config = getMergedConfig(this.dir);
+  }
+
+  get owner() {
+    return this.argv.owner || this.config.owner;
+  }
+
+  get repo() {
+    return this.argv.repo || this.config.repo;
+  }
+
+  get prid() {
+    return this.argv.prid;
+  }
+
+  async start() {
+    const {
+      cli, request, prid, repo, owner
+    } = this;
+    let validArgs = true;
+    if (!repo) {
+      validArgs = false;
+      cli.error('GitHub repository is missing, please set it via ncu-config ' +
+                'or pass it via the --repo option');
+    }
+    if (!owner) {
+      cli.error('GitHub owner is missing, please set it via ncu-config ' +
+                'or pass it via the --owner option');
+      validArgs = false;
+    }
+    if (!validArgs) {
+      this.cli.setExitCode(1);
+      return;
+    }
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
+    if (!jobRunner.start()) {
+      this.cli.setExitCode(1);
+      process.exitCode = 1;
+    }
+  }
+}
 
 class CICommand {
   constructor(cli, request, argv) {
@@ -457,6 +529,10 @@ async function main(command, argv) {
   let commandHandler;
   // Prepare queue.
   switch (command) {
+    case 'run': {
+      const jobRunner = new RunPRJobCommand(cli, request, argv);
+      return jobRunner.start();
+    }
     case 'rate': {
       commandHandler = new RateCommand(cli, request, argv);
       break;
