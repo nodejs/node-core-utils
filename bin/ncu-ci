@@ -21,6 +21,7 @@ const {
   CommitBuild,
   CITGMBuild,
   DailyBuild,
+  CITGMComparisonBuild,
   HealthBuild,
   listBuilds,
   FailureAggregator,
@@ -113,7 +114,7 @@ const argv = yargs
     builder: (yargs) => {
       yargs
         .positional('jobid', {
-          describe: 'id of the job',
+          describe: 'id of the first job',
           type: 'number'
         });
     },
@@ -132,12 +133,16 @@ const argv = yargs
     handler
   })
   .command({
-    command: 'citgm <jobid>',
+    command: 'citgm <jobid> [jobid2]',
     desc: 'Show results of a citgm-smoker CI job',
     builder: (yargs) => {
       yargs
         .positional('jobid', {
           describe: 'id of the job',
+          type: 'number'
+        })
+        .positional('jobid2', {
+          describe: 'id of the second job, if doing a comparison',
           type: 'number'
         });
     },
@@ -166,12 +171,14 @@ const argv = yargs
   })
   .demandCommand(1, 'must provide a valid command')
   .option('copy', {
+    describe: 'Write the results as markdown to clipboard',
     default: false,
-    describe: 'Write the results as markdown to clipboard'
+    type: 'boolean'
   })
   .option('nobuild', {
-    describe: 'If running cigtm, whether or not the CITGM job is citgm-nobuild',
-    type: 'boolean'
+    describe: 'If running cigtm, whether or not jobid is citgm-nobuild.',
+    type: 'boolean',
+    default: false
   })
   .option('json <path>', {
     type: 'string',
@@ -241,7 +248,11 @@ class CICommand {
           break;
         case CITGM:
         case CITGM_NOBUILD:
-          build = new CITGMBuild(cli, request, job);
+          if (job.jobid2) {
+            build = new CITGMComparisonBuild(cli, request, job);
+          } else {
+            build = new CITGMBuild(cli, request, job);
+          }
           break;
         case BENCHMARK:
           build = new BenchmarkRun(cli, request, job.jobid);
@@ -361,10 +372,13 @@ class JobCommand extends CICommand {
   }
 
   async initialize() {
-    this.queue.push({
+    const { queue, argv } = this;
+
+    queue.push({
       type: commandToType[this.command],
-      jobid: this.argv.jobid,
-      noBuild: this.argv.nobuild || false
+      jobid: argv.jobid,
+      jobid2: argv.jobid2,
+      noBuild: this.argv.nobuild
     });
   }
 }

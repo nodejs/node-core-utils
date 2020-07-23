@@ -1,0 +1,367 @@
+{
+  "_class":"hudson.matrix.MatrixBuild",
+  "actions":[
+     {
+        "_class":"hudson.model.CauseAction",
+        "causes":[
+           {
+              "_class":"hudson.model.Cause$UserIdCause",
+              "shortDescription":"Started by user Shelley Vohr",
+              "userId":"codebytere",
+              "userName":"Shelley Vohr"
+           }
+        ]
+     },
+     {
+
+     },
+     {
+
+     },
+     {
+
+     },
+     {
+
+     },
+     {
+
+     },
+     {
+        "_class":"hudson.plugins.git.util.BuildData",
+        "buildsByBranchName":{
+           "refs/remotes/origin/_jenkins_local_branch":{
+              "_class":"hudson.plugins.git.util.Build",
+              "buildNumber":2390,
+              "buildResult":null,
+              "marked":{
+                 "SHA1":"9a60117875ddf737d04369ec2a098e0ac96466b9",
+                 "branch":[
+                    {
+                       "SHA1":"9a60117875ddf737d04369ec2a098e0ac96466b9",
+                       "name":"refs/remotes/origin/_jenkins_local_branch"
+                    }
+                 ]
+              },
+              "revision":{
+                 "SHA1":"9a60117875ddf737d04369ec2a098e0ac96466b9",
+                 "branch":[
+                    {
+                       "SHA1":"9a60117875ddf737d04369ec2a098e0ac96466b9",
+                       "name":"refs/remotes/origin/_jenkins_local_branch"
+                    }
+                 ]
+              }
+           }
+        },
+        "lastBuiltRevision":{
+           "SHA1":"9a60117875ddf737d04369ec2a098e0ac96466b9",
+           "branch":[
+              {
+                 "SHA1":"9a60117875ddf737d04369ec2a098e0ac96466b9",
+                 "name":"refs/remotes/origin/_jenkins_local_branch"
+              }
+           ]
+        },
+        "remoteUrls":[
+           "git@github.com:$GITHUB_ORG/$REPO_NAME.git"
+        ],
+        "scmName":""
+     },
+     {
+        "_class":"hudson.plugins.git.GitTagAction"
+     },
+     {
+
+     },
+     {
+        "_class":"hudson.model.ParametersAction",
+        "parameters":[
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"NODEJS_VERSION",
+              "value":"12.18.1"
+           },
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"NODEJS_MAJOR_VERSION",
+              "value":"12"
+           },
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"GITHUB_ORG",
+              "value":"nodejs"
+           },
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"REPO_NAME",
+              "value":"node"
+           },
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"GIT_REMOTE_REF",
+              "value":"refs/pull/33811/head"
+           },
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"REBASE_ONTO",
+              "value":""
+           },
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"CITGM_LOGLEVEL",
+              "value":"warn"
+           },
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"NPM_LOGLEVEL",
+              "value":"error"
+           },
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"CITGM",
+              "value":"citgm"
+           },
+           {
+              "_class":"hudson.model.StringParameterValue",
+              "name":"CITGM_COMMAND",
+              "value":"citgm-all -J"
+           },
+           {
+              "_class":"hudson.model.BooleanParameterValue",
+              "name":"DISABLE_READABLE_STREAM",
+              "value":false
+           },
+           {
+              "_class":"hudson.plugins.matrix_configuration_parameter.MatrixCombinationsParameterValue",
+              "name":"PLATFORMS"
+           }
+        ]
+     },
+     {
+
+     },
+     {
+
+     },
+     {
+        "_class":"hudson.tasks.test.MatrixTestResult",
+        "failCount":19,
+        "skipCount":292,
+        "totalCount":954,
+        "urlName":"testReport"
+     },
+     {
+
+     },
+     {
+
+     },
+     {
+
+     },
+     {
+
+     },
+     {
+
+     },
+     {
+
+     }
+  ],
+  "artifacts":[
+
+  ],
+  "building":false,
+  "description":null,
+  "displayName":"#2390",
+  "duration":13033885,
+  "estimatedDuration":8446054,
+  "executor":null,
+  "fullDisplayName":"citgm-smoker #2390",
+  "id":"2390",
+  "keepLog":false,
+  "number":2390,
+  "queueId":763226,
+  "result":"FAILURE",
+  "timestamp":1592234705794,
+  "url":"https://ci.nodejs.org/job/citgm-smoker/2390/",
+  "builtOn":"test-packetnet-ubuntu1804-x64-1",
+  "changeSet":{
+     "_class":"hudson.plugins.git.GitChangeSetList",
+     "items":[
+        {
+           "_class":"hudson.plugins.git.GitChangeSet",
+           "affectedPaths":[
+              "doc/changelogs/CHANGELOG_V12.md",
+              "doc/api/errors.md",
+              "src/node_version.h",
+              "CHANGELOG.md"
+           ],
+           "commitId":"9a60117875ddf737d04369ec2a098e0ac96466b9",
+           "timestamp":1591759389000,
+           "author":{
+              "absoluteUrl":"https://ci.nodejs.org/user/codebytere",
+              "fullName":"Shelley Vohr"
+           },
+           "authorEmail":"shelley.vohr@gmail.com",
+           "comment":"2020-06-16, Version 12.18.1 'Erbium' (LTS)\n\nNotable changes:\n\nPR-URL: https://github.com/nodejs/node/pull/33811\n",
+           "date":"2020-06-09 20:23:09 -0700",
+           "id":"9a60117875ddf737d04369ec2a098e0ac96466b9",
+           "msg":"2020-06-16, Version 12.18.1 'Erbium' (LTS)",
+           "paths":[
+              {
+                 "editType":"edit",
+                 "file":"doc/changelogs/CHANGELOG_V12.md"
+              },
+              {
+                 "editType":"edit",
+                 "file":"src/node_version.h"
+              },
+              {
+                 "editType":"edit",
+                 "file":"CHANGELOG.md"
+              },
+              {
+                 "editType":"edit",
+                 "file":"doc/api/errors.md"
+              }
+           ]
+        }
+     ],
+     "kind":"git"
+  },
+  "culprits":[
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/addaleax",
+        "fullName":"Anna Henningsen"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/bethany.griggs",
+        "fullName":"Bethany.Griggs"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/bridgear",
+        "fullName":"Ruben Bridgewater"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/codebytere",
+        "fullName":"Shelley Vohr"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/dan.fabulich",
+        "fullName":"dan.fabulich"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/devsnek",
+        "fullName":"Gus Caplan"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/gireeshpunathil",
+        "fullName":"Gireesh Punathil"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/github",
+        "fullName":"github"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/jasnell",
+        "fullName":"James M Snell"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/lpinca",
+        "fullName":"Luigi Pinca"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/mmarchini",
+        "fullName":"mmarchini"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/mylesborins",
+        "fullName":"Myles Borins"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/puzpuzpuz",
+        "fullName":"Andrey Pechkurov"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/rexagod",
+        "fullName":"Pranshu Srivastava"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/ronag",
+        "fullName":"Robert Nagy"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/sam-github",
+        "fullName":"Sam Roberts"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/targos",
+        "fullName":"Michaël Zasso"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/tniessen",
+        "fullName":"Tobias Nießen"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/trott",
+        "fullName":"Rich Trott"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/unknown",
+        "fullName":"unknown"
+     },
+     {
+        "absoluteUrl":"https://ci.nodejs.org/user/vdeturckheim",
+        "fullName":"Vladimir de Turckheim"
+     }
+  ],
+  "runs":[
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=aix71-ppc64/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=centos7-ppcle/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=debian9-64/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=fedora-last-latest-x64/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=fedora-latest-x64/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=osx1014/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=osx1015/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=rhel7-s390x/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=ubuntu1604-64/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=ubuntu1804-64/2390/"
+     },
+     {
+        "number":2390,
+        "url":"https://ci.nodejs.org/job/citgm-smoker/nodes=win-vs2017/2390/"
+     }
+  ]
+}

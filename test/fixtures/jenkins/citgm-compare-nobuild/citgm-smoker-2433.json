@@ -1,0 +1,114 @@
+{
+  "_class": "hudson.matrix.MatrixBuild",
+  "actions": [
+    {
+      "_class": "hudson.model.CauseAction"
+    },
+    {},
+    {},
+    {},
+    {},
+    {
+      "_class": "hudson.plugins.git.util.BuildData"
+    },
+    {
+      "_class": "hudson.plugins.git.GitTagAction"
+    },
+    {},
+    {
+      "_class": "hudson.model.ParametersAction",
+      "parameters": [
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "NODEJS_VERSION",
+          "value": "14.6.0"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "NODEJS_MAJOR_VERSION",
+          "value": "14"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "GITHUB_ORG",
+          "value": "nodejs"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "REPO_NAME",
+          "value": "node"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "GIT_REMOTE_REF",
+          "value": "refs/heads/v14.6.0-proposal"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "REBASE_ONTO",
+          "value": ""
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "CITGM_LOGLEVEL",
+          "value": "warn"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "NPM_LOGLEVEL",
+          "value": "error"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "CITGM",
+          "value": "citgm"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "CITGM_COMMAND",
+          "value": "citgm-all -J"
+        },
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "DISABLE_READABLE_STREAM",
+          "value": false
+        },
+        {
+          "_class": "hudson.plugins.matrix_configuration_parameter.MatrixCombinationsParameterValue",
+          "name": "PLATFORMS"
+        }
+      ]
+    },
+    {},
+    {},
+    {
+      "_class": "hudson.tasks.test.MatrixTestResult"
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "number": 2433,
+  "result": "FAILURE",
+  "url": "https://ci.nodejs.org/job/citgm-smoker/2433/",
+  "builtOn": "test-packetnet-ubuntu1804-x64-1",
+  "changeSet": {
+    "_class": "hudson.plugins.git.GitChangeSetList",
+    "items": [
+      {
+        "_class": "hudson.plugins.git.GitChangeSet",
+        "commitId": "ca62c34f69bf2270a51577f99ae892509fb5fe13",
+        "author": {
+          "absoluteUrl": "https://ci.nodejs.org/user/mylesborins",
+          "fullName": "Myles Borins"
+        },
+        "authorEmail": "mylesborins@github.com",
+        "date": "2020-07-20 16:51:34 -0400",
+        "msg": "2020-07-21, Version 14.6.0 (Current)"
+      }
+    ]
+  }
+}

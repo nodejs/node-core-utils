@@ -26,9 +26,10 @@ Commands:
 
 Options:
   --version          Show version number                               [boolean]
-  --copy             Write the results as markdown to clipboard [default: false]
-  --nobuild          If running cigtm, whether or not the CITGM job is
-                     citgm-nobuild                                     [boolean]
+  --copy             Write the results as markdown to clipboard
+                                                      [boolean] [default: false]
+  --nobuild          If running cigtm, whether or not jobid is citgm-nobuild.
+                                                      [boolean] [default: false]
   --json <path>      Write the results as json to <path>                [string]
   --markdown <path>  Write the results as markdown to <path>            [string]
   --help             Show help                                         [boolean]
@@ -230,13 +231,13 @@ Notifying upstream projects of job completion
 Finished: SUCCESS
 ```
 
-### `ncu-ci citgm <jobid>`
+### `ncu-ci citgm <jobid> [jobid2]`
 
-`ncu-ci citgm <jobid>` shows the results of a given citgm-smoker job. See `ncu-ci citgm --help` for more.
+`ncu-ci citgm <jobid> [jobid2]` shows the results of a given citgm-smoker job, with the option to compare per-platform results of two jobs. You See `ncu-ci citgm --help` for more.
 
 Example:
 ```
-node on git:master ❯ ncu-ci citgm 2400                                         10:25AM
+node on git:master ❯ ncu-ci citgm 2400
 --------------------------------------------------------------------------------
 [1/1] Running CITGM: 2400
 --------------------------------------------------------------------------------
@@ -264,12 +265,58 @@ Author     Shelley Vohr <shelley.vohr@gmail.com>
 └────────────────────────┴───────────────────────┴───────────────────────┴─────────────────────────┴─────────────────────┴─────────────────┴────────────────────┘
 ```
 
+Comparison Example:
+```sh
+node-core-utils on git:allow-citgm-comparison ❯ ncu-ci citgm 2392 2390
+--------------------------------------------------------------------------------
+[1/1] Running CITGM: 2392
+--------------------------------------------------------------------------------
+✔  Summary data downloaded
+✔  Results data downloaded
+✔  Summary data downloaded
+✔  Results data downloaded
+----------------------------------- Summary ------------------------------------
+Result     FAILURE
+URL        https://ci.nodejs.org/job/citgm-smoker/2392/
+Source     https://api.github.com/repos/nodejs/node/git/refs/heads/v12.x
+Commit     [feed95cd4c2c] Working on v12.18.1
+Date       2020-06-02 20:27:47 +0200
+Author     Michaël Zasso <targos@protonmail.com>
+----------------------------------- Summary ------------------------------------
+Result     FAILURE
+URL        https://ci.nodejs.org/job/citgm-smoker/2390/
+Source     https://github.com/nodejs/node/pull/33811/
+Commit     [9a60117875dd] 2020-06-16, Version 12.18.1 'Erbium' (LTS)
+Date       2020-06-09 20:23:09 -0700
+Author     Shelley Vohr <shelley.vohr@gmail.com>
+----------------------------------- Results ------------------------------------
+
+
+
+FAILURE: 5 failures in 2390 not present in 2392
+
+
+┌────────────────────────┬───────────────────────────┬────────────────────────────┐
+│        (index)         │             0             │             1              │
+├────────────────────────┼───────────────────────────┼────────────────────────────┤
+│     centos7-ppcle      │      'multer-v1.4.2'      │                            │
+│   fedora-latest-x64    │    'spawn-wrap-v2.0.0'    │                            │
+│ fedora-last-latest-x64 │                           │                            │
+│       debian9-64       │ 'express-session-v1.17.1' │ 'yeoman-generator-v4.10.1' │
+│        osx1014         │                           │                            │
+│      rhel7-s390x       │  'torrent-stream-v1.2.0'  │                            │
+│      aix71-ppc64       │                           │                            │
+│     ubuntu1604-64      │                           │                            │
+│     ubuntu1804-64      │                           │                            │
+└────────────────────────┴───────────────────────────┴────────────────────────────┘
+```
+
 ### `ncu-ci daily`
 
 `ncu-ci daily` show recent results of `node-daily-master`. You can also aggregate the results by passing `--cache`, or limit the maximum number of CIs jobs to get data from with `--limit=N`. See `ncu-ci daily --help` for more.
 
 ```sh
-node on git:master ❯ ncu-ci daily                                            12:14PM
+node on git:master ❯ ncu-ci daily
 ✔  Done--------------------------------------------------------------------------------
 [1/16] Running health
 --------------------------------------------------------------------------------

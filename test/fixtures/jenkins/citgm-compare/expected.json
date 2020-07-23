@@ -1,0 +1,28 @@
+{
+  "baseBuild": {
+    "source": "https://api.github.com/repos/nodejs/node/git/refs/heads/v12.x",
+    "upstream": "https://ci.nodejs.org/job/citgm-smoker/2390/"
+  },
+  "comparisonBuild": {
+    "source": "https://github.com/nodejs/node/pull/33811/",
+    "upstream": "https://ci.nodejs.org/job/citgm-smoker/2392/"
+  },
+  "centos7-ppcle": [
+    "multer-v1.4.2"
+  ],
+  "fedora-latest-x64": [
+    "spawn-wrap-v2.0.0"
+  ],
+  "fedora-last-latest-x64": [],
+  "debian9-64": [
+    "express-session-v1.17.1",
+    "yeoman-generator-v4.10.1"
+  ],
+  "osx1014": [],
+  "rhel7-s390x": [
+    "torrent-stream-v1.2.0"
+  ],
+  "aix71-ppc64": [],
+  "ubuntu1604-64": [],
+  "ubuntu1804-64": []
+}
