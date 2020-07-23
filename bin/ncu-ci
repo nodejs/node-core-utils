@@ -171,12 +171,14 @@ const argv = yargs
   })
   .demandCommand(1, 'must provide a valid command')
   .option('copy', {
+    describe: 'Write the results as markdown to clipboard',
     default: false,
-    describe: 'Write the results as markdown to clipboard'
+    type: 'boolean'
   })
   .option('nobuild', {
-    describe: 'If running cigtm, whether or not the CITGM job is citgm-nobuild',
-    type: 'boolean'
+    describe: 'If running cigtm, whether or not jobid is citgm-nobuild.',
+    type: 'boolean',
+    default: false
   })
   .option('json <path>', {
     type: 'string',
@@ -376,7 +378,7 @@ class JobCommand extends CICommand {
       type: commandToType[this.command],
       jobid: argv.jobid,
       jobid2: argv.jobid2,
-      noBuild: this.argv.nobuild || false
+      noBuild: this.argv.nobuild
     });
   }
 }
