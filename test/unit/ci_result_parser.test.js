@@ -1,13 +1,13 @@
 'use strict';
 
 const {
-  PRBuild,
-  BenchmarkRun,
-  CITGMBuild,
-  CITGMComparisonBuild,
-  CommitBuild,
-  jobCache
-} = require('../../lib/ci/ci_result_parser');
+  CITGMComparisonBuild
+} = require('../../lib/ci/build-types/citgm_comparison_build');
+const { PRBuild } = require('../../lib/ci/build-types/pr_build');
+const { CommitBuild } = require('../../lib/ci/build-types/commit_build');
+const { BenchmarkRun } = require('../../lib/ci/build-types/benchmark_run');
+const { CITGMBuild } = require('../../lib/ci/build-types/citgm_build');
+const { jobCache } = require('../../lib/ci/build-types/job');
 
 const TestCLI = require('../fixtures/test_cli');
 const { tmpdir, copyShallow } = require('../common');
