@@ -22,13 +22,5 @@
   {
     "publishedAt": "2017-10-27T04:16:36.458Z",
     "bodyText": "Linter CI: https://ci.nodejs.org/job/node-test-linter/13127/"
-  },
-  {
-    "publishedAt": "2017-10-28T04:16:36.458Z",
-    "bodyText": "CI https://ci.nodejs.org/job/node-test-commit-lite/246/"
-  },
-  {
-    "publishedAt": "2017-10-29T04:16:36.458Z",
-    "bodyText": "@contributer build started: https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/7213/pipeline/"
   }
 ]

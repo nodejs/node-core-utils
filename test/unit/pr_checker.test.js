@@ -23,7 +23,6 @@ const {
   requestingChangesReviews,
   noReviewers,
   commentsWithCI,
-  commentsWithLiteCI,
   commentsWithLGTM,
   singleCommitAfterReview,
   multipleCommitsAfterReview,
@@ -675,14 +674,6 @@ describe('PRChecker', () => {
           [
             'Last Linter CI on 2017-10-27T04:16:36.458Z: ' +
             'https://ci.nodejs.org/job/node-test-linter/13127/'
-          ],
-          [
-            'Last Lite Commit CI on 2017-10-28T04:16:36.458Z: ' +
-            'https://ci.nodejs.org/job/node-test-commit-lite/246/'
-          ],
-          [
-            'Last Lite PR Pipeline CI on 2017-10-29T04:16:36.458Z: ' +
-            'https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/7213/pipeline/'
           ]
         ]
       };
@@ -720,7 +711,6 @@ describe('PRChecker', () => {
           ['- feat: add something']
         ],
         info: [
-          ['Last Lite PR Pipeline CI on 2017-10-22T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/10984'],
           ['Last Full PR CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
         ]
       };
@@ -820,38 +810,6 @@ describe('PRChecker', () => {
 
       const status = await checker.checkCI();
       assert(!status);
-      cli.assertCalledWith(expectedLogs, {
-        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
-      });
-    });
-
-    it('should count LITE CI as valid ci requirement', async() => {
-      const cli = new TestCLI();
-
-      const expectedLogs = {
-        info: [
-          [
-            'Last Lite Commit CI on 2018-02-09T21:38:30Z: ' +
-            'https://ci.nodejs.org/job/node-test-commit-lite/246/'
-          ]
-        ]
-      };
-
-      const checker = new PRChecker(cli, {
-        pr: firstTimerPR,
-        reviewers: allGreenReviewers,
-        comments: commentsWithLiteCI,
-        reviews: approvingReviews,
-        commits: [],
-        collaborators,
-        authorIsNew: () => true,
-        getThread() {
-          return PRData.prototype.getThread.call(this);
-        }
-      }, {}, { maxCommits: 0 });
-
-      const status = await checker.checkCI();
-      assert(status);
       cli.assertCalledWith(expectedLogs, {
         ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
       });

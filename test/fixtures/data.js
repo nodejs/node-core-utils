@@ -35,7 +35,6 @@ const noReviewers = {
 const approvingReviews = readJSON('reviews_approved.json');
 const requestingChangesReviews = readJSON('reviews_requesting_changes.json');
 
-const commentsWithLiteCI = readJSON('comments_with_lite_ci.json');
 const commentsWithCI = readJSON('comments_with_ci.json');
 const commentsWithLGTM = readJSON('comments_with_lgtm.json');
 
@@ -110,7 +109,6 @@ module.exports = {
   approvingReviews,
   requestingChangesReviews,
   commentsWithCI,
-  commentsWithLiteCI,
   commentsWithLGTM,
   oddCommits,
   githubCI,
