@@ -39,8 +39,5 @@
   "comment": [{
     "bodyText": "CI: https://ci.nodejs.org/job/node-test-pull-request/10984/",
     "publishedAt": "2017-10-24T11:19:25Z"
-  },{
-    "bodyText": "Lite-CI: https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/10984",
-    "publishedAt": "2017-10-22T11:19:25Z"
   }]
 }

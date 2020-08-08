@@ -44,35 +44,11 @@ const expected = new Map([
     link: 'https://ci.nodejs.org/job/node-test-linter/13127/',
     date: '2017-10-27T04:16:36.458Z',
     jobid: 13127
-  }],
-  ['LITE_COMMIT', {
-    link: 'https://ci.nodejs.org/job/node-test-commit-lite/246/',
-    date: '2017-10-28T04:16:36.458Z',
-    jobid: 246
-  }],
-  ['LITE_PR_PIPELINE', {
-    link: 'https://ci.nodejs.org/job/node-test-pull-request-lite-pipeline/7213/pipeline/',
-    date: '2017-10-29T04:16:36.458Z',
-    jobid: 7213
   }]
 ]);
 describe('JobParser', () => {
   it('should parse CI results', () => {
     const results = new JobParser(commentsWithCI).parse();
     assert.deepStrictEqual([...results.entries()], [...expected.entries()]);
-  });
-
-  it('should parse pipeline links', () => {
-    const data = [{
-      publishedAt: '2017-10-29T04:16:36.458Z',
-      bodyText: '@contributer build started: https://ci.nodejs.org/blue/organizations/jenkins/node-test-pull-request-lite-pipeline/detail/node-test-pull-request-lite-pipeline/3009/pipeline/'
-    }];
-    const results = new JobParser(data).parse();
-    assert.deepStrictEqual([...results.entries()], [
-      ['LITE_PR_PIPELINE', {
-        link: 'https://ci.nodejs.org/blue/organizations/jenkins/node-test-pull-request-lite-pipeline/detail/node-test-pull-request-lite-pipeline/3009/pipeline/',
-        date: '2017-10-29T04:16:36.458Z',
-        jobid: 3009
-      }]]);
   });
 });
