@@ -7,6 +7,8 @@ const TestCLI = require('../fixtures/test_cli');
 
 const PRData = require('../../lib/pr_data');
 const PRChecker = require('../../lib/pr_checker');
+const { jobCache } = require('../../lib/ci/build-types/job');
+jobCache.disable();
 
 const GT_7D = '2018-11-23T17:50:44.477Z';
 const LT_7D_GT_48H = '2018-11-27T17:50:44.477Z';
@@ -20,10 +22,14 @@ const {
   requestedChangesReviewers,
   approvingReviews,
   githubCI,
+  jenkinsCI,
   requestingChangesReviews,
   noReviewers,
   commentsWithCI,
+  commentsWithFailedCI,
   commentsWithLGTM,
+  commentsWithSuccessCI,
+  commentsWithPendingCI,
   singleCommitAfterReview,
   multipleCommitsAfterReview,
   moreThanThreeCommitsAfterReview,
@@ -38,7 +44,8 @@ const {
   semverMajorPR,
   conflictingPR,
   closedPR,
-  mergedPR
+  mergedPR,
+  pullRequests
 } = require('../fixtures/data');
 
 const argv = { maxCommits: 3 };
@@ -614,12 +621,428 @@ describe('PRChecker', () => {
   });
 
   describe('checkCI', () => {
+    it('should error if invalid CI', async() => {
+      const cli = new TestCLI();
+
+      const data = {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {},
+        { ...argv, ciType: 'invalid' });
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(!status);
+    });
+
+    it('should fail if doc-only changes without Actions', async() => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['No GitHub CI runs detected']
+        ],
+        info: [
+          ['Doc-only changes']
+        ]
+      };
+
+      const data = {
+        pr: pullRequests['doc-only'],
+        reviewers: allGreenReviewers,
+        comments: [],
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {
+          json: sinon.stub().callsFake(await function(url) {
+            return undefined;
+          })
+        },
+        argv);
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
+    });
+
+    it('should succeed if doc-only changes without Jenkins', async() => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok: [
+          ['Last GitHub Actions successful']
+        ],
+        info: [
+          ['Doc-only changes']
+        ]
+      };
+
+      const data = {
+        pr: pullRequests['doc-only'],
+        reviewers: allGreenReviewers,
+        comments: [],
+        reviews: approvingReviews,
+        commits: githubCI['check-suite-success'],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {
+          json: sinon.stub().callsFake(await function() {
+            return undefined;
+          })
+        },
+        argv);
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(status);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
+    });
+
+    it('should succeed if doc-only changes with failed Jenkins', async() => {
+      const cli = new TestCLI();
+
+      const jenkins = jenkinsCI['trigger-failure/node-test-pull-request-15442'];
+
+      const expectedLogs = {
+        ok: [
+          ['Last GitHub Actions successful']
+        ],
+        info: [
+          ['Doc-only changes']
+        ]
+      };
+
+      const data = {
+        pr: pullRequests['doc-only'],
+        reviewers: allGreenReviewers,
+        comments: commentsWithFailedCI,
+        reviews: approvingReviews,
+        commits: githubCI['check-suite-success'],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {
+          json: sinon.stub().callsFake(await function(url) {
+            if (!url.startsWith(jenkins.url)) {
+              // Throwing won't fail the checkCI call, but returning undefined
+              // will.
+              return undefined;
+            }
+            return jenkins;
+          })
+        },
+        argv);
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(status);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
+    });
+
+    it('should error if pending Jenkins CI', async() => {
+      const cli = new TestCLI();
+
+      const jenkins = jenkinsCI['pending/node-test-pull-request-32777'];
+
+      const expectedLogs = {
+        error: [
+          ['No GitHub CI runs detected'],
+          ['Last Jenkins CI still running']
+        ],
+        info: [
+          [`Last Full PR CI on 2018-10-22T04:16:36.458Z: ${jenkins.url}`]
+        ]
+      };
+
+      const data = {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithPendingCI,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {
+          json: sinon.stub().callsFake(await function(url) {
+            if (!url.startsWith(jenkins.url)) {
+              // Throwing won't fail the checkCI call, but returning undefined
+              // will.
+              return undefined;
+            }
+            return jenkins;
+          })
+        },
+        argv);
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
+    });
+
+    it('should error if pending Actions', async() => {
+      const cli = new TestCLI();
+
+      const jenkins = jenkinsCI['success/node-test-pull-request-15237'];
+
+      const expectedLogs = {
+        ok: [
+          ['Last Jenkins CI successful']
+        ],
+        error: [
+          ['GitHub CI is still running']
+        ],
+        info: [
+          [`Last Full PR CI on 2018-10-22T04:16:36.458Z: ${jenkins.url}`]
+        ]
+      };
+
+      const data = {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithSuccessCI,
+        reviews: approvingReviews,
+        commits: githubCI['check-suite-pending'],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {
+          json: sinon.stub().callsFake(await function(url) {
+            if (!url.startsWith(jenkins.url)) {
+              // Throwing won't fail the checkCI call, but returning undefined
+              // will.
+              return undefined;
+            }
+            return jenkins;
+          })
+        },
+        argv);
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
+    });
+
+    it('should error if failed Actions', async() => {
+      const cli = new TestCLI();
+
+      const jenkins = jenkinsCI['success/node-test-pull-request-15237'];
+
+      const expectedLogs = {
+        ok: [
+          ['Last Jenkins CI successful']
+        ],
+        error: [
+          ['Last GitHub CI failed']
+        ],
+        info: [
+          [`Last Full PR CI on 2018-10-22T04:16:36.458Z: ${jenkins.url}`]
+        ]
+      };
+
+      const data = {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithSuccessCI,
+        reviews: approvingReviews,
+        commits: githubCI['check-suite-failure'],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {
+          json: sinon.stub().callsFake(await function(url) {
+            if (!url.startsWith(jenkins.url)) {
+              // Throwing won't fail the checkCI call, but returning undefined
+              // will.
+              return undefined;
+            }
+            return jenkins;
+          })
+        },
+        argv);
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
+    });
+
+    it('should succeed if both CIs succeed', async() => {
+      const cli = new TestCLI();
+
+      const jenkins = jenkinsCI['success/node-test-pull-request-15237'];
+
+      const expectedLogs = {
+        ok: [
+          ['Last GitHub Actions successful'],
+          ['Last Jenkins CI successful']
+        ],
+        error: [
+        ],
+        info: [
+          [`Last Full PR CI on 2018-10-22T04:16:36.458Z: ${jenkins.url}`]
+        ]
+      };
+
+      const data = {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithSuccessCI,
+        reviews: approvingReviews,
+        commits: githubCI['check-suite-success'],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {
+          json: sinon.stub().callsFake(await function(url) {
+            if (!url.startsWith(jenkins.url)) {
+              // Throwing won't fail the checkCI call, but returning undefined
+              // will.
+              return undefined;
+            }
+            return jenkins;
+          })
+        },
+        argv);
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(status);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
+    });
+
+    it('should error if failed Jenkins CI', async() => {
+      const cli = new TestCLI();
+
+      const jenkins = jenkinsCI['trigger-failure/node-test-pull-request-15442'];
+
+      const expectedLogs = {
+        error: [
+          ['No GitHub CI runs detected'],
+          ['1 failure(s) on the last Jenkins CI run']
+        ],
+        info: [
+          [`Last Full PR CI on 2018-10-22T04:16:36.458Z: ${jenkins.url}`]
+        ]
+      };
+
+      const data = {
+        pr: firstTimerPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithFailedCI,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {
+          json: sinon.stub().callsFake(await function(url) {
+            if (!url.startsWith(jenkins.url)) {
+              // Throwing won't fail the checkCI call, but returning undefined
+              // will.
+              return undefined;
+            }
+            return jenkins;
+          })
+        },
+        argv);
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
+    });
+
     it('should error if no CI runs detected', async() => {
       const cli = new TestCLI();
 
       const expectedLogs = {
         error: [
-          ['No CI runs detected']
+          ['No GitHub CI runs detected'],
+          ['No Jenkins CI runs detected']
         ]
       };
 
@@ -646,6 +1069,12 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
+        ok: [
+          ['Last Jenkins CI successful']
+        ],
+        error: [
+          ['No commits detected']
+        ],
         info: [
           [
             'Last Full PR CI on 2017-10-25T04:16:36.458Z: ' +
@@ -693,7 +1122,7 @@ describe('PRChecker', () => {
       const checker = new PRChecker(cli, data, {}, argv);
 
       const status = await checker.checkCI();
-      assert(status);
+      assert(!status);
       cli.assertCalledWith(expectedLogs, {
         ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
       });
@@ -712,6 +1141,12 @@ describe('PRChecker', () => {
         ],
         info: [
           ['Last Full PR CI on 2017-10-24T11:19:25Z: https://ci.nodejs.org/job/node-test-pull-request/10984/']
+        ],
+        ok: [
+          ['Last Jenkins CI successful']
+        ],
+        error: [
+          ['No GitHub CI runs detected']
         ]
       };
 
@@ -754,7 +1189,12 @@ describe('PRChecker', () => {
             'https://ci.nodejs.org/job/node-test-pull-request/12984/'
           ]
         ],
-        error: []
+        ok: [
+          ['Last Jenkins CI successful']
+        ],
+        error: [
+          ['No GitHub CI runs detected']
+        ]
       };
 
       const checker = new PRChecker(cli, {
@@ -792,7 +1232,12 @@ describe('PRChecker', () => {
             'https://ci.nodejs.org/job/node-test-pull-request/12984/'
           ]
         ],
-        error: []
+        ok: [
+          ['Last Jenkins CI successful']
+        ],
+        error: [
+          ['No GitHub CI runs detected']
+        ]
       };
 
       const checker = new PRChecker(cli, {
@@ -835,7 +1280,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['No CI runs detected']
+          ['No GitHub CI runs detected']
         ]
       };
 
@@ -1044,7 +1489,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['No CI runs detected']
+          ['No GitHub CI runs detected']
         ]
       };
 
