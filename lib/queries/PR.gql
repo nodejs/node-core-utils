@@ -18,6 +18,11 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
           name
         }
       },
+      files(first: 100) {
+        nodes {
+          path
+        }
+      },
       title,
       baseRefName,
       headRefName,

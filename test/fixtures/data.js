@@ -36,7 +36,10 @@ const approvingReviews = readJSON('reviews_approved.json');
 const requestingChangesReviews = readJSON('reviews_requesting_changes.json');
 
 const commentsWithCI = readJSON('comments_with_ci.json');
+const commentsWithFailedCI = readJSON('comments_with_failed_ci.json');
 const commentsWithLGTM = readJSON('comments_with_lgtm.json');
+const commentsWithPendingCI = readJSON('comments_with_pending_ci.json');
+const commentsWithSuccessCI = readJSON('comments_with_success_ci.json');
 
 const oddCommits = readJSON('odd_commits.json');
 const incorrectGitConfigCommits = readJSON('incorrect_git_config_commits.json');
@@ -101,6 +104,27 @@ for (const item of readdirSync(path('./github-ci'))) {
   githubCI[basename(item, '.json')] = readJSON(`./github-ci/${item}`);
 };
 
+const pullRequests = {};
+
+for (const item of readdirSync(path('./pull_requests'))) {
+  if (!item.endsWith('.json')) {
+    continue;
+  }
+  pullRequests[basename(item, '.json')] = readJSON(`./pull_requests/${item}`);
+};
+
+const jenkinsCI = {};
+
+for (const subdir of readdirSync(path('./jenkins'))) {
+  for (const item of readdirSync(path(`./jenkins/${subdir}`))) {
+    if (!item.endsWith('.json')) {
+      continue;
+    }
+    jenkinsCI[`${subdir}/${basename(item, '.json')}`] =
+      readJSON(`./jenkins/${subdir}/${item}`);
+  }
+};
+
 module.exports = {
   approved,
   requestedChanges,
@@ -111,8 +135,12 @@ module.exports = {
   approvingReviews,
   requestingChangesReviews,
   commentsWithCI,
+  commentsWithFailedCI,
   commentsWithLGTM,
+  commentsWithSuccessCI,
+  commentsWithPendingCI,
   oddCommits,
+  jenkinsCI,
   githubCI,
   incorrectGitConfigCommits,
   simpleCommits,
@@ -141,5 +169,6 @@ module.exports = {
   closedPR,
   mergedPR,
   selfRefPR,
-  duplicateRefPR
+  duplicateRefPR,
+  pullRequests
 };

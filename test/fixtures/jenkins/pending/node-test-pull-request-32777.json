@@ -1,0 +1,528 @@
+{
+  "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+  "actions": [
+    {
+      "_class": "hudson.model.ParametersAction",
+      "parameters": [
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "CERTIFY_SAFE",
+          "value": true
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "TARGET_GITHUB_ORG",
+          "value": "nodejs"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "TARGET_REPO_NAME",
+          "value": "node"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "PR_ID",
+          "value": "34761"
+        },
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "REBASE_ONTO",
+          "value": "<pr base branch>"
+        },
+        {
+          "_class": "com.wangyin.parameter.WHideParameterValue",
+          "name": "DESCRIPTION_SETTER_DESCRIPTION",
+          "value": "\"\""
+        }
+      ]
+    },
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.model.Cause$UserIdCause",
+          "shortDescription": "Started by user mary marchini",
+          "userId": "mmarchini",
+          "userName": "mary marchini"
+        }
+      ]
+    },
+    {},
+    {},
+    {},
+    {},
+    {
+      "_class": "hudson.plugins.git.util.BuildData",
+      "buildsByBranchName": {
+        "refs/remotes/origin/_jenkins_local_branch": {
+          "_class": "hudson.plugins.git.util.Build",
+          "buildNumber": 32777,
+          "buildResult": null,
+          "marked": {
+            "SHA1": "fd987b66ed783f78aff1785eecfc1b0b1d92075f",
+            "branch": [
+              {
+                "SHA1": "fd987b66ed783f78aff1785eecfc1b0b1d92075f",
+                "name": "refs/remotes/origin/_jenkins_local_branch"
+              }
+            ]
+          },
+          "revision": {
+            "SHA1": "fd987b66ed783f78aff1785eecfc1b0b1d92075f",
+            "branch": [
+              {
+                "SHA1": "fd987b66ed783f78aff1785eecfc1b0b1d92075f",
+                "name": "refs/remotes/origin/_jenkins_local_branch"
+              }
+            ]
+          }
+        }
+      },
+      "lastBuiltRevision": {
+        "SHA1": "fd987b66ed783f78aff1785eecfc1b0b1d92075f",
+        "branch": [
+          {
+            "SHA1": "fd987b66ed783f78aff1785eecfc1b0b1d92075f",
+            "name": "refs/remotes/origin/_jenkins_local_branch"
+          }
+        ]
+      },
+      "remoteUrls": [
+        "git@github.com:$TARGET_GITHUB_ORG/$TARGET_REPO_NAME.git"
+      ],
+      "scmName": ""
+    },
+    {
+      "_class": "hudson.plugins.git.GitTagAction"
+    },
+    {},
+    {},
+    {},
+    {},
+    {
+      "_class": "hudson.model.ParametersAction",
+      "parameters": [
+        {
+          "_class": "hudson.model.StringParameterValue",
+          "name": "DESCRIPTION_SETTER_DESCRIPTION",
+          "value": "Testing <a href=https://github.com/nodejs/node/pull/34761>34761</a>"
+        }
+      ]
+    },
+    {
+      "_class": "hudson.plugins.parameterizedtrigger.BuildInfoExporterAction"
+    },
+    {
+      "_class": "com.tikal.jenkins.plugins.multijob.MultiJobTestResults",
+      "failCount": 0,
+      "skipCount": 0,
+      "totalCount": 0,
+      "urlName": "testReport"
+    },
+    {},
+    {},
+    {},
+    {}
+  ],
+  "artifacts": [],
+  "building": true,
+  "description": "Testing <a href=https://github.com/nodejs/node/pull/34761>34761</a>",
+  "displayName": "#32777",
+  "duration": 0,
+  "estimatedDuration": 1565270,
+  "executor": {},
+  "fullDisplayName": "node-test-pull-request #32777",
+  "id": "32777",
+  "keepLog": false,
+  "number": 32777,
+  "queueId": 936970,
+  "result": null,
+  "timestamp": 1597377490175,
+  "url": "https://ci.nodejs.org/job/node-test-pull-request/32777/",
+  "builtOn": "test-ibm-ubuntu1804-x64-1",
+  "changeSet": {
+    "_class": "hudson.plugins.git.GitChangeSetList",
+    "items": [
+      {
+        "_class": "hudson.plugins.git.GitChangeSet",
+        "affectedPaths": [
+          "test/fuzzers/fuzz_url.cc",
+          "configure.py",
+          "node.gyp"
+        ],
+        "commitId": "fd987b66ed783f78aff1785eecfc1b0b1d92075f",
+        "timestamp": 1597352807000,
+        "author": {
+          "absoluteUrl": "https://ci.nodejs.org/user/david",
+          "fullName": "david"
+        },
+        "authorEmail": "david@adalogics.com",
+        "comment": "Resolved suggestions for improvements in oss-fuzz infrastructure.\n",
+        "date": "2020-08-13 22:06:47 +0100",
+        "id": "fd987b66ed783f78aff1785eecfc1b0b1d92075f",
+        "msg": "Resolved suggestions for improvements in oss-fuzz infrastructure.",
+        "paths": [
+          {
+            "editType": "edit",
+            "file": "configure.py"
+          },
+          {
+            "editType": "edit",
+            "file": "test/fuzzers/fuzz_url.cc"
+          },
+          {
+            "editType": "edit",
+            "file": "node.gyp"
+          }
+        ]
+      }
+    ],
+    "kind": "git"
+  },
+  "culprits": [
+    {
+      "absoluteUrl": "https://ci.nodejs.org/user/david",
+      "fullName": "david"
+    },
+    {
+      "absoluteUrl": "https://ci.nodejs.org/user/oyyd",
+      "fullName": "Ouyang Yadong"
+    },
+    {
+      "absoluteUrl": "https://ci.nodejs.org/user/trott",
+      "fullName": "Rich Trott"
+    }
+  ],
+  "subBuilds": [
+    {
+      "abort": false,
+      "build": {
+        "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+        "subBuilds": [
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.matrix.MatrixBuild"
+            },
+            "buildNumber": 34989,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-freebsd",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-freebsd/34989/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.matrix.MatrixBuild"
+            },
+            "buildNumber": 35763,
+            "duration": "24 sec and counting",
+            "icon": "red_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-osx",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-osx/35763/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.matrix.MatrixBuild"
+            },
+            "buildNumber": 36592,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-linux",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-linux/36592/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.matrix.MatrixBuild"
+            },
+            "buildNumber": 34386,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-smartos",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-smartos/34386/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.model.FreeStyleBuild"
+            },
+            "buildNumber": 36264,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-linter",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-linter/36264/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.model.FreeStyleBuild"
+            },
+            "buildNumber": 15923,
+            "duration": "25 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "test-worker",
+            "jobName": "node-test-commit-custom-suites-freestyle",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-custom-suites-freestyle/15923/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.matrix.MatrixBuild"
+            },
+            "buildNumber": 34459,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-plinux",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-plinux/34459/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.matrix.MatrixBuild"
+            },
+            "buildNumber": 21826,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-linux-containered",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-linux-containered/21826/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.matrix.MatrixBuild"
+            },
+            "buildNumber": 32917,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-arm",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-arm/32917/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.matrix.MatrixBuild"
+            },
+            "buildNumber": 22507,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-linuxone",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-linuxone/22507/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "hudson.matrix.MatrixBuild"
+            },
+            "buildNumber": 32069,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-aix",
+            "multiJobBuild": false,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-aix/32069/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+              "subBuilds": [
+                {
+                  "abort": false,
+                  "build": {
+                    "_class": "hudson.model.FreeStyleBuild"
+                  },
+                  "buildNumber": 68259,
+                  "duration": "10 sec",
+                  "icon": "blue.png",
+                  "jobAlias": "",
+                  "jobName": "git-rebase",
+                  "multiJobBuild": false,
+                  "parentBuildNumber": 37751,
+                  "parentJobName": "node-test-commit-windows-fanned",
+                  "phaseName": "Git rebase",
+                  "result": "SUCCESS",
+                  "retry": false,
+                  "url": "job/git-rebase/68259/"
+                },
+                {
+                  "abort": false,
+                  "build": {
+                    "_class": "hudson.matrix.MatrixBuild"
+                  },
+                  "buildNumber": 35529,
+                  "duration": "9.9 sec and counting",
+                  "icon": "blue_anime.gif",
+                  "jobAlias": "",
+                  "jobName": "node-compile-windows",
+                  "multiJobBuild": false,
+                  "parentBuildNumber": 37751,
+                  "parentJobName": "node-test-commit-windows-fanned",
+                  "phaseName": "Compilation",
+                  "result": null,
+                  "retry": false,
+                  "url": "job/node-compile-windows/35529/"
+                },
+                {
+                  "abort": false,
+                  "build": {
+                    "_class": "hudson.matrix.MatrixBuild"
+                  },
+                  "buildNumber": 4173,
+                  "duration": "10 sec and counting",
+                  "icon": "blue_anime.gif",
+                  "jobAlias": "",
+                  "jobName": "node-compile-windows-debug",
+                  "multiJobBuild": false,
+                  "parentBuildNumber": 37751,
+                  "parentJobName": "node-test-commit-windows-fanned",
+                  "phaseName": "Compilation",
+                  "result": null,
+                  "retry": false,
+                  "url": "job/node-compile-windows-debug/4173/"
+                }
+              ]
+            },
+            "buildNumber": 37751,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-windows-fanned",
+            "multiJobBuild": true,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-windows-fanned/37751/"
+          },
+          {
+            "abort": false,
+            "build": {
+              "_class": "com.tikal.jenkins.plugins.multijob.MultiJobBuild",
+              "subBuilds": [
+                {
+                  "abort": false,
+                  "build": {
+                    "_class": "hudson.matrix.MatrixBuild"
+                  },
+                  "buildNumber": 30143,
+                  "duration": "5 sec and counting",
+                  "icon": "blue_anime.gif",
+                  "jobAlias": "",
+                  "jobName": "node-cross-compile",
+                  "multiJobBuild": false,
+                  "parentBuildNumber": 15899,
+                  "parentJobName": "node-test-commit-arm-fanned",
+                  "phaseName": "Cross Compilation",
+                  "result": null,
+                  "retry": false,
+                  "url": "job/node-cross-compile/30143/"
+                }
+              ]
+            },
+            "buildNumber": 15899,
+            "duration": "24 sec and counting",
+            "icon": "blue_anime.gif",
+            "jobAlias": "",
+            "jobName": "node-test-commit-arm-fanned",
+            "multiJobBuild": true,
+            "parentBuildNumber": 40219,
+            "parentJobName": "node-test-commit",
+            "phaseName": "Tests",
+            "result": null,
+            "retry": false,
+            "url": "job/node-test-commit-arm-fanned/15899/"
+          }
+        ]
+      },
+      "buildNumber": 40219,
+      "duration": "32 sec and counting",
+      "icon": "red_anime.gif",
+      "jobAlias": "",
+      "jobName": "node-test-commit",
+      "multiJobBuild": true,
+      "parentBuildNumber": 32777,
+      "parentJobName": "node-test-pull-request",
+      "phaseName": "",
+      "result": null,
+      "retry": false,
+      "url": "job/node-test-commit/40219/"
+    }
+  ]
+}
