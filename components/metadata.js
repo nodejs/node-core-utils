@@ -9,7 +9,7 @@ const MetadataGenerator = require('../lib/metadata_gen');
 
 const fs = require('fs');
 
-module.exports = async function getMetadata(argv, cli) {
+module.exports = async function getMetadata(argv, skipRefs, cli) {
   const credentials = await auth({
     github: true,
     jenkins: true
@@ -23,7 +23,7 @@ module.exports = async function getMetadata(argv, cli) {
   cli.separator('PR info');
   summary.display();
 
-  const metadata = new MetadataGenerator(data).getMetadata();
+  const metadata = new MetadataGenerator({ skipRefs, ...data }).getMetadata();
   if (!process.stdout.isTTY) {
     process.stdout.write(metadata);
   }
