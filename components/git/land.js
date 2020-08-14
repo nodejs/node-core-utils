@@ -47,6 +47,11 @@ const landOptions = {
     describe: 'Prevent adding Fixes and Refs information to commit metadata',
     default: false,
     type: 'boolean'
+  },
+  autorebase: {
+    describe: 'Automatically rebase branches with multiple commits',
+    default: false,
+    type: 'boolean'
   }
 };
 
@@ -165,7 +170,8 @@ async function main(state, argv, cli, req, dir) {
       cli.log('run `git node land --abort` before starting a new session');
       return;
     }
-    session = new LandingSession(cli, req, dir, argv.prid, argv.backport);
+    session = new LandingSession(cli, req, dir, argv.prid, argv.backport,
+      argv.autorebase);
     const metadata = await getMetadata(session.argv, argv.skipRefs, cli);
     if (argv.backport) {
       const split = metadata.metadata.split('\n')[0];
