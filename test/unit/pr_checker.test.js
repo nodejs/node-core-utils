@@ -58,6 +58,7 @@ describe('PRChecker', () => {
         return PRData.prototype.getThread.call(this);
       }
     };
+    const checks = PRChecker.availableChecks;
     const checker = new PRChecker(cli, data, {}, argv);
 
     let checkReviewsAndWaitStub;
@@ -68,18 +69,20 @@ describe('PRChecker', () => {
     let checkPRState;
     let checkGitConfigStub;
 
-    before(() => {
-      checkReviewsAndWaitStub = sinon.stub(checker, 'checkReviewsAndWait');
-      checkCIStub = sinon.stub(checker, 'checkCI');
-      checkAuthorStub = sinon.stub(checker, 'checkAuthor');
+    beforeEach(() => {
+      checkReviewsAndWaitStub =
+        sinon.stub(checker, 'checkReviewsAndWait').returns(true);
+      checkCIStub = sinon.stub(checker, 'checkCI').returns(true);
+      checkAuthorStub = sinon.stub(checker, 'checkAuthor').returns(true);
       checkCommitsAfterReviewStub =
-        sinon.stub(checker, 'checkCommitsAfterReview');
-      checkMergeableStateStub = sinon.stub(checker, 'checkMergeableState');
-      checkPRState = sinon.stub(checker, 'checkPRState');
-      checkGitConfigStub = sinon.stub(checker, 'checkGitConfig');
+        sinon.stub(checker, 'checkCommitsAfterReview').returns(true);
+      checkMergeableStateStub =
+        sinon.stub(checker, 'checkMergeableState').returns(true);
+      checkPRState = sinon.stub(checker, 'checkPRState').returns(true);
+      checkGitConfigStub = sinon.stub(checker, 'checkGitConfig').returns(true);
     });
 
-    after(() => {
+    afterEach(() => {
       checkReviewsAndWaitStub.restore();
       checkCIStub.restore();
       checkAuthorStub.restore();
@@ -91,11 +94,36 @@ describe('PRChecker', () => {
 
     it('should run necessary checks', async() => {
       const status = await checker.checkAll();
-      assert.strictEqual(status, false);
+      assert.strictEqual(status, true);
       assert.strictEqual(checkReviewsAndWaitStub.calledOnce, true);
       assert.strictEqual(checkCIStub.calledOnce, true);
       assert.strictEqual(checkAuthorStub.calledOnce, true);
       assert.strictEqual(checkCommitsAfterReviewStub.calledOnce, true);
+      assert.strictEqual(checkMergeableStateStub.calledOnce, true);
+      assert.strictEqual(checkPRState.calledOnce, true);
+      assert.strictEqual(checkGitConfigStub.calledOnce, true);
+    });
+
+    it('should run no checks if all excluded', async() => {
+      const status = await checker.checkAll(false, Object.values(checks));
+      assert.strictEqual(status, true);
+      assert.strictEqual(checkReviewsAndWaitStub.called, false);
+      assert.strictEqual(checkCIStub.called, false);
+      assert.strictEqual(checkAuthorStub.called, false);
+      assert.strictEqual(checkCommitsAfterReviewStub.called, false);
+      assert.strictEqual(checkMergeableStateStub.called, false);
+      assert.strictEqual(checkPRState.called, false);
+      assert.strictEqual(checkGitConfigStub.called, false);
+    });
+
+    it('should skip excluded checks', async() => {
+      const status =
+        await checker.checkAll(false, [checks.COMMIT_AFTER_REVIEW, checks.CI]);
+      assert.strictEqual(status, true);
+      assert.strictEqual(checkReviewsAndWaitStub.calledOnce, true);
+      assert.strictEqual(checkCIStub.called, false);
+      assert.strictEqual(checkAuthorStub.calledOnce, true);
+      assert.strictEqual(checkCommitsAfterReviewStub.called, false);
       assert.strictEqual(checkMergeableStateStub.calledOnce, true);
       assert.strictEqual(checkPRState.calledOnce, true);
       assert.strictEqual(checkGitConfigStub.calledOnce, true);

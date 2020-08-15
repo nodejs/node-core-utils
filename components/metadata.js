@@ -9,7 +9,7 @@ const MetadataGenerator = require('../lib/metadata_gen');
 
 const fs = require('fs');
 
-module.exports = async function getMetadata(argv, cli) {
+module.exports = async function getMetadata(argv, cli, skipChecks = []) {
   const credentials = await auth({
     github: true,
     jenkins: true
@@ -40,7 +40,7 @@ module.exports = async function getMetadata(argv, cli) {
   cli.separator();
 
   const checker = new PRChecker(cli, data, request, argv);
-  const status = await checker.checkAll(argv.checkComments);
+  const status = await checker.checkAll(argv.checkComments, skipChecks);
   return {
     status,
     request,

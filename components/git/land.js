@@ -4,10 +4,13 @@ const { parsePRFromURL } = require('../../lib/links');
 const getMetadata = require('../metadata');
 const CLI = require('../../lib/cli');
 const Request = require('../../lib/request');
+const PRChecker = require('../../lib/pr_checker');
 const { runPromise } = require('../../lib/run');
 const LandingSession = require('../../lib/landing_session');
 const epilogue = require('./epilogue');
 const yargs = require('yargs');
+
+const availableChecks = Object.values(PRChecker.availableChecks);
 
 const landOptions = {
   apply: {
@@ -42,6 +45,21 @@ const landOptions = {
     describe: 'Land a backport PR onto a staging branch',
     default: false,
     type: 'boolean'
+  },
+  skipChecks: {
+    describe: 'Comma-separated list of checks to skip while landing. ' +
+    `Available options are: ${availableChecks}`,
+    coerce: (arg) => {
+      const checks = arg.split(',');
+      for (const check of checks) {
+        if (!availableChecks.includes(check)) {
+          throw new Error(`Invalid check '${check}'. Available options are: ` +
+            `${availableChecks}`);
+        }
+      }
+      return checks;
+    },
+    type: 'string'
   }
 };
 
@@ -89,7 +107,10 @@ function handler(argv) {
 
   const provided = [];
   for (const type of Object.keys(landOptions)) {
-    if (type === 'yes') continue;  // --yes is not an action
+    if (['yes', 'skipChecks'].includes(type)) {
+      // Those are not actions
+      continue;
+    }
     if (argv[type]) {
       provided.push(type);
     }
@@ -160,7 +181,7 @@ async function main(state, argv, cli, req, dir) {
       return;
     }
     session = new LandingSession(cli, req, dir, argv.prid, argv.backport);
-    const metadata = await getMetadata(session.argv, cli);
+    const metadata = await getMetadata(session.argv, cli, argv.skipChecks);
     if (argv.backport) {
       const split = metadata.metadata.split('\n')[0];
       if (split === 'PR-URL: ') {
