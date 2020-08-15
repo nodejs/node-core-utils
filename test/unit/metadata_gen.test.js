@@ -52,6 +52,12 @@ Backport-PR-URL: https://github.com/nodejs/node/pull/30072
 Fixes: https://github.com/nodejs/build/issues/1961
 Refs: https://github.com/nodejs/node/commit/53ca0b9ae145c430842bf78e553e3b6cbd2823aa#commitcomment-35494896
 `;
+const skipRefsExpected = `PR-URL: https://github.com/nodejs/node/pull/16438
+Reviewed-By: Foo User <foo@example.com>
+Reviewed-By: Quux User <quux@example.com>
+Reviewed-By: Baz User <baz@example.com>
+Reviewed-By: Bar User <bar@example.com>
+`;
 
 describe('MetadataGenerator', () => {
   it('should generate metadata properly', () => {
@@ -67,5 +73,11 @@ describe('MetadataGenerator', () => {
   it('should generate correct metadata for a backport', () => {
     const backportResults = new MetadataGenerator(backportData).getMetadata();
     assert.strictEqual(backportExpected, backportResults);
+  });
+
+  it('should skip adding Fixes/Refs metadata when --skipRefs is passed', () => {
+    const data = { skipRefs: true, ...crossData };
+    const backportResults = new MetadataGenerator(data).getMetadata();
+    assert.strictEqual(skipRefsExpected, backportResults);
   });
 });

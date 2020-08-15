@@ -42,6 +42,11 @@ const landOptions = {
     describe: 'Land a backport PR onto a staging branch',
     default: false,
     type: 'boolean'
+  },
+  skipRefs: {
+    describe: 'Prevent adding Fixes and Refs information to commit metadata',
+    default: false,
+    type: 'boolean'
   }
 };
 
@@ -89,7 +94,8 @@ function handler(argv) {
 
   const provided = [];
   for (const type of Object.keys(landOptions)) {
-    if (type === 'yes') continue;  // --yes is not an action
+    // --yes and --skipRefs are not actions.
+    if (type === 'yes' || type === 'skipRefs') continue;
     if (argv[type]) {
       provided.push(type);
     }
@@ -160,7 +166,7 @@ async function main(state, argv, cli, req, dir) {
       return;
     }
     session = new LandingSession(cli, req, dir, argv.prid, argv.backport);
-    const metadata = await getMetadata(session.argv, cli);
+    const metadata = await getMetadata(session.argv, argv.skipRefs, cli);
     if (argv.backport) {
       const split = metadata.metadata.split('\n')[0];
       if (split === 'PR-URL: ') {

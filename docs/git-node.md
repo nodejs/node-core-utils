@@ -47,6 +47,8 @@ Options:
                   non-interactively. If an undesirable situation occurs, such as
                   a pull request or commit check fails, then git node land will
                   abort.                              [boolean] [default: false]
+  --skipRefs      Prevent Fixes and Refs information from being added to commit
+                  metadata                            [boolean] [default: false]
 
 
 Examples:
