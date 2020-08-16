@@ -7,6 +7,8 @@ const fs = require('fs');
 const assert = require('assert');
 let testCounter = 0; // for tmp directories
 
+const isLinux = process.platform === 'linux';
+
 const FIRST_TIME_MSG =
   'If this is your first time running this command, ' +
   'follow the instructions to create an access token. ' +
@@ -51,6 +53,8 @@ describe('auth', async function() {
   });
 
   it('prefers XDG_CONFIG_HOME/ncurc to HOME/.ncurc', async function() {
+    if (!isLinux) this.skip();
+
     this.timeout(2000);
     await runAuthScript(
       {
@@ -81,11 +85,19 @@ function runAuthScript(
     for (const envVar in ncurc) {
       if (ncurc[envVar] === undefined) continue;
       newEnv[envVar] = path.resolve(__dirname, `tmp-${testCounter++}`);
-      rimraf.sync(newEnv[envVar]);
-      fs.mkdirSync(newEnv[envVar], { recursive: true });
 
-      const ncurcPath = path.resolve(newEnv[envVar],
-        envVar === 'HOME' ? '.ncurc' : 'ncurc');
+      rimraf.sync(newEnv[envVar]);
+
+      let ncurcPath;
+      if (isLinux && envVar === 'HOME') {
+        fs.mkdirSync(`${newEnv[envVar]}/config`, { recursive: true });
+        ncurcPath = path.resolve(newEnv[envVar], 'config',
+          envVar === 'HOME' ? '.ncurc' : 'ncurc');
+      } else {
+        fs.mkdirSync(newEnv[envVar], { recursive: true });
+        ncurcPath = path.resolve(newEnv[envVar],
+          envVar === 'HOME' ? '.ncurc' : 'ncurc');
+      }
 
       if (ncurc[envVar] !== undefined) {
         if (typeof ncurc[envVar] === 'string') {
