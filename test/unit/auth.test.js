@@ -53,7 +53,7 @@ describe('auth', async function() {
   });
 
   it('prefers XDG_CONFIG_HOME/ncurc to HOME/.ncurc', async function() {
-    if (!isLinux) this.skip();
+    if (!isLinux || !process.env.XDG_CONFIG_HOME) this.skip();
 
     this.timeout(2000);
     await runAuthScript(
@@ -90,8 +90,8 @@ function runAuthScript(
 
       let ncurcPath;
       if (isLinux && envVar === 'HOME') {
-        fs.mkdirSync(`${newEnv[envVar]}/config`, { recursive: true });
-        ncurcPath = path.resolve(newEnv[envVar], 'config',
+        fs.mkdirSync(`${newEnv[envVar]}/.config`, { recursive: true });
+        ncurcPath = path.resolve(newEnv[envVar], '.config',
           envVar === 'HOME' ? '.ncurc' : 'ncurc');
       } else {
         fs.mkdirSync(newEnv[envVar], { recursive: true });
