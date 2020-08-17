@@ -20,11 +20,11 @@ function handler() {
 
     cli.ok('Landing session in progress');
     cli.separator();
-    cli.table('PR:', `PR: https:/github.com/nodejs/node/${prid}`);
+    cli.table('PR:', `https:/github.com/nodejs/node/pull/${prid}`);
     cli.table('State:', state);
-    cli.table(`Username`, username);
-    cli.table('Upstream', upstream);
-    cli.table('Branch', branch);
+    cli.table('Username:', username);
+    cli.table('Upstream:', upstream);
+    cli.table('Branch:', branch);
   } else {
     cli.warn('No landing session in progress');
   }
@@ -32,6 +32,7 @@ function handler() {
 
 module.exports = {
   command: 'status',
-  describe: 'Return status of the current git-node land session',
+  describe: 'Return status and information about' +
+    'the current git-node land session.',
   handler: handler
 };
