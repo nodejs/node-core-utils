@@ -21,6 +21,8 @@ A custom Git command for managing pull requests. You can run it as
   - [`git node v8 minor`](#git-node-v8-minor)
   - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
   - [General options](#general-options)
+- [`git node status`](#git-node-status)
+  - [Example](#example)
 - [`git node wpt`](#git-node-wpt)
   - [Example](#example-2)
 
@@ -366,6 +368,32 @@ Options:
 - `--v8-dir=/path/to/v8/`: Specify the path of an existing V8 clone. This
   will be used instead of cloning V8 to `baseDir`.
 - `--verbose`: Enable verbose output.
+
+## `git node status`
+
+Return status and information about the current git-node land session. Shows the following information:
+
+- PR URL (`https:/github.com/nodejs/node/<prid>`)
+- `git-node` landing session status, one of:
+  - `APPLYING`
+  - `STARTED`
+  - `AMENDING`
+- Current username
+- Current upstream
+- Current target branch for the landing session
+
+### Example
+
+```sh
+node on git:master ❯ git node status                                             11:32AM
+   ✔  Landing session in progress
+--------------------------------------------------------------------------------
+PR:        https:/github.com/nodejs/node/pull/34800
+State:     AMENDING
+Username:  codebytere
+Upstream:  upstream
+Branch:    master
+```
 
 ## `git node wpt`
 
