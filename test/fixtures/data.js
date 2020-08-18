@@ -77,6 +77,8 @@ const firstTimerPrivatePR = readJSON('first_timer_pr_with_private_email.json');
 const semverMajorPR = readJSON('semver_major_pr.json');
 const fixAndRefPR = readJSON('pr_with_fixes_and_refs.json');
 const fixCrossPR = readJSON('pr_with_fixes_cross.json');
+const duplicateRefPR = readJSON('pr_with_duplicate_refs.json');
+const selfRefPR = readJSON('pr_with_self_ref.json');
 const backportPR = readJSON('pr_with_backport.json');
 const conflictingPR = readJSON('conflicting_pr.json');
 const emptyProfilePR = readJSON('empty_profile_pr.json');
@@ -137,5 +139,7 @@ module.exports = {
   readmeNoCollaboratorE,
   readmeUnordered,
   closedPR,
-  mergedPR
+  mergedPR,
+  selfRefPR,
+  duplicateRefPR
 };
