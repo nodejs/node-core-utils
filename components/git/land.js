@@ -48,6 +48,11 @@ const landOptions = {
     default: false,
     type: 'boolean'
   },
+  lint: {
+    describe: 'Run linter while landing commits',
+    default: false,
+    type: 'boolean'
+  },
   autorebase: {
     describe: 'Automatically rebase branches with multiple commits',
     default: false,
@@ -99,8 +104,8 @@ function handler(argv) {
 
   const provided = [];
   for (const type of Object.keys(landOptions)) {
-    // --yes and --skipRefs are not actions.
-    if (type === 'yes' || type === 'skipRefs') continue;
+    // Those are not actions.
+    if (['yes', 'skipRefs', 'lint'].includes(type)) continue;
     if (argv[type]) {
       provided.push(type);
     }
@@ -171,7 +176,7 @@ async function main(state, argv, cli, req, dir) {
       return;
     }
     session = new LandingSession(cli, req, dir, argv.prid, argv.backport,
-      argv.autorebase);
+      argv.lint, argv.autorebase);
     const metadata = await getMetadata(session.argv, argv.skipRefs, cli);
     if (argv.backport) {
       const split = metadata.metadata.split('\n')[0];
