@@ -57,6 +57,12 @@ const landOptions = {
     describe: 'Automatically rebase branches with multiple commits',
     default: false,
     type: 'boolean'
+  },
+  fixupAll: {
+    describe: 'Automatically fixup all commits to the first one dismissing ' +
+      'other commit messages',
+    default: false,
+    type: 'boolean'
   }
 };
 
