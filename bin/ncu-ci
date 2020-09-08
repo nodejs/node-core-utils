@@ -351,10 +351,13 @@ class CICommand {
       await build.getResults();
       build.display();
 
-      const json = build.formatAsJson();
-      if (json !== undefined) {
-        this.json = this.json.concat(json);
+      if (argv.json) {
+        const json = build.formatAsJson();
+        if (json !== undefined) {
+          this.json = this.json.concat(json);
+        }
       }
+
       if ((argv.copy || argv.markdown) && !argv.stats) {
         this.markdown += build.formatAsMarkdown();
       }
