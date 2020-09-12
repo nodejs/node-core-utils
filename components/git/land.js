@@ -1,7 +1,7 @@
 'use strict';
 
 const { parsePRFromURL } = require('../../lib/links');
-const getMetadata = require('../metadata');
+const { getMetadata } = require('../metadata');
 const CLI = require('../../lib/cli');
 const Request = require('../../lib/request');
 const { runPromise } = require('../../lib/run');
