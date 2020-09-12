@@ -3,7 +3,7 @@
 const yargs = require('yargs');
 
 const { parsePRFromURL } = require('../../lib/links');
-const getMetadata = require('../metadata');
+const { getMetadata } = require('../metadata');
 const CLI = require('../../lib/cli');
 const config = require('../../lib/config').getMergedConfig();
 const { runPromise, IGNORE } = require('../../lib/run');
@@ -80,7 +80,7 @@ function handler(argv) {
   const cli = new CLI(logStream);
 
   const merged = Object.assign({}, argv, parsed, config);
-  return runPromise(getMetadata(merged, cli)
+  return runPromise(getMetadata(merged, false, cli)
     .then(({ status }) => {
       if (status === false) {
         throw new Error(IGNORE);
