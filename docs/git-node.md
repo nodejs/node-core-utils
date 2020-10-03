@@ -97,6 +97,17 @@ Examples:
    $ ncu-config set branch master
    ```
 
+Note: If you are behind a firewall and run into `ECONNREFUSED` issues with
+`raw.githubusercontent.com`, you can try setting up the command to read
+the README from the local file system (you may need to make sure that the
+collaborator contacts in this file is up-to-date and cover people you need
+to include in the patch you want to land).
+
+```
+$ cd path/to/node/project
+$ ncu-config set readme "$(pwd)/README.md"
+```
+
 ### Git bash for Windows
 
 If you are using `git bash` and having trouble with output use
