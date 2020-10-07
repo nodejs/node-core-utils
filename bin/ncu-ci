@@ -353,11 +353,11 @@ class CICommand {
       await build.getResults();
       build.display();
 
-      if (argv.json) {
-        const json = build.formatAsJson();
-        if (json !== undefined) {
-          this.json = this.json.concat(json);
-        }
+      // Set this.json regardless of whether the user has passed
+      // --json - it's needed for failure aggregation.
+      const json = build.formatAsJson();
+      if (json !== undefined) {
+        this.json = this.json.concat(json);
       }
 
       if ((argv.copy || argv.markdown) && !argv.stats) {
