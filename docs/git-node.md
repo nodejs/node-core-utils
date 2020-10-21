@@ -217,6 +217,7 @@ Options:
   --help      Show help                                                [boolean]
   --prepare   Prepare a new release of Node.js                         [boolean]
   --security  Demarcate the new security release as a security release [boolean]
+  --startLTS  Mark the release as the transition from Current to LTS   [boolean]
 ```
 
 ### Example
