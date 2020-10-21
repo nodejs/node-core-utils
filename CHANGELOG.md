@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.25.1](https://www.github.com/nodejs/node-core-utils/compare/v1.25.0...v1.25.1) (2020-10-21)
+
+
+### Bug Fixes
+
+* **v8:** correct order of ternary ([#513](https://www.github.com/nodejs/node-core-utils/issues/513)) ([6dab341](https://www.github.com/nodejs/node-core-utils/commit/6dab341314966dea25d277e2bd79ef8d58b4a71b))
+* undefined failures & JSON error ([2c0cf83](https://www.github.com/nodejs/node-core-utils/commit/2c0cf834232867e0d0a40cf988ad111dafe17e25))
+
 ## [1.25.0](https://www.github.com/nodejs/node-core-utils/compare/v1.24.0...v1.25.0) (2020-09-29)
 
 
