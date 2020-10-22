@@ -4,6 +4,30 @@ const assert = require('assert');
 const { readFileSync } = require('fs');
 const utils = require('../../lib/release/utils');
 
+describe('prepare_release: utils.getEOLDate', () => {
+  it('calculates the correct EOL date', () => {
+    const test = utils.getEOLDate('2020-10-27');
+    const expected = new Date('2023-04-27');
+    const format = { month: 'short', year: 'numeric' };
+    assert.strictEqual(
+      test.toLocaleString('en-US', format),
+      expected.toLocaleString('en-US', format)
+    );
+  });
+});
+
+describe('prepare_release: utils.getLTSMaintenanceStartDate', () => {
+  it('calculates the correct LTS maintenance start date', () => {
+    const test = utils.getLTSMaintenanceStartDate('2020-10-27');
+    const expected = new Date('2021-10-27');
+    const format = { month: 'short', year: 'numeric' };
+    assert.strictEqual(
+      test.toLocaleString('en-US', format),
+      expected.toLocaleString('en-US', format)
+    );
+  });
+});
+
 describe('prepare_release: utils.getStartLTSBlurb', () => {
   it('generates first LTS release text with correct dates', () => {
     const expected = [
@@ -24,7 +48,7 @@ describe('prepare_release: utils.getStartLTSBlurb', () => {
 });
 
 describe('prepare_release: utils.updateTestProcessRelease', () => {
-  it('inserts test a for a new LTS codename', () => {
+  it('inserts test for a new LTS codename', () => {
     const expected = readFileSync(
       `${__dirname}/../fixtures/release/expected-test-process-release.js`,
       { encoding: 'utf8' }
