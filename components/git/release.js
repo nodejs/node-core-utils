@@ -21,6 +21,10 @@ const releaseOptions = {
   security: {
     describe: 'Demarcate the new security release as a security release',
     type: 'boolean'
+  },
+  startLTS: {
+    describe: 'Mark the release as the transition from Current to LTS',
+    type: 'boolean'
   }
 };
 
