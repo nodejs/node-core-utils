@@ -1,5 +1,5 @@
----
 name: Conventional Commit Linter
+
 on:
   push:
     branches:
