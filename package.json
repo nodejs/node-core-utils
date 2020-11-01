@@ -31,13 +31,13 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "branch-diff": "^1.9.1",
+    "branch-diff": "^1.10.0",
     "chalk": "^4.1.0",
-    "changelog-maker": "^2.4.2",
+    "changelog-maker": "^2.5.0",
     "cheerio": "^1.0.0-rc.3",
     "clipboardy": "^2.3.0",
     "core-validate-commit": "^3.13.1",
-    "execa": "^4.0.3",
+    "execa": "^4.1.0",
     "figures": "^3.2.0",
     "form-data": "^3.0.0",
     "fs-extra": "^9.0.1",
@@ -46,24 +46,24 @@
     "listr": "^0.14.3",
     "listr-input": "^0.2.1",
     "lodash": "^4.17.20",
-    "node-fetch": "^2.6.0",
-    "ora": "^5.0.0",
-    "proxy-agent": "^3.1.1",
+    "node-fetch": "^2.6.1",
+    "ora": "^5.1.0",
+    "proxy-agent": "^4.0.0",
     "replace-in-file": "^6.1.0",
     "rimraf": "^3.0.2",
-    "yargs": "^15.4.1"
+    "yargs": "^16.1.0"
   },
   "devDependencies": {
-    "eslint": "^7.8.1",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint": "^7.12.1",
+    "eslint-config-standard": "^16.0.1",
+    "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.2",
     "intelli-espower-loader": "^1.0.1",
-    "mocha": "^8.1.3",
+    "mocha": "^8.2.0",
     "nyc": "^15.1.0",
     "power-assert": "^1.6.1",
-    "sinon": "^9.0.3"
+    "sinon": "^9.2.1"
   }
 }
