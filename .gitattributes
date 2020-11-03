@@ -1,0 +1,2 @@
+# Force checking out with LF on Windows to avoid issues in tests that read files.
+* text=auto eol=lf
