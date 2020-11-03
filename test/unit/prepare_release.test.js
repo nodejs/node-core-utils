@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const { readFileSync } = require('fs');
+const path = require('path');
 const utils = require('../../lib/release/utils');
 
 describe('prepare_release: utils.getEOLDate', () => {
@@ -49,14 +50,16 @@ describe('prepare_release: utils.getStartLTSBlurb', () => {
 
 describe('prepare_release: utils.updateTestProcessRelease', () => {
   it('inserts test for a new LTS codename', () => {
-    const expected = readFileSync(
-      `${__dirname}/../fixtures/release/expected-test-process-release.js`,
-      { encoding: 'utf8' }
+    const expectedPath = path.join(
+      __dirname,
+      '../fixtures/release/expected-test-process-release.js'
     );
-    const test = readFileSync(
-      `${__dirname}/../fixtures/release/original-test-process-release.js`,
-      { encoding: 'utf8' }
+    const expected = readFileSync(expectedPath, { encoding: 'utf8' });
+    const testPath = path.join(
+      __dirname,
+      '../fixtures/release/original-test-process-release.js'
     );
+    const test = readFileSync(testPath, { encoding: 'utf8' });
     const context = {
       ltsCodename: 'Fermium',
       versionComponents: {
