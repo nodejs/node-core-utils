@@ -1,7 +1,7 @@
 query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $prid) {
-      commits(first: 100, after: $after) {
+      commits(last: 100, after: $after) {
         totalCount
         pageInfo {
           hasNextPage
