@@ -11,7 +11,8 @@ CLI tools for Node.js Core collaborators.
 - [Tools](#tools)
 - [Usage](#usage)
   - [Install](#install)
-  - [Setting up credentials](#setting-up-credentials)
+  - [Setting up GitHub credentials](#setting-up-github-credentials)
+  - [Setting up Jenkins credentials](#setting-up-jenkins-credentials)
   - [Make sure your credentials won't be committed](#make-sure-your-credentials-wont-be-committed)
   - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
@@ -49,7 +50,7 @@ npm install
 npm link
 ```
 
-### Setting up credentials
+### Setting up GitHub credentials
 
 Most of the tools need your GitHub credentials to work. You can either
 
@@ -82,6 +83,33 @@ After the token is generated, create an rc file with the following content:
 
 Note: you could use `ncu-config` to configure these variables, but it's not
 recommended to leave your tokens in your command line history.
+
+### Setting up Jenkins credentials
+
+The `git-node` and `ncu-ci` commands need to query the Node.js Jenkins API for
+CI results, so you'll need to configure the Jenkins API token before using
+these commands.
+
+To obtain the Jenkins API token
+
+1. Open
+`https://ci.nodejs.org/user/<your-github-id>/configure` (replace
+\<your-github-id\> with your own GitHub ID)
+2. Click on the `ADD NEW TOKEN` button in the `API Token` section.
+3. Enter an identifiable name (for example, `node-core-utils`) for this
+  token in the inbox that appears, and click `GENERATE`.
+4. Copy the generated token.
+5. Add it into your `ncurc` file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`)
+  with `jenkins_token` as key, like this
+
+  ```json
+  {
+    "username": "your_github_username",
+    "token": "your_github_token",
+    "jenkins_token": "your_jenkins_token"
+  }
+  ```
+
 
 ### Make sure your credentials won't be committed
 
