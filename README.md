@@ -87,7 +87,7 @@ recommended to leave your tokens in your command line history.
 ### Setting up Jenkins credentials
 
 The `git-node` and `ncu-ci` commands need to query the Node.js Jenkins API for
-CI results, so you'll need to cofnigure the Jenkins API token before using
+CI results, so you'll need to configure the Jenkins API token before using
 these commands.
 
 To obtain the Jenkins API token
