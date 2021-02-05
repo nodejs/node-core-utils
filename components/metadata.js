@@ -40,7 +40,7 @@ async function getMetadata(argv, skipRefs, cli) {
   cli.separator();
 
   const checker = new PRChecker(cli, data, request, argv);
-  const status = await checker.checkAll(argv.checkComments);
+  const status = await checker.checkAll(argv.checkComments, argv.checkCI);
   return {
     status,
     request,

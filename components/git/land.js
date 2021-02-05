@@ -9,7 +9,7 @@ const LandingSession = require('../../lib/landing_session');
 const epilogue = require('./epilogue');
 const yargs = require('yargs');
 
-const landOptions = {
+const landActions = {
   apply: {
     describe: 'Apply a patch with the given PR id',
     type: 'number'
@@ -31,25 +31,8 @@ const landOptions = {
     describe: 'Abort the current landing session',
     type: 'boolean'
   },
-  yes: {
-    type: 'boolean',
-    default: false,
-    describe: 'Assume "yes" as answer to all prompts and run ' +
-    'non-interactively. If an undesirable situation occurs, such as a pull ' +
-    'request or commit check fails, then git node land will abort.'
-  },
   backport: {
     describe: 'Land a backport PR onto a staging branch',
-    default: false,
-    type: 'boolean'
-  },
-  skipRefs: {
-    describe: 'Prevent adding Fixes and Refs information to commit metadata',
-    default: false,
-    type: 'boolean'
-  },
-  lint: {
-    describe: 'Run linter while landing commits',
     default: false,
     type: 'boolean'
   },
@@ -66,9 +49,35 @@ const landOptions = {
   }
 };
 
+const landOptions = {
+  yes: {
+    type: 'boolean',
+    default: false,
+    describe: 'Assume "yes" as answer to all prompts and run ' +
+    'non-interactively. If an undesirable situation occurs, such as a pull ' +
+    'request or commit check fails, then git node land will abort.'
+  },
+  skipRefs: {
+    describe: 'Prevent adding Fixes and Refs information to commit metadata',
+    default: false,
+    type: 'boolean'
+  },
+  lint: {
+    describe: 'Run linter while landing commits',
+    default: false,
+    type: 'boolean'
+  },
+  checkCI: {
+    describe: 'Query Jenkins CI results when checking the PR',
+    default: true,
+    type: 'boolean'
+  }
+};
+
 function builder(yargs) {
   return yargs
-    .options(landOptions).positional('prid', {
+    .options(Object.assign({}, landOptions, landActions))
+    .positional('prid', {
       describe: 'ID or URL of the Pull Request'
     })
     .epilogue(epilogue)
@@ -109,9 +118,7 @@ function handler(argv) {
   }
 
   const provided = [];
-  for (const type of Object.keys(landOptions)) {
-    // Those are not actions.
-    if (['yes', 'skipRefs', 'lint'].includes(type)) continue;
+  for (const type of Object.keys(landActions)) {
     if (argv[type]) {
       provided.push(type);
     }
