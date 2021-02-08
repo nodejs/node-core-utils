@@ -237,7 +237,7 @@ For more information about the governance of the Node.js project, see
 * [bar](https://github.com/bar) -
 **Bar User** &lt;bar@example.com&gt; (she/her)
 
-### TSC Emeriti
+### TSC emeriti
 
 * [test](https://github.com/test) -
 **Test** &lt;test@example.com&gt;
@@ -257,7 +257,7 @@ For more information about the governance of the Node.js project, see
 * [ExtraSpace](https://github.com/extraspace) -
 **Extra Space**  &lt;extraspace@example.com&gt; (he/him)
 
-### Collaborator Emeriti
+### Collaborator emeriti
 
 * [bee](https://github.com/bee) -
 **bee** &lt;bee@example.com&gt;
