@@ -12,6 +12,9 @@
   "labels": {
     "nodes": [
       {
+        "name": "needs-ci"
+      },
+      {
         "name": "test"
       },
       {

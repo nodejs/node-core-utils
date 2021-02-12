@@ -44,7 +44,7 @@ describe('PRSummary', () => {
           'Their Github Account email <pr_author@example.com>' +
           ' (@pr_author, first-time contributor)'],
         ['Branch', 'pr_author:awesome-changes -> nodejs:master'],
-        ['Labels', 'test, doc'],
+        ['Labels', 'needs-ci, test, doc'],
         ['Commits', '6'],
         ['Committers', '3']
       ]
