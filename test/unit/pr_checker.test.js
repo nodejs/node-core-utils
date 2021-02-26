@@ -655,7 +655,7 @@ describe('PRChecker', () => {
           ['No GitHub CI runs detected']
         ],
         info: [
-          ['Doc-only changes']
+          ['Green GitHub Actions CI is sufficient']
         ]
       };
 
@@ -697,7 +697,7 @@ describe('PRChecker', () => {
           ['Last GitHub Actions successful']
         ],
         info: [
-          ['Doc-only changes']
+          ['Green GitHub Actions CI is sufficient']
         ]
       };
 
@@ -741,7 +741,7 @@ describe('PRChecker', () => {
           ['Last GitHub Actions successful']
         ],
         info: [
-          ['Doc-only changes']
+          ['Green GitHub Actions CI is sufficient']
         ]
       };
 
