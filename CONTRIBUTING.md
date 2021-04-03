@@ -15,7 +15,7 @@ $ git remote add upstream git@github.com:nodejs/node-core-utils.git
 
 #### Which branch?
 
-For developing new features and bug fixes, the `master` branch should be pulled
+For developing new features and bug fixes, the `main` branch should be pulled
 and built upon.
 
 ### Step 2: Branch
@@ -61,7 +61,7 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 ```bash
 $ git checkout my-feature-branch
 $ git fetch upstream
-$ git rebase upstream/master
+$ git rebase upstream/main
 ```
 
 ### Step 5: Test
@@ -101,7 +101,7 @@ feature branch. Post a comment in the pull request afterwards.
 ## Code of Conduct
 
 We follow the
-[Node.js Code of Conduct](https://github.com/nodejs/admin/blob/master/CODE_OF_CONDUCT.md)
+[Node.js Code of Conduct](https://github.com/nodejs/admin/blob/main/CODE_OF_CONDUCT.md)
 in this project.
 
 ## Developer's Certificate of Origin 1.1

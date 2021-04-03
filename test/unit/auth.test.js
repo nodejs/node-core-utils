@@ -11,7 +11,7 @@ const FIRST_TIME_MSG =
   'If this is your first time running this command, ' +
   'follow the instructions to create an access token. ' +
   'If you prefer to create it yourself on Github, ' +
-  'see https://github.com/nodejs/node-core-utils/blob/master/README.md.';
+  'see https://github.com/nodejs/node-core-utils/blob/main/README.md.';
 
 const MOCKED_TOKEN = JSON.stringify({
   github: 'bnlhbmNhdDowMTIzNDU2Nzg5YWJjZGVm'

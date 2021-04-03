@@ -1,6 +1,6 @@
 # Node.js Core Utilities
 [![npm](https://img.shields.io/npm/v/node-core-utils.svg?style=flat-square)](https://npmjs.org/package/node-core-utils)
-[![Build Status](https://img.shields.io/github/workflow/status/nodejs/node-core-utils/Node.js%20CI/master?style=flat-square)](https://github.com/nodejs/node-core-utils/workflows/Node.js%20CI/badge.svg?branch=master)
+[![Build Status](https://img.shields.io/github/workflow/status/nodejs/node-core-utils/Node.js%20CI/main?style=flat-square)](https://github.com/nodejs/node-core-utils/workflows/Node.js%20CI/badge.svg?branch=main)
 [![codecov](https://img.shields.io/codecov/c/github/nodejs/node-core-utils.svg?style=flat-square)](https://codecov.io/gh/nodejs/node-core-utils)
 [![Known Vulnerabilities](https://snyk.io/test/github/nodejs/node-core-utils/badge.svg?style=flat-square)](https://snyk.io/test/github/nodejs/node-core-utils)
 

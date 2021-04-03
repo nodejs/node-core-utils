@@ -30,7 +30,7 @@ describe('PRData', function() {
   };
 
   request.text
-    .withArgs('https://raw.githubusercontent.com/nodejs/node/master/README.md')
+    .withArgs('https://raw.githubusercontent.com/nodejs/node/HEAD/README.md')
     .returns(Promise.resolve(readme));
   request.text.returns(new Error('unknown query'));
   request.gql.withArgs('PR').returns(Promise.resolve(rawPR));
