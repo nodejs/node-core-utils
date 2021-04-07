@@ -90,7 +90,7 @@ describe('collaborators', function() {
     function mockRequest(content, argv) {
       const { owner, repo } = argv;
       const expectedUrl =
-        `https://raw.githubusercontent.com/${owner}/${repo}/master/README.md`;
+        `https://raw.githubusercontent.com/${owner}/${repo}/HEAD/README.md`;
       return {
         async text(url) {
           assert.strictEqual(url, expectedUrl);
