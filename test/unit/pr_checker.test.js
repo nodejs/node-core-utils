@@ -1427,6 +1427,25 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
+    it('should succeed if check suite status skipped', async() => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        info: [
+          ['Last GitHub CI successful']
+        ]
+      };
+
+      const commits = githubCI['check-suite-skipped'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
     it('should succeed if commit status succeeded', async() => {
       const cli = new TestCLI();
 
