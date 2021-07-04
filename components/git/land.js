@@ -71,6 +71,13 @@ const landOptions = {
     describe: 'Query Jenkins CI results when checking the PR',
     default: true,
     type: 'boolean'
+  },
+  lite: {
+    type: 'boolean',
+    default: false,
+    describe: 'Eliminates some requirements, such as configuring a Jenkins ' +
+    'API token, and parsing TSC members and Collaborators from README.md. ' +
+    'Suitable for using "git-node land" in repositories other than nodejs/node.'
   }
 };
 

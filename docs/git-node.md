@@ -34,34 +34,47 @@ git-node land [prid|options]
 Manage the current landing session or start a new one for a pull request
 
 Positionals:
-  prid, options  ID of the Pull Request                                 [number]
+  prid, options  ID or URL of the Pull Request
 
 Options:
-  --version       Show version number                                  [boolean]
-  --help          Show help                                            [boolean]
-  --apply         Apply a patch with the given PR id                    [number]
-  --amend         Amend the current commit                             [boolean]
-  --continue, -c  Continue the landing session                         [boolean]
-  --final         Verify the landed PR and clean up                    [boolean]
-  --abort         Abort the current landing session                    [boolean]
-  --backport      Land a backport PR on a staging branch               [boolean]
-  --yes           Assume "yes" as answer to all prompts and run
-                  non-interactively. If an undesirable situation occurs, such as
-                  a pull request or commit check fails, then git node land will
-                  abort.                              [boolean] [default: false]
-  --skipRefs      Prevent Fixes and Refs information from being added to commit
-                  metadata                            [boolean] [default: false]
-
+      --version     Show version number                                [boolean]
+      --help        Show help                                          [boolean]
+      --yes         Assume "yes" as answer to all prompts and run
+                    non-interactively. If an undesirable situation occurs, such
+                    as a pull request or commit check fails, then git node land
+                    will abort.                       [boolean] [default: false]
+      --skipRefs    Prevent adding Fixes and Refs information to commit metadata
+                                                      [boolean] [default: false]
+      --lint        Run linter while landing commits  [boolean] [default: false]
+      --checkCI     Query Jenkins CI results when checking the PR
+                                                       [boolean] [default: true]
+      --lite        Eliminates some requirements, such as configuring a Jenkins
+                    API token, and parsing TSC members and Collaborators from
+                    README.md. Suitable for using "git-node land" in
+                    repositories other than nodejs/node.
+                                                      [boolean] [default: false]
+      --apply       Apply a patch with the given PR id                  [number]
+      --amend       Amend the current commit                           [boolean]
+  -c, --continue    Continue the landing session                       [boolean]
+      --final       Verify the landed PR and clean up                  [boolean]
+      --abort       Abort the current landing session                  [boolean]
+      --backport    Land a backport PR onto a staging branch
+                                                      [boolean] [default: false]
+      --autorebase  Automatically rebase branches with multiple commits
+                                                      [boolean] [default: false]
+      --fixupAll    Automatically fixup all commits to the first one dismissing
+                    other commit messages             [boolean] [default: false]
 
 Examples:
-  git node land 12344            Land https://github.com/nodejs/node/pull/12344
-                                 in the current directory
-  git node land --abort          Abort the current session
-  git node land --amend          Append metadata to the current commit message
-  git node land --final          Verify the landed PR and clean up
-  git node land --continue       Continue the current landing session
-  git node land --backport 30072 Land https://github.com/nodejs/node/pull/30072
-                                 as a backport in the current directory
+  git node land https://github.com/nodejs/  Land https://github.com/nodejs/node/
+  node/pull/12344                           pull/12344 in the current directory
+  git node land 12344                       Land https://github.com/nodejs/node/
+                                            pull/12344 in the current directory
+  git node land --abort                     Abort the current session
+  git node land --amend                     Append metadata to the current
+                                            commit message
+  git node land --final                     Verify the landed PR and clean up
+  git node land --continue                  Continue the current landing session
 ```
 
 <a id="git-node-land-prerequisites"></a>
