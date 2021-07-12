@@ -40,7 +40,7 @@ describe('collaborators', function() {
       });
 
       it(
-        'should return true if the the collaborator and actor login are equal',
+        'should return true if the collaborator and actor login are equal',
         () => {
           assert.strictEqual(collaborator.isActor(collaborator), true);
         });
