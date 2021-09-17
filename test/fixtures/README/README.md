@@ -235,7 +235,7 @@ For more information about the governance of the Node.js project, see
 ### TSC (Technical Steering Committee)
 
 * [bar](https://github.com/bar) -
-**Bar User** &lt;bar@example.com&gt; (she/her)
+  **Bar User** \<bar@example.com> (she/her)
 
 ### TSC emeriti
 
@@ -245,7 +245,7 @@ For more information about the governance of the Node.js project, see
 ### Collaborators
 
 * [bar](https://github.com/bar) -
-**Bar User** &lt;bar@example.com&gt; (she/her)
+  **Bar User** \<bar@example.com> (she/her)
 * [Baz](https://github.com/Baz) -
 **Baz User** &lt;baz@example.com&gt; (he/him)
 * [foo](https://github.com/foo) -
