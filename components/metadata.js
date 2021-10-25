@@ -12,7 +12,7 @@ const fs = require('fs');
 async function getMetadata(argv, skipRefs, cli) {
   const credentials = await auth({
     github: true,
-    jenkins: true
+    jenkins: !argv.lite
   });
   const request = new Request(credentials);
 
