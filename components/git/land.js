@@ -46,6 +46,12 @@ const landActions = {
       'other commit messages',
     default: false,
     type: 'boolean'
+  },
+  oneCommitMax: {
+    describe: 'When run in conjunction with the --yes and --autorebase ' +
+      'options, will abort the session if trying to land more than one commit',
+    default: false,
+    type: 'boolean'
   }
 };
 
