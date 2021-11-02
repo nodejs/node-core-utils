@@ -25,6 +25,8 @@ const {
   jenkinsCI,
   requestingChangesReviews,
   noReviewers,
+  commentsWithFastTrack,
+  commentsWithFastTrackInsuffientApprovals,
   commentsWithCI,
   commentsWithFailedCI,
   commentsWithLGTM,
@@ -530,6 +532,149 @@ describe('PRChecker', () => {
       cli.clearCalls();
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error with 1 fast-track approval from the pr author', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok:
+         [['Approvals: 4'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Quux User (@Quux): LGTM'],
+           ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+           ['- Bar User (@bar) (TSC): lgtm']],
+        info:
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+           ['This PR is being fast-tracked']],
+        error:
+         [['The fast-track request requires at' +
+           " least two collaborators' approvals (👍)."]]
+      };
+
+      const pr = Object.assign({}, firstTimerPR, {
+        author: {
+          login: 'bar'
+        },
+        createdAt: LT_48H,
+        labels: {
+          nodes: [
+            { name: 'fast-track' }
+          ]
+        }
+      });
+
+      const data = {
+        pr,
+        reviewers: allGreenReviewers,
+        comments: commentsWithFastTrack,
+        reviews: approvingReviews,
+        commits: [],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, {}, argv);
+
+      cli.clearCalls();
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error when insufficient fast-track approvals', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok:
+         [['Approvals: 4'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Quux User (@Quux): LGTM'],
+           ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+           ['- Bar User (@bar) (TSC): lgtm']],
+        info:
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+           ['This PR is being fast-tracked']],
+        error:
+         [['The fast-track request requires at' +
+           " least one collaborator's approval (👍)."]]
+      };
+
+      const pr = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H,
+        labels: {
+          nodes: [
+            { name: 'fast-track' }
+          ]
+        }
+      });
+
+      const data = {
+        pr,
+        reviewers: allGreenReviewers,
+        comments: commentsWithFastTrackInsuffientApprovals,
+        reviews: approvingReviews,
+        commits: [],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, {}, argv);
+
+      cli.clearCalls();
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error when missing fast-track request comment', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok:
+         [['Approvals: 4'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Quux User (@Quux): LGTM'],
+           ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+           ['- Bar User (@bar) (TSC): lgtm']],
+        info:
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+           ['This PR is being fast-tracked']],
+        error:
+         [['Unable to find the fast-track request comment.']]
+      };
+
+      const pr = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H,
+        labels: {
+          nodes: [
+            { name: 'fast-track' }
+          ]
+        }
+      });
+
+      const data = {
+        pr,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: [],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, {}, argv);
+
+      cli.clearCalls();
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
 

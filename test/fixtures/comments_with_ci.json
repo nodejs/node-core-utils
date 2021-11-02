@@ -1,6 +1,19 @@
 [
   {
     "publishedAt": "2017-10-22T04:16:36.458Z",
+    "bodyText": "Fast-track has been requested by @bar. Please 👍 to approve.",
+    "author": {
+      "login": "github-actions"
+    },
+    "reactions": {
+      "nodes": [
+        { "user": { "login": "bar" } },
+        { "user": { "login": "foo" } }
+      ]
+    }
+  },
+  {
+    "publishedAt": "2017-10-22T04:16:36.458Z",
     "bodyText": "CI: https://ci.nodejs.org/job/node-test-pull-request/10984/\ncitgm: https://ci.nodejs.org/job/citgm-smoker/1030/"
   },
   {

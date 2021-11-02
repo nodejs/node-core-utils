@@ -35,6 +35,9 @@ const noReviewers = {
 const approvingReviews = readJSON('reviews_approved.json');
 const requestingChangesReviews = readJSON('reviews_requesting_changes.json');
 
+const commentsWithFastTrack = readJSON('comments_with_fast_track.json');
+const commentsWithFastTrackInsuffientApprovals =
+  readJSON('comments_with_fast_track_insufficient_approvals.json');
 const commentsWithCI = readJSON('comments_with_ci.json');
 const commentsWithFailedCI = readJSON('comments_with_failed_ci.json');
 const commentsWithLGTM = readJSON('comments_with_lgtm.json');
@@ -134,6 +137,8 @@ module.exports = {
   requestedChangesReviewers,
   approvingReviews,
   requestingChangesReviews,
+  commentsWithFastTrack,
+  commentsWithFastTrackInsuffientApprovals,
   commentsWithCI,
   commentsWithFailedCI,
   commentsWithLGTM,
