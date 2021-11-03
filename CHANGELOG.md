@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.29.2](https://www.github.com/nodejs/node-core-utils/compare/v1.29.1...v1.29.2) (2021-11-03)
+
+
+### Bug Fixes
+
+* display the correct amount of remaining time for fast-tracked PRs ([#581](https://www.github.com/nodejs/node-core-utils/issues/581)) ([f28ec2d](https://www.github.com/nodejs/node-core-utils/commit/f28ec2d50ce68965a87ed61182660763bd642543))
+
 ### [1.29.1](https://www.github.com/nodejs/node-core-utils/compare/v1.29.0...v1.29.1) (2021-10-31)
 
 
