@@ -123,11 +123,9 @@ function runAuthScript(
     });
 
     let pendingStdout = '';
-    let flushNotYetTerminatedLineTimeout = null;
+    proc.stdout.setEncoding('utf8');
     proc.stdout.on('data', (chunk) => {
       pendingStdout += chunk;
-      clearTimeout(flushNotYetTerminatedLineTimeout);
-      flushNotYetTerminatedLineTimeout = null;
 
       try {
         let newlineIndex;
@@ -136,13 +134,6 @@ function runAuthScript(
           pendingStdout = pendingStdout.substr(newlineIndex + 1);
 
           onLine(line);
-        }
-
-        if (pendingStdout.length > 0) {
-          flushNotYetTerminatedLineTimeout = setTimeout(() => {
-            onLine(pendingStdout);
-            pendingStdout = '';
-          }, 100);
         }
       } catch (err) {
         proc.kill();
@@ -155,19 +146,9 @@ function runAuthScript(
         expect.length,
         0,
         `unexpected stdout line: ${line}`);
-      let expected = expect.shift();
-      let reply;
-      if (typeof expected.reply === 'string') {
-        ({ expected, reply } = expected);
-      }
-      if (typeof expected === 'string') {
-        expected = new RegExp(`^${expected}$`);
-      }
+      const expected = new RegExp(`^${expect.shift()}$`);
 
-      assert(line.match(expected), `${line} should match ${expected}`);
-      if (reply !== undefined) {
-        proc.stdin.write(`${reply}\n`);
-      }
+      assert.match(line, expected);
       if (expect.length === 0) {
         proc.stdin.end();
       }
