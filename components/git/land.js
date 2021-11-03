@@ -1,5 +1,6 @@
 'use strict';
 
+const auth = require('../../lib/auth');
 const { parsePRFromURL } = require('../../lib/links');
 const { getMetadata } = require('../metadata');
 const CLI = require('../../lib/cli');
@@ -144,10 +145,9 @@ function land(state, argv) {
   if (argv.yes) {
     cli.setAssumeYes();
   }
-  const req = new Request();
   const dir = process.cwd();
 
-  return runPromise(main(state, argv, cli, req, dir)).catch((err) => {
+  return runPromise(main(state, argv, cli, dir)).catch((err) => {
     if (cli.spinner.enabled) {
       cli.spinner.fail();
     }
@@ -163,10 +163,16 @@ module.exports = {
   handler
 };
 
-async function main(state, argv, cli, req, dir) {
+async function main(state, argv, cli, dir) {
+  const credentials = await auth({
+    github: true
+  });
+  const req = new Request(credentials);
   let session = new LandingSession(cli, req, dir);
 
-  if (state !== AMEND && state !== CONTINUE && session.warnForWrongBranch()) {
+  if (state !== AMEND &&
+      state !== CONTINUE &&
+      await session.warnForWrongBranch()) {
     return;
   }
 
