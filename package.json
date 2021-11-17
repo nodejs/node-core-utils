@@ -45,11 +45,11 @@
     "listr2": "^3.13.3",
     "lodash": "^4.17.21",
     "log-symbols": "^4.1.0",
+    "node-fetch": "^2.6.1",
     "ora": "^5.4.1",
     "proxy-agent": "^5.0.0",
     "replace-in-file": "^6.3.2",
     "rimraf": "^3.0.2",
-    "undici": "^4.9.5",
     "which": "^2.0.2",
     "yargs": "^17.2.1"
   },
