@@ -5,8 +5,8 @@ const assert = require('assert');
 
 const expected = {
   checkComments: false,
-  owner: `nodejs`,
-  repo: `node`,
+  owner: 'nodejs',
+  repo: 'node',
   prid: 16637,
   file: undefined
 };

@@ -64,9 +64,11 @@ function runAuthScript(
     }
 
     const proc = spawn(process.execPath,
-      [ require.resolve(`../fixtures/${fixture}`) ],
-      { timeout: 1500,
-        env: Object.assign({}, process.env, { USERPROFILE: HOME, HOME }) });
+      [require.resolve(`../fixtures/${fixture}`)],
+      {
+        timeout: 1500,
+        env: Object.assign({}, process.env, { USERPROFILE: HOME, HOME })
+      });
     let stderr = '';
     proc.stderr.setEncoding('utf8');
     proc.stderr.on('data', (chunk) => { stderr += chunk; });

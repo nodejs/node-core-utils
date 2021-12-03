@@ -319,7 +319,7 @@ describe('PRChecker', () => {
 
     it('should check commits after last ci', () => {
       const logger = new TestLogger();
-      const {commits, comment} = commitsAfterCi;
+      const { commits, comment } = commitsAfterCi;
 
       const expectedLogs = {
         warn: [
@@ -384,7 +384,7 @@ describe('PRChecker', () => {
   });
 
   describe('checkCommitsAfterReview', () => {
-    let logger = new TestLogger();
+    const logger = new TestLogger();
 
     afterEach(() => {
       logger.clear();
@@ -395,8 +395,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Changes were pushed since the last review:' ],
-          [ '- single commit was pushed after review' ]
+          ['Changes were pushed since the last review:'],
+          ['- single commit was pushed after review']
         ],
         info: [],
         trace: [],
@@ -412,7 +412,7 @@ describe('PRChecker', () => {
         commits
       });
 
-      let status = checker.checkCommitsAfterReview();
+      const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
@@ -422,9 +422,9 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          [ 'Changes were pushed since the last review:' ],
-          [ '- src: add requested feature' ],
-          [ '- nit: fix errors' ]
+          ['Changes were pushed since the last review:'],
+          ['- src: add requested feature'],
+          ['- nit: fix errors']
         ],
         info: [],
         trace: [],
@@ -440,7 +440,7 @@ describe('PRChecker', () => {
         commits
       });
 
-      let status = checker.checkCommitsAfterReview();
+      const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
@@ -464,14 +464,14 @@ describe('PRChecker', () => {
         commits
       });
 
-      let status = checker.checkCommitsAfterReview();
+      const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, true);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
   });
 
   describe('checkMergeableState', () => {
-    let logger = new TestLogger();
+    const logger = new TestLogger();
 
     afterEach(() => {
       logger.clear();
@@ -494,7 +494,7 @@ describe('PRChecker', () => {
         collaborators
       });
 
-      let status = checker.checkMergeableState();
+      const status = checker.checkMergeableState();
       assert.deepStrictEqual(status, false);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
@@ -518,7 +518,7 @@ describe('PRChecker', () => {
         commits
       });
 
-      let status = checker.checkMergeableState();
+      const status = checker.checkMergeableState();
       assert.deepStrictEqual(status, true);
       assert.deepStrictEqual(logger.logs, expectedLogs);
     });
