@@ -1,0 +1,15 @@
+[
+  {
+    "publishedAt": "2017-10-22T04:16:36.458Z",
+    "bodyText": "Fast-track has been requested by @bar. Please 👍 to approve.",
+    "author": {
+      "login": "github-actions"
+    },
+    "reactions": {
+      "nodes": [
+        { "user": { "login": "bar" } },
+        { "user": { "login": "non-collaborator" } }
+      ]
+    }
+  }
+]
