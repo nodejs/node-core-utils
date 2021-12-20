@@ -27,6 +27,9 @@ query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
             authoredByCommitter
             checkSuites(first: 100) {
               nodes {
+                app {
+                  slug
+                }
                 conclusion,
                 status
               }

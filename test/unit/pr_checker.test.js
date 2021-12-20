@@ -800,7 +800,7 @@ describe('PRChecker', () => {
           ['No GitHub CI runs detected']
         ],
         info: [
-          ['Green GitHub Actions CI is sufficient']
+          ['Green GitHub CI is sufficient']
         ]
       };
 
@@ -839,10 +839,10 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok: [
-          ['Last GitHub Actions successful']
+          ['Last GitHub CI successful']
         ],
         info: [
-          ['Green GitHub Actions CI is sufficient']
+          ['Green GitHub CI is sufficient']
         ]
       };
 
@@ -883,10 +883,10 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok: [
-          ['Last GitHub Actions successful']
+          ['Last GitHub CI successful']
         ],
         info: [
-          ['Green GitHub Actions CI is sufficient']
+          ['Green GitHub CI is sufficient']
         ]
       };
 
@@ -1086,7 +1086,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         ok: [
-          ['Last GitHub Actions successful'],
+          ['Last GitHub CI successful'],
           ['Last Jenkins CI successful']
         ],
         error: [
@@ -1462,7 +1462,7 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        info: [
+        ok: [
           ['Last GitHub CI successful']
         ]
       };
@@ -1476,6 +1476,28 @@ describe('PRChecker', () => {
       assert(status);
       cli.assertCalledWith(expectedLogs);
     });
+
+    it(
+      'should succeed if status succeeded with queued Dependabot check',
+      async() => {
+        const cli = new TestCLI();
+
+        const expectedLogs = {
+          ok: [
+            ['Last GitHub CI successful']
+          ]
+        };
+
+        const commits = githubCI['success-dependabot-queued'];
+        const data = Object.assign({}, baseData, { commits });
+
+        const checker = new PRChecker(cli, data, {}, testArgv);
+
+        const status = await checker.checkCI();
+        assert(status);
+        cli.assertCalledWith(expectedLogs);
+      }
+    );
 
     it('should error if Check suite failed', async() => {
       const cli = new TestCLI();
@@ -1519,7 +1541,7 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        info: [
+        ok: [
           ['Last GitHub CI successful']
         ]
       };
@@ -1576,7 +1598,7 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        info: [
+        ok: [
           ['Last GitHub CI successful']
         ]
       };
@@ -1595,7 +1617,7 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        info: [
+        ok: [
           ['Last GitHub CI successful']
         ]
       };
@@ -1671,7 +1693,7 @@ describe('PRChecker', () => {
       const cli = new TestCLI();
 
       const expectedLogs = {
-        info: [
+        ok: [
           ['Last GitHub CI successful']
         ]
       };
