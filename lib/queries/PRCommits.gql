@@ -25,7 +25,7 @@ query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
             message
             messageHeadline
             authoredByCommitter
-            checkSuites(first: 10) {
+            checkSuites(first: 100) {
               nodes {
                 conclusion,
                 status
