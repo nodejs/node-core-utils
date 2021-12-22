@@ -1,10 +1,9 @@
-'use strict';
+import assert from 'node:assert';
 
-const assert = require('assert');
+import CLI from '../../lib/cli.js';
+import * as figures from '../../lib/figures.js';
 
-const CLI = require('../../lib/cli');
-const LogStream = require('../fixtures/log_stream');
-const figures = require('../../lib/figures');
+import LogStream from '../fixtures/log_stream.js';
 
 function strip(text) {
   // eslint-disable-next-line

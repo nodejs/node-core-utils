@@ -1,6 +1,4 @@
-'use strict';
-
-module.exports = `Steps to land a pull request:
+export default `Steps to land a pull request:
 ==============================================================================
 $ cd path/to/node/project
 

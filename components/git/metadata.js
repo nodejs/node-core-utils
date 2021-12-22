@@ -1,12 +1,14 @@
-'use strict';
+import { parsePRFromURL } from '../../lib/links.js';
+import { getMetadata } from '../metadata.js';
+import CLI from '../../lib/cli.js';
+import { getMergedConfig } from '../../lib/config.js';
+import { runPromise, IGNORE } from '../../lib/run.js';
 
-const yargs = require('yargs');
+export const command = 'metadata <identifier>';
+export const describe =
+  'Retrieves metadata for a PR and validates them against nodejs/node PR rules';
 
-const { parsePRFromURL } = require('../../lib/links');
-const { getMetadata } = require('../metadata');
-const CLI = require('../../lib/cli');
-const config = require('../../lib/config').getMergedConfig();
-const { runPromise, IGNORE } = require('../../lib/run');
+const config = getMergedConfig();
 
 const options = {
   owner: {
@@ -41,7 +43,10 @@ const options = {
   }
 };
 
-function builder(yargs) {
+let yargsInstance;
+
+export function builder(yargs) {
+  yargsInstance = yargs;
   return yargs
     .options(options)
     .positional('identifier', {
@@ -60,7 +65,7 @@ function builder(yargs) {
     .wrap(90);
 }
 
-function handler(argv) {
+export function handler(argv) {
   let parsed = {};
   const prid = Number.parseInt(argv.identifier);
   if (!Number.isNaN(prid)) {
@@ -68,12 +73,12 @@ function handler(argv) {
   } else {
     parsed = parsePRFromURL(argv.identifier);
     if (!parsed) {
-      return yargs.showHelp();
+      return yargsInstance.showHelp();
     }
   }
 
   if (!Number.isInteger(argv.maxCommits) || argv.maxCommits < 0) {
-    return yargs.showHelp();
+    return yargsInstance.showHelp();
   }
 
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
@@ -87,11 +92,3 @@ function handler(argv) {
       }
     }));
 }
-
-module.exports = {
-  command: 'metadata <identifier>',
-  describe: 'Retrieves metadata for a PR and validates them against ' +
-            'nodejs/node PR rules',
-  builder,
-  handler
-};

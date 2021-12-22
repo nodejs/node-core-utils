@@ -1,48 +1,47 @@
 #!/usr/bin/env node
 
-'use strict';
+import yargs from 'yargs';
+import clipboardy from 'clipboardy';
 
-const {
+import {
   JobParser,
   parseJobFromURL,
-  CI_TYPES_KEYS: {
-    PR,
-    COMMIT,
-    BENCHMARK,
-    CITGM,
-    CITGM_NOBUILD,
-    DAILY_MASTER
-  }
-} = require('../lib/ci/ci_type_parser');
-const { setVerbosityFromEnv } = require('../lib/verbosity');
+  CI_TYPES_KEYS
+} from '../lib/ci/ci_type_parser.js';
+import { setVerbosityFromEnv } from '../lib/verbosity.js';
+import { listBuilds } from '../lib/ci/ci_utils.js';
+import { jobCache } from '../lib/ci/build-types/job.js';
+import { PRBuild } from '../lib/ci/build-types/pr_build.js';
+import { CommitBuild } from '../lib/ci/build-types/commit_build.js';
+import { DailyBuild } from '../lib/ci/build-types/daily_build.js';
+import { FailureAggregator } from '../lib/ci/failure_aggregator.js';
+import { BenchmarkRun } from '../lib/ci/build-types/benchmark_run.js';
+import { HealthBuild } from '../lib/ci/build-types/health_build.js';
+import { CITGMBuild } from '../lib/ci/build-types/citgm_build.js';
+import {
+  CITGMComparisonBuild
+} from '../lib/ci/build-types/citgm_comparison_build.js';
+import {
+  RunPRJob
+} from '../lib/ci/run_ci.js';
+import { writeJson, writeFile } from '../lib/file.js';
+import { getMergedConfig } from '../lib/config.js';
+import { runPromise } from '../lib/run.js';
+import auth from '../lib/auth.js';
+import Request from '../lib/request.js';
+import CLI from '../lib/cli.js';
+import { hideBin } from 'yargs/helpers';
+
 setVerbosityFromEnv();
 
-const { listBuilds } = require('../lib/ci/ci_utils');
-
-const { jobCache } = require('../lib/ci/build-types/job');
-const { PRBuild } = require('../lib/ci/build-types/pr_build');
-const { CommitBuild } = require('../lib/ci/build-types/commit_build');
-const { DailyBuild } = require('../lib/ci/build-types/daily_build');
-const { FailureAggregator } = require('../lib/ci/failure_aggregator');
-const { BenchmarkRun } = require('../lib/ci/build-types/benchmark_run');
-const { HealthBuild } = require('../lib/ci/build-types/health_build');
-const { CITGMBuild } = require('../lib/ci/build-types/citgm_build');
 const {
-  CITGMComparisonBuild
-} = require('../lib/ci/build-types/citgm_comparison_build');
-
-const {
-  RunPRJob
-} = require('../lib/ci/run_ci');
-const clipboardy = require('clipboardy');
-const { writeJson, writeFile } = require('../lib/file');
-const { getMergedConfig } = require('../lib/config');
-
-const { runPromise } = require('../lib/run');
-const auth = require('../lib/auth');
-const Request = require('../lib/request');
-const CLI = require('../lib/cli');
-const yargs = require('yargs');
+  PR,
+  COMMIT,
+  BENCHMARK,
+  CITGM,
+  CITGM_NOBUILD,
+  DAILY_MASTER
+} = CI_TYPES_KEYS;
 
 const commandKeys = [
   'rate',
@@ -53,8 +52,7 @@ const commandKeys = [
   'citgm'
 ];
 
-// eslint-disable-next-line no-unused-vars
-const argv = yargs
+const args = yargs(hideBin(process.argv))
   .command({
     command: 'rate <type>',
     desc: 'Calculate the green rate of a CI job in the last 100 runs',
@@ -223,8 +221,9 @@ const argv = yargs
     }
     return true;
   })
-  .help()
-  .argv;
+  .help();
+
+args.parse();
 
 const commandToType = {
   commit: COMMIT,
@@ -564,7 +563,7 @@ async function main(command, argv) {
       break;
     }
     default:
-      return yargs.showHelp();
+      return args.showHelp();
   }
 
   await commandHandler.initialize();

@@ -1,18 +1,20 @@
-'use strict';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const fs = require('fs');
-const path = require('path');
-const Request = require('../../lib/request');
-const CLI = require('../../lib/cli');
-const auth = require('../../lib/auth');
-const {
+import Request from '../../lib/request.js';
+import CLI from '../../lib/cli.js';
+import auth from '../../lib/auth.js';
+import {
   WPTUpdater,
   ResourcesUpdater,
   InterfacesUpdater
-} = require('../../lib/wpt');
-const { runPromise } = require('../../lib/run');
+} from '../../lib/wpt/index.js';
+import { runPromise } from '../../lib/run.js';
 
-function builder(yargs) {
+export const command = 'wpt <name>';
+export const describe = 'Updates WPT suite';
+
+export function builder(yargs) {
   return yargs
     .positional('name', {
       describe: 'Subset of the WPT to update',
@@ -80,13 +82,6 @@ async function main(argv) {
   updaters[0].updateLicense();
 }
 
-function handler(argv) {
+export function handler(argv) {
   runPromise(main(argv));
 }
-
-module.exports = {
-  command: 'wpt <name>',
-  describe: 'Updates WPT suite',
-  builder,
-  handler
-};

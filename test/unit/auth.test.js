@@ -1,10 +1,11 @@
-'use strict';
+import { spawn } from 'node:child_process';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import assert from 'node:assert';
 
-const { spawn } = require('child_process');
-const rimraf = require('rimraf');
-const path = require('path');
-const fs = require('fs');
-const assert = require('assert');
+import rimraf from 'rimraf';
+
 let testCounter = 0; // for tmp directories
 
 const FIRST_TIME_MSG =
@@ -80,7 +81,8 @@ function runAuthScript(
     if (ncurc.HOME === undefined) ncurc.HOME = ''; // HOME must always be set.
     for (const envVar in ncurc) {
       if (ncurc[envVar] === undefined) continue;
-      newEnv[envVar] = path.resolve(__dirname, `tmp-${testCounter++}`);
+      newEnv[envVar] =
+        fileURLToPath(new URL(`tmp-${testCounter++}`, import.meta.url));
       rimraf.sync(newEnv[envVar]);
       fs.mkdirSync(newEnv[envVar], { recursive: true });
 
@@ -98,7 +100,7 @@ function runAuthScript(
     newEnv.USERPROFILE = newEnv.HOME;
 
     const proc = spawn(process.execPath,
-      [require.resolve(`../fixtures/${fixture}`)],
+      [fileURLToPath(new URL(`../fixtures/${fixture}`, import.meta.url))],
       {
         timeout: 1500,
         env: Object.assign({}, process.env, newEnv)

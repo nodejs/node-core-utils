@@ -1,16 +1,15 @@
-'use strict';
+import assert from 'node:assert';
 
-const MetadataGenerator = require('../../lib/metadata_gen');
-const {
+import MetadataGenerator from '../../lib/metadata_gen.js';
+
+import {
   fixAndRefPR,
   selfRefPR,
   duplicateRefPR,
   fixCrossPR,
   backportPR,
   allGreenReviewers
-} = require('../fixtures/data');
-
-const assert = require('assert');
+} from '../fixtures/data.js';
 
 const data = {
   owner: 'nodejs',

@@ -1,10 +1,10 @@
-'use strict';
+import path from 'node:path';
+import fs from 'node:fs';
+import assert from 'node:assert';
 
-const Cache = require('../../lib/cache');
-const { tmpdir } = require('../common');
-const path = require('path');
-const fs = require('fs');
-const assert = require('assert');
+import Cache from '../../lib/cache.js';
+
+import { tmpdir } from '../common.js';
 
 describe('Cache', () => {
   const syncResult = 'content in sync';

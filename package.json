@@ -2,22 +2,22 @@
   "name": "node-core-utils",
   "version": "1.31.0",
   "description": "Utilities for Node.js core collaborators",
+  "type": "module",
   "bin": {
-    "get-metadata": "./bin/get-metadata",
-    "git-node": "./bin/git-node",
-    "ncu-config": "./bin/ncu-config",
-    "ncu-team": "./bin/ncu-team",
-    "ncu-ci": "./bin/ncu-ci"
+    "get-metadata": "./bin/get-metadata.js",
+    "git-node": "./bin/git-node.js",
+    "ncu-config": "./bin/ncu-config.js",
+    "ncu-team": "./bin/ncu-team.js",
+    "ncu-ci": "./bin/ncu-ci.js"
   },
   "scripts": {
     "test": "npm run test-unit && npm run lint",
     "test-unit": "mocha test/unit/*.test.js",
     "test-all": "mocha test/**/*.test.js",
-    "coverage": "nyc --reporter=html --reporter=text --reporter=text-summary npm test",
-    "coverage-all": "nyc --reporter=lcov --reporter=text --reporter=text-summary npm run test-all",
-    "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
-    "lint": "eslint . \"bin/*\" --cache",
-    "lint-fix": "eslint . \"bin/*\" --fix"
+    "coverage": "c8 --reporter=html --reporter=text --reporter=text-summary npm test",
+    "coverage-all": "c8 --reporter=lcov --reporter=text --reporter=text-summary npm run test-all",
+    "lint": "eslint . --cache",
+    "lint-fix": "eslint . --fix"
   },
   "author": "Joyee Cheung <joyeec9h3@gmail.com>",
   "repository": {
@@ -32,38 +32,36 @@
   "license": "MIT",
   "dependencies": {
     "branch-diff": "^1.10.5",
-    "chalk": "^4.1.2",
-    "changelog-maker": "^2.7.3",
+    "chalk": "^5.0.0",
+    "changelog-maker": "^2.7.4",
     "cheerio": "^1.0.0-rc.10",
-    "clipboardy": "^2.3.0",
+    "clipboardy": "^3.0.0",
     "core-validate-commit": "^3.13.4",
-    "execa": "^5.1.1",
-    "figures": "^3.2.0",
+    "execa": "^6.0.0",
+    "figures": "^4.0.0",
     "form-data": "^4.0.0",
     "ghauth": "^4.0.0",
     "inquirer": "^8.2.0",
-    "listr2": "^3.13.3",
+    "listr2": "^3.13.5",
     "lodash": "^4.17.21",
-    "log-symbols": "^4.1.0",
-    "node-fetch": "^2.6.1",
-    "ora": "^5.4.1",
+    "log-symbols": "^5.1.0",
+    "node-fetch": "^3.1.0",
+    "ora": "^6.0.1",
     "proxy-agent": "^5.0.0",
     "replace-in-file": "^6.3.2",
     "rimraf": "^3.0.2",
     "which": "^2.0.2",
-    "yargs": "^17.2.1"
+    "yargs": "^17.3.0"
   },
   "devDependencies": {
+    "c8": "^7.10.0",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-standard": "^4.1.0",
-    "intelli-espower-loader": "^1.1.0",
     "mocha": "^9.1.3",
-    "nyc": "^15.1.0",
-    "power-assert": "^1.6.1",
     "sinon": "^12.0.1"
   }
 }

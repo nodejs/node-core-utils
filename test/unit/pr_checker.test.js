@@ -1,22 +1,13 @@
-'use strict';
+import assert from 'node:assert';
 
-const assert = require('assert');
-const sinon = require('sinon');
+import sinon from 'sinon';
 
-const TestCLI = require('../fixtures/test_cli');
+import PRData from '../../lib/pr_data.js';
+import PRChecker from '../../lib/pr_checker.js';
+import { jobCache } from '../../lib/ci/build-types/job.js';
 
-const PRData = require('../../lib/pr_data');
-const PRChecker = require('../../lib/pr_checker');
-const { jobCache } = require('../../lib/ci/build-types/job');
-jobCache.disable();
-
-const GT_7D = '2018-11-23T17:50:44.477Z';
-const LT_7D_GT_48H = '2018-11-27T17:50:44.477Z';
-const LT_48H = '2018-11-30T17:50:44.477Z';
-const LT_48H_GT_47H = '2018-11-29T17:55:44.477Z';
-const NOW = '2018-11-31T17:50:44.477Z';
-
-const {
+import TestCLI from '../fixtures/test_cli.js';
+import {
   allGreenReviewers,
   singleGreenReviewer,
   requestedChangesReviewers,
@@ -48,7 +39,15 @@ const {
   closedPR,
   mergedPR,
   pullRequests
-} = require('../fixtures/data');
+} from '../fixtures/data.js';
+
+jobCache.disable();
+
+const GT_7D = '2018-11-23T17:50:44.477Z';
+const LT_7D_GT_48H = '2018-11-27T17:50:44.477Z';
+const LT_48H = '2018-11-30T17:50:44.477Z';
+const LT_48H_GT_47H = '2018-11-29T17:55:44.477Z';
+const NOW = '2018-11-31T17:50:44.477Z';
 
 const argv = { maxCommits: 3 };
 

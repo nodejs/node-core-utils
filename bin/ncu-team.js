@@ -1,33 +1,35 @@
 #!/usr/bin/env node
 
-'use strict';
-const Request = require('../lib/request');
-const auth = require('../lib/auth');
-const { runPromise } = require('../lib/run');
-const CLI = require('../lib/cli');
-const TeamInfo = require('../lib/team_info');
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
-const { setVerbosityFromEnv } = require('../lib/verbosity');
+import Request from '../lib/request.js';
+import auth from '../lib/auth.js';
+import { runPromise } from '../lib/run.js';
+import CLI from '../lib/cli.js';
+import TeamInfo from '../lib/team_info.js';
+
+import { setVerbosityFromEnv } from '../lib/verbosity.js';
+
 setVerbosityFromEnv();
 
-require('yargs') // eslint-disable-line
-  .command({
-    command: 'list <team> [org]',
-    desc: 'Get the list of members in a team',
-    builder: (yargs) => {
-      yargs
-        .positional('team', {
-          describe: 'Name of the team',
-          type: 'string'
-        })
-        .positional('org', {
-          describe: 'Name of the organization',
-          type: 'string',
-          default: 'nodejs'
-        });
-    },
-    handler: handler
-  })
+yargs(hideBin(process.argv)).command({
+  command: 'list <team> [org]',
+  desc: 'Get the list of members in a team',
+  builder: (yargs) => {
+    yargs
+      .positional('team', {
+        describe: 'Name of the team',
+        type: 'string'
+      })
+      .positional('org', {
+        describe: 'Name of the organization',
+        type: 'string',
+        default: 'nodejs'
+      });
+  },
+  handler: handler
+})
   .command({
     command: 'sync <file>',
     desc:
@@ -43,7 +45,7 @@ require('yargs') // eslint-disable-line
   })
   .demandCommand(1, 'must provide a valid command')
   .help()
-  .argv;
+  .parse();
 
 function handler(argv) {
   runPromise(main(argv));

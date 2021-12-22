@@ -1,16 +1,15 @@
-'use strict';
+import assert from 'assert';
 
-const assert = require('assert');
+import sinon from 'sinon';
+import FormData from 'form-data';
 
-const sinon = require('sinon');
-const FormData = require('form-data');
-
-const {
+import {
   RunPRJob,
   CI_CRUMB_URL,
   CI_PR_URL
-} = require('../../lib/ci/run_ci');
-const TestCLI = require('../fixtures/test_cli');
+} from '../../lib/ci/run_ci.js';
+
+import TestCLI from '../fixtures/test_cli.js';
 
 describe('Jenkins', () => {
   const owner = 'nodejs';

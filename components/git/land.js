@@ -1,14 +1,15 @@
-'use strict';
+import auth from '../../lib/auth.js';
+import { parsePRFromURL } from '../../lib/links.js';
+import { getMetadata } from '../metadata.js';
+import CLI from '../../lib/cli.js';
+import Request from '../../lib/request.js';
+import { runPromise } from '../../lib/run.js';
+import LandingSession from '../../lib/landing_session.js';
+import epilogue from './epilogue.js';
 
-const auth = require('../../lib/auth');
-const { parsePRFromURL } = require('../../lib/links');
-const { getMetadata } = require('../metadata');
-const CLI = require('../../lib/cli');
-const Request = require('../../lib/request');
-const { runPromise } = require('../../lib/run');
-const LandingSession = require('../../lib/landing_session');
-const epilogue = require('./epilogue');
-const yargs = require('yargs');
+export const command = 'land [prid|options]';
+export const describe =
+  'Manage the current landing session or start a new one for a pull request';
 
 const landActions = {
   apply: {
@@ -81,7 +82,10 @@ const landOptions = {
   }
 };
 
-function builder(yargs) {
+let yargsInstance;
+
+export function builder(yargs) {
+  yargsInstance = yargs;
   return yargs
     .options(Object.assign({}, landOptions, landActions))
     .positional('prid', {
@@ -109,7 +113,7 @@ const FINAL = 'final';
 const CONTINUE = 'continue';
 const ABORT = 'abort';
 
-function handler(argv) {
+export function handler(argv) {
   if (argv.prid) {
     if (Number.isInteger(argv.prid)) {
       return land(START, argv);
@@ -120,7 +124,7 @@ function handler(argv) {
         return land(START, argv);
       }
     }
-    yargs.showHelp();
+    yargsInstance.showHelp();
     return;
   }
 
@@ -137,7 +141,7 @@ function handler(argv) {
 
   // If the more than one action is provided or no valid action
   // is provided, show help.
-  yargs.showHelp();
+  yargsInstance.showHelp();
 }
 
 function land(state, argv) {
@@ -154,14 +158,6 @@ function land(state, argv) {
     throw err;
   });
 }
-
-module.exports = {
-  command: 'land [prid|options]',
-  describe:
-    'Manage the current landing session or start a new one for a pull request',
-  builder,
-  handler
-};
 
 async function main(state, argv, cli, dir) {
   const credentials = await auth({

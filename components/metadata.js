@@ -1,15 +1,13 @@
-'use strict';
+import fs from 'node:fs';
 
-const Request = require('../lib/request');
-const auth = require('../lib/auth');
-const PRData = require('../lib/pr_data');
-const PRSummary = require('../lib/pr_summary');
-const PRChecker = require('../lib/pr_checker');
-const MetadataGenerator = require('../lib/metadata_gen');
+import Request from '../lib/request.js';
+import auth from '../lib/auth.js';
+import PRData from '../lib/pr_data.js';
+import PRSummary from '../lib/pr_summary.js';
+import PRChecker from '../lib/pr_checker.js';
+import MetadataGenerator from '../lib/metadata_gen.js';
 
-const fs = require('fs');
-
-async function getMetadata(argv, skipRefs, cli) {
+export async function getMetadata(argv, skipRefs, cli) {
   const credentials = await auth({
     github: true,
     jenkins: true
@@ -49,5 +47,3 @@ async function getMetadata(argv, skipRefs, cli) {
     checker
   };
 };
-
-module.exports = { getMetadata };
