@@ -1,68 +1,68 @@
-'use strict';
+import { basename } from 'node:path';
+import { readdirSync } from 'node:fs';
 
-const { basename } = require('path');
-const { readdirSync } = require('fs');
+import { Collaborator } from '../../lib/collaborators.js';
+import { Review } from '../../lib/reviews.js';
+import { readJSON, patchPrototype, readFile, path } from './index.js';
 
-const { readJSON, patchPrototype, readFile, path } = require('./index');
-const { Collaborator } = require('../../lib/collaborators');
-const { Review } = require('../../lib/reviews');
-
-const approved = readJSON('reviewers_approved.json');
-const requestedChanges = readJSON('reviewers_requested_changes.json');
+export const approved = readJSON('reviewers_approved.json');
+export const requestedChanges = readJSON('reviewers_requested_changes.json');
 patchPrototype(approved, 'reviewer', Collaborator.prototype);
 patchPrototype(approved, 'review', Review.prototype);
 patchPrototype(requestedChanges, 'reviewer', Collaborator.prototype);
 patchPrototype(requestedChanges, 'review', Review.prototype);
 
-const allGreenReviewers = {
+export const allGreenReviewers = {
   approved,
   requestedChanges: []
 };
-const singleGreenReviewer = {
+export const singleGreenReviewer = {
   approved: [approved[0]],
   requestedChanges: []
 };
-const requestedChangesReviewers = {
+export const requestedChangesReviewers = {
   requestedChanges,
   approved: []
 };
 
-const noReviewers = {
+export const noReviewers = {
   requestedChanges: [],
   approved: []
 };
 
-const approvingReviews = readJSON('reviews_approved.json');
-const requestingChangesReviews = readJSON('reviews_requesting_changes.json');
+export const approvingReviews = readJSON('reviews_approved.json');
+export const requestingChangesReviews =
+  readJSON('reviews_requesting_changes.json');
 
-const commentsWithFastTrack = readJSON('comments_with_fast_track.json');
-const commentsWithFastTrackInsuffientApprovals =
+export const commentsWithFastTrack = readJSON('comments_with_fast_track.json');
+export const commentsWithFastTrackInsuffientApprovals =
   readJSON('comments_with_fast_track_insufficient_approvals.json');
-const commentsWithCI = readJSON('comments_with_ci.json');
-const commentsWithFailedCI = readJSON('comments_with_failed_ci.json');
-const commentsWithLGTM = readJSON('comments_with_lgtm.json');
-const commentsWithPendingCI = readJSON('comments_with_pending_ci.json');
-const commentsWithSuccessCI = readJSON('comments_with_success_ci.json');
+export const commentsWithCI = readJSON('comments_with_ci.json');
+export const commentsWithFailedCI = readJSON('comments_with_failed_ci.json');
+export const commentsWithLGTM = readJSON('comments_with_lgtm.json');
+export const commentsWithPendingCI = readJSON('comments_with_pending_ci.json');
+export const commentsWithSuccessCI = readJSON('comments_with_success_ci.json');
 
-const oddCommits = readJSON('odd_commits.json');
-const incorrectGitConfigCommits = readJSON('incorrect_git_config_commits.json');
-const simpleCommits = readJSON('simple_commits.json');
+export const oddCommits = readJSON('odd_commits.json');
+export const incorrectGitConfigCommits =
+  readJSON('incorrect_git_config_commits.json');
+export const simpleCommits = readJSON('simple_commits.json');
 
-const singleCommitAfterReview = {
+export const singleCommitAfterReview = {
   commits: readJSON('single_commit_after_review_commits.json'),
   reviews: readJSON('single_commit_after_review_reviews.json')
 };
-const multipleCommitsAfterReview = {
+export const multipleCommitsAfterReview = {
   commits: readJSON('multiple_commits_after_review_commits.json'),
   reviews: readJSON('multiple_commits_after_review_reviews.json')
 };
-const moreThanThreeCommitsAfterReview = {
+export const moreThanThreeCommitsAfterReview = {
   commits: readJSON('more_than_three_commits_after_review_commits.json'),
   reviews: readJSON('more_than_three_commits_after_review_reviews.json')
 };
 
-const commitsAfterCi = readJSON('commits_after_ci.json');
-const mulipleCommitsAfterCi = readJSON('multiple_commits_after_ci.json');
+export const commitsAfterCi = readJSON('commits_after_ci.json');
+export const mulipleCommitsAfterCi = readJSON('multiple_commits_after_ci.json');
 
 function makeCollaborators(arr) {
   arr.forEach((c) => {
@@ -73,32 +73,35 @@ function makeCollaborators(arr) {
   );
 }
 
-const collaborators = makeCollaborators(readJSON('collaborators.json'));
-const collaboratorsAlternative = makeCollaborators(
+export const collaborators = makeCollaborators(readJSON('collaborators.json'));
+export const collaboratorsAlternative = makeCollaborators(
   readJSON('collaborators_alternative.json')
 );
 
-const firstTimerPR = readJSON('first_timer_pr.json');
-const firstTimerPrivatePR = readJSON('first_timer_pr_with_private_email.json');
-const semverMajorPR = readJSON('semver_major_pr.json');
-const fixAndRefPR = readJSON('pr_with_fixes_and_refs.json');
-const fixCrossPR = readJSON('pr_with_fixes_cross.json');
-const duplicateRefPR = readJSON('pr_with_duplicate_refs.json');
-const selfRefPR = readJSON('pr_with_self_ref.json');
-const backportPR = readJSON('pr_with_backport.json');
-const conflictingPR = readJSON('conflicting_pr.json');
-const emptyProfilePR = readJSON('empty_profile_pr.json');
-const closedPR = readJSON('./closed_pr.json');
-const mergedPR = readJSON('./merged_pr.json');
-const readme = readFile('./README/README.md');
-const readmeAlternative = readFile('./README/README_alternative.md');
-const readmeNoTsc = readFile('./README/README_no_TSC.md');
-const readmeNoTscE = readFile('./README/README_no_TSCE.md');
-const readmeNoCollaborators = readFile('./README/README_no_collaborators.md');
-const readmeNoCollaboratorE = readFile('./README/README_no_collaboratorE.md');
-const readmeUnordered = readFile('./README/README_unordered.md');
+export const firstTimerPR = readJSON('first_timer_pr.json');
+export const firstTimerPrivatePR =
+  readJSON('first_timer_pr_with_private_email.json');
+export const semverMajorPR = readJSON('semver_major_pr.json');
+export const fixAndRefPR = readJSON('pr_with_fixes_and_refs.json');
+export const fixCrossPR = readJSON('pr_with_fixes_cross.json');
+export const duplicateRefPR = readJSON('pr_with_duplicate_refs.json');
+export const selfRefPR = readJSON('pr_with_self_ref.json');
+export const backportPR = readJSON('pr_with_backport.json');
+export const conflictingPR = readJSON('conflicting_pr.json');
+export const emptyProfilePR = readJSON('empty_profile_pr.json');
+export const closedPR = readJSON('./closed_pr.json');
+export const mergedPR = readJSON('./merged_pr.json');
+export const readme = readFile('./README/README.md');
+export const readmeAlternative = readFile('./README/README_alternative.md');
+export const readmeNoTsc = readFile('./README/README_no_TSC.md');
+export const readmeNoTscE = readFile('./README/README_no_TSCE.md');
+export const readmeNoCollaborators =
+  readFile('./README/README_no_collaborators.md');
+export const readmeNoCollaboratorE =
+  readFile('./README/README_no_collaboratorE.md');
+export const readmeUnordered = readFile('./README/README_unordered.md');
 
-const githubCI = {};
+export const githubCI = {};
 
 for (const item of readdirSync(path('./github-ci'))) {
   if (!item.endsWith('.json')) {
@@ -107,7 +110,7 @@ for (const item of readdirSync(path('./github-ci'))) {
   githubCI[basename(item, '.json')] = readJSON(`./github-ci/${item}`);
 };
 
-const pullRequests = {};
+export const pullRequests = {};
 
 for (const item of readdirSync(path('./pull_requests'))) {
   if (!item.endsWith('.json')) {
@@ -116,7 +119,7 @@ for (const item of readdirSync(path('./pull_requests'))) {
   pullRequests[basename(item, '.json')] = readJSON(`./pull_requests/${item}`);
 };
 
-const jenkinsCI = {};
+export const jenkinsCI = {};
 
 for (const subdir of readdirSync(path('./jenkins'))) {
   for (const item of readdirSync(path(`./jenkins/${subdir}`))) {
@@ -126,54 +129,4 @@ for (const subdir of readdirSync(path('./jenkins'))) {
     jenkinsCI[`${subdir}/${basename(item, '.json')}`] =
       readJSON(`./jenkins/${subdir}/${item}`);
   }
-};
-
-module.exports = {
-  approved,
-  requestedChanges,
-  allGreenReviewers,
-  singleGreenReviewer,
-  noReviewers,
-  requestedChangesReviewers,
-  approvingReviews,
-  requestingChangesReviews,
-  commentsWithFastTrack,
-  commentsWithFastTrackInsuffientApprovals,
-  commentsWithCI,
-  commentsWithFailedCI,
-  commentsWithLGTM,
-  commentsWithSuccessCI,
-  commentsWithPendingCI,
-  oddCommits,
-  jenkinsCI,
-  githubCI,
-  incorrectGitConfigCommits,
-  simpleCommits,
-  singleCommitAfterReview,
-  multipleCommitsAfterReview,
-  moreThanThreeCommitsAfterReview,
-  commitsAfterCi,
-  mulipleCommitsAfterCi,
-  collaborators,
-  collaboratorsAlternative,
-  firstTimerPR,
-  firstTimerPrivatePR,
-  semverMajorPR,
-  fixAndRefPR,
-  fixCrossPR,
-  backportPR,
-  conflictingPR,
-  emptyProfilePR,
-  readme,
-  readmeAlternative,
-  readmeNoTsc,
-  readmeNoTscE,
-  readmeNoCollaborators,
-  readmeNoCollaboratorE,
-  readmeUnordered,
-  closedPR,
-  mergedPR,
-  selfRefPR,
-  duplicateRefPR,
-  pullRequests
 };

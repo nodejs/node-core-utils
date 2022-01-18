@@ -1,78 +1,74 @@
-'use strict';
+import path from 'node:path';
 
-const path = require('path');
+import { execa } from 'execa';
+import logSymbols from 'log-symbols';
 
-const execa = require('execa');
-const logSymbols = require('log-symbols');
+import { minor, major, backport } from '../../lib/update-v8/index.js';
+import { defaultBaseDir } from '../../lib/update-v8/constants.js';
+import { checkCwd } from '../../lib/update-v8/common.js';
 
-const updateV8 = require('../../lib/update-v8');
-const constants = require('../../lib/update-v8/constants');
-const common = require('../../lib/update-v8/common');
+export const command = 'v8 [major|minor|backport]';
+export const describe = 'Update or patch the V8 engine';
 
-module.exports = {
-  command: 'v8 [major|minor|backport]',
-  describe: 'Update or patch the V8 engine',
-  builder: (yargs) => {
-    yargs
-      .command({
-        command: 'major',
-        desc: 'Do a major upgrade. Replaces the whole deps/v8 directory',
-        handler: main,
-        builder: (yargs) => {
-          yargs.option('branch', {
-            describe: 'Branch of the V8 repository to use for the upgrade',
-            default: 'lkgr'
-          });
-          yargs.option('version-bump', {
-            describe: 'Bump the NODE_MODULE_VERSION constant',
+export function builder(yargs) {
+  yargs
+    .command({
+      command: 'major',
+      desc: 'Do a major upgrade. Replaces the whole deps/v8 directory',
+      handler,
+      builder: (yargs) => {
+        yargs.option('branch', {
+          describe: 'Branch of the V8 repository to use for the upgrade',
+          default: 'lkgr'
+        });
+        yargs.option('version-bump', {
+          describe: 'Bump the NODE_MODULE_VERSION constant',
+          default: true
+        });
+      }
+    })
+    .command({
+      command: 'minor',
+      desc: 'Do a minor patch of the current V8 version',
+      handler
+    })
+    .command({
+      command: 'backport <sha..>',
+      desc: 'Backport one or more commits from the V8 repository',
+      handler,
+      builder: (yargs) => {
+        yargs
+          .option('bump', {
+            describe: 'Bump V8 embedder version number or patch version',
             default: true
-          });
-        }
-      })
-      .command({
-        command: 'minor',
-        desc: 'Do a minor patch of the current V8 version',
-        handler: main
-      })
-      .command({
-        command: 'backport <sha..>',
-        desc: 'Backport one or more commits from the V8 repository',
-        handler: main,
-        builder: (yargs) => {
-          yargs
-            .option('bump', {
-              describe: 'Bump V8 embedder version number or patch version',
-              default: true
-            })
-            .option('squash', {
-              describe:
+          })
+          .option('squash', {
+            describe:
                 'If multiple commits are backported, squash them into one',
-              default: false
-            });
-        }
-      })
-      .demandCommand(1, 'Please provide a valid command')
-      .option('node-dir', {
-        describe: 'Directory of a Node.js clone',
-        default: process.cwd()
-      })
-      .option('base-dir', {
-        describe: 'Directory where V8 should be cloned',
-        default: constants.defaultBaseDir
-      })
-      .option('v8-dir', {
-        describe: 'Directory of an existing V8 clone'
-      })
-      .option('verbose', {
-        describe: 'Enable verbose output',
-        boolean: true,
-        default: false
-      });
-  },
-  handler: main
-};
+            default: false
+          });
+      }
+    })
+    .demandCommand(1, 'Please provide a valid command')
+    .option('node-dir', {
+      describe: 'Directory of a Node.js clone',
+      default: process.cwd()
+    })
+    .option('base-dir', {
+      describe: 'Directory where V8 should be cloned',
+      default: defaultBaseDir
+    })
+    .option('v8-dir', {
+      describe: 'Directory of an existing V8 clone'
+    })
+    .option('verbose', {
+      describe: 'Enable verbose output',
+      boolean: true,
+      default: false
+    });
+}
 
-function main(argv) {
+export function handler(argv) {
   const options = Object.assign({}, argv);
   options.nodeDir = path.resolve(options.nodeDir);
   options.baseDir = path.resolve(options.baseDir);
@@ -96,17 +92,17 @@ function main(argv) {
 
   Promise.resolve()
     .then(async() => {
-      await common.checkCwd(options);
+      await checkCwd(options);
       // First element of argv is 'v8'
       const kind = argv._[1];
       options[kind] = true;
       switch (kind) {
         case 'minor':
-          return updateV8.minor(options);
+          return minor(options);
         case 'major':
-          return updateV8.major(options);
+          return major(options);
         case 'backport':
-          return updateV8.backport(options);
+          return backport(options);
       }
     })
     .catch((err) => {

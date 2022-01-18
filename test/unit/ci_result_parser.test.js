@@ -1,26 +1,30 @@
-'use strict';
+import assert from 'node:assert';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
-const {
+import {
   CITGMComparisonBuild
-} = require('../../lib/ci/build-types/citgm_comparison_build');
-const { PRBuild } = require('../../lib/ci/build-types/pr_build');
-const { CommitBuild } = require('../../lib/ci/build-types/commit_build');
-const { BenchmarkRun } = require('../../lib/ci/build-types/benchmark_run');
-const { CITGMBuild } = require('../../lib/ci/build-types/citgm_build');
-const { jobCache } = require('../../lib/ci/build-types/job');
+} from '../../lib/ci/build-types/citgm_comparison_build.js';
+import { PRBuild } from '../../lib/ci/build-types/pr_build.js';
+import { CommitBuild } from '../../lib/ci/build-types/commit_build.js';
+import { BenchmarkRun } from '../../lib/ci/build-types/benchmark_run.js';
+import { CITGMBuild } from '../../lib/ci/build-types/citgm_build.js';
+import { jobCache } from '../../lib/ci/build-types/job.js';
 
-const TestCLI = require('../fixtures/test_cli');
-const { tmpdir, copyShallow } = require('../common');
-const path = require('path');
-const fixtures = require('../fixtures');
+import TestCLI from '../fixtures/test_cli.js';
+import { tmpdir, copyShallow } from '../common.js';
+import * as fixtures from '../fixtures/index.js';
 
-const assert = require('assert');
+function getFixturesDir(prefix) {
+  const base = fileURLToPath(new URL('../fixtures', import.meta.url));
+  return path.join(base, ...prefix);
+}
 
 describe('Jenkins', () => {
   it('should get failures in PR build and commit build', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'js-flake-1'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -65,7 +69,7 @@ describe('Jenkins', () => {
   it('should get successful PR build and commit build', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'success'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -92,7 +96,7 @@ describe('Jenkins', () => {
   it('should handle node-test-commit trigger failure', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'trigger-failure'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -115,7 +119,7 @@ describe('Jenkins', () => {
   it('should handle git failure', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'git-failure-1'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -138,7 +142,7 @@ describe('Jenkins', () => {
   it('should handle no compiler failure', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'no-compiler-error'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -161,7 +165,7 @@ describe('Jenkins', () => {
   it('should get benchmark run', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'benchmark-buffer'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -184,7 +188,7 @@ describe('Jenkins', () => {
   it('should correctly fetch CITGM build results', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'citgm'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -205,7 +209,7 @@ describe('Jenkins', () => {
   it('should correctly fetch CITGM nobuild job results', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'citgm-nobuild'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -226,7 +230,7 @@ describe('Jenkins', () => {
   it('should correctly fetch CITGM comparison build results', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'citgm-compare'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -253,7 +257,7 @@ describe('Jenkins', () => {
   it('should correctly fetch CITGM comparison noBuild results', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'citgm-compare-nobuild'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();

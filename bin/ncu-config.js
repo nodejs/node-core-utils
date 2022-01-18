@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
-'use strict';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
-const {
+import {
   getConfig, updateConfig, GLOBAL_CONFIG, PROJECT_CONFIG, LOCAL_CONFIG
-} = require('../lib/config');
+} from '../lib/config.js';
+import { setVerbosityFromEnv } from '../lib/verbosity.js';
 
-const { setVerbosityFromEnv } = require('../lib/verbosity');
 setVerbosityFromEnv();
 
-const yargs = require('yargs');
-const argv = yargs
+const args = yargs(hideBin(process.argv))
   .command({
     command: 'set <key> <value>',
     desc: 'Set a config variable',
@@ -58,8 +58,9 @@ const argv = yargs
     describe: 'Use project config (./.ncurc)'
   })
   .conflicts('global', 'project')
-  .help()
-  .argv;
+  .help();
+
+const argv = args.parse();
 
 function getConfigType(argv) {
   if (argv.global) {
@@ -95,5 +96,5 @@ function listHandler(argv) {
 }
 
 if (!['get', 'set', 'list'].includes(argv._[0])) {
-  yargs.showHelp();
+  args.showHelp();
 }

@@ -1,14 +1,13 @@
-'use strict';
+import PRSummary from '../../lib/pr_summary.js';
 
-const {
+import {
   oddCommits,
   simpleCommits,
   firstTimerPR,
   semverMajorPR,
   emptyProfilePR
-} = require('../fixtures/data');
-const TestCLI = require('../fixtures/test_cli');
-const PRSummary = require('../../lib/pr_summary');
+} from '../fixtures/data.js';
+import TestCLI from '../fixtures/test_cli.js';
 
 describe('PRSummary', () => {
   const argv = { prid: 16348, owner: 'nodejs', repo: 'node' };

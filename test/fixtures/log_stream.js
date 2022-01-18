@@ -1,9 +1,7 @@
-'use strict';
-
-const { Writable } = require('stream');
+import { Writable } from 'node:stream';
 
 const writtenSym = Symbol('written');
-class LogStream extends Writable {
+export default class LogStream extends Writable {
   constructor(options) {
     super(options);
     this.isTTY = false;
@@ -22,5 +20,3 @@ class LogStream extends Writable {
 
   cursorTo() {}
 }
-
-module.exports = LogStream;

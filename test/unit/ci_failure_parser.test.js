@@ -1,10 +1,9 @@
-'use strict';
+import assert from 'node:assert';
 
-const CIFailureParser = require('../../lib/ci/ci_failure_parser');
-const fixtures = require('../fixtures');
-const { raw } = require('../common');
+import CIFailureParser from '../../lib/ci/ci_failure_parser.js';
 
-const assert = require('assert');
+import * as fixtures from '../fixtures/index.js';
+import { raw } from '../common.js';
 
 describe('Jenkins', () => {
   it('should parse git failure', async() => {

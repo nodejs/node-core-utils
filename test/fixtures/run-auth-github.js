@@ -1,6 +1,4 @@
-'use strict';
-
-const assert = require('assert');
+import assert from 'assert';
 
 async function mockCredentials(options) {
   assert.deepStrictEqual(options, {
@@ -15,7 +13,7 @@ async function mockCredentials(options) {
 }
 
 (async function() {
-  const auth = require('../../lib/auth');
+  const { default: auth } = await import('../../lib/auth.js');
   const authParams = await auth({ github: true }, mockCredentials);
   process.stdout.write(`${JSON.stringify(authParams)}\n`);
 })().catch(err => {

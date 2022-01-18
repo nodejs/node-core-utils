@@ -1,10 +1,9 @@
-'use strict';
+import CLI from '../../lib/cli.js';
+import ReleasePreparation from '../../lib/prepare_release.js';
+import { runPromise } from '../../lib/run.js';
 
-const yargs = require('yargs');
-
-const CLI = require('../../lib/cli');
-const ReleasePreparation = require('../../lib/prepare_release');
-const { runPromise } = require('../../lib/run');
+export const command = 'release [newVersion|options]';
+export const describe = 'Manage an in-progress release or start a new one.';
 
 const PREPARE = 'prepare';
 const PROMOTE = 'promote';
@@ -28,7 +27,10 @@ const releaseOptions = {
   }
 };
 
-function builder(yargs) {
+let yargsInstance;
+
+export function builder(yargs) {
+  yargsInstance = yargs;
   return yargs
     .options(releaseOptions).positional('newVersion', {
       describe: 'Version number of the release to be prepared or promoted'
@@ -37,7 +39,7 @@ function builder(yargs) {
       'Prepare a new release of Node.js tagged v1.2.3');
 }
 
-function handler(argv) {
+export function handler(argv) {
   if (argv.prepare) {
     return release(PREPARE, argv);
   } else if (argv.promote) {
@@ -46,7 +48,7 @@ function handler(argv) {
 
   // If more than one action is provided or no valid action
   // is provided, show help.
-  yargs.showHelp();
+  yargsInstance.showHelp();
 }
 
 function release(state, argv) {
@@ -61,14 +63,6 @@ function release(state, argv) {
     throw err;
   });
 }
-
-module.exports = {
-  command: 'release [newVersion|options]',
-  describe:
-    'Manage an in-progress release or start a new one.',
-  builder,
-  handler
-};
 
 async function main(state, argv, cli, dir) {
   if (state === PREPARE) {

@@ -1,16 +1,17 @@
-'use strict';
+import path from 'node:path';
+import fs from 'node:fs';
 
-const path = require('path');
-const fs = require('fs');
-
-const { readJson } = require('./../../lib/file');
-const { getNcuDir } = require('./../../lib/config');
-
-const CLI = require('../../lib/cli');
+import { readJson } from './../../lib/file.js';
+import { getNcuDir } from './../../lib/config.js';
+import CLI from '../../lib/cli.js';
 
 const cli = new CLI();
 
-function handler() {
+export const command = 'status';
+export const describe =
+  'Return status and information about the current git-node land session.';
+
+export function handler() {
   const ncuDir = getNcuDir(process.cwd());
   const landPath = path.join(ncuDir, 'land');
 
@@ -29,10 +30,3 @@ function handler() {
     cli.warn('No landing session in progress');
   }
 }
-
-module.exports = {
-  command: 'status',
-  describe: 'Return status and information about' +
-    'the current git-node land session.',
-  handler: handler
-};

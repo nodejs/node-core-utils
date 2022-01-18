@@ -1,13 +1,12 @@
-'use strict';
+import assert from 'node:assert';
 
-const {
+import {
   JobParser
-} = require('../../lib/ci/ci_type_parser');
+} from '../../lib/ci/ci_type_parser.js';
 
-const assert = require('assert');
-const {
+import {
   commentsWithCI
-} = require('../fixtures/data');
+} from '../fixtures/data.js';
 
 const expected = new Map([
   ['PR', {

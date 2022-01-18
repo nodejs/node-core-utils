@@ -12,9 +12,6 @@
     "node": true
   },
   "parserOptions": {
-    "ecmaFeatures": {
-      "globalReturn": true
-    },
-    "sourceType": "script"
+    "sourceType": "module"
   }
 }

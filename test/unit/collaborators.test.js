@@ -1,13 +1,12 @@
-'use strict';
+import { fileURLToPath } from 'node:url';
+import assert from 'node:assert';
 
-const assert = require('assert');
-const path = require('path');
-
-const {
+import {
   isCollaborator,
   getCollaborators
-} = require('../../lib/collaborators');
-const {
+} from '../../lib/collaborators.js';
+
+import {
   readme,
   readmeAlternative,
   readmeNoTsc,
@@ -17,9 +16,9 @@ const {
   readmeUnordered,
   collaborators,
   collaboratorsAlternative
-} = require('../fixtures/data');
-const TestCLI = require('../fixtures/test_cli');
-const assertThrowsAsync = require('../fixtures/assert_throws_async');
+} from '../fixtures/data.js';
+import TestCLI from '../fixtures/test_cli.js';
+import assertThrowsAsync from '../fixtures/assert_throws_async.js';
 
 describe('collaborators', function() {
   const collaborator = collaborators.get('bar');
@@ -100,8 +99,8 @@ describe('collaborators', function() {
     }
 
     it('should use specified readme', async function() {
-      const readmePath = path.resolve(
-        __dirname, '..', 'fixtures', 'README', 'README.md');
+      const readmePath =
+        fileURLToPath(new URL('../fixtures/README/README.md', import.meta.url));
       const argv = { owner: 'nodejs', repo: 'node', readme: readmePath };
       const request = { async text() { assert.fail('should not call'); } };
       const parsed = await getCollaborators(cli, request, argv);

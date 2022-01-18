@@ -1,10 +1,10 @@
-'use strict';
+import { parsePRFromURL } from '../../lib/links.js';
+import CLI from '../../lib/cli.js';
+import { runPromise } from '../../lib/run.js';
+import BackportSession from '../../lib/backport_session.js';
 
-const yargs = require('yargs');
-const { parsePRFromURL } = require('../../lib/links');
-const CLI = require('../../lib/cli');
-const { runPromise } = require('../../lib/run');
-const BackportSession = require('../../lib/backport_session');
+export const command = 'backport <identifier>';
+export const describe = 'Backport a PR to a release staging branch.';
 
 const epilogue = `====================== Example =======================
 Demo: https://asciinema.org/a/221244
@@ -23,7 +23,10 @@ $ git node backport 24816 --to 11
 =====================================================
 `;
 
-function builder(yargs) {
+let yargsInstance;
+
+export function builder(yargs) {
+  yargsInstance = yargs;
   return yargs
     .options({
       to: {
@@ -40,7 +43,9 @@ function builder(yargs) {
     .wrap(90);
 }
 
-async function main(config) {
+async function main(argv, parsed) {
+  const merged = (await import('../../lib/config.js')).getMergedConfig();
+  const config = Object.assign({}, argv, parsed, merged);
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
   cli.setFigureIndent(0);
@@ -49,7 +54,7 @@ async function main(config) {
   return session.backport();
 }
 
-function handler(argv) {
+export function handler(argv) {
   let parsed = {};
   const prid = Number.parseInt(argv.identifier);
   if (!Number.isNaN(prid)) {
@@ -57,18 +62,9 @@ function handler(argv) {
   } else {
     parsed = parsePRFromURL(argv.identifier);
     if (!parsed) {
-      return yargs.showHelp();
+      return yargsInstance.showHelp();
     }
   }
 
-  const config = require('../../lib/config').getMergedConfig();
-  const merged = Object.assign({}, argv, parsed, config);
-  return runPromise(main(merged));
+  return runPromise(main(argv, parsed));
 }
-
-module.exports = {
-  command: 'backport <identifier>',
-  describe: 'Backport a PR to a release staging branch.',
-  builder,
-  handler
-};
