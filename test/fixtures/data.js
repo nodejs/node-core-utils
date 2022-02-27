@@ -35,6 +35,8 @@ export const requestingChangesReviews =
   readJSON('reviews_requesting_changes.json');
 
 export const commentsWithFastTrack = readJSON('comments_with_fast_track.json');
+export const commentsWithTwoFastTrack =
+  readJSON('comments_with_two_fast_track.json');
 export const commentsWithFastTrackInsuffientApprovals =
   readJSON('comments_with_fast_track_insufficient_approvals.json');
 export const commentsWithCI = readJSON('comments_with_ci.json');
