@@ -1,6 +1,6 @@
 {
   "name": "node-core-utils",
-  "version": "1.31.0",
+  "version": "1.31.1",
   "description": "Utilities for Node.js core collaborators",
   "type": "module",
   "bin": {
