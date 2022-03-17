@@ -7,9 +7,9 @@ import TeamInfo from '../../lib/team_info.js';
 import { readJSON, readFile, path as getPath } from '../fixtures/index.js';
 
 const collabList =
-`- [@Bar](https://github.com/Bar) - Bar Bar
-- [@foo](https://github.com/foo) - Mr. foo
-- [@quo](https://github.com/quo) - Ms. Quo`;
+`* [@Bar](https://github.com/Bar) - Bar Bar
+* [@foo](https://github.com/foo) - Mr. foo
+* [@quo](https://github.com/quo) - Ms. Quo`;
 
 describe('TeamInfo', function() {
   let request;
