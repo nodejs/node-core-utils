@@ -70,6 +70,43 @@ describe('auth', async function() {
       'Could not get token: Bad credentials\n', 'run-auth-error'
     );
   });
+
+  it('does not accept a non-string username', async function() {
+    this.timeout(2000);
+    await runAuthScript(
+      { HOME: { username: {}, token: '0123456789abcdef' } },
+      [],
+      'username must be a string, received object\n'
+    );
+  });
+
+  it('does not accept a non-string token', async function() {
+    this.timeout(2000);
+    await runAuthScript(
+      { HOME: { username: 'nyancat', token: 42 } },
+      [],
+      'token must be a string, received number\n'
+    );
+  });
+
+  it('does not accept an invalid username format', async function() {
+    this.timeout(2000);
+    await runAuthScript(
+      { HOME: { username: ' ^^^ ', token: '0123456789abcdef' } },
+      [],
+      'username may only contain alphanumeric characters or hyphens, ' +
+      'received  ^^^ \n'
+    );
+  });
+
+  it('does not accept an invalid token format', async function() {
+    this.timeout(2000);
+    await runAuthScript(
+      { HOME: { username: 'nyancat', token: '0123456789ABCDEF' } },
+      [],
+      'token must be lowercase hexadecimal, received 0123456789ABCDEF\n'
+    );
+  });
 });
 
 // ncurc: { HOME: 'text to put in home ncurc',
