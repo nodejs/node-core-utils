@@ -102,9 +102,25 @@ describe('auth', async function() {
   it('does not accept an invalid token format', async function() {
     this.timeout(2000);
     await runAuthScript(
-      { HOME: { username: 'nyancat', token: '0123456789ABCDEF' } },
+      { HOME: { username: 'nyancat', token: '@fhqwhgads' } },
       [],
-      'token must be lowercase hexadecimal, received 0123456789ABCDEF\n'
+      'token is misformatted: @fhqwhgads\n'
+    );
+  });
+
+  it('permits capital letters in token format', async function() {
+    this.timeout(2000);
+    await runAuthScript(
+      { HOME: { username: 'nyancat', token: '0123456789ABCDEF' } },
+      ['{"github":"bnlhbmNhdDowMTIzNDU2Nzg5QUJDREVG"}']
+    );
+  });
+
+  it('permits underscores in token format', async function() {
+    this.timeout(2000);
+    await runAuthScript(
+      { HOME: { username: 'nyancat', token: 'ghp_0123456789ABCDEF' } },
+      ['{"github":"bnlhbmNhdDpnaHBfMDEyMzQ1Njc4OUFCQ0RFRg=="}']
     );
   });
 });
