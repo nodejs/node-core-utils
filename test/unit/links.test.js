@@ -18,8 +18,20 @@ describe('LinkParser', () => {
       fixes: ['https://github.com/nodejs/node/issues/16504'],
       refs: []
     }, {
+      // Parse non-GitHub refs.
+      // https://github.com/nodejs/node/pull/17107
       fixes: [],
       refs: ['https://en.wikipedia.org/w/index.php?title=IPv6_address&type=revision&diff=809494791&oldid=804196124']
+    }, {
+      // Parse npm update pull requests.
+      // https://github.com/nodejs/node/pull/42382
+      fixes: [],
+      refs: []
+    }, {
+      // Contains `Fixed: v8:11389` which should be ignored.
+      // https://github.com/nodejs/node/pull/37276
+      fixes: [],
+      refs: ['https://bugs.chromium.org/p/v8/issues/detail?id=11389#c18']
     }];
 
     for (let i = 0; i < htmls.length; ++i) {
