@@ -28,7 +28,7 @@ yargs(hideBin(process.argv)).command({
         default: 'nodejs'
       });
   },
-  handler: handler
+  handler
 })
   .command({
     command: 'sync <file>',
@@ -41,7 +41,7 @@ yargs(hideBin(process.argv)).command({
           type: 'string'
         });
     },
-    handler: handler
+    handler
   })
   .demandCommand(1, 'must provide a valid command')
   .help()

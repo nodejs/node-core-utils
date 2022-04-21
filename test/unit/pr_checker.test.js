@@ -1299,7 +1299,7 @@ describe('PRChecker', () => {
         reviewers: allGreenReviewers,
         comments: comment,
         reviews: approvingReviews,
-        commits: commits,
+        commits,
         collaborators,
         authorIsNew: () => true,
         getThread() {
@@ -1346,7 +1346,7 @@ describe('PRChecker', () => {
         reviewers: allGreenReviewers,
         comments: comment,
         reviews: approvingReviews,
-        commits: commits,
+        commits,
         collaborators,
         authorIsNew: () => true,
         getThread() {
@@ -1389,7 +1389,7 @@ describe('PRChecker', () => {
         reviewers: allGreenReviewers,
         comments: comment,
         reviews: approvingReviews,
-        commits: commits,
+        commits,
         collaborators,
         authorIsNew: () => true,
         getThread() {

@@ -485,7 +485,7 @@ class URLCommand extends CICommand {
     }
     for (const [type, ci] of ciMap) {
       queue.push({
-        type: type,
+        type,
         jobid: ci.jobid
       });
     }
