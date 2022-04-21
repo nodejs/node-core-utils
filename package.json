@@ -12,8 +12,8 @@
   },
   "scripts": {
     "test": "npm run test-unit && npm run lint",
-    "test-unit": "mocha test/unit/*.test.js",
-    "test-all": "mocha test/**/*.test.js",
+    "test-unit": "mocha --timeout 60000 test/unit/*.test.js",
+    "test-all": "mocha --timeout 60000 test/**/*.test.js",
     "coverage": "c8 --reporter=html --reporter=text --reporter=text-summary npm test",
     "coverage-all": "c8 --reporter=lcov --reporter=text --reporter=text-summary npm run test-all",
     "lint": "eslint . --cache",
