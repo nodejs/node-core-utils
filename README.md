@@ -122,7 +122,7 @@ Put the following entries into `~/.gitignore_global`
 .ncu
 ```
 
-Mind that`.ncu/land` could contain your access token since it contains the
+Mind that `.ncu/land` could contain your access token since it contains the
 serialized configurations.
 
 If you ever accidentally commit your access token on GitHub, you can simply
