@@ -41,11 +41,11 @@
     "figures": "^4.0.1",
     "form-data": "^4.0.0",
     "ghauth": "^4.0.0",
-    "inquirer": "^8.2.2",
+    "inquirer": "^8.2.4",
     "listr2": "^4.0.5",
     "lodash": "^4.17.21",
     "log-symbols": "^5.1.0",
-    "node-fetch": "^3.2.3",
+    "node-fetch": "^3.2.4",
     "ora": "^6.1.0",
     "proxy-agent": "^5.0.0",
     "replace-in-file": "^6.3.2",
@@ -55,13 +55,13 @@
   },
   "devDependencies": {
     "c8": "^7.11.2",
-    "eslint": "^8.13.0",
+    "eslint": "^8.14.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^4.1.0",
-    "mocha": "^9.2.2",
+    "mocha": "^10.0.0",
     "sinon": "^13.0.2"
   }
 }
