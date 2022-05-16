@@ -51,17 +51,17 @@
     "replace-in-file": "^6.3.2",
     "rimraf": "^3.0.2",
     "which": "^2.0.2",
-    "yargs": "^17.4.1"
+    "yargs": "^17.5.0"
   },
   "devDependencies": {
     "c8": "^7.11.2",
-    "eslint": "^8.14.0",
+    "eslint": "^8.15.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^4.1.0",
     "mocha": "^10.0.0",
-    "sinon": "^13.0.2"
+    "sinon": "^14.0.0"
   }
 }
