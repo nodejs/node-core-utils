@@ -30,7 +30,7 @@ Exporting parameter NODEJS_VERSION with Node.js version '11.0.0'
 Exporting parameter NODEJS_MAJOR_VERSION with Node.js major version '11'
 [debian9-64] $ /bin/sh -xe /tmp/jenkins3291460991233382964.sh
 + bash
-+ curl https://raw.githubusercontent.com/nodejs/build/master/jenkins/scripts/node-test-commit-pre.sh
++ curl https://raw.githubusercontent.com/nodejs/build/main/jenkins/scripts/node-test-commit-pre.sh
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  1165  100  1165    0     0  18116      0 --:--:-- --:--:-- --:--:-- 18203

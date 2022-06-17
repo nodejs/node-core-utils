@@ -42,7 +42,7 @@ Options:
 Examples:
 
 ```sh
-node on git:master ❯ ncu-ci rate pr
+node on git:main ❯ ncu-ci rate pr
 --------------------------------------------------------------------------------
 [1/1] Running health
 --------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ node on git:master ❯ ncu-ci rate pr
 ```
 
 ```sh
-node on git:master ❯ ncu-ci rate commit
+node on git:main ❯ ncu-ci rate commit
 --------------------------------------------------------------------------------
 [1/1] Running health
 --------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ node on git:master ❯ ncu-ci rate commit
 
 Example:
 ```sh
-node on git:master ❯ ncu-ci walk commit
+node on git:main ❯ ncu-ci walk commit
 ✔  Done--------------------------------------------------------------------------------
 [1/60] Running health
 --------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ For example, if you would like to see the results of `node-test-pull-request` fo
 
 Example:
 ```sh
-node on git:master ❯ ncu-ci pr 32158
+node on git:main ❯ ncu-ci pr 32158
 --------------------------------------------------------------------------------
 [1/1] Running PR: 32158
 --------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ For example, if you would like to see the results of `node-test-commit` for http
 
 Example:
 ```sh
-node on git:master ❯ ncu-ci commit 39377
+node on git:main ❯ ncu-ci commit 39377
 --------------------------------------------------------------------------------
 [1/1] Running COMMIT: 39377
 --------------------------------------------------------------------------------
@@ -180,7 +180,7 @@ Unstable   https://ci.nodejs.org/job/node-test-commit-arm-fanned/15148/
 
 Example:
 ```sh
-node on git:master ❯ ncu-ci url https://github.com/nodejs/node/pull/34127
+node on git:main ❯ ncu-ci url https://github.com/nodejs/node/pull/34127
 --------------------------------------------------------------------------------
 [1/1] Running PR: 32158
 --------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ Unstable   https://ci.nodejs.org/job/node-test-commit-arm-fanned/15155/
 
 Example:
 ```sh
-node on git:master ❯ ncu-ci benchmark 636
+node on git:main ❯ ncu-ci benchmark 636
 --------------------------------------------------------------------------------
 [1/1] Running BENCHMARK: 636
 --------------------------------------------------------------------------------
@@ -237,7 +237,7 @@ Finished: SUCCESS
 
 Example:
 ```
-node on git:master ❯ ncu-ci citgm 2400
+node on git:main ❯ ncu-ci citgm 2400
 --------------------------------------------------------------------------------
 [1/1] Running CITGM: 2400
 --------------------------------------------------------------------------------
@@ -316,7 +316,7 @@ FAILURE: 5 failures in 2390 not present in 2392
 `ncu-ci daily` show recent results of `node-daily-master`. You can also aggregate the results by passing `--cache`, or limit the maximum number of CIs jobs to get data from with `--limit=N`. See `ncu-ci daily --help` for more.
 
 ```sh
-node on git:master ❯ ncu-ci daily
+node on git:main ❯ ncu-ci daily
 ✔  Done--------------------------------------------------------------------------------
 [1/16] Running health
 --------------------------------------------------------------------------------
@@ -333,7 +333,7 @@ node on git:master ❯ ncu-ci daily
 ----------------------------------- Summary ------------------------------------
 Result     FAILURE
 URL        https://ci.nodejs.org/job/node-test-commit/39692/
-Source     https://api.github.com/repos/nodejs/node/git/refs/heads/master
+Source     https://api.github.com/repos/nodejs/node/git/refs/heads/main
 Commit     [bf0d82c10247] test: remove common.localhostIPv6
 Date       2020-07-16 16:57:30 -0700
 Author     Rich Trott <rtrott@gmail.com>

@@ -10,12 +10,12 @@ const epilogue = `====================== Example =======================
 Demo: https://asciinema.org/a/221244
 Backporting https://github.com/nodejs/node/pull/24816 to v11.x
 
-# Sync master with upstream for the commits, if they are not yet there
-$ git checkout master
-$ ncu-config set branch master
+# Sync main with upstream for the commits, if they are not yet there
+$ git checkout main
+$ ncu-config set branch main
 $ git node sync
 
-# Backport existing commits from master to v11.x-staging
+# Backport existing commits from main to v11.x-staging
 $ git checkout v11.x-staging
 $ ncu-config set branch v11.x-staging
 $ git node sync

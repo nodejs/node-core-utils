@@ -20,6 +20,6 @@
     ]
   },
   "title": "test: awesome changes",
-  "baseRefName": "master",
+  "baseRefName": "main",
   "headRefName": "awesome-changes"
 }
