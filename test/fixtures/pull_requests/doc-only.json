@@ -7,7 +7,7 @@
     "name": "Antoine du Hamel"
   },
   "url": "https://github.com/nodejs/node/pull/34748",
-  "bodyHTML": "<p>This part of the docs aims to contain documentation regarding package configuration that covers both ESM and CJS realms.</p>\n<p>Refs: <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"670745739\" data-permission-text=\"Title is private\" data-url=\"https://github.com/nodejs/modules/issues/539\" data-hovercard-type=\"issue\" data-hovercard-url=\"/nodejs/modules/issues/539/hovercard\" href=\"https://github.com/nodejs/modules/issues/539\">nodejs/modules#539</a></p>\n\n<h5>Checklist</h5>\n\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\" checked=\"\"> <code>make -j4 test</code> (UNIX), or <code>vcbuild test</code> (Windows) passes</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\" checked=\"\"> documentation is changed or added</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\" checked=\"\"> commit message follows <a href=\"https://github.com/nodejs/node/blob/master/doc/guides/contributing/pull-requests.md#commit-message-guidelines\">commit guidelines</a></li>\n</ul>\n",
+  "bodyHTML": "<p>This part of the docs aims to contain documentation regarding package configuration that covers both ESM and CJS realms.</p>\n<p>Refs: <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"670745739\" data-permission-text=\"Title is private\" data-url=\"https://github.com/nodejs/modules/issues/539\" data-hovercard-type=\"issue\" data-hovercard-url=\"/nodejs/modules/issues/539/hovercard\" href=\"https://github.com/nodejs/modules/issues/539\">nodejs/modules#539</a></p>\n\n<h5>Checklist</h5>\n\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\" checked=\"\"> <code>make -j4 test</code> (UNIX), or <code>vcbuild test</code> (Windows) passes</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\" checked=\"\"> documentation is changed or added</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\" checked=\"\"> commit message follows <a href=\"https://github.com/nodejs/node/blob/main/doc/guides/contributing/pull-requests.md#commit-message-guidelines\">commit guidelines</a></li>\n</ul>\n",
   "bodyText": "This part of the docs aims to contain documentation regarding package configuration that covers both ESM and CJS realms.\nRefs: nodejs/modules#539\n\nChecklist\n\n\n make -j4 test (UNIX), or vcbuild test (Windows) passes\n documentation is changed or added\n commit message follows commit guidelines",
   "labels": {
     "nodes": [
@@ -39,7 +39,7 @@
     ]
   },
   "title": "doc: move package config docs to separate page",
-  "baseRefName": "master",
+  "baseRefName": "main",
   "headRefName": "doc-package-config",
   "changedFiles": 4,
   "mergeable": "MERGEABLE",

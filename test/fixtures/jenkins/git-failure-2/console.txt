@@ -29,7 +29,7 @@
 19:15:56 Exporting parameter NODEJS_VERSION with Node.js version '11.0.0'
 19:15:56 Exporting parameter NODEJS_MAJOR_VERSION with Node.js major version '11'
 19:15:56 [rhel72-s390x] $ /bin/sh -xe /tmp/jenkins7325057057705257195.sh
-19:15:56 + curl https://raw.githubusercontent.com/nodejs/build/master/jenkins/scripts/node-test-commit-pre.sh
+19:15:56 + curl https://raw.githubusercontent.com/nodejs/build/main/jenkins/scripts/node-test-commit-pre.sh
 19:15:56 + bash -ex -s before
 19:15:56   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 19:15:56                                  Dload  Upload   Total   Spent    Left  Speed

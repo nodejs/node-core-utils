@@ -42,7 +42,7 @@ describe('PRSummary', () => {
         ['Author',
           'Their Github Account email <pr_author@example.com>' +
           ' (@pr_author, first-time contributor)'],
-        ['Branch', 'pr_author:awesome-changes -> nodejs:master'],
+        ['Branch', 'pr_author:awesome-changes -> nodejs:main'],
         ['Labels', 'needs-ci, test, doc'],
         ['Commits', '6'],
         ['Committers', '3']
@@ -76,7 +76,7 @@ describe('PRSummary', () => {
         ['Author',
           'Their Github Account email <pr_author@example.com>' +
           ' (@pr_author)'],
-        ['Branch', 'pr_author:awesome-changes -> nodejs:master'],
+        ['Branch', 'pr_author:awesome-changes -> nodejs:main'],
         ['Labels', 'semver-major'],
         ['Commits', '1'],
         ['Committers', '1']
@@ -104,7 +104,7 @@ describe('PRSummary', () => {
       ],
       table: [
         ['Title', 'doc: fix mdn links (#16348)'],
-        ['Branch', 'pr_author:fix-links -> nodejs:master'],
+        ['Branch', 'pr_author:fix-links -> nodejs:main'],
         ['Labels', 'doc'],
         ['Commits', '1'],
         ['Committers', '1']

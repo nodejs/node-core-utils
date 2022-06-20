@@ -3,28 +3,29 @@
 A custom Git command for managing pull requests. You can run it as
 `git-node` or `git node`. To see the help text, run `git node`.
 
-- [`git node land`](#git-node-land)
-  - [Prerequisites](#git-node-land-prerequisites)
-  - [Git bash for Windows](#git-bash-for-windows)
-  - [Demo & Usage](#demo--usage)
-  - [Optional Settings](#git-node-land-optional-settings)
-- [`git node backport`](#git-node-backport)
-  - [Example](#example)
-- [`git node release`](#git-node-release)
-  - [Example](#example-1)
-- [`git node sync`](#git-node-sync)
-- [`git node metadata`](#git-node-metadata)
-  - [Optional Settings](#git-node-metadata-optional-settings)
-- [`git node v8`](#git-node-v8)
-  - [Prerequisites](#git-node-v8-prerequisites)
-  - [`git node v8 major`](#git-node-v8-major)
-  - [`git node v8 minor`](#git-node-v8-minor)
-  - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
-  - [General options](#general-options)
-- [`git node status`](#git-node-status)
-  - [Example](#example)
-- [`git node wpt`](#git-node-wpt)
-  - [Example](#example-2)
+- [git-node](#git-node)
+  - [`git node land`](#git-node-land)
+    - [Prerequisites](#prerequisites)
+    - [Git bash for Windows](#git-bash-for-windows)
+    - [Demo & Usage](#demo--usage)
+    - [Optional Settings](#optional-settings)
+  - [`git node backport`](#git-node-backport)
+    - [Example](#example)
+  - [`git node release`](#git-node-release)
+    - [Example](#example-1)
+  - [`git node sync`](#git-node-sync)
+  - [`git node metadata`](#git-node-metadata)
+    - [Optional Settings](#optional-settings-1)
+  - [`git node v8`](#git-node-v8)
+    - [Prerequisites](#prerequisites-1)
+    - [`git node v8 major`](#git-node-v8-major)
+    - [`git node v8 minor`](#git-node-v8-minor)
+    - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
+    - [General options](#general-options)
+  - [`git node status`](#git-node-status)
+    - [Example](#example-2)
+  - [`git node wpt`](#git-node-wpt)
+    - [Example](#example-3)
 
 ## `git node land`
 
@@ -93,8 +94,8 @@ Examples:
    # Tell ncu that your upstream remote is named "upstream"
    $ ncu-config set upstream upstream
 
-   # Tell ncu that you are landing patches to "master" branch
-   $ ncu-config set branch master
+   # Tell ncu that you are landing patches to "main" branch
+   $ ncu-config set branch main
    ```
 
 Note: If you are behind a firewall and run into `ECONNREFUSED` issues with
@@ -130,9 +131,9 @@ $ cd path/to/node/project
 
 # If you have not configured it before
 $ ncu-config set upstream <name-of-remote-to-nodejs/node>
-$ ncu-config set branch master   # Assuming you are landing commits on master
+$ ncu-config set branch main   # Assuming you are landing commits on main
 
-$ git checkout master
+$ git checkout main
 $ git node land --abort          # Abort a landing session, just in case
 $ git node land $PRID            # Start a new landing session
 $ git node land $URL             # Start a new landing session using the PR URL
@@ -192,11 +193,11 @@ Options:
 ```
 Backporting https://github.com/nodejs/node/pull/12344 to v10.x
 
-# Sync master with upstream for the commits, if they are not yet there
-$ git checkout master
+# Sync main with upstream for the commits, if they are not yet there
+$ git checkout main
 $ git node sync
 
-# Backport existing commits from master to v10.x-staging
+# Backport existing commits from main to v10.x-staging
 $ git checkout v10.x-staging
 $ git node sync
 $ git node backport 12344 --to 10
@@ -397,14 +398,14 @@ Return status and information about the current git-node land session. Shows the
 ### Example
 
 ```sh
-node on git:master ❯ git node status                                             11:32AM
+node on git:main ❯ git node status                                             11:32AM
    ✔  Landing session in progress
 --------------------------------------------------------------------------------
 PR:        https:/github.com/nodejs/node/pull/34800
 State:     AMENDING
 Username:  codebytere
 Upstream:  upstream
-Branch:    master
+Branch:    main
 ```
 
 ## `git node wpt`
@@ -441,4 +442,4 @@ $ git node wpt url  # Will update test/fixtures/wpt/url and related files
 $ git node wpt url --commit=43feb7f612fe9160639e09a47933a29834904d69
 ```
 
-[node.js abi version registry]: https://github.com/nodejs/node/blob/master/doc/abi_version_registry.json
+[node.js abi version registry]: https://github.com/nodejs/node/blob/main/doc/abi_version_registry.json

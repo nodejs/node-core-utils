@@ -15,7 +15,7 @@
     ]
   },
   "title": "test: This PR has conflicts",
-  "baseRefName": "master",
+  "baseRefName": "main",
   "headRefName": "pr-conflicts",
   "mergeable": "CONFLICTING"
 }
