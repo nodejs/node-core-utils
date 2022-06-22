@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.0](https://github.com/nodejs/node-core-utils/compare/v1.31.4...v2.0.0) (2022-06-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ci:** Removed support for Node.js 12 and 17.
+
+### Bug Fixes
+
+* broken enquirer in listr2 ([#636](https://github.com/nodejs/node-core-utils/issues/636)) ([460b50d](https://github.com/nodejs/node-core-utils/commit/460b50dcea878a6234021448441395efefaeb2bf))
+
+
+### Miscellaneous Chores
+
+* **ci:** test on supported Node.js versions ([40a1ee2](https://github.com/nodejs/node-core-utils/commit/40a1ee220b058a1ce2b6e513d75d2a5ea0124633))
+
 ### [1.31.4](https://github.com/nodejs/node-core-utils/compare/v1.31.3...v1.31.4) (2022-04-25)
 
 
