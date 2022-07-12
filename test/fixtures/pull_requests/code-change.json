@@ -1,0 +1,23 @@
+{
+  "createdAt": "2022-07-12T11:55:42Z",
+  "authorAssociation": "MEMBER",
+  "author": {
+    "login": "F3n67u",
+    "email": "F3n67u@outlook.com",
+    "name": "Feng Yu"
+  },
+  "url": "https://github.com/nodejs/node/pull/43796",
+  "bodyHTML": "\n<p dir=\"auto\"><span class=\"issue-keyword tooltipped tooltipped-se\" aria-label=\"This pull request closes issue #43795.\">Fix</span> <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"1301950808\" data-permission-text=\"Title is private\" data-url=\"https://github.com/nodejs/node/issues/43795\" data-hovercard-type=\"issue\" data-hovercard-url=\"/nodejs/node/issues/43795/hovercard\" href=\"https://github.com/nodejs/node/issues/43795\">#43795</a></p>",
+  "bodyText": "Fix #43795",
+  "labels": { "nodes": [{ "name": "http" }] },
+  "files": { "nodes": [{ "path": "lib/_http_server.js" }] },
+  "title": "http: check if `socket` is null before destroy",
+  "baseRefName": "main",
+  "headRefName": "closeIdleConnections",
+  "changedFiles": 1,
+  "mergeable": "MERGEABLE",
+  "closed": false,
+  "closedAt": null,
+  "merged": false,
+  "mergedAt": null
+}
