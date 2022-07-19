@@ -40,6 +40,9 @@ describe('Jenkins', () => {
       return FormData.prototype.append.wrappedMethod.bind(this)(key, value);
     });
   });
+  after(() => {
+    sinon.restore();
+  });
 
   it('should fail if starting node-pull-request throws', async() => {
     const cli = new TestCLI();
