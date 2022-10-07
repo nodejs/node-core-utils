@@ -92,6 +92,7 @@ const args = yargs(hideBin(process.argv))
           describe: 'Time since when the CI results should be queried'
         }).check(argv => {
           try {
+            // eslint-disable-next-line no-new
             new Date(argv.since);
           } catch {
             throw new Error('--since <date> should be string that can ' +
