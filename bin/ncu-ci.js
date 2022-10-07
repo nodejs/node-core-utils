@@ -86,6 +86,19 @@ const args = yargs(hideBin(process.argv))
         .option('limit', {
           default: 99,
           describe: 'Maximum number of CIs to get data from'
+        })
+        .option('since <date>', {
+          type: 'string',
+          describe: 'Time since when the CI results should be queried'
+        }).check(argv => {
+          try {
+            // eslint-disable-next-line no-new
+            new Date(argv.since);
+          } catch {
+            throw new Error('--since <date> should be string that can ' +
+                            'be parsed by new Date()');
+          }
+          return true;
         });
     },
     handler
@@ -421,7 +434,12 @@ class WalkCommand extends CICommand {
 
   async initialize() {
     const ciType = commandToType[this.argv.type];
-    const builds = await listBuilds(this.cli, this.request, ciType);
+    const since = this.argv.since ? new Date(this.argv.since) : undefined;
+    const builds = await listBuilds(this.cli, this.request, ciType, since);
+    if (builds.count === 0) {
+      this.cli.log('No applicable builds found.');
+      return;
+    }
     this.queue.push({ type: 'health', ciType, builds });
     for (const build of builds.failed.slice(0, this.argv.limit)) {
       this.queue.push(build);
@@ -430,6 +448,9 @@ class WalkCommand extends CICommand {
 
   async aggregate() {
     const { argv, cli } = this;
+    if (this.queue.length === 0) {
+      return;
+    }
     const aggregator = new FailureAggregator(cli, this.json);
     this.json = aggregator.aggregate();
     cli.log('');
