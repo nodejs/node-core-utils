@@ -166,8 +166,8 @@ Options:
 
 ### Optional Settings
 
-The same Settings used by 
-[`git node metadata`](#git-node-metadata-optional-settings) are also used by 
+The same Settings used by
+[`git node metadata`](#git-node-metadata-optional-settings) are also used by
 `git node land`.
 
 ## `git node backport`
@@ -334,7 +334,7 @@ $ brew install gpatch
 
 And make sure `which patch` points to `/usr/local/bin/patch` installed by
 homebrew instead of `/usr/bin/patch` that comes with the system (e.g. by
-modifying yoru `PATH` environment variable).
+modifying your `PATH` environment variable).
 
 ### `git node v8 major`
 
