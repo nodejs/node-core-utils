@@ -124,6 +124,26 @@ const args = yargs(hideBin(process.argv))
     handler
   })
   .command({
+    command: 'resume <prid>',
+    desc: 'Resume CI for given PR',
+    builder: (yargs) => {
+      yargs
+        .positional('prid', {
+          describe: 'ID of the PR',
+          type: 'number'
+        })
+        .option('owner', {
+          default: '',
+          describe: 'GitHub repository owner'
+        })
+        .option('repo', {
+          default: '',
+          describe: 'GitHub repository name'
+        });
+    },
+    handler
+  })
+  .command({
     command: 'url <url>',
     desc: 'Automatically detect CI type and show results',
     builder: (yargs) => {
@@ -266,10 +286,8 @@ class RunPRJobCommand {
     return this.argv.prid;
   }
 
-  async start() {
-    const {
-      cli, request, prid, repo, owner
-    } = this;
+  validate() {
+    const { cli, repo, owner } = this;
     let validArgs = true;
     if (!repo) {
       validArgs = false;
@@ -283,10 +301,44 @@ class RunPRJobCommand {
     }
     if (!validArgs) {
       this.cli.setExitCode(1);
+    }
+    return validArgs;
+  }
+
+  async start() {
+    const {
+      cli, request, prid, repo, owner
+    } = this;
+    if (!this.validate()) {
       return;
     }
     const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
-    if (!jobRunner.start()) {
+    if (!await jobRunner.start()) {
+      this.cli.setExitCode(1);
+      process.exitCode = 1;
+    }
+  }
+}
+
+class ResumePRJobCommand extends RunPRJobCommand {
+  async start() {
+    const {
+      cli, request, prid, repo, owner
+    } = this;
+    if (!this.validate()) {
+      return;
+    }
+    // Parse CI links from PR.
+    const parser = await JobParser.fromPRId(this, cli, request);
+    const ciMap = parser.parse();
+
+    if (!ciMap.has(PR)) {
+      cli.info(`No CI run detected from pull request ${prid}`);
+    }
+
+    const { jobid } = ciMap.get(PR);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, jobid);
+    if (!await jobRunner.resume()) {
       this.cli.setExitCode(1);
       process.exitCode = 1;
     }
@@ -559,6 +611,10 @@ async function main(command, argv) {
     case 'run': {
       const jobRunner = new RunPRJobCommand(cli, request, argv);
       return jobRunner.start();
+    }
+    case 'resume': {
+      const jobResumer = new ResumePRJobCommand(cli, request, argv);
+      return jobResumer.start();
     }
     case 'rate': {
       commandHandler = new RateCommand(cli, request, argv);
