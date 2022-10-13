@@ -67,6 +67,15 @@ describe('Jenkins', () => {
     const cli = new TestCLI();
 
     const request = {
+      gql: sinon.stub().returns({
+        repository: {
+          pullRequest: {
+            labels: {
+              nodes: []
+            }
+          }
+        }
+      }),
       fetch: sinon.stub()
         .callsFake((url, { method, headers, body }) => {
           assert.strictEqual(url, CI_PR_URL);
