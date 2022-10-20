@@ -36,7 +36,9 @@ export function builder(yargs) {
       describe: 'Version number of the release to be prepared or promoted'
     })
     .example('git node release --prepare 1.2.3',
-      'Prepare a new release of Node.js tagged v1.2.3');
+      'Prepare a release of Node.js tagged v1.2.3')
+    .example('git node --prepare --startLTS',
+      'Prepare the first LTS release');
 }
 
 export function handler(argv) {
