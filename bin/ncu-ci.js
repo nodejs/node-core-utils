@@ -286,7 +286,7 @@ class RunPRJobCommand {
       return;
     }
     const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
-    if (!jobRunner.start()) {
+    if (!(await jobRunner.start())) {
       this.cli.setExitCode(1);
       process.exitCode = 1;
     }
