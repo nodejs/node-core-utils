@@ -100,7 +100,7 @@ To obtain the Jenkins API token
   token in the inbox that appears, and click `GENERATE`.
 4. Copy the generated token.
 5. Add it into your `ncurc` file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`)
-  with `jenkins_token` as key, like this
+  with `jenkins_token` as key, like this:
 
   ```json
   {
@@ -113,7 +113,9 @@ To obtain the Jenkins API token
 
 ### Make sure your credentials won't be committed
 
-Put the following entries into `~/.gitignore_global`
+Put the following entries into your
+[global `gitignore` file](https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreexcludesFile)
+(`$XDG_CONFIG_HOME/git/ignore` or a file specified by `core.excludesFile`):
 
 ```
 # node-core-utils configuration file
@@ -122,7 +124,7 @@ Put the following entries into `~/.gitignore_global`
 .ncu
 ```
 
-Mind that`.ncu/land` could contain your access token since it contains the
+Mind that `.ncu/land` could contain your access token since it contains the
 serialized configurations.
 
 If you ever accidentally commit your access token on GitHub, you can simply

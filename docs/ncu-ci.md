@@ -111,7 +111,7 @@ and then cache the responses from Jenkins so that the next time the command
 is run, it picks up cached data written on disk for jobs whose results
 are known.
 
-Note: results are cached in `${ncu_intallation_path}/.ncu/cache`, so you
+Note: results are cached in `${ncu_installation_path}/.ncu/cache`, so you
 may want to clean it up from time to time.
 
 ```
