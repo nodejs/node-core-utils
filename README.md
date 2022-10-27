@@ -113,7 +113,8 @@ To obtain the Jenkins API token
 
 ### Make sure your credentials won't be committed
 
-Put the following entries into your global gitignore file
+Put the following entries into your
+[global `gitignore` file](https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreexcludesFile)
 (`$XDG_CONFIG_HOME/git/ignore` or a file specified by `core.excludesFile`):
 
 ```
