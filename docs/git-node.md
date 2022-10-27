@@ -233,6 +233,11 @@ git node release --prepare 1.2.3
 git node release --prepare
 ```
 
+```sh
+# Prepare the first LTS release for a given release line
+git node release --prepare --startLTS
+```
+
 ## `git node sync`
 
 Demo: https://asciinema.org/a/221230
