@@ -18,6 +18,7 @@ import {
   noReviewers,
   commentsWithFastTrack,
   commentsWithTwoFastTrack,
+  commentsWithTwoFastTrackDifferentCase,
   commentsWithFastTrackInsuffientApprovals,
   commentsWithCI,
   commentsWithFailedCI,
@@ -566,6 +567,53 @@ describe('PRChecker', () => {
         pr,
         reviewers: allGreenReviewers,
         comments: commentsWithTwoFastTrack,
+        reviews: approvingReviews,
+        commits: [],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, {}, argv);
+
+      cli.clearCalls();
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should compare collaborator handles as case-insensitive', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok:
+         [['Approvals: 4'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+           ['- Quux User (@Quux): LGTM'],
+           ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+           ['- Bar User (@bar) (TSC): lgtm']],
+        info:
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+           ['This PR is being fast-tracked']]
+      };
+
+      const pr = Object.assign({}, firstTimerPR, {
+        author: {
+          login: 'bar'
+        },
+        createdAt: LT_48H,
+        labels: {
+          nodes: [
+            { name: 'fast-track' }
+          ]
+        }
+      });
+
+      const data = {
+        pr,
+        reviewers: allGreenReviewers,
+        comments: commentsWithTwoFastTrackDifferentCase,
         reviews: approvingReviews,
         commits: [],
         collaborators,
