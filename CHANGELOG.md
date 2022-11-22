@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.2](https://github.com/nodejs/node-core-utils/compare/v2.1.1...v2.1.2) (2022-11-22)
+
+
+### Bug Fixes
+
+* use case-insensitive string comparison for fast-track approvals ([#658](https://github.com/nodejs/node-core-utils/issues/658)) ([8ad4b37](https://github.com/nodejs/node-core-utils/commit/8ad4b377c270e8495a8cf8fece1e6a439304e327))
+* **v8:** add ittapi as V8 dependency ([#552](https://github.com/nodejs/node-core-utils/issues/552)) ([20713c0](https://github.com/nodejs/node-core-utils/commit/20713c08b4ba7b594b1179bd7e3991f41bd49319))
+
 ## [2.1.1](https://github.com/nodejs/node-core-utils/compare/v2.1.0...v2.1.1) (2022-10-27)
 
 
