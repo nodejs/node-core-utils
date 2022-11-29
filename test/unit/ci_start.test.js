@@ -44,6 +44,7 @@ describe('Jenkins', () => {
   it('should fail if starting node-pull-request throws', async() => {
     const cli = new TestCLI();
     const request = {
+      fetch: sinon.stub().returns(Promise.resolve({ status: 400 })),
       text: sinon.stub().throws(),
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
