@@ -165,6 +165,27 @@ describe('cli', () => {
     });
   });
 
+  describe('prompt cares about spinner', () => {
+    beforeEach(() => {
+      stream = new LogStream();
+      cli = new CLI(stream, {
+        spinner: { isEnabled: true }
+      });
+      cli.setAssumeYes();
+    });
+
+    it('pauses when prompt a question', async() => {
+      cli.startSpinner('foo');
+      assert.deepEqual(cli.spinner.text, 'foo');
+      assert.deepEqual(cli.spinner.isSpinning, true);
+      await cli.prompt('So you think darkness is your ally?', {
+        defaultAnswer: 'Yes, I was born in it. Molded by it.',
+        questionType: cli.QUESTION_TYPE.INPUT
+      });
+      assert.strictEqual(cli.spinner.isSpinning, true);
+    });
+  });
+
   describe('prompt assume yes', () => {
     beforeEach(() => {
       stream = new LogStream();
