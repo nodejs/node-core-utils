@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/nodejs/node-core-utils/compare/v2.1.2...v2.1.3) (2022-12-06)
+
+
+### Bug Fixes
+
+* **cli:** handle spinning states ([51a3b24](https://github.com/nodejs/node-core-utils/commit/51a3b24aaeacb5c9b71c94cb8d024b2d2935fa06))
+
 ## [2.1.2](https://github.com/nodejs/node-core-utils/compare/v2.1.1...v2.1.2) (2022-11-22)
 
 
