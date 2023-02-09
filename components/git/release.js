@@ -21,6 +21,10 @@ const releaseOptions = {
     describe: 'Demarcate the new security release as a security release',
     type: 'boolean'
   },
+  filterLabel: {
+    describe: 'Labels separated by "," to filter security PRs',
+    type: 'string'
+  },
   startLTS: {
     describe: 'Mark the release as the transition from Current to LTS',
     type: 'boolean'
