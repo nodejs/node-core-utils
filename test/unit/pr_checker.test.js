@@ -971,6 +971,92 @@ describe('PRChecker', () => {
       });
     });
 
+    it('should succeed if doc-only changes in tools dir without Jenkins',
+      async() => {
+        const cli = new TestCLI();
+
+        const expectedLogs = {
+          ok: [
+            ['Last GitHub CI successful']
+          ],
+          info: [
+            ['Green GitHub CI is sufficient']
+          ]
+        };
+
+        const data = {
+          pr: pullRequests['doc-only-in-tools'],
+          reviewers: allGreenReviewers,
+          comments: [],
+          reviews: approvingReviews,
+          commits: githubCI['check-suite-success'],
+          collaborators,
+          authorIsNew: () => true,
+          getThread() {
+            return PRData.prototype.getThread.call(this);
+          }
+        };
+        const checker = new PRChecker(
+          cli,
+          data,
+          {
+            json: sinon.stub().callsFake(await function() {
+              return undefined;
+            })
+          },
+          argv);
+
+        cli.clearCalls();
+        const status = await checker.checkCI();
+        assert(status);
+        cli.assertCalledWith(expectedLogs, {
+          ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+        });
+      }
+    );
+
+    it('should fail if code changes without Jenkins', async() => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['No Jenkins CI runs detected']
+        ],
+        ok: [
+          ['Last GitHub CI successful']
+        ]
+      };
+
+      const data = {
+        pr: pullRequests['code-change'],
+        reviewers: allGreenReviewers,
+        comments: [],
+        reviews: approvingReviews,
+        commits: githubCI['check-suite-success'],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(
+        cli,
+        data,
+        {
+          json: sinon.stub().callsFake(await function() {
+            return undefined;
+          })
+        },
+        argv);
+
+      cli.clearCalls();
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs, {
+        ignore: ['startSpinner', 'updateSpinner', 'stopSpinner']
+      });
+    });
+
     it('should succeed if doc-only changes with failed Jenkins', async() => {
       const cli = new TestCLI();
 

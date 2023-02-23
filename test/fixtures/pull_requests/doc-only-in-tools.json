@@ -1,0 +1,31 @@
+{
+  "createdAt": "2022-06-19T03:31:58Z",
+  "authorAssociation": "MEMBER",
+  "author": {
+    "login": "F3n67u",
+    "email": "F3n67u@outlook.com",
+    "name": "Feng Yu"
+  },
+  "url": "https://github.com/nodejs/node/pull/43483",
+  "bodyHTML": "\n<p dir=\"auto\">unicode-org/icu repo has renamed its default branch to main also, this pr update the link to unicode-org/icu old master branch.</p>",
+  "bodyText": "unicode-org/icu repo has renamed its default branch to main also, this pr update the link to unicode-org/icu old master branch.",
+  "labels": {
+    "nodes": [
+      { "name": "tools" },
+      { "name": "i18n-api" },
+      { "name": "fast-track" },
+      { "name": "author ready" },
+      { "name": "icu" }
+    ]
+  },
+  "files": { "nodes": [{ "path": "tools/icu/README.md" }] },
+  "title": "tools: update link of `ICU data slicer`",
+  "baseRefName": "main",
+  "headRefName": "doc/icu",
+  "changedFiles": 1,
+  "mergeable": "UNKNOWN",
+  "closed": true,
+  "closedAt": "2022-06-20T09:20:58Z",
+  "merged": true,
+  "mergedAt": "2022-06-20T09:20:58Z"
+}
