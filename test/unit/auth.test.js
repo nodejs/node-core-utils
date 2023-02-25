@@ -4,8 +4,6 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert';
 
-import rimraf from 'rimraf';
-
 let testCounter = 0; // for tmp directories
 
 const FIRST_TIME_MSG =
@@ -136,7 +134,7 @@ function runAuthScript(
       if (ncurc[envVar] === undefined) continue;
       newEnv[envVar] =
         fileURLToPath(new URL(`tmp-${testCounter++}`, import.meta.url));
-      rimraf.sync(newEnv[envVar]);
+      fs.rmSync(newEnv[envVar], { recursive: true, force: true });
       fs.mkdirSync(newEnv[envVar], { recursive: true });
 
       const ncurcPath = path.resolve(newEnv[envVar],
@@ -169,8 +167,12 @@ function runAuthScript(
       try {
         assert.strictEqual(stderr, error);
         assert.strictEqual(expect.length, 0);
-        if (newEnv.HOME) rimraf.sync(newEnv.HOME);
-        if (newEnv.XDG_CONFIG_HOME) rimraf.sync(newEnv.XDG_CONFIG_HOME);
+        if (newEnv.HOME) {
+          fs.rmSync(newEnv.HOME, { recursive: true, force: true });
+        }
+        if (newEnv.XDG_CONFIG_HOME) {
+          fs.rmSync(newEnv.XDG_CONFIG_HOME, { recursive: true, force: true });
+        }
       } catch (err) {
         reject(err);
       }

@@ -2,8 +2,6 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-import rimraf from 'rimraf';
-
 const tmpdirPath = fileURLToPath(new URL('tmp', import.meta.url));
 
 export const tmpdir = {
@@ -11,7 +9,7 @@ export const tmpdir = {
     return tmpdirPath;
   },
   refresh() {
-    rimraf.sync(this.path);
+    fs.rmSync(this.path, { recursive: true, force: true });
     fs.mkdirSync(this.path, { recursive: true });
   }
 };
