@@ -55,9 +55,9 @@ npm link
 Most of the tools need your GitHub credentials to work. You can either
 
 1. Run any of the tools and you will be asked in a prompt to provide your
-  username and password in order to create a personal access token.
+   username and password in order to create a personal access token.
 2. Or, create a personal access token yourself on GitHub, then set them up
-  using an editor.
+   using an editor.
 
 
 If you prefer option 2, [follow these instructions](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
@@ -97,18 +97,18 @@ To obtain the Jenkins API token
    \<your-github-username\> with your own GitHub username).
 2. Click on the `ADD NEW TOKEN` button in the `API Token` section.
 3. Enter an identifiable name (for example, `node-core-utils`) for this
-  token in the inbox that appears, and click `GENERATE`.
+   token in the inbox that appears, and click `GENERATE`.
 4. Copy the generated token.
 5. Add it into your `ncurc` file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`)
-  with `jenkins_token` as key, like this:
+   with `jenkins_token` as key, like this:
 
-  ```json
-  {
-    "username": "your_github_username",
-    "token": "your_github_token",
-    "jenkins_token": "your_jenkins_token"
-  }
-  ```
+   ```json
+   {
+     "username": "your_github_username",
+     "token": "your_github_token",
+     "jenkins_token": "your_jenkins_token"
+   }
+   ```
 
 
 ### Make sure your credentials won't be committed
@@ -136,8 +136,8 @@ If you encounter an error that you cannot fix by yourself, please
 
 1. Make sure you update NCU to the latest version
 2. Try again with the `NCU_VERBOSITY=debug` environment variable set and
-  open an issue at https://github.com/nodejs/node-core-utils/issues with
-  detailed logs.
+   open an issue at https://github.com/nodejs/node-core-utils/issues with
+   detailed logs.
 
 ## Contributing
 
