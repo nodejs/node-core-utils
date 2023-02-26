@@ -106,24 +106,24 @@ Unstable   https://ci.nodejs.org/job/node-test-commit-arm-fanned/15212/
 Possible use cases:
 
 1. Walk CI for the latest 100 runs of `node-test-pull-request`,
-aggregate failures, write the results into a Markdown file,
-and then cache the responses from Jenkins so that the next time the command
-is run, it picks up cached data written on disk for jobs whose results
-are known.
+   aggregate failures, write the results into a Markdown file,
+   and then cache the responses from Jenkins so that the next time the command
+   is run, it picks up cached data written on disk for jobs whose results
+   are known.
 
-Note: results are cached in `${ncu_installation_path}/.ncu/cache`, so you
-may want to clean it up from time to time.
+   Note: results are cached in `${ncu_installation_path}/.ncu/cache`, so you
+   may want to clean it up from time to time.
 
-```
-ncu-ci walk pr --stats --cache --markdown results.md
-```
+   ```
+   ncu-ci walk pr --stats --cache --markdown results.md
+   ```
 
 2. Walk  CI for the latest 100 runs of `node-test-pull-request`, and then write the
-failures into a JSON file named database.json.
+   failures into a JSON file named database.json.
 
-```
-ncu-ci walk pr --json database.json
-```
+   ```
+   ncu-ci walk pr --json database.json
+   ```
 
 ### `ncu-ci pr <jobid>` 
 
