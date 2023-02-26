@@ -4,7 +4,8 @@ async function mockCredentials(options) {
   assert.deepStrictEqual(options, {
     noSave: true,
     scopes: ['user:email', 'read:org'],
-    note: 'node-core-utils CLI tools'
+    note: 'node-core-utils CLI tools',
+    noDeviceFlow: true
   });
   return {
     user: 'nyancat',
