@@ -37,7 +37,7 @@
     "branch-diff": "^2.1.0",
     "chalk": "^5.2.0",
     "changelog-maker": "^3.2.1",
-    "cheerio": "^1.0.0-rc.10",
+    "cheerio": "^1.0.0-rc.12",
     "clipboardy": "^3.0.0",
     "core-validate-commit": "^3.18.0",
     "enquirer": "^2.3.6",
