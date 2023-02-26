@@ -15,8 +15,8 @@
   },
   "scripts": {
     "test": "npm run test-unit && npm run lint",
-    "test-unit": "mocha --timeout 60000 test/unit/*.test.js --exit",
-    "test-all": "mocha --timeout 60000 test/**/*.test.js --exit",
+    "test-unit": "node --test test/unit",
+    "test-all": "node --test",
     "coverage": "c8 --reporter=html --reporter=text --reporter=text-summary npm test",
     "coverage-all": "c8 --reporter=lcov --reporter=text --reporter=text-summary npm run test-all",
     "lint": "eslint . --cache",
@@ -61,7 +61,6 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-promise": "^6.1.1",
-    "mocha": "^10.2.0",
     "sinon": "^15.0.1"
   }
 }

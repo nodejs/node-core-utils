@@ -1,3 +1,4 @@
+import { describe, it } from 'node:test';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs';
