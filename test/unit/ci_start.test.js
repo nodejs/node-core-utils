@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import sinon from 'sinon';
-import FormData from 'form-data';
+import { FormData } from 'undici';
 
 import {
   RunPRJob,
