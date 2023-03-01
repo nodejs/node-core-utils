@@ -645,7 +645,7 @@ describe('PRChecker', () => {
            ['This PR is being fast-tracked']],
         error:
           [['This PR needs to wait 24 more hours to land (or 0 hours if ' +
-            'there is 2 more approval(s) (👍) of the fast-track request from ' +
+            'there are 2 more approvals (👍) of the fast-track request from ' +
             'collaborators).']]
       };
 
@@ -696,7 +696,7 @@ describe('PRChecker', () => {
            ['This PR is being fast-tracked']],
         error:
           [['This PR needs to wait 24 more hours to land (or 0 hours if ' +
-            'there is 1 more approval(s) (👍) of the fast-track request from ' +
+            'there is 1 more approval (👍) of the fast-track request from ' +
             'collaborators).']]
       };
 
