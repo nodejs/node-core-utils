@@ -644,8 +644,8 @@ describe('PRChecker', () => {
          [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
            ['This PR is being fast-tracked']],
         error:
-          [['This PR needs to wait 24 more hours to land (or 0 minutes if ' +
-            'there is 2 more approval (👍) of the fast-track request from ' +
+          [['This PR needs to wait 24 more hours to land (or 0 hours if ' +
+            'there is 2 more approval(s) (👍) of the fast-track request from ' +
             'collaborators).']]
       };
 
@@ -695,8 +695,8 @@ describe('PRChecker', () => {
          [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
            ['This PR is being fast-tracked']],
         error:
-          [['This PR needs to wait 24 more hours to land (or 0 minutes if ' +
-            'there is 1 more approval (👍) of the fast-track request from ' +
+          [['This PR needs to wait 24 more hours to land (or 0 hours if ' +
+            'there is 1 more approval(s) (👍) of the fast-track request from ' +
             'collaborators).']]
       };
 
