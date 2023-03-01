@@ -643,11 +643,10 @@ describe('PRChecker', () => {
         info:
          [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
            ['This PR is being fast-tracked']],
-        warn:
-         [['The fast-track request requires at' +
-           " least two collaborators' approvals (👍)."]],
         error:
-          [['This PR needs to wait 24 more hours to land']]
+          [['This PR needs to wait 24 more hours to land (or 0 minutes if ' +
+            'there is 2 more approval (👍) of the fast-track request from ' +
+            'collaborators).']]
       };
 
       const pr = Object.assign({}, firstTimerPR, {
@@ -695,11 +694,10 @@ describe('PRChecker', () => {
         info:
          [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
            ['This PR is being fast-tracked']],
-        warn:
-         [['The fast-track request requires at' +
-           " least one collaborator's approval (👍)."]],
         error:
-          [['This PR needs to wait 24 more hours to land']]
+          [['This PR needs to wait 24 more hours to land (or 0 minutes if ' +
+            'there is 1 more approval (👍) of the fast-track request from ' +
+            'collaborators).']]
       };
 
       const pr = Object.assign({}, firstTimerPR, {
