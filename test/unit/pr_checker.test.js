@@ -644,8 +644,9 @@ describe('PRChecker', () => {
          [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
            ['This PR is being fast-tracked']],
         error:
-         [['The fast-track request requires at' +
-           " least two collaborators' approvals (👍)."]]
+          [['This PR needs to wait 24 more hours to land (or 0 hours if ' +
+            'there are 2 more approvals (👍) of the fast-track request from ' +
+            'collaborators).']]
       };
 
       const pr = Object.assign({}, firstTimerPR, {
@@ -694,8 +695,9 @@ describe('PRChecker', () => {
          [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
            ['This PR is being fast-tracked']],
         error:
-         [['The fast-track request requires at' +
-           " least one collaborator's approval (👍)."]]
+          [['This PR needs to wait 24 more hours to land (or 0 hours if ' +
+            'there is 1 more approval (👍) of the fast-track request from ' +
+            'collaborators).']]
       };
 
       const pr = Object.assign({}, firstTimerPR, {
@@ -710,6 +712,51 @@ describe('PRChecker', () => {
       const data = {
         pr,
         reviewers: allGreenReviewers,
+        comments: commentsWithFastTrackInsuffientApprovals,
+        reviews: approvingReviews,
+        commits: [],
+        collaborators,
+        authorIsNew: () => true,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, {}, argv);
+
+      cli.clearCalls();
+      const status = checker.checkReviewsAndWait(new Date(NOW));
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error when not enough approvals or fast-track approvals', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        ok:
+         [['Approvals: 1'],
+           ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624']],
+        info:
+         [['This PR was created on Fri, 30 Nov 2018 17:50:44 GMT'],
+           ['This PR is being fast-tracked']],
+        error:
+          [['This PR needs to wait 144 more hours to land (or 24 hours if ' +
+            'there is one more approval) (or 0 hours if there is 1 more ' +
+            'approval (👍) of the fast-track request from collaborators).']]
+      };
+
+      const pr = Object.assign({}, firstTimerPR, {
+        createdAt: LT_48H,
+        labels: {
+          nodes: [
+            { name: 'fast-track' }
+          ]
+        }
+      });
+
+      const data = {
+        pr,
+        reviewers: singleGreenReviewer,
         comments: commentsWithFastTrackInsuffientApprovals,
         reviews: approvingReviews,
         commits: [],
