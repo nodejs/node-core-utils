@@ -84,6 +84,14 @@ After the token is generated, create an rc file with the following content:
 Note: you could use `ncu-config` to configure these variables, but it's not
 recommended to leave your tokens in your command line history.
 
+If you have `gpg` installed and setup on your local machine, it is recommended
+to store an encrypted version of this file:
+
+```console
+$ gpg --default-recipient-self --encrypt ~/.ncurc
+$ rm ~/.ncurc
+```
+
 ### Setting up Jenkins credentials
 
 The `git-node` and `ncu-ci` commands need to query the Node.js Jenkins API for
@@ -99,8 +107,9 @@ To obtain the Jenkins API token
 3. Enter an identifiable name (for example, `node-core-utils`) for this
    token in the inbox that appears, and click `GENERATE`.
 4. Copy the generated token.
-5. Add it into your `ncurc` file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`)
-   with `jenkins_token` as key, like this:
+5. Add it into your `ncurc` file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`, or
+   `~/.ncurc.gpg` or `$XDG_CONFIG_HOME/ncurc.gpg`) with `jenkins_token` as key,
+   like this:
 
    ```json
    {
@@ -120,6 +129,7 @@ Put the following entries into your
 ```
 # node-core-utils configuration file
 .ncurc
+.ncurc.gpg
 # node-core-utils working directory
 .ncu
 ```
