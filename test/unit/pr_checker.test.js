@@ -2059,7 +2059,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          ['Commits were pushed since the last review:'],
+          ['Commits were pushed since the last approving review:'],
           ['- src: fix issue with es-modules']
         ],
         info: [],
@@ -2091,7 +2091,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         warn: [
-          ['Commits were pushed since the last review:'],
+          ['Commits were pushed since the last approving review:'],
           ['- src: add requested feature'],
           ['- nit: edit mistakes']
         ],
@@ -2122,7 +2122,7 @@ describe('PRChecker', () => {
       const { commits, reviews } = moreThanThreeCommitsAfterReview;
       const expectedLogs = {
         warn: [
-          ['Commits were pushed since the last review:'],
+          ['Commits were pushed since the last approving review:'],
           ['- src: add requested feature'],
           ['- nit: edit mistakes'],
           ['- final: we should be good to go'],
@@ -2180,20 +2180,18 @@ describe('PRChecker', () => {
         commits: simpleCommits,
         collaborators,
         authorIsNew: () => true,
-        getThread() {
-          return PRData.prototype.getThread.call(this);
-        }
+        getThread: PRData.prototype.getThread
       }, {}, argv);
 
       const status = checker.checkCommitsAfterReview();
-      assert.deepStrictEqual(status, true);
+      assert.strictEqual(status, true);
     });
 
     it('should log as expected if passed 1 as flag', () => {
       const { commits, reviews } = moreThanThreeCommitsAfterReview;
       const expectedLogs = {
         warn: [
-          ['Commits were pushed since the last review:'],
+          ['Commits were pushed since the last approving review:'],
           ['- final: we should be good to go'],
           ['...(use `--max-commits 4` to see the full list of commits)']
         ],
@@ -2224,7 +2222,7 @@ describe('PRChecker', () => {
       const { commits, reviews } = moreThanThreeCommitsAfterReview;
       const expectedLogs = {
         warn: [
-          ['Commits were pushed since the last review:'],
+          ['Commits were pushed since the last approving review:'],
           ['...(use `--max-commits 4` to see the full list of commits)']
         ],
         info: [],
