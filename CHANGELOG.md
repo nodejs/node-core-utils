@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.0.0](https://github.com/nodejs/node-core-utils/compare/v2.1.3...v3.0.0) (2023-03-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* Node.js 14.x is no longer supported.
+
+### Features
+
+* ignore .md files when do `requiresJenkinsRun` check ([#641](https://github.com/nodejs/node-core-utils/issues/641)) ([62f266f](https://github.com/nodejs/node-core-utils/commit/62f266fa685d849ef43943ed0e816fcab4b8affe))
+
+
+### Bug Fixes
+
+* do not run `git cherry-pick --abort` on failure ([#671](https://github.com/nodejs/node-core-utils/issues/671)) ([1e6f5d3](https://github.com/nodejs/node-core-utils/commit/1e6f5d3cbc7e837f1590122458b15f24ff9b378d))
+* switch to undici for requests to fix stream close errors ([#666](https://github.com/nodejs/node-core-utils/issues/666)) ([f759e7a](https://github.com/nodejs/node-core-utils/commit/f759e7a9495bb079abcbbcc5c2df4f311e67b779))
+* treat `fast-track` with not enough approvals as non-fatal ([#676](https://github.com/nodejs/node-core-utils/issues/676)) ([b324c99](https://github.com/nodejs/node-core-utils/commit/b324c99bca3a77be9076a208598b34196cf9413b))
+* use correct V8 tag for major updates ([#675](https://github.com/nodejs/node-core-utils/issues/675)) ([ebcf18e](https://github.com/nodejs/node-core-utils/commit/ebcf18e402d5a3e647c7eae6fb799f3a049ee244))
+* **wpt:** remove stale fixtures before pulling fresh ones ([#679](https://github.com/nodejs/node-core-utils/issues/679)) ([b78efc5](https://github.com/nodejs/node-core-utils/commit/b78efc5199856d11157de45ccb06d2ce34cb2b56))
+
 ## [2.1.3](https://github.com/nodejs/node-core-utils/compare/v2.1.2...v2.1.3) (2022-12-06)
 
 
