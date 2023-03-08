@@ -38,6 +38,10 @@ const landActions = {
     default: false,
     type: 'boolean'
   },
+  'gpg-sign': {
+    describe: 'GPG-sign commits, will be passed to the git process',
+    alias: 'S'
+  },
   autorebase: {
     describe: 'Automatically rebase branches with multiple commits',
     default: false,
