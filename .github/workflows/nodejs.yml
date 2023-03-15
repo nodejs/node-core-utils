@@ -38,6 +38,10 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run tests
-        run: npm run coverage-all
+        if: matrix.node-version == '16.x'
+        run: npm run test-unit
+      - name: Run tests
+        if: matrix.node-version != '16.x'
+        run: npm run coverage:ci
       - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@v3

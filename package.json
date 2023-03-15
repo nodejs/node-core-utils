@@ -16,9 +16,9 @@
   "scripts": {
     "test": "npm run test-unit && npm run lint",
     "test-unit": "node --test test/unit",
-    "test-all": "node --test",
+    "test:reporters": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=@reporters/github --test-reporter-destination=stdout test/unit",
     "coverage": "c8 --reporter=html --reporter=text --reporter=text-summary npm test",
-    "coverage-all": "c8 --reporter=lcov --reporter=text --reporter=text-summary npm run test-all",
+    "coverage:ci": "c8 --reporter=lcov --reporter=text --reporter=text-summary npm run test:reporters",
     "lint": "eslint . --cache",
     "lint-fix": "eslint . --fix"
   },
@@ -55,6 +55,7 @@
     "yargs": "^17.7.1"
   },
   "devDependencies": {
+    "@reporters/github": "^1.1.2",
     "c8": "^7.13.0",
     "eslint": "^8.35.0",
     "eslint-config-standard": "^17.0.0",
