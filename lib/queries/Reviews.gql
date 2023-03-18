@@ -13,6 +13,7 @@ query Reviews($prid: Int!, $owner: String!, $repo: String!, $after: String) {
           author {
             login
           }
+          authorCanPushToRepository
           url
           publishedAt
         }
