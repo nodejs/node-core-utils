@@ -39,29 +39,29 @@
     "changelog-maker": "^3.2.1",
     "cheerio": "^1.0.0-rc.12",
     "clipboardy": "^3.0.0",
-    "core-validate-commit": "^3.18.0",
+    "core-validate-commit": "^4.0.0",
     "enquirer": "^2.3.6",
-    "execa": "^7.0.0",
+    "execa": "^7.1.1",
     "figures": "^5.0.0",
     "ghauth": "^5.0.1",
-    "inquirer": "^9.1.4",
-    "listr2": "^5.0.7",
+    "inquirer": "^9.1.5",
+    "listr2": "^5.0.8",
     "lodash": "^4.17.21",
     "log-symbols": "^5.1.0",
-    "ora": "^6.1.2",
+    "ora": "^6.3.0",
     "replace-in-file": "^6.3.5",
-    "undici": "^5.20.0",
+    "undici": "^5.21.0",
     "which": "^3.0.0",
     "yargs": "^17.7.1"
   },
   "devDependencies": {
     "@reporters/github": "^1.1.2",
     "c8": "^7.13.0",
-    "eslint": "^8.35.0",
+    "eslint": "^8.37.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
-    "sinon": "^15.0.1"
+    "sinon": "^15.0.3"
   }
 }
