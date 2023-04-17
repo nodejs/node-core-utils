@@ -1,3 +1,4 @@
+import { describe, it } from 'node:test';
 import PRSummary from '../../lib/pr_summary.js';
 
 import {

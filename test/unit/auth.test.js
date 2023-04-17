@@ -1,3 +1,4 @@
+import { describe, it } from 'node:test';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -18,7 +19,6 @@ const MOCKED_TOKEN = JSON.stringify({
 
 describe('auth', async function() {
   it('asks for auth data if no ncurc is found', async function() {
-    this.timeout(2000);
     await runAuthScript(
       undefined,
       [FIRST_TIME_MSG, MOCKED_TOKEN]
@@ -26,7 +26,6 @@ describe('auth', async function() {
   });
 
   it('asks for auth data if ncurc is invalid json', async function() {
-    this.timeout(2000);
     await runAuthScript(
       { HOME: 'this is not json' },
       [FIRST_TIME_MSG, MOCKED_TOKEN]
@@ -34,7 +33,6 @@ describe('auth', async function() {
   });
 
   it('returns ncurc data if valid in HOME', async function() {
-    this.timeout(2000);
     await runAuthScript(
       { HOME: { username: 'nyancat', token: '0123456789abcdef' } },
       [MOCKED_TOKEN]
@@ -42,7 +40,6 @@ describe('auth', async function() {
   });
 
   it('returns ncurc data if valid in XDG_CONFIG_HOME', async function() {
-    this.timeout(2000);
     await runAuthScript(
       { HOME: { username: 'nyancat', token: '0123456789abcdef' } },
       [MOCKED_TOKEN]
@@ -50,7 +47,6 @@ describe('auth', async function() {
   });
 
   it('prefers XDG_CONFIG_HOME/ncurc to HOME/.ncurc', async function() {
-    this.timeout(2000);
     await runAuthScript(
       {
         HOME: { username: 'notnyancat', token: 'somewrongtoken' },
@@ -61,7 +57,6 @@ describe('auth', async function() {
   });
 
   it("prints an error message if it can't generate a token", async function() {
-    this.timeout(2000);
     await runAuthScript(
       {},
       [FIRST_TIME_MSG],
@@ -70,7 +65,6 @@ describe('auth', async function() {
   });
 
   it('does not accept a non-string username', async function() {
-    this.timeout(2000);
     await runAuthScript(
       { HOME: { username: {}, token: '0123456789abcdef' } },
       [],
@@ -79,7 +73,6 @@ describe('auth', async function() {
   });
 
   it('does not accept a non-string token', async function() {
-    this.timeout(2000);
     await runAuthScript(
       { HOME: { username: 'nyancat', token: 42 } },
       [],
@@ -88,7 +81,6 @@ describe('auth', async function() {
   });
 
   it('does not accept an invalid username format', async function() {
-    this.timeout(2000);
     await runAuthScript(
       { HOME: { username: ' ^^^ ', token: '0123456789abcdef' } },
       [],
@@ -98,7 +90,6 @@ describe('auth', async function() {
   });
 
   it('does not accept an invalid token format', async function() {
-    this.timeout(2000);
     await runAuthScript(
       { HOME: { username: 'nyancat', token: '@fhqwhgads' } },
       [],
@@ -107,7 +98,6 @@ describe('auth', async function() {
   });
 
   it('permits capital letters in token format', async function() {
-    this.timeout(2000);
     await runAuthScript(
       { HOME: { username: 'nyancat', token: '0123456789ABCDEF' } },
       ['{"github":"bnlhbmNhdDowMTIzNDU2Nzg5QUJDREVG"}']
@@ -115,7 +105,6 @@ describe('auth', async function() {
   });
 
   it('permits underscores in token format', async function() {
-    this.timeout(2000);
     await runAuthScript(
       { HOME: { username: 'nyancat', token: 'ghp_0123456789ABCDEF' } },
       ['{"github":"bnlhbmNhdDpnaHBfMDEyMzQ1Njc4OUFCQ0RFRg=="}']
