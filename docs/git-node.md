@@ -427,6 +427,32 @@ $ git node vote \
 ==============================================================================
 ```
 
+## `git node security`
+
+Manage or starts a security release process.
+
+<a id="git-node-security-prerequisites"></a>
+
+### Prerequisites
+
+It's necessary to set up `.ncurc` with HackerOne keys:
+
+```console
+$ ncu-config --global set h1_token $H1_TOKEN
+$ ncu-config --global set h1_username $H1_TOKEN
+```
+
+- `h1_token`: HackerOne Organization API Token, preferable with read-only
+  access.
+- `h1_username`: HackerOne API Token username.
+
+### `git node security --start`
+
+This command creates the Next Security Issue in Node.js private repository
+following the [Security Release Process][] document.
+It will retrieve all the triaged HackerOne reports and add them to the list
+with the affected release line.
+
 ## `git node status`
 
 Return status and information about the current git-node land session. Shows the following information:
@@ -488,3 +514,4 @@ $ git node wpt url --commit=43feb7f612fe9160639e09a47933a29834904d69
 ```
 
 [node.js abi version registry]: https://github.com/nodejs/node/blob/main/doc/abi_version_registry.json
+[Security Release Process]: https://github.com/nodejs/node/blob/main/doc/contributing/security-release-process.md
