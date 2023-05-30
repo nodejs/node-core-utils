@@ -36,7 +36,7 @@
   "dependencies": {
     "branch-diff": "^2.1.1",
     "chalk": "^5.2.0",
-    "changelog-maker": "^3.2.3",
+    "changelog-maker": "^3.2.4",
     "cheerio": "^1.0.0-rc.12",
     "clipboardy": "^3.0.0",
     "core-validate-commit": "^4.0.0",
@@ -44,24 +44,24 @@
     "execa": "^7.1.1",
     "figures": "^5.0.0",
     "ghauth": "^5.0.1",
-    "inquirer": "^9.1.5",
-    "listr2": "^6.0.4",
+    "inquirer": "^9.2.6",
+    "listr2": "^6.6.0",
     "lodash": "^4.17.21",
     "log-symbols": "^5.1.0",
-    "ora": "^6.3.0",
-    "replace-in-file": "^6.3.5",
-    "undici": "^5.21.2",
-    "which": "^3.0.0",
-    "yargs": "^17.7.1"
+    "ora": "^6.3.1",
+    "replace-in-file": "^7.0.1",
+    "undici": "^5.22.1",
+    "which": "^3.0.1",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@reporters/github": "^1.1.3",
-    "c8": "^7.13.0",
-    "eslint": "^8.38.0",
-    "eslint-config-standard": "^17.0.0",
+    "@reporters/github": "^1.2.0",
+    "c8": "^7.14.0",
+    "eslint": "^8.41.0",
+    "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-n": "^16.0.0",
     "eslint-plugin-promise": "^6.1.1",
-    "sinon": "^15.0.3"
+    "sinon": "^15.1.0"
   }
 }
