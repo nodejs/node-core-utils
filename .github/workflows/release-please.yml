@@ -15,7 +15,7 @@ jobs:
         id: release
         with:
           release-type: node
-          package-name: node-core-utils
+          package-name: '@node-core/utils'
   npm-publish:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
@@ -26,6 +26,6 @@ jobs:
         with:
           node-version: lts/*
           registry-url: 'https://registry.npmjs.org'
-      - run: npm publish
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
