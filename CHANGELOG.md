@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.1.0](https://github.com/nodejs/node-core-utils/compare/v3.0.0...v3.1.0) (2023-06-12)
+
+
+### Features
+
+* **git-node:** add support for the `--gpg-sign` git flag ([#684](https://github.com/nodejs/node-core-utils/issues/684)) ([92d621e](https://github.com/nodejs/node-core-utils/commit/92d621eebc5bd2d9548d9f728ebfb2ac7d64f62c))
+* **land:** allow empty commits with fixupAll ([#681](https://github.com/nodejs/node-core-utils/issues/681)) ([e0d6d0d](https://github.com/nodejs/node-core-utils/commit/e0d6d0dea47f594fef7d311501d3719401819fb5))
+
+
+### Bug Fixes
+
+* accurately define ncu-ci report condition ([#697](https://github.com/nodejs/node-core-utils/issues/697)) ([02a9163](https://github.com/nodejs/node-core-utils/commit/02a91637010fffff1dca46350627cfff4787e8da))
+* **pr_checker:** do not count non-approving reviews ([#680](https://github.com/nodejs/node-core-utils/issues/680)) ([b9c443b](https://github.com/nodejs/node-core-utils/commit/b9c443b8b2240a6c6343fa8eb803ce5370118936))
+* update maintaining-dependencies.md on major v8 update ([#699](https://github.com/nodejs/node-core-utils/issues/699)) ([a8b1812](https://github.com/nodejs/node-core-utils/commit/a8b181218459652a088f912a94be6c1f05aaf853))
+* use correct V8 tag for minor updates ([#695](https://github.com/nodejs/node-core-utils/issues/695)) ([cf03df4](https://github.com/nodejs/node-core-utils/commit/cf03df4a0ef1cd3d4951cf2603b7b01987dd5daa))
+
 ## [3.0.0](https://github.com/nodejs/node-core-utils/compare/v2.1.3...v3.0.0) (2023-03-08)
 
 
