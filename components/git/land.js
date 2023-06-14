@@ -172,7 +172,7 @@ async function main(state, argv, cli, dir) {
 
   if (state !== AMEND &&
       state !== CONTINUE &&
-      await session.warnForWrongBranch()) {
+      session.warnForWrongBranch()) {
     return;
   }
 
