@@ -44,7 +44,7 @@
     "execa": "^7.1.1",
     "figures": "^5.0.0",
     "ghauth": "^5.0.1",
-    "inquirer": "^9.2.6",
+    "inquirer": "^9.2.7",
     "listr2": "^6.6.0",
     "lodash": "^4.17.21",
     "log-symbols": "^5.1.0",
@@ -56,12 +56,12 @@
   },
   "devDependencies": {
     "@reporters/github": "^1.2.0",
-    "c8": "^7.14.0",
-    "eslint": "^8.41.0",
+    "c8": "^8.0.0",
+    "eslint": "^8.42.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^16.0.0",
     "eslint-plugin-promise": "^6.1.1",
-    "sinon": "^15.1.0"
+    "sinon": "^15.1.2"
   }
 }
