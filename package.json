@@ -34,6 +34,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@aduh95/caritat": "^0.6.0",
     "branch-diff": "^2.1.1",
     "chalk": "^5.2.0",
     "changelog-maker": "^3.2.4",
@@ -45,6 +46,7 @@
     "figures": "^5.0.0",
     "ghauth": "^5.0.1",
     "inquirer": "^9.2.6",
+    "js-yaml": "^4.1.0",
     "listr2": "^6.6.0",
     "lodash": "^4.17.21",
     "log-symbols": "^5.1.0",
