@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.2.0](https://github.com/nodejs/node-core-utils/compare/v3.1.0...v3.2.0) (2023-06-26)
+
+
+### Features
+
+* **git-node:** add support for `amend!` commits ([#710](https://github.com/nodejs/node-core-utils/issues/710)) ([d8ae7c7](https://github.com/nodejs/node-core-utils/commit/d8ae7c76d7dbc6e9e75b9b3521e7c5fab9ee6400))
+
+
+### Bug Fixes
+
+* **git-node:** properly terminate pr landing sessions ([#708](https://github.com/nodejs/node-core-utils/issues/708)) ([015bf20](https://github.com/nodejs/node-core-utils/commit/015bf203aecb918d9af7949280c9b8c936fef7b7))
+
 ## [3.1.0](https://github.com/nodejs/node-core-utils/compare/v3.0.0...v3.1.0) (2023-06-12)
 
 
