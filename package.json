@@ -34,7 +34,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@node-core/caritat": "^0.6.0",
+    "@node-core/caritat": "^1.0.1",
     "branch-diff": "^2.1.1",
     "chalk": "^5.2.0",
     "changelog-maker": "^3.2.4",
