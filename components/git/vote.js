@@ -45,11 +45,11 @@ export function builder(yargs) {
       describe: 'URL of the vote Pull Request'
     })
     .example('git node vote https://github.com/nodejs/TSC/pull/12344',
-      'Start an interactive session to cast ballot for https://github.com/nodejs/TSC/pull/12344. ')
+      'Start an interactive session to cast ballot for https://github.com/nodejs/TSC/pull/12344.')
     .example('git node vote https://github.com/nodejs/TSC/pull/12344 --abstain',
-      'Cast an empty ballot for https://github.com/nodejs/TSC/pull/12344')
+      'Cast an empty ballot for https://github.com/nodejs/TSC/pull/12344.')
     .example('git node vote https://github.com/nodejs/TSC/pull/12344 --decrypt-key-part',
-      'Uses gpg to decrypt a key part to close the vote happening on https://github.com/nodejs/TSC/pull/12344');
+      'Uses gpg to decrypt a key part to close the vote happening on https://github.com/nodejs/TSC/pull/12344.');
 }
 
 export function handler(argv) {
