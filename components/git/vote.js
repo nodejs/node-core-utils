@@ -7,7 +7,7 @@ import VotingSession from '../../lib/voting_session.js';
 
 export const command = 'vote [prid|options]';
 export const describe =
-  'Manage the current landing session or start a new one for a pull request';
+  'Cast a vote, or decrypt a key part to close a vote';
 
 const voteOptions = {
   abstain: {
