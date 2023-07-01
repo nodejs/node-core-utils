@@ -409,8 +409,8 @@ Additionally, if you want to close the vote, you also need:
 Steps to cast a vote:
 ==============================================================================
 $ git node vote $PR_URL                 # Start a voting session
-$ git node land $PR_URL --abstain       # Cast an empty ballot
-$ git node land $PR_URL --protocol ssh  # Instruct git-node to use SSH
+$ git node vote $PR_URL --abstain       # Cast an empty ballot
+$ git node vote $PR_URL --protocol ssh  # Instruct git-node to use SSH
 ==============================================================================
 
 Steps to close a vote:

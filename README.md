@@ -69,7 +69,7 @@ When creating the token, the following boxes need to be checked:
   PR author in order to check if it matches the email of the commit author.
 - `read:org`: Used by `ncu-team` to read the list of team members.
 
-Optionally, if you want to grand write access so `git-node` can write comments:
+Optionally, if you want to grant write access so `git-node` can write comments:
 
 - `public_repo` (or `repo` if you intend to work with private repositories).
 
