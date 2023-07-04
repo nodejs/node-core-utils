@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.1](https://github.com/nodejs/node-core-utils/compare/v3.2.0...v3.2.1) (2023-07-04)
+
+
+### Bug Fixes
+
+* enforce markdown when generating changelog ([#711](https://github.com/nodejs/node-core-utils/issues/711)) ([80b9550](https://github.com/nodejs/node-core-utils/commit/80b9550c7f3261b07db6add9d95233ae127f86cd))
+* update changelog list when preparing release ([#712](https://github.com/nodejs/node-core-utils/issues/712)) ([418f194](https://github.com/nodejs/node-core-utils/commit/418f194d81d4933e1a73de967d4bbc9fa66cfce4))
+
 ## [3.2.0](https://github.com/nodejs/node-core-utils/compare/v3.1.0...v3.2.0) (2023-06-26)
 
 
