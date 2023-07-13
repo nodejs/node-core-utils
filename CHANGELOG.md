@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/nodejs/node-core-utils/compare/v3.2.1...v3.3.0) (2023-07-13)
+
+
+### Features
+
+* support security release prepare ([#665](https://github.com/nodejs/node-core-utils/issues/665)) ([bdc9a6b](https://github.com/nodejs/node-core-utils/commit/bdc9a6bbcef523b064d5f04f53f320eb7dd2655d))
+
 ## [3.2.1](https://github.com/nodejs/node-core-utils/compare/v3.2.0...v3.2.1) (2023-07-04)
 
 
