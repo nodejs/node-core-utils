@@ -1,0 +1,25 @@
+query PRs($owner: String!, $repo: String!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequests(states: [OPEN], first: 20) {
+      nodes {
+        title,
+        url,
+        number,
+        author {
+          ... on User {
+            login,
+            email,
+            name
+          }
+        },
+        labels(first: 100) {
+          nodes {
+            name
+          }
+        },
+        baseRefName,
+        mergeable,
+      }
+    }
+  }
+}
