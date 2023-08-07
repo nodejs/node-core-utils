@@ -1,6 +1,6 @@
-query PRs($owner: String!, $repo: String!) {
+query PRs($owner: String!, $repo: String!, $labels: [String!]) {
   repository(owner: $owner, name: $repo) {
-    pullRequests(states: [OPEN], first: 20) {
+    pullRequests(states: [OPEN], first: 20, labels: $labels) {
       nodes {
         title,
         url,
