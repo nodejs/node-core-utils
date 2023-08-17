@@ -21,6 +21,7 @@ Promise.all(commandFiles.map(importCommand)).then((commands) => {
   const args = yargs(hideBin(process.argv));
   commands.forEach(command => args.command(command));
   args.command('help', false, () => {}, (yargs) => { yargs.showHelp(); })
+    .completion('completion')
     .demandCommand(1)
     .strict()
     .epilogue(epilogue)

@@ -14,6 +14,7 @@ CLI tools for Node.js Core collaborators.
   - [Setting up GitHub credentials](#setting-up-github-credentials)
   - [Setting up Jenkins credentials](#setting-up-jenkins-credentials)
   - [Make sure your credentials won't be committed](#make-sure-your-credentials-wont-be-committed)
+  - [Shell autocomplete](#shell-autocomplete)
   - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
@@ -129,6 +130,11 @@ serialized configurations.
 
 If you ever accidentally commit your access token on GitHub, you can simply
 revoke that token and use a new one.
+
+### Shell autocomplete
+
+To add autocomplete just run `git-node completion` and follow the instructions.
+(same for the rest of the tools)
 
 ### Troubleshooting
 
