@@ -7,7 +7,7 @@ A custom Git command for managing pull requests. You can run it as
   - [`git node land`](#git-node-land)
     - [Prerequisites](#prerequisites)
     - [Git bash for Windows](#git-bash-for-windows)
-    - [Demo & Usage](#demo--usage)
+    - [Demo \& Usage](#demo--usage)
     - [Optional Settings](#optional-settings)
   - [`git node backport`](#git-node-backport)
     - [Example](#example)
@@ -22,6 +22,9 @@ A custom Git command for managing pull requests. You can run it as
     - [`git node v8 minor`](#git-node-v8-minor)
     - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
     - [General options](#general-options)
+  - [`git node vote`](#git-node-vote)
+    - [Prerequisites](#prerequisites-2)
+    - [Usage](#usage)
   - [`git node status`](#git-node-status)
     - [Example](#example-2)
   - [`git node wpt`](#git-node-wpt)
@@ -392,6 +395,37 @@ Options:
 - `--v8-dir=/path/to/v8/`: Specify the path of an existing V8 clone. This
   will be used instead of cloning V8 to `baseDir`.
 - `--verbose`: Enable verbose output.
+
+## `git node vote`
+
+### Prerequisites
+
+1. See the readme on how to
+   [set up credentials](../README.md#setting-up-credentials).
+1. It's a Git command, so make sure you have Git installed, of course.
+
+Additionally, if you want to close the vote, you also need:
+
+1. A GPG client. By default it will look at the `GPG_BIN` environment variable,
+   and fallback to `gpg` if not provided.
+
+### Usage
+
+```
+Steps to cast a vote:
+==============================================================================
+$ git node vote $PR_URL                 # Start a voting session
+$ git node vote $PR_URL --abstain       # Cast an empty ballot
+$ git node vote $PR_URL --protocol ssh  # Instruct git-node to use SSH
+==============================================================================
+
+Steps to close a vote:
+==============================================================================
+$ git node vote $PR_URL --decrypt-key-part   # Outputs the user's key part
+$ git node vote \
+  $PR_URL --decrypt-key-part --post-comment  # Post the key part as comment
+==============================================================================
+```
 
 ## `git node status`
 
