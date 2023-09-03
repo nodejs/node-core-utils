@@ -42,7 +42,6 @@
     "clipboardy": "^3.0.0",
     "core-validate-commit": "^4.0.0",
     "enquirer": "^2.4.1",
-    "execa": "^8.0.1",
     "figures": "^5.0.0",
     "ghauth": "^5.0.1",
     "inquirer": "^9.2.10",
