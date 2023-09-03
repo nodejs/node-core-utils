@@ -13,23 +13,25 @@ import { setVerbosityFromEnv } from '../lib/verbosity.js';
 
 setVerbosityFromEnv();
 
-yargs(hideBin(process.argv)).command({
-  command: 'list <team> [org]',
-  desc: 'Get the list of members in a team',
-  builder: (yargs) => {
-    yargs
-      .positional('team', {
-        describe: 'Name of the team',
-        type: 'string'
-      })
-      .positional('org', {
-        describe: 'Name of the organization',
-        type: 'string',
-        default: 'nodejs'
-      });
-  },
-  handler
-})
+yargs(hideBin(process.argv))
+  .completion('completion')
+  .command({
+    command: 'list <team> [org]',
+    desc: 'Get the list of members in a team',
+    builder: (yargs) => {
+      yargs
+        .positional('team', {
+          describe: 'Name of the team',
+          type: 'string'
+        })
+        .positional('org', {
+          describe: 'Name of the organization',
+          type: 'string',
+          default: 'nodejs'
+        });
+    },
+    handler
+  })
   .command({
     command: 'sync <file>',
     desc:

@@ -53,6 +53,7 @@ const commandKeys = [
 ];
 
 const args = yargs(hideBin(process.argv))
+  .completion('completion')
   .command({
     command: 'rate <type>',
     desc: 'Calculate the green rate of a CI job in the last 100 runs',

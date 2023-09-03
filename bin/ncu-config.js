@@ -11,6 +11,7 @@ import { setVerbosityFromEnv } from '../lib/verbosity.js';
 setVerbosityFromEnv();
 
 const args = yargs(hideBin(process.argv))
+  .completion('completion')
   .command({
     command: 'set <key> <value>',
     desc: 'Set a config variable',

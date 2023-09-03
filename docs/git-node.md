@@ -222,6 +222,7 @@ Options:
   --prepare   Prepare a new release of Node.js                         [boolean]
   --security  Demarcate the new security release as a security release [boolean]
   --startLTS  Mark the release as the transition from Current to LTS   [boolean]
+  --filterLabel Filter PR by label when preparing a security release   [string]
 ```
 
 ### Example
@@ -239,6 +240,11 @@ git node release --prepare
 ```sh
 # Prepare the first LTS release for a given release line
 git node release --prepare --startLTS
+```
+
+```sh
+# Prepare security release
+git node release --prepare --security --filterLabel 18.x 18.20.1
 ```
 
 ## `git node sync`
