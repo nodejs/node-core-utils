@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.4.0](https://github.com/nodejs/node-core-utils/compare/v3.3.0...v3.4.0) (2023-09-04)
+
+
+### Features
+
+* add autocomplete ([#720](https://github.com/nodejs/node-core-utils/issues/720)) ([6efa5ed](https://github.com/nodejs/node-core-utils/commit/6efa5ed36918dbf77e26015ec301f906473ecaac))
+* **git-node:** add `git node vote` ([#704](https://github.com/nodejs/node-core-utils/issues/704)) ([7b9d962](https://github.com/nodejs/node-core-utils/commit/7b9d9622643791062ee161542ebb0a2145f698fa))
+
+
+### Bug Fixes
+
+* fix security proposal filterLabel ([#717](https://github.com/nodejs/node-core-utils/issues/717)) ([4bf1e32](https://github.com/nodejs/node-core-utils/commit/4bf1e322ee96f6bd5128173ce3338566e5e37e1c))
+
 ## [3.3.0](https://github.com/nodejs/node-core-utils/compare/v3.2.1...v3.3.0) (2023-07-13)
 
 
