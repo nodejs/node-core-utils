@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { Readable } from 'node:stream';
 
 import logSymbols from 'log-symbols';
 
@@ -83,7 +84,7 @@ export function handler(argv) {
     return runAsync('git', args, {
       spawnArgs: {
         cwd: options.nodeDir,
-        ...input && { input }
+        ...input && { stdio: [Readable.from(input), 'inherit', 'inherit'] }
       }
     });
   };
