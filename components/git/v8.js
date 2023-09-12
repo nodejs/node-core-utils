@@ -6,7 +6,7 @@ import logSymbols from 'log-symbols';
 import { minor, major, backport } from '../../lib/update-v8/index.js';
 import { defaultBaseDir } from '../../lib/update-v8/constants.js';
 import { checkCwd } from '../../lib/update-v8/common.js';
-import { runAsync } from '../../lib/run.js';
+import { forceRunAsync, runAsync } from '../../lib/run.js';
 
 export const command = 'v8 [major|minor|backport]';
 export const describe = 'Update or patch the V8 engine';
@@ -90,7 +90,7 @@ export function handler(argv) {
   };
 
   options.execGitV8 = function execGitV8(...args) {
-    return runAsync('git', args, { captureStdout: true, spawnArgs: { cwd: options.v8Dir } });
+    return forceRunAsync('git', args, { captureStdout: true, spawnArgs: { cwd: options.v8Dir } });
   };
 
   Promise.resolve()
