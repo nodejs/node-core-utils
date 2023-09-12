@@ -84,13 +84,16 @@ export function handler(argv) {
     return runAsync('git', args, {
       spawnArgs: {
         cwd: options.nodeDir,
-        ...input && { stdio: [Readable.from(input), 'inherit', 'inherit'] }
+        stdio: input ? [Readable.from(input), 'ignore', 'ignore'] : 'ignore'
       }
     });
   };
 
   options.execGitV8 = function execGitV8(...args) {
-    return forceRunAsync('git', args, { captureStdout: true, spawnArgs: { cwd: options.v8Dir } });
+    return forceRunAsync('git', args, {
+      captureStdout: true,
+      spawnArgs: { cwd: options.v8Dir, stdio: ['inherit', 'pipe', 'ignore'] }
+    });
   };
 
   Promise.resolve()
