@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.1](https://github.com/nodejs/node-core-utils/compare/v3.4.0...v3.4.1) (2023-09-12)
+
+
+### Bug Fixes
+
+* **v8:** fix spawning of subprocesses ([#726](https://github.com/nodejs/node-core-utils/issues/726)) ([992f9eb](https://github.com/nodejs/node-core-utils/commit/992f9eb44ac9086e950e11a2e6dc2a7dfa54dd3c))
+
 ## [3.4.0](https://github.com/nodejs/node-core-utils/compare/v3.3.0...v3.4.0) (2023-09-04)
 
 
