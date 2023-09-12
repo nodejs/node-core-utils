@@ -92,7 +92,7 @@ export function handler(argv) {
   options.execGitV8 = function execGitV8(...args) {
     return forceRunAsync('git', args, {
       captureStdout: true,
-      spawnArgs: { cwd: options.v8Dir, stdio: ['inherit', 'pipe', 'ignore'] }
+      spawnArgs: { cwd: options.v8Dir, stdio: ['ignore', 'pipe', 'ignore'] }
     });
   };
 
