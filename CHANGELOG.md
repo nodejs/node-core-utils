@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.2](https://github.com/nodejs/node-core-utils/compare/v3.4.1...v3.4.2) (2023-09-15)
+
+
+### Bug Fixes
+
+* **v8:** fix `git node v8 backport` ([#728](https://github.com/nodejs/node-core-utils/issues/728)) ([ba4e0c0](https://github.com/nodejs/node-core-utils/commit/ba4e0c0b3238a3747824c905e0fdbf10ac9b6516))
+
 ## [3.4.1](https://github.com/nodejs/node-core-utils/compare/v3.4.0...v3.4.1) (2023-09-12)
 
 
