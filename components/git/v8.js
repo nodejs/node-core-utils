@@ -1,12 +1,11 @@
 import path from 'node:path';
-import { Readable } from 'node:stream';
 
 import logSymbols from 'log-symbols';
 
 import { minor, major, backport } from '../../lib/update-v8/index.js';
 import { defaultBaseDir } from '../../lib/update-v8/constants.js';
 import { checkCwd } from '../../lib/update-v8/common.js';
-import { forceRunAsync, runAsync } from '../../lib/run.js';
+import { forceRunAsync } from '../../lib/run.js';
 
 export const command = 'v8 [major|minor|backport]';
 export const describe = 'Update or patch the V8 engine';
@@ -81,10 +80,11 @@ export function handler(argv) {
 
   options.execGitNode = function execGitNode(cmd, args, input) {
     args.unshift(cmd);
-    return runAsync('git', args, {
+    return forceRunAsync('git', args, {
+      input,
       spawnArgs: {
         cwd: options.nodeDir,
-        stdio: input ? [Readable.from(input), 'ignore', 'ignore'] : 'ignore'
+        stdio: input ? ['pipe', 'ignore', 'ignore'] : 'ignore'
       }
     });
   };
