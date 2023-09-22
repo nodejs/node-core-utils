@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -39,10 +39,6 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run tests
-        if: matrix.node-version == '16.x'
-        run: npm run test-unit
-      - name: Run tests
-        if: matrix.node-version != '16.x'
         run: npm run coverage:ci
       - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@v3
