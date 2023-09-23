@@ -247,6 +247,11 @@ git node release --prepare --startLTS
 git node release --prepare --security --filterLabel 18.x 18.20.1
 ```
 
+```
+# Skip the branch-diff initial check (useful when updating ongoing proposals)
+git node release --prepare 1.2.3 --skipBranchDiff
+```
+
 ## `git node sync`
 
 Demo: https://asciinema.org/a/221230

@@ -25,6 +25,10 @@ const releaseOptions = {
     describe: 'Labels separated by "," to filter security PRs',
     type: 'string'
   },
+  skipBranchDiff: {
+    describe: 'Skips the initial branch-diff check when preparing releases',
+    type: 'boolean'
+  },
   startLTS: {
     describe: 'Mark the release as the transition from Current to LTS',
     type: 'boolean'
