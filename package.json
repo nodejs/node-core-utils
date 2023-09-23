@@ -4,7 +4,7 @@
   "description": "Utilities for Node.js core collaborators",
   "type": "module",
   "engines": {
-    "node": ">=16.8.0"
+    "node": ">=18.0.0"
   },
   "bin": {
     "get-metadata": "./bin/get-metadata.js",
