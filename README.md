@@ -39,7 +39,7 @@ CLI tools for Node.js Core collaborators.
 ### Install
 
 ```
-npm install -g node-core-utils
+npm install -g @node-core/utils
 ```
 
 If you would prefer to build from the source, install and link:
