@@ -1,5 +1,27 @@
 # Changelog
 
+## [4.0.0](https://github.com/nodejs/node-core-utils/compare/v3.5.0...v4.0.0) (2023-09-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove support from Node.js 16.x,17.x and 19.x.
+* **git-node:** Old README format is no longer supported
+* switch to `@node-core` scope ([#700](https://github.com/nodejs/node-core-utils/issues/700))
+* remove unmarked DEP0XXX handler ([#685](https://github.com/nodejs/node-core-utils/issues/685))
+
+### Bug Fixes
+
+* **backport:** add missing space in prompt ([#736](https://github.com/nodejs/node-core-utils/issues/736)) ([17ee594](https://github.com/nodejs/node-core-utils/commit/17ee594a05c0a69bac7c711722fcfbb703027bc4))
+* **git-node:** update README parser to account the recent TSC changes ([#688](https://github.com/nodejs/node-core-utils/issues/688)) ([7382454](https://github.com/nodejs/node-core-utils/commit/73824548f0167276aa19d761b132c2aad52cc012))
+
+
+### Miscellaneous Chores
+
+* remove unmarked DEP0XXX handler ([#685](https://github.com/nodejs/node-core-utils/issues/685)) ([bdb85a9](https://github.com/nodejs/node-core-utils/commit/bdb85a939f1d944f1174985e6dda2b7ecc20e9ad))
+* switch to `[@node-core](https://github.com/node-core)` scope ([#700](https://github.com/nodejs/node-core-utils/issues/700)) ([f334713](https://github.com/nodejs/node-core-utils/commit/f3347137adf05a347c5bdde405a9385941d093df))
+* update supported Node.js versions ([#733](https://github.com/nodejs/node-core-utils/issues/733)) ([b727af2](https://github.com/nodejs/node-core-utils/commit/b727af26fecd4756d366582378a26ee485348b90))
+
 ## [3.5.0](https://github.com/nodejs/node-core-utils/compare/v3.4.2...v3.5.0) (2023-09-24)
 
 
