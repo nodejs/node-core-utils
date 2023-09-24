@@ -5,7 +5,7 @@
 
 ### ⚠ BREAKING CHANGES
 
-* remove support from Node.js 16.x,17.x and 19.x.
+* drop support for Node.js 16.x,17.x and 19.x.
 * **git-node:** Old README format is no longer supported
 * switch to `@node-core` scope ([#700](https://github.com/nodejs/node-core-utils/issues/700))
 * remove unmarked DEP0XXX handler ([#685](https://github.com/nodejs/node-core-utils/issues/685))
