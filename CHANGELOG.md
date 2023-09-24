@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/nodejs/node-core-utils/compare/v3.5.0...v4.0.0) (2023-09-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove unmarked DEP0XXX handler ([#685](https://github.com/nodejs/node-core-utils/issues/685))
+
+### Miscellaneous Chores
+
+* remove unmarked DEP0XXX handler ([#685](https://github.com/nodejs/node-core-utils/issues/685)) ([bdb85a9](https://github.com/nodejs/node-core-utils/commit/bdb85a939f1d944f1174985e6dda2b7ecc20e9ad))
+
 ## [3.5.0](https://github.com/nodejs/node-core-utils/compare/v3.4.2...v3.5.0) (2023-09-24)
 
 
