@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.5.0](https://github.com/nodejs/node-core-utils/compare/v3.4.2...v3.5.0) (2023-09-24)
+
+
+### Features
+
+* create git-node security release command ([#715](https://github.com/nodejs/node-core-utils/issues/715)) ([6d68c99](https://github.com/nodejs/node-core-utils/commit/6d68c99f3dd7b90b8de552c3a1f42583e1212459))
+* **git-node:** improve backport workflow ([#732](https://github.com/nodejs/node-core-utils/issues/732)) ([be11c08](https://github.com/nodejs/node-core-utils/commit/be11c0840a6e3435b0619b40468cfc830686205e))
+* **release:** add skipBranchDiff option ([#724](https://github.com/nodejs/node-core-utils/issues/724)) ([d103f28](https://github.com/nodejs/node-core-utils/commit/d103f281f1d2649627f06b3d52525f9445a6eee6))
+
 ## [3.4.2](https://github.com/nodejs/node-core-utils/compare/v3.4.1...v3.4.2) (2023-09-15)
 
 
