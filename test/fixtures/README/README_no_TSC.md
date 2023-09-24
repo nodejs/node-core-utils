@@ -231,10 +231,18 @@ that forms the _Technical Steering Committee_ (TSC) which governs the project.
 For more information about the governance of the Node.js project, see
 [GOVERNANCE.md](./GOVERNANCE.md).
 
-### TSC Emeriti
+### TSC (Technical Steering Committee)
+
+<details>
+
+<summary>TSC emeriti members</summary>
+
+#### TSC emeriti members
 
 * [test](https://github.com/test) -
 **Test** &lt;test@example.com&gt;
+
+</details>
 
 ### Collaborators
 
@@ -247,10 +255,16 @@ For more information about the governance of the Node.js project, see
 * [Quo](https://github.com/quo) -
 **Quo User** &lt;quo@example.com&gt; (she/her)
 
-### Collaborator Emeriti
+<details>
+
+<summary>Emeriti</summary>
+
+### Collaborator emeriti
 
 * [bee](https://github.com/bee) -
 **bee** &lt;bee@example.com&gt;
+
+</details>
 
 Collaborators follow the [COLLABORATOR_GUIDE.md](./COLLABORATOR_GUIDE.md) in
 maintaining the Node.js project.

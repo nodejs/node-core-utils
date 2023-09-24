@@ -234,10 +234,20 @@ For more information about the governance of the Node.js project, see
 
 ### TSC (Technical Steering Committee)
 
+#### TSC voting members
+
 * [bar](https://github.com/bar) -
 **Bar User (张三)** &lt;bar@example.com&gt; (she/her)
 
-### TSC Emeriti
+#### TSC regular members
+
+<details>
+
+<summary>TSC emeriti members</summary>
+
+#### TSC emeriti members
+
+</details>
 
 ### Collaborators
 
@@ -246,7 +256,13 @@ For more information about the governance of the Node.js project, see
 * [Baz](https://github.com/Baz) -
 **Baz User** &lt;baz@example.com&gt; (he/him)
 
-### Collaborator Emeriti
+<details>
+
+<summary>Emeriti</summary>
+
+### Collaborator emeriti
+
+</details>
 
 Collaborators follow the [COLLABORATOR_GUIDE.md](./COLLABORATOR_GUIDE.md) in
 maintaining the Node.js project.

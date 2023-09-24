@@ -133,13 +133,13 @@ describe('collaborators', function() {
       });
 
     it(
-      'should throw error if there is no TSC Emeriti section in the README',
+      'should throw error if there is no TSC Regular Members section in the README',
       async() => {
         const argv = { owner: 'nodejs', repo: 'node' };
         const request = mockRequest(readmeNoTscE, argv);
         await assertThrowsAsync(
           async() => getCollaborators(cli, request, argv),
-          /Error: Couldn't find ### TSC Emeriti in the README/);
+          /Error: Couldn't find #### TSC regular members in the README/);
       });
 
     it('should throw error if there is no Collaborators section in the README',
@@ -159,7 +159,7 @@ describe('collaborators', function() {
         const request = mockRequest(readmeNoCollaboratorE, argv);
         await assertThrowsAsync(
           async() => getCollaborators(cli, request, argv),
-          /Error: Couldn't find ### Collaborator Emeriti in the README/);
+          /Error: Couldn't find ### Collaborator emeriti in the README/);
       });
 
     it(

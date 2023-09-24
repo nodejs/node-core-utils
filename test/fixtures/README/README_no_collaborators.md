@@ -233,18 +233,34 @@ For more information about the governance of the Node.js project, see
 
 ### TSC (Technical Steering Committee)
 
+#### TSC voting members
+
 * [bar](https://github.com/bar) -
 **Bar User** &lt;bar@example.com&gt; (she/her)
 
-### TSC Emeriti
+#### TSC regular members
+
+<details>
+
+<summary>TSC emeriti members</summary>
+
+#### TSC emeriti members
 
 * [test](https://github.com/test) -
 **Test** &lt;test@example.com&gt;
 
-### Collaborator Emeriti
+</details>
+
+<details>
+
+<summary>Emeriti</summary>
+
+### Collaborator emeriti
 
 * [bee](https://github.com/bee) -
 **bee** &lt;bee@example.com&gt;
+
+</details>
 
 Collaborators follow the [COLLABORATOR_GUIDE.md](./COLLABORATOR_GUIDE.md) in
 maintaining the Node.js project.
