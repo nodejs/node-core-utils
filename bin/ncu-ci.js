@@ -215,6 +215,11 @@ const args = yargs(hideBin(process.argv))
     default: false,
     type: 'boolean'
   })
+  .option('skip-more-than', {
+    describe: 'Skip jobs that fail more than <limit> builds, when --stat is true, default to 10.',
+    type: 'number',
+    default: Infinity
+  })
   .option('nobuild', {
     describe: 'If running cigtm, whether or not jobid is citgm-nobuild.',
     type: 'boolean',
@@ -325,15 +330,19 @@ class CICommand {
       cli.separator('');
 
       let build;
+      let { skipMoreThan } = argv;
+      if (argv.stats && argv.skipMoreThan === Infinity) {
+        skipMoreThan = 10;
+      }
       switch (job.type) {
         case 'health':
           build = new HealthBuild(cli, request, job.ciType, job.builds);
           break;
         case PR:
-          build = new PRBuild(cli, request, job.jobid);
+          build = new PRBuild(cli, request, job.jobid, skipMoreThan);
           break;
         case COMMIT:
-          build = new CommitBuild(cli, request, job.jobid);
+          build = new CommitBuild(cli, request, job.jobid, skipMoreThan);
           break;
         case CITGM:
         case CITGM_NOBUILD:
