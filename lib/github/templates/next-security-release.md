@@ -62,7 +62,7 @@
 
 * [ ] [Unlock CI](https://github.com/nodejs/build/blob/HEAD/doc/jenkins-guide.md#after-the-release)
 
-* [ ] Post-release announcement to Nodejs.org blog: https://github.com/nodejs/nodejs.org/pull/5447
+* [ ] Post-release announcement to Nodejs.org blog:
   * (Re-PR the pre-approved branch from nodejs-private/nodejs.org-private to
     nodejs/nodejs.org)
 
