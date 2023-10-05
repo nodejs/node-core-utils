@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.1.0](https://github.com/nodejs/node-core-utils/compare/v4.0.0...v4.1.0) (2023-10-05)
+
+
+### Features
+
+* add --skip-more-than to ncu-ci to skip real test failures ([77da02c](https://github.com/nodejs/node-core-utils/commit/77da02cb48c7d9e6acc0a104e520bd75477affcb))
+
+
+### Bug Fixes
+
+* drop invalid link on next-security-release md ([#739](https://github.com/nodejs/node-core-utils/issues/739)) ([8e03d55](https://github.com/nodejs/node-core-utils/commit/8e03d55837ba855138f5e492053547dcb546b21d))
+* link to failure console for "Appeared on" in ncu-ci ([90674b5](https://github.com/nodejs/node-core-utils/commit/90674b58f767ac9b498cd2dfd59b279822fa6bc6))
+
 ## [4.0.0](https://github.com/nodejs/node-core-utils/compare/v3.5.0...v4.0.0) (2023-09-24)
 
 
