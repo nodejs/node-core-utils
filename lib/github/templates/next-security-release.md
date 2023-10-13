@@ -68,7 +68,7 @@
 
 * [ ] Post-release announcement in reply email: TBD
 
-* [ ] Create a new issue in nodejs/tweet
+* [ ] Notify `#nodejs-social` about the release.
 
 * [ ] Comment in [docker-node][] issue that release is ready for integration.
   The docker-node team will build and release docker image updates.
@@ -82,7 +82,7 @@
 
 * [ ] PR machine-readable JSON descriptions of the vulnerabilities to the
   [core](https://github.com/nodejs/security-wg/tree/HEAD/vuln/core)
-  vulnerability DB. https://github.com/nodejs/security-wg/pull/1029
+  vulnerability DB.
   * For each vulnerability add a `#.json` file, one can copy an existing
     [json](https://github.com/nodejs/security-wg/blob/0d82062d917cb9ddab88f910559469b2b13812bf/vuln/core/78.json)
     file, and increment the latest created file number and use that as the name
