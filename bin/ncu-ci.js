@@ -31,6 +31,7 @@ import auth from '../lib/auth.js';
 import Request from '../lib/request.js';
 import CLI from '../lib/cli.js';
 import { hideBin } from 'yargs/helpers';
+import { markFlakyTests } from '../lib/ci/ci_mark_flaky.js';
 
 setVerbosityFromEnv();
 
@@ -82,7 +83,7 @@ const args = yargs(hideBin(process.argv))
         .option('cache', {
           default: false,
           describe: 'Cache the responses from Jenkins in .ncu/cache/ under' +
-                    ' the node-core-utils installation directory'
+            ' the node-core-utils installation directory'
         })
         .option('limit', {
           default: 99,
@@ -91,13 +92,17 @@ const args = yargs(hideBin(process.argv))
         .option('since <date>', {
           type: 'string',
           describe: 'Time since when the CI results should be queried'
+        }).option('mark-flaky', {
+          describe: 'Mark as flaky tests that have inconsistent failures',
+          type: 'boolean',
+          default: false
         }).check(argv => {
           try {
             // eslint-disable-next-line no-new
             new Date(argv.since);
           } catch {
             throw new Error('--since <date> should be string that can ' +
-                            'be parsed by new Date()');
+              'be parsed by new Date()');
           }
           return true;
         });
@@ -200,7 +205,7 @@ const args = yargs(hideBin(process.argv))
         .option('cache', {
           default: false,
           describe: 'Cache the responses from Jenkins in .ncu/cache/ under' +
-                    ' the node-core-utils installation directory'
+            ' the node-core-utils installation directory'
         })
         .option('limit', {
           default: 15,
@@ -227,6 +232,10 @@ const args = yargs(hideBin(process.argv))
   .option('markdown <path>', {
     type: 'string',
     describe: 'Write the results as markdown to <path>'
+  }).option('mark-flaky', {
+    describe: 'Mark as flaky tests that have inconsistent failures',
+    type: 'boolean',
+    default: false
   }).check(argv => {
     if (argv.markdown && commandKeys.includes(argv.markdown)) {
       throw new Error('--markdown <path> did not specify a valid path');
@@ -275,11 +284,11 @@ class RunPRJobCommand {
     if (!repo) {
       validArgs = false;
       cli.error('GitHub repository is missing, please set it via ncu-config ' +
-                'or pass it via the --repo option');
+        'or pass it via the --repo option');
     }
     if (!owner) {
       cli.error('GitHub owner is missing, please set it via ncu-config ' +
-                'or pass it via the --owner option');
+        'or pass it via the --owner option');
       validArgs = false;
     }
     if (!validArgs) {
@@ -379,7 +388,7 @@ class CICommand {
     }
   }
 
-  async aggregate() {}  // noop
+  async aggregate() { }  // noop
 
   async serialize() {
     const { argv, cli } = this;
@@ -428,6 +437,7 @@ class RateCommand extends CICommand {
 class WalkCommand extends CICommand {
   constructor(cli, request, argv) {
     super(cli, request, argv);
+    this.markFlaky = argv.markFlaky;
     if (argv.cache) {
       jobCache.enable();
     }
@@ -453,7 +463,11 @@ class WalkCommand extends CICommand {
       return;
     }
     const aggregator = new FailureAggregator(cli, this.json);
-    this.json = aggregator.aggregate();
+    const aggregation = aggregator.aggregate();
+    if (this.markFlaky) {
+      await markFlakyTests(aggregation);
+    }
+    this.json = aggregation;
     cli.log('');
     cli.separator('Stats');
     cli.log('');
