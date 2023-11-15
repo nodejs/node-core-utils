@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.2.0](https://github.com/nodejs/node-core-utils/compare/v4.1.0...v4.2.0) (2023-11-15)
+
+
+### Features
+
+* add Abseil to V8 deps ([#751](https://github.com/nodejs/node-core-utils/issues/751)) ([5c1cb89](https://github.com/nodejs/node-core-utils/commit/5c1cb8930ce4ace702f1a1c9f3829775b249896a))
+
+
+### Bug Fixes
+
+* update next-security-release template ([#744](https://github.com/nodejs/node-core-utils/issues/744)) ([e6b8c1d](https://github.com/nodejs/node-core-utils/commit/e6b8c1daf204fe1c5756b62be9f2fcb3a2c30bf0))
+
 ## [4.1.0](https://github.com/nodejs/node-core-utils/compare/v4.0.0...v4.1.0) (2023-10-05)
 
 
