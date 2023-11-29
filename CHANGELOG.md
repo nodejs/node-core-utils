@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.1](https://github.com/nodejs/node-core-utils/compare/v4.2.0...v4.2.1) (2023-11-29)
+
+
+### Bug Fixes
+
+* **v8:** clone V8 repository when it's not present ([#756](https://github.com/nodejs/node-core-utils/issues/756)) ([38a577d](https://github.com/nodejs/node-core-utils/commit/38a577d9d30f908ff738bbb3930e53633b10b448))
+
 ## [4.2.0](https://github.com/nodejs/node-core-utils/compare/v4.1.0...v4.2.0) (2023-11-15)
 
 
