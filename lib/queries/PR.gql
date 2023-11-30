@@ -23,6 +23,9 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
           path
         }
       },
+      timelineItems(itemTypes: [HEAD_REF_FORCE_PUSHED_EVENT, PULL_REQUEST_COMMIT]) {
+        updatedAt
+      },
       title,
       baseRefName,
       headRefName,
