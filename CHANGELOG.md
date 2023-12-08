@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.2.2](https://github.com/nodejs/node-core-utils/compare/v4.2.1...v4.2.2) (2023-12-08)
+
+
+### Bug Fixes
+
+* **ci:** use shell expansion to run test files ([#761](https://github.com/nodejs/node-core-utils/issues/761)) ([dbd8c65](https://github.com/nodejs/node-core-utils/commit/dbd8c65f4e2baaaa648cbb99cafade85f8ebf1a2))
+* **node:** do not trust commiter date ([#758](https://github.com/nodejs/node-core-utils/issues/758)) ([5968486](https://github.com/nodejs/node-core-utils/commit/59684864693aa5dfe659ebcbc63dd5e1979edac0))
+
 ## [4.2.1](https://github.com/nodejs/node-core-utils/compare/v4.2.0...v4.2.1) (2023-11-29)
 
 
