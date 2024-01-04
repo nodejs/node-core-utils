@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.3](https://github.com/nodejs/node-core-utils/compare/v4.2.2...v4.2.3) (2024-01-02)
+
+
+### Bug Fixes
+
+* handle when report severity is not set ([#765](https://github.com/nodejs/node-core-utils/issues/765)) ([67fedf9](https://github.com/nodejs/node-core-utils/commit/67fedf9df7058c9293b7c409c28d4da3018a4b59))
+
 ## [4.2.2](https://github.com/nodejs/node-core-utils/compare/v4.2.1...v4.2.2) (2023-12-08)
 
 
