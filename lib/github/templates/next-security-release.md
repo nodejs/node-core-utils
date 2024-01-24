@@ -10,6 +10,8 @@
   * [ ] pre-release: %PRE_RELEASE_PRIV%
   * [ ] post-release: %POS_RELEASE_PRIV%
     * List vulnerabilities in order of descending severity
+    * Use the "summary" feature in HackerOne to sync post-release content
+      and CVE requests. Example [2038134](https://hackerone.com/bugs?subject=nodejs\&report_id=2038134)
     * Ask the HackerOne reporter if they would like to be credited on the
       security release blog page
 
@@ -20,10 +22,10 @@
 
 ## Announcement (one week in advance of the planned release)
 
-* [ ] Verify that GitHub Actions are working as normal: <https://www.githubstatus.com/>.
-
 * [ ] Check that all vulnerabilities are ready for release integration:
   * PRs against all affected release lines or cherry-pick clean
+  * PRs with breaking changes have a
+    [--security-revert](#Adding-a-security-revert-option) option if possible.
   * Approved
   * (optional) Approved by the reporter
     * Build and send the binary to the reporter according to its architecture
