@@ -1,5 +1,3 @@
-# Security Release Checklist
-
 ## Planning
 
 * [X] Open an [issue](https://github.com/nodejs-private/node-private) titled
