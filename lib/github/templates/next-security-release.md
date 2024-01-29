@@ -3,8 +3,7 @@
 * [X] Open an [issue](https://github.com/nodejs-private/node-private) titled
   `Next Security Release`, and put this checklist in the description.
 
-* [ ] Get agreement on the list of vulnerabilities to be addressed:
-%REPORTS%
+* [ ] Get agreement on the [list of vulnerabilities](%VULNERABILITIES_PR_URL%) to be addressed.
 
 * [ ] PR release announcements in [private](https://github.com/nodejs-private/nodejs.org-private):
   * [ ] pre-release: %PRE_RELEASE_PRIV%
