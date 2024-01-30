@@ -26,6 +26,10 @@ const securityOptions = {
   'pre-release': {
     describe: 'Create the pre-release announcement',
     type: 'boolean'
+  },
+  'pos-release': {
+    describe: 'Create the pos-release announcement',
+    type: 'boolean'
   }
 };
 
@@ -36,22 +40,22 @@ export function builder(yargs) {
   return yargs.options(securityOptions)
     .example(
       'git node security --start',
-      'Prepare a security release of Node.js')
-    .example(
+      'Prepare a security release of Node.js'
+    ).example(
       'git node security --update-date=YYYY/MM/DD',
       'Updates the target date of the security release'
-    )
-    .example(
+    ).example(
       'git node security --add-report=H1-ID',
       'Fetches HackerOne report based on ID provided and adds it into vulnerabilities.json'
-    )
-    .example(
+    ).example(
       'git node security --remove-report=H1-ID',
       'Removes the Hackerone report based on ID provided from vulnerabilities.json'
-    )
-    .example(
+    ).example(
       'git node security --pre-release' +
       'Create the pre-release announcement on the Nodejs.org repo'
+    ).example(
+      'git node security --pos-release' +
+      'Create the pos-release announcement on the Nodejs.org repo'
     );
 }
 
@@ -70,6 +74,9 @@ export function handler(argv) {
   }
   if (argv['remove-report']) {
     return removeReport(argv);
+  }
+  if (argv['pos-release']) {
+    return createPosRelease(argv);
   }
   yargsInstance.showHelp();
 }
@@ -103,6 +110,13 @@ async function createPreRelease() {
   const cli = new CLI(logStream);
   const preRelease = new SecurityBlog(cli);
   return preRelease.createPreRelease();
+}
+
+async function createPosRelease() {
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const preRelease = new SecurityBlog(cli);
+  return preRelease.createPosRelease();
 }
 
 async function startSecurityRelease() {
