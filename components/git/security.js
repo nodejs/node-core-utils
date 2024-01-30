@@ -35,6 +35,10 @@ const securityOptions = {
   'request-cve': {
     describe: 'Request CVEs for a security release',
     type: 'boolean'
+  },
+  'post-release': {
+    describe: 'Create the post-release announcement',
+    type: 'boolean'
   }
 };
 
@@ -45,20 +49,17 @@ export function builder(yargs) {
   return yargs.options(securityOptions)
     .example(
       'git node security --start',
-      'Prepare a security release of Node.js')
-    .example(
+      'Prepare a security release of Node.js'
+    ).example(
       'git node security --update-date=YYYY/MM/DD',
       'Updates the target date of the security release'
-    )
-    .example(
+    ).example(
       'git node security --add-report=H1-ID',
       'Fetches HackerOne report based on ID provided and adds it into vulnerabilities.json'
-    )
-    .example(
+    ).example(
       'git node security --remove-report=H1-ID',
       'Removes the Hackerone report based on ID provided from vulnerabilities.json'
-    )
-    .example(
+    ).example(
       'git node security --pre-release' +
       'Create the pre-release announcement on the Nodejs.org repo'
     ).example(
@@ -69,6 +70,10 @@ export function builder(yargs) {
       'git node security --request-cve',
       'Request CVEs for a security release of Node.js based on' +
       ' the next-security-release/vulnerabilities.json'
+    )
+    .example(
+      'git node security --post-release' +
+      'Create the post-release announcement on the Nodejs.org repo'
     );
 }
 
@@ -93,6 +98,9 @@ export function handler(argv) {
   }
   if (argv['request-cve']) {
     return requestCVEs(argv);
+  }
+  if (argv['post-release']) {
+    return createPostRelease(argv);
   }
   yargsInstance.showHelp();
 }
@@ -135,7 +143,14 @@ async function requestCVEs() {
   return hackerOneCve.requestCVEs();
 }
 
-async function startSecurityRelease(argv) {
+async function createPostRelease() {
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const blog = new SecurityBlog(cli);
+  return blog.createPostRelease();
+}
+
+async function startSecurityRelease() {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
   const release = new SecurityReleaseSteward(cli);
