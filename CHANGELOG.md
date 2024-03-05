@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.3.0](https://github.com/nodejs/node-core-utils/compare/v4.2.3...v4.3.0) (2024-03-05)
+
+
+### Features
+
+* add fp16 to V8 deps ([#775](https://github.com/nodejs/node-core-utils/issues/775)) ([bf307d8](https://github.com/nodejs/node-core-utils/commit/bf307d8c40a902a6a20718c4a4324768d45b69d7))
+* automate security release issue creation ([#771](https://github.com/nodejs/node-core-utils/issues/771)) ([7f89da3](https://github.com/nodejs/node-core-utils/commit/7f89da3b984a48188f801aa254d591e296076c2b))
+
+
+### Bug Fixes
+
+* **doc:** update npm shield ([#768](https://github.com/nodejs/node-core-utils/issues/768)) ([502cc6d](https://github.com/nodejs/node-core-utils/commit/502cc6deaa2f2f607a726c3f4c521bb40ca0c9e9))
+* sync next-security-release template ([#770](https://github.com/nodejs/node-core-utils/issues/770)) ([bd87b37](https://github.com/nodejs/node-core-utils/commit/bd87b370dfff7823c88460848a6437300f8899e5))
+
 ## [4.2.3](https://github.com/nodejs/node-core-utils/compare/v4.2.2...v4.2.3) (2024-01-02)
 
 
