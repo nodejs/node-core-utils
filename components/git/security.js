@@ -1,4 +1,5 @@
 import CLI from '../../lib/cli.js';
+import HackerOneCve from '../../lib/h1-cve.js';
 import SecurityReleaseSteward from '../../lib/prepare_security.js';
 import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import SecurityBlog from '../../lib/security_blog.js';
@@ -31,6 +32,10 @@ const securityOptions = {
   'notify-pre-release': {
     describe: 'Notify the community about the security release',
     type: 'boolean'
+  },
+  'request-cve': {
+    describe: 'Request CVEs for a security release',
+    type: 'boolean'
   }
 };
 
@@ -60,6 +65,10 @@ export function builder(yargs) {
     ).example(
       'git node security --notify-pre-release' +
       'Notifies the community about the security release'
+    )
+    .example(
+      'git node security --request-cve',
+      'Request CVEs for a security release of Node.js based on the vulnerabilities.js'
     );
 }
 
@@ -81,6 +90,9 @@ export function handler(argv) {
   }
   if (argv['notify-pre-release']) {
     return notifyPreRelease(argv);
+  }
+  if (argv['request-cve']) {
+    return requestCVEs(argv);
   }
   yargsInstance.showHelp();
 }
@@ -116,7 +128,14 @@ async function createPreRelease() {
   return preRelease.createPreRelease();
 }
 
-async function startSecurityRelease() {
+async function requestCVEs() {
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const hackerOneCve = new HackerOneCve(cli);
+  return hackerOneCve.requestCVEs();
+}
+
+async function startSecurityRelease(argv) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
   const release = new SecurityReleaseSteward(cli);
