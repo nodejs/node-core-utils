@@ -455,8 +455,16 @@ $ ncu-config --global set h1_username $H1_TOKEN
 
 This command creates the Next Security Issue in Node.js private repository
 following the [Security Release Process][] document.
-It will retrieve all the triaged HackerOne reports and add them to the list
-with the affected release line.
+It will retrieve all the triaged HackerOne reports and add creates the `vulnerabilities.json`.
+
+### `git node security --update-date=target`
+
+This command updates the `vulnerabilities.json` with target date of the security release.
+Example:
+  
+```sh
+  git node security --update-date=16/12/2023
+```
 
 ## `git node status`
 
