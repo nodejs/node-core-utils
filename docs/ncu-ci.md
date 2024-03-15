@@ -32,6 +32,8 @@ Options:
                                                       [boolean] [default: false]
   --json <path>      Write the results as json to <path>                [string]
   --markdown <path>  Write the results as markdown to <path>            [string]
+  --mark-flaky       If running walk, whether or not mark tests as flaky.
+                                                      [boolean] [default: false]
   --help             Show help                                         [boolean]
 ```
 
