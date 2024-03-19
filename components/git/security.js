@@ -13,6 +13,10 @@ const securityOptions = {
   'update-date': {
     describe: 'Updates the target date of the security release',
     type: 'string'
+  },
+  'add-report': {
+    describe: 'Extracts data from HackerOne report and adds it into vulnerabilities.json',
+    type: 'string'
   }
 };
 
@@ -26,6 +30,10 @@ export function builder(yargs) {
     .example(
       'git node security --update-date=31/12/2023',
       'Updates the target date of the security release'
+    )
+    .example(
+      'git node security --add-report=H1-ID',
+      'Fetches HackerOne report based on ID provided and adds it into vulnerabilities.json'
     );
 }
 
@@ -36,7 +44,18 @@ export function handler(argv) {
   if (argv['update-date']) {
     return updateReleaseDate(argv);
   }
+  if (argv['add-report']) {
+    return addReport(argv);
+  }
   yargsInstance.showHelp();
+}
+
+async function addReport(argv) {
+  const reportId = argv['add-report'];
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const update = new UpdateSecurityRelease(cli);
+  return update.addReport(reportId);
 }
 
 async function updateReleaseDate(argv) {
