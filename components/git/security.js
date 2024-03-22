@@ -17,6 +17,10 @@ const securityOptions = {
   'add-report': {
     describe: 'Extracts data from HackerOne report and adds it into vulnerabilities.json',
     type: 'string'
+  },
+  'remove-report': {
+    describe: 'Removes a report from vulnerabilities.json',
+    type: 'string'
   }
 };
 
@@ -34,6 +38,10 @@ export function builder(yargs) {
     .example(
       'git node security --add-report=H1-ID',
       'Fetches HackerOne report based on ID provided and adds it into vulnerabilities.json'
+    )
+    .example(
+      'git node security --remove-report=H1-ID',
+      'Removes the Hackerone report based on ID provided from vulnerabilities.json'
     );
 }
 
@@ -47,7 +55,18 @@ export function handler(argv) {
   if (argv['add-report']) {
     return addReport(argv);
   }
+  if (argv['remove-report']) {
+    return removeReport(argv);
+  }
   yargsInstance.showHelp();
+}
+
+async function removeReport(argv) {
+  const reportId = argv['remove-report'];
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const update = new UpdateSecurityRelease(cli);
+  return update.removeReport(reportId);
 }
 
 async function addReport(argv) {

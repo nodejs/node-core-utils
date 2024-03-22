@@ -466,6 +466,24 @@ Example:
   git node security --update-date=16/12/2023
 ```
 
+### `git node security --add-report=report-id`
+
+This command adds a HackerOne report to the `vulnerabilities.json`.
+Example:
+
+```sh
+  git node security --add-report=12345
+```
+
+### `git node security --remove-report=report-id`
+
+This command removes a HackerOne report from the `vulnerabilities.json`.
+Example:
+
+```sh
+  git node security --remove-report=12345
+```
+
 ## `git node status`
 
 Return status and information about the current git-node land session. Shows the following information:
