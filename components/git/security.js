@@ -2,6 +2,7 @@ import CLI from '../../lib/cli.js';
 import SecurityReleaseSteward from '../../lib/prepare_security.js';
 import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import SecurityBlog from '../../lib/security_blog.js';
+import SecurityAnnouncement from '../../lib/security-announcement.js';
 
 export const command = 'security [options]';
 export const describe = 'Manage an in-progress security release or start a new one.';
@@ -25,6 +26,10 @@ const securityOptions = {
   },
   'pre-release': {
     describe: 'Create the pre-release announcement',
+    type: 'boolean'
+  },
+  'notify-pre-release': {
+    describe: 'Notify the community about the security release',
     type: 'boolean'
   }
 };
@@ -52,6 +57,9 @@ export function builder(yargs) {
     .example(
       'git node security --pre-release' +
       'Create the pre-release announcement on the Nodejs.org repo'
+    ).example(
+      'git node security --notify-pre-release' +
+      'Notifies the community about the security release'
     );
 }
 
@@ -70,6 +78,9 @@ export function handler(argv) {
   }
   if (argv['remove-report']) {
     return removeReport(argv);
+  }
+  if (argv['notify-pre-release']) {
+    return notifyPreRelease(argv);
   }
   yargsInstance.showHelp();
 }
@@ -110,4 +121,11 @@ async function startSecurityRelease() {
   const cli = new CLI(logStream);
   const release = new SecurityReleaseSteward(cli);
   return release.start();
+}
+
+async function notifyPreRelease() {
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const preRelease = new SecurityAnnouncement(cli);
+  return preRelease.notifyPreRelease();
 }
