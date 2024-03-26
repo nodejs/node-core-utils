@@ -13,6 +13,7 @@ A custom Git command for managing pull requests. You can run it as
     - [Example](#example)
   - [`git node release`](#git-node-release)
     - [Example](#example-1)
+  - [`git node security`](#git-node-security)
   - [`git node sync`](#git-node-sync)
   - [`git node metadata`](#git-node-metadata)
     - [Optional Settings](#optional-settings-1)
