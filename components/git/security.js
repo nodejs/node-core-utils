@@ -68,7 +68,7 @@ export function builder(yargs) {
     )
     .example(
       'git node security --request-cve',
-      'Request CVEs for a security release of Node.js based on the vulnerabilities.js'
+      'Request CVEs for a security release of Node.js based on the next-security-release/vulnerabilities.json'
     );
 }
 
