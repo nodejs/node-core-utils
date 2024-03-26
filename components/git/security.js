@@ -27,8 +27,8 @@ const securityOptions = {
     describe: 'Create the pre-release announcement',
     type: 'boolean'
   },
-  'pos-release': {
-    describe: 'Create the pos-release announcement',
+  'post-release': {
+    describe: 'Create the post-release announcement',
     type: 'boolean'
   }
 };
@@ -54,8 +54,8 @@ export function builder(yargs) {
       'git node security --pre-release' +
       'Create the pre-release announcement on the Nodejs.org repo'
     ).example(
-      'git node security --pos-release' +
-      'Create the pos-release announcement on the Nodejs.org repo'
+      'git node security --post-release' +
+      'Create the post-release announcement on the Nodejs.org repo'
     );
 }
 
@@ -75,8 +75,8 @@ export function handler(argv) {
   if (argv['remove-report']) {
     return removeReport(argv);
   }
-  if (argv['pos-release']) {
-    return createPosRelease(argv);
+  if (argv['post-release']) {
+    return createPostRelease(argv);
   }
   yargsInstance.showHelp();
 }
@@ -112,11 +112,11 @@ async function createPreRelease() {
   return preRelease.createPreRelease();
 }
 
-async function createPosRelease() {
+async function createPostRelease() {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
   const preRelease = new SecurityBlog(cli);
-  return preRelease.createPosRelease();
+  return preRelease.createPostRelease();
 }
 
 async function startSecurityRelease() {
