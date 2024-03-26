@@ -65,13 +65,11 @@ export function builder(yargs) {
     ).example(
       'git node security --notify-pre-release' +
       'Notifies the community about the security release'
-    )
-    .example(
+    ).example(
       'git node security --request-cve',
       'Request CVEs for a security release of Node.js based on' +
       ' the next-security-release/vulnerabilities.json'
-    )
-    .example(
+    ).example(
       'git node security --post-release' +
       'Create the post-release announcement on the Nodejs.org repo'
     );
