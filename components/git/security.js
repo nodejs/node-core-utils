@@ -1,5 +1,4 @@
 import CLI from '../../lib/cli.js';
-import HackerOneCve from '../../lib/h1-cve.js';
 import SecurityReleaseSteward from '../../lib/prepare_security.js';
 import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import SecurityBlog from '../../lib/security_blog.js';
@@ -132,7 +131,7 @@ async function createPreRelease() {
 async function requestCVEs() {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
-  const hackerOneCve = new HackerOneCve(cli);
+  const hackerOneCve = new UpdateSecurityRelease(cli);
   return hackerOneCve.requestCVEs();
 }
 
