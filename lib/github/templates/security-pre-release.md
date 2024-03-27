@@ -1,7 +1,7 @@
 ---
 date: %ANNOUNCEMENT_DATE%
 category: vulnerability
-title:  %RELEASE_DATE% Security Releases
+title: %RELEASE_DATE% Security Releases
 slug: %SLUG%
 layout: blog-post.hbs
 author: The Node.js Project
