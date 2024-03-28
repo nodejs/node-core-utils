@@ -1,5 +1,29 @@
 # Changelog
 
+## [4.4.0](https://github.com/nodejs/node-core-utils/compare/v4.3.0...v4.4.0) (2024-03-28)
+
+
+### Features
+
+* add link to title and to json ([#781](https://github.com/nodejs/node-core-utils/issues/781)) ([2d4fced](https://github.com/nodejs/node-core-utils/commit/2d4fced8b5c102c1e6ab94ae51efa1b3fb5e9d14))
+* add report to vulnerabilities.json ([#783](https://github.com/nodejs/node-core-utils/issues/783)) ([9a8605e](https://github.com/nodejs/node-core-utils/commit/9a8605ee6f9a67e0f34b09832888a35beb0aa035))
+* add reporter username to vulnerability ([#782](https://github.com/nodejs/node-core-utils/issues/782)) ([ec9faa8](https://github.com/nodejs/node-core-utils/commit/ec9faa8a40db4e89361175b2dc52a3176caa845c))
+* add vulnerability vector string to json ([#780](https://github.com/nodejs/node-core-utils/issues/780)) ([f52c4fd](https://github.com/nodejs/node-core-utils/commit/f52c4fdd91c96738aa60b15e4850c7a3accf124e))
+* automate announcements for pre release ([#786](https://github.com/nodejs/node-core-utils/issues/786)) ([e76affd](https://github.com/nodejs/node-core-utils/commit/e76affd02599eb219700a29a1277e103566d31c3))
+* automate pre-release blogpost creation ([#773](https://github.com/nodejs/node-core-utils/issues/773)) ([b70e636](https://github.com/nodejs/node-core-utils/commit/b70e6368307156b4386129a30e07519aa5957eb3))
+* fetch template directly from nodejs/node ([#787](https://github.com/nodejs/node-core-utils/issues/787)) ([fbdd466](https://github.com/nodejs/node-core-utils/commit/fbdd466b61fa4f4faab0a37f7b00f57f3d026b9c))
+* remove report from vulnerabilities.json ([#784](https://github.com/nodejs/node-core-utils/issues/784)) ([648918b](https://github.com/nodejs/node-core-utils/commit/648918bf8de40b15338396e26dc9c9a84eba0fdd))
+* update security release date ([#772](https://github.com/nodejs/node-core-utils/issues/772)) ([a0867a1](https://github.com/nodejs/node-core-utils/commit/a0867a1e4a5d581cc8e02f8b39d6508afb3593a0))
+
+
+### Bug Fixes
+
+* add team mention when notifying ([#793](https://github.com/nodejs/node-core-utils/issues/793)) ([02f30aa](https://github.com/nodejs/node-core-utils/commit/02f30aa177dc2373f5a8aa630dbd91feae1a4736))
+* adjust pre-sec-release template lint ([#792](https://github.com/nodejs/node-core-utils/issues/792)) ([84597ad](https://github.com/nodejs/node-core-utils/commit/84597ad647422599e688631e81fa5260cb53591e))
+* handle when remote is ssh ([#778](https://github.com/nodejs/node-core-utils/issues/778)) ([ee681c6](https://github.com/nodejs/node-core-utils/commit/ee681c6428d44798d63c964b0699fb37f1daee14))
+* pre-release crashing on missing vulnerability rating ([#790](https://github.com/nodejs/node-core-utils/issues/790)) ([bfababb](https://github.com/nodejs/node-core-utils/commit/bfababb9ffdce246f9378f8e215b42981a567740))
+* remove double space on title ([#791](https://github.com/nodejs/node-core-utils/issues/791)) ([fdf413e](https://github.com/nodejs/node-core-utils/commit/fdf413e95350ae5fc74ad50fd6440525f8cc2015))
+
 ## [4.3.0](https://github.com/nodejs/node-core-utils/compare/v4.2.3...v4.3.0) (2024-03-05)
 
 
