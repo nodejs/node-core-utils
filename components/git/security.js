@@ -31,6 +31,10 @@ const securityOptions = {
   'notify-pre-release': {
     describe: 'Notify the community about the security release',
     type: 'boolean'
+  },
+  'request-cve': {
+    describe: 'Request CVEs for a security release',
+    type: 'boolean'
   }
 };
 
@@ -60,6 +64,11 @@ export function builder(yargs) {
     ).example(
       'git node security --notify-pre-release' +
       'Notifies the community about the security release'
+    )
+    .example(
+      'git node security --request-cve',
+      'Request CVEs for a security release of Node.js based on' +
+      ' the next-security-release/vulnerabilities.json'
     );
 }
 
@@ -81,6 +90,9 @@ export function handler(argv) {
   }
   if (argv['notify-pre-release']) {
     return notifyPreRelease(argv);
+  }
+  if (argv['request-cve']) {
+    return requestCVEs(argv);
   }
   yargsInstance.showHelp();
 }
@@ -116,7 +128,14 @@ async function createPreRelease() {
   return preRelease.createPreRelease();
 }
 
-async function startSecurityRelease() {
+async function requestCVEs() {
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const hackerOneCve = new UpdateSecurityRelease(cli);
+  return hackerOneCve.requestCVEs();
+}
+
+async function startSecurityRelease(argv) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
   const release = new SecurityReleaseSteward(cli);
