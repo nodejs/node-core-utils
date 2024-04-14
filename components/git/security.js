@@ -1,5 +1,5 @@
 import CLI from '../../lib/cli.js';
-import SecurityReleaseSteward from '../../lib/prepare_security.js';
+import PrepareSecurityRelease from '../../lib/prepare_security.js';
 import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import SecurityBlog from '../../lib/security_blog.js';
 import SecurityAnnouncement from '../../lib/security-announcement.js';
@@ -138,7 +138,7 @@ async function requestCVEs() {
 async function startSecurityRelease(argv) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
-  const release = new SecurityReleaseSteward(cli);
+  const release = new PrepareSecurityRelease(cli);
   return release.start();
 }
 
