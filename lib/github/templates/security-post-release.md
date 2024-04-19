@@ -3,7 +3,7 @@ date: %ANNOUNCEMENT_DATE%
 category: vulnerability
 title:  %RELEASE_DATE% Security Releases
 slug: %SLUG%
-layout: blog-post.hbs
+layout: blog-post
 author: %AUTHOR%
 ---
 
@@ -15,4 +15,3 @@ following issues.
 %OPENSSL_UPDATES%
 %REPORTS%
 ---
-
