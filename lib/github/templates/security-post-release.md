@@ -12,6 +12,8 @@ author: %AUTHOR%
 Updates are now available for the %AFFECTED_VERSIONS% Node.js release lines for the
 following issues.
 %DEPENDENCY_UPDATES%
-%OPENSSL_UPDATES%
 %REPORTS%
----
+
+## Downloads and release details
+
+%DOWNLOADS%

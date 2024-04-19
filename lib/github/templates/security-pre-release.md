@@ -13,7 +13,7 @@ The Node.js project will release new versions of the %AFFECTED_VERSIONS%
 releases lines on or shortly after, %RELEASE_DATE% in order to address:
 
 %VULNERABILITIES%
-%OPENSSL_UPDATES%
+
 ## Impact
 
 %IMPACT%
