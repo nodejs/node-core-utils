@@ -113,11 +113,11 @@ describe('Jenkins', () => {
     assert.strictEqual(await jobRunner.start(), false);
   });
 
-  describe('without --certify-safe flag', () => {
+  describe('without --certify-safe flag', { concurrency: false }, () => {
     afterEach(() => {
       sinon.restore();
     });
-    for (const certifySafe of [false, true]) {
+    for (const certifySafe of [true, false]) {
       it(`should return ${certifySafe} if PR checker reports it as ${
         certifySafe ? '' : 'potentially un'
       }safe`, async() => {
