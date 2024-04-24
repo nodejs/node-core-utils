@@ -51,7 +51,7 @@ describe('Jenkins', () => {
         .returns(Promise.resolve({ crumb }))
     };
 
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
     assert.strictEqual(await jobRunner.start(), false);
   });
 
@@ -61,7 +61,7 @@ describe('Jenkins', () => {
       json: sinon.stub().throws()
     };
 
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
     assert.strictEqual(await jobRunner.start(), false);
   });
 
@@ -89,7 +89,7 @@ describe('Jenkins', () => {
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
     };
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
     assert.ok(await jobRunner.start());
   });
 
@@ -108,7 +108,7 @@ describe('Jenkins', () => {
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
     };
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
     assert.strictEqual(await jobRunner.start(), false);
   });
 });
