@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.0.0](https://github.com/nodejs/node-core-utils/compare/v4.4.0...v5.0.0) (2024-04-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ncu-ci:** require `--certify-safe` flag ([#798](https://github.com/nodejs/node-core-utils/issues/798))
+
+### Features
+
+* add releaseDate to json ([#796](https://github.com/nodejs/node-core-utils/issues/796)) ([b5d99ca](https://github.com/nodejs/node-core-utils/commit/b5d99cac3f98331f3f1c66c2aff1bae24ad15211))
+* **ncu-ci:** require `--certify-safe` flag ([#798](https://github.com/nodejs/node-core-utils/issues/798)) ([a5213cd](https://github.com/nodejs/node-core-utils/commit/a5213cde57b62ad5c6abb948415e3f110beaf929))
+* prompt dependency updates url in vulnerabilities.json creation ([#788](https://github.com/nodejs/node-core-utils/issues/788)) ([f521793](https://github.com/nodejs/node-core-utils/commit/f52179315be36040266736907cd76275c4db031d))
+* request cve automatically ([#777](https://github.com/nodejs/node-core-utils/issues/777)) ([8a04848](https://github.com/nodejs/node-core-utils/commit/8a048483b23c509e2d12afd1b1975f23fd647046))
+
 ## [4.4.0](https://github.com/nodejs/node-core-utils/compare/v4.3.0...v4.4.0) (2024-04-03)
 
 
