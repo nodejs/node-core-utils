@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/nodejs/node-core-utils/compare/v5.0.0...v5.0.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* **ncu-ci:** fix missing `await` causing all CI requests to be rejected ([#799](https://github.com/nodejs/node-core-utils/issues/799)) ([7fc2f9d](https://github.com/nodejs/node-core-utils/commit/7fc2f9de22532381ebbbdb0373f876ccdb859920))
+
 ## [5.0.0](https://github.com/nodejs/node-core-utils/compare/v4.4.0...v5.0.0) (2024-04-24)
 
 
