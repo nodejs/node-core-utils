@@ -113,11 +113,6 @@ const args = yargs(hideBin(process.argv))
           describe: 'ID of the PR',
           type: 'number'
         })
-        .positional('certify-safe', {
-          describe: 'If not provided, the command will reject PRs that have ' +
-                    'been pushed since the last review',
-          type: 'boolean'
-        })
         .option('owner', {
           default: '',
           describe: 'GitHub repository owner'
@@ -296,7 +291,7 @@ class RunPRJobCommand {
       this.cli.setExitCode(1);
       return;
     }
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, this.argv.certifySafe);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
     if (!(await jobRunner.start())) {
       this.cli.setExitCode(1);
       process.exitCode = 1;

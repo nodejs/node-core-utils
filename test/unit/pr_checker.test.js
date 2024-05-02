@@ -2179,9 +2179,7 @@ describe('PRChecker', () => {
 
     it('should skip the check if there are no reviews', () => {
       const { commits } = multipleCommitsAfterReview;
-      const expectedLogs = {
-        warn: [['No approving reviews found']]
-      };
+      const expectedLogs = {};
 
       const data = {
         pr: firstTimerPR,

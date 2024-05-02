@@ -1,4 +1,4 @@
-import { describe, it, before, afterEach } from 'node:test';
+import { describe, it, before } from 'node:test';
 import assert from 'assert';
 
 import sinon from 'sinon';
@@ -9,7 +9,6 @@ import {
   CI_CRUMB_URL,
   CI_PR_URL
 } from '../../lib/ci/run_ci.js';
-import PRChecker from '../../lib/pr_checker.js';
 
 import TestCLI from '../fixtures/test_cli.js';
 
@@ -52,7 +51,7 @@ describe('Jenkins', () => {
         .returns(Promise.resolve({ crumb }))
     };
 
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
     assert.strictEqual(await jobRunner.start(), false);
   });
 
@@ -62,7 +61,7 @@ describe('Jenkins', () => {
       json: sinon.stub().throws()
     };
 
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
     assert.strictEqual(await jobRunner.start(), false);
   });
 
@@ -90,7 +89,7 @@ describe('Jenkins', () => {
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
     };
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
     assert.ok(await jobRunner.start());
   });
 
@@ -109,48 +108,7 @@ describe('Jenkins', () => {
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
     };
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid);
     assert.strictEqual(await jobRunner.start(), false);
-  });
-
-  describe('without --certify-safe flag', { concurrency: false }, () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-    for (const certifySafe of [true, false]) {
-      it(`should return ${certifySafe} if PR checker reports it as ${
-        certifySafe ? '' : 'potentially un'
-      }safe`, async() => {
-        const cli = new TestCLI();
-
-        sinon.replace(PRChecker.prototype, 'checkCommitsAfterReview',
-          sinon.fake.returns(certifySafe));
-
-        const request = {
-          gql: sinon.stub().returns({
-            repository: {
-              pullRequest: {
-                labels: {
-                  nodes: []
-                }
-              }
-            }
-          }),
-          fetch: sinon.stub()
-            .callsFake((url, { method, headers, body }) => {
-              assert.strictEqual(url, CI_PR_URL);
-              assert.strictEqual(method, 'POST');
-              assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
-              assert.ok(body._validated);
-              return Promise.resolve({ status: 201 });
-            }),
-          json: sinon.stub().withArgs(CI_CRUMB_URL)
-            .returns(Promise.resolve({ crumb }))
-        };
-
-        const jobRunner = new RunPRJob(cli, request, owner, repo, prid, false);
-        assert.strictEqual(await jobRunner.start(), certifySafe);
-      });
-    }
   });
 });
