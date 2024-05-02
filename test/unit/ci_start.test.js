@@ -124,7 +124,7 @@ describe('Jenkins', () => {
         const cli = new TestCLI();
 
         sinon.replace(PRChecker.prototype, 'checkCommitsAfterReview',
-          sinon.fake.returns(Promise.resolve(certifySafe)));
+          sinon.fake.returns(certifySafe));
 
         const request = {
           gql: sinon.stub().returns({
