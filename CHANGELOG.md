@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.0.2](https://github.com/nodejs/node-core-utils/compare/v5.0.1...v5.0.2) (2024-05-11)
+
+
+### Bug Fixes
+
+* define a fallback editor ([#802](https://github.com/nodejs/node-core-utils/issues/802)) ([86e61f4](https://github.com/nodejs/node-core-utils/commit/86e61f4057d03f6467e91cfc9fc42bb92e341ca3))
+* **v8:** remove trace_event starting with 12.6 ([#807](https://github.com/nodejs/node-core-utils/issues/807)) ([b30988a](https://github.com/nodejs/node-core-utils/commit/b30988ac0e106cb264ca0d4b3c4540f88169859c))
+
 ## [5.0.1](https://github.com/nodejs/node-core-utils/compare/v5.0.0...v5.0.1) (2024-04-24)
 
 
