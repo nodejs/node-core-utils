@@ -134,3 +134,12 @@ for (const subdir of readdirSync(path('./jenkins'))) {
       readJSON(`./jenkins/${subdir}/${item}`);
   }
 };
+
+export const labeledEvents = {};
+
+for (const item of readdirSync(path('./labeled_events'))) {
+  if (!item.endsWith('.json')) {
+    continue;
+  }
+  labeledEvents[basename(item, '.json')] = readJSON(`./labeled_events/${item}`);
+}
