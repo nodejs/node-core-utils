@@ -40,9 +40,9 @@ import {
   semverMajorPR,
   conflictingPR,
   closedPR,
+  labeledEvents,
   mergedPR,
-  pullRequests,
-  labeledEvents
+  pullRequests
 } from '../fixtures/data.js';
 
 jobCache.disable();
