@@ -1,0 +1,12 @@
+[
+  {
+    "actor": { "login": "nodejs-github-bot" },
+    "label": { "name": "doc" },
+    "createdAt": "2024-05-13T15:57:10Z"
+  },
+  {
+    "actor": { "login": "foo" },
+    "label": { "name": "request-ci" },
+    "createdAt": "2024-05-13T15:57:10Z"
+  }
+]
