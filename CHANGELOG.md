@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.1.0](https://github.com/nodejs/node-core-utils/compare/v5.0.2...v5.1.0) (2024-05-22)
+
+
+### Features
+
+* **ncu-ci:** check for `request-ci` label ([#806](https://github.com/nodejs/node-core-utils/issues/806)) ([6cc2b1a](https://github.com/nodejs/node-core-utils/commit/6cc2b1ab0b436b77baf0d4cd5b22f5a15e692018))
+
+
+### Bug Fixes
+
+* **v8:** do not ignore failures when running git ([#809](https://github.com/nodejs/node-core-utils/issues/809)) ([9f8df53](https://github.com/nodejs/node-core-utils/commit/9f8df538547e6ef3b14ed3dc27ed357bc060a813))
+
 ## [5.0.2](https://github.com/nodejs/node-core-utils/compare/v5.0.1...v5.0.2) (2024-05-11)
 
 
