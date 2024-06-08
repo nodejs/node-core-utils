@@ -18,6 +18,10 @@ releases lines on or shortly after, %RELEASE_DATE% in order to address:
 
 %IMPACT%
 
+It's important to note that End-of-Life versions are always affected when a security release occurs.
+To ensure your system's security, please use an up-to-date version as outlined in our
+[Release Schedule](https://github.com/nodejs/release#release-schedule).
+
 ## Release timing
 
 Releases will be available on, or shortly after, %RELEASE_DATE%.
