@@ -12,6 +12,10 @@ const securityOptions = {
     describe: 'Start security release process',
     type: 'boolean'
   },
+  sync: {
+    describe: 'Synchronize an ongoing security release with HackerOne',
+    type: 'boolean'
+  },
   'update-date': {
     describe: 'Updates the target date of the security release',
     type: 'string'
@@ -47,6 +51,10 @@ export function builder(yargs) {
       'git node security --start',
       'Prepare a security release of Node.js')
     .example(
+      'git node security --sync',
+      'Synchronize an ongoing security release with HackerOne'
+    )
+    .example(
       'git node security --update-date=YYYY/MM/DD',
       'Updates the target date of the security release'
     )
@@ -75,6 +83,9 @@ export function builder(yargs) {
 export function handler(argv) {
   if (argv.start) {
     return startSecurityRelease(argv);
+  }
+  if (argv.sync) {
+    return syncSecurityRelease(argv);
   }
   if (argv['update-date']) {
     return updateReleaseDate(argv);
@@ -140,6 +151,13 @@ async function startSecurityRelease(argv) {
   const cli = new CLI(logStream);
   const release = new PrepareSecurityRelease(cli);
   return release.start();
+}
+
+async function syncSecurityRelease(argv) {
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const release = new UpdateSecurityRelease(cli);
+  return release.sync();
 }
 
 async function notifyPreRelease() {
