@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.2.0](https://github.com/nodejs/node-core-utils/compare/v5.1.0...v5.2.0) (2024-06-14)
+
+
+### Features
+
+* add EOL warning to pre sec release template ([#816](https://github.com/nodejs/node-core-utils/issues/816)) ([e3e19b3](https://github.com/nodejs/node-core-utils/commit/e3e19b355e60d6763ec3e651f66b0b0bde14da1b))
+* add git node security --sync ([#818](https://github.com/nodejs/node-core-utils/issues/818)) ([f4c586e](https://github.com/nodejs/node-core-utils/commit/f4c586e6db44a8f52c20f877189d8167d8d634c8))
+* add PR_URL to vuln.json and fetch from H1 ([#815](https://github.com/nodejs/node-core-utils/issues/815)) ([c4e7c03](https://github.com/nodejs/node-core-utils/commit/c4e7c03cc6499fe9a37cadb1154dd57ea573abe7))
+
+
+### Bug Fixes
+
+* **vote:** improve UX when posting comment fails ([#814](https://github.com/nodejs/node-core-utils/issues/814)) ([615fbac](https://github.com/nodejs/node-core-utils/commit/615fbaca87e42dab6f4d84fe77c2b99f82527498))
+
 ## [5.1.0](https://github.com/nodejs/node-core-utils/compare/v5.0.2...v5.1.0) (2024-05-22)
 
 
