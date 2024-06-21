@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.1](https://github.com/nodejs/node-core-utils/compare/v5.2.0...v5.2.1) (2024-06-19)
+
+
+### Bug Fixes
+
+* use correct memory address to override ([#820](https://github.com/nodejs/node-core-utils/issues/820)) ([581312e](https://github.com/nodejs/node-core-utils/commit/581312e97bd86d761cad0509f5c009b40aabba00))
+
 ## [5.2.0](https://github.com/nodejs/node-core-utils/compare/v5.1.0...v5.2.0) (2024-06-14)
 
 
