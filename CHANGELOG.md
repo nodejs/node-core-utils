@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.3.0](https://github.com/nodejs/node-core-utils/compare/v5.2.1...v5.3.0) (2024-06-24)
+
+
+### Features
+
+* security post release blogpost ([#785](https://github.com/nodejs/node-core-utils/issues/785)) ([9104079](https://github.com/nodejs/node-core-utils/commit/9104079bd4bffab678a85e9764941429c9504c65))
+
+
+### Bug Fixes
+
+* adjust pre-release description ([#822](https://github.com/nodejs/node-core-utils/issues/822)) ([723cd7f](https://github.com/nodejs/node-core-utils/commit/723cd7f1f5607b36972236ec31a46f8c04610a8e))
+
 ## [5.2.1](https://github.com/nodejs/node-core-utils/compare/v5.2.0...v5.2.1) (2024-06-19)
 
 
