@@ -1,5 +1,5 @@
 import CLI from '../../lib/cli.js';
-import SecurityReleaseSteward from '../../lib/prepare_security.js';
+import PrepareSecurityRelease from '../../lib/prepare_security.js';
 import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import SecurityBlog from '../../lib/security_blog.js';
 import SecurityAnnouncement from '../../lib/security-announcement.js';
@@ -10,6 +10,10 @@ export const describe = 'Manage an in-progress security release or start a new o
 const securityOptions = {
   start: {
     describe: 'Start security release process',
+    type: 'boolean'
+  },
+  sync: {
+    describe: 'Synchronize an ongoing security release with HackerOne',
     type: 'boolean'
   },
   'update-date': {
@@ -50,7 +54,12 @@ export function builder(yargs) {
     .example(
       'git node security --start',
       'Prepare a security release of Node.js'
-    ).example(
+    )
+    .example(
+      'git node security --sync',
+      'Synchronize an ongoing security release with HackerOne'
+    )
+    .example(
       'git node security --update-date=YYYY/MM/DD',
       'Updates the target date of the security release'
     ).example(
@@ -78,6 +87,9 @@ export function builder(yargs) {
 export function handler(argv) {
   if (argv.start) {
     return startSecurityRelease(argv);
+  }
+  if (argv.sync) {
+    return syncSecurityRelease(argv);
   }
   if (argv['update-date']) {
     return updateReleaseDate(argv);
@@ -151,8 +163,15 @@ async function createPostRelease() {
 async function startSecurityRelease() {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
-  const release = new SecurityReleaseSteward(cli);
+  const release = new PrepareSecurityRelease(cli);
   return release.start();
+}
+
+async function syncSecurityRelease(argv) {
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const release = new UpdateSecurityRelease(cli);
+  return release.sync();
 }
 
 async function notifyPreRelease() {

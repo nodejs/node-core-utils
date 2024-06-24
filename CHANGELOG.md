@@ -1,5 +1,67 @@
 # Changelog
 
+## [5.2.1](https://github.com/nodejs/node-core-utils/compare/v5.2.0...v5.2.1) (2024-06-19)
+
+
+### Bug Fixes
+
+* use correct memory address to override ([#820](https://github.com/nodejs/node-core-utils/issues/820)) ([581312e](https://github.com/nodejs/node-core-utils/commit/581312e97bd86d761cad0509f5c009b40aabba00))
+
+## [5.2.0](https://github.com/nodejs/node-core-utils/compare/v5.1.0...v5.2.0) (2024-06-14)
+
+
+### Features
+
+* add EOL warning to pre sec release template ([#816](https://github.com/nodejs/node-core-utils/issues/816)) ([e3e19b3](https://github.com/nodejs/node-core-utils/commit/e3e19b355e60d6763ec3e651f66b0b0bde14da1b))
+* add git node security --sync ([#818](https://github.com/nodejs/node-core-utils/issues/818)) ([f4c586e](https://github.com/nodejs/node-core-utils/commit/f4c586e6db44a8f52c20f877189d8167d8d634c8))
+* add PR_URL to vuln.json and fetch from H1 ([#815](https://github.com/nodejs/node-core-utils/issues/815)) ([c4e7c03](https://github.com/nodejs/node-core-utils/commit/c4e7c03cc6499fe9a37cadb1154dd57ea573abe7))
+
+
+### Bug Fixes
+
+* **vote:** improve UX when posting comment fails ([#814](https://github.com/nodejs/node-core-utils/issues/814)) ([615fbac](https://github.com/nodejs/node-core-utils/commit/615fbaca87e42dab6f4d84fe77c2b99f82527498))
+
+## [5.1.0](https://github.com/nodejs/node-core-utils/compare/v5.0.2...v5.1.0) (2024-05-22)
+
+
+### Features
+
+* **ncu-ci:** check for `request-ci` label ([#806](https://github.com/nodejs/node-core-utils/issues/806)) ([6cc2b1a](https://github.com/nodejs/node-core-utils/commit/6cc2b1ab0b436b77baf0d4cd5b22f5a15e692018))
+
+
+### Bug Fixes
+
+* **v8:** do not ignore failures when running git ([#809](https://github.com/nodejs/node-core-utils/issues/809)) ([9f8df53](https://github.com/nodejs/node-core-utils/commit/9f8df538547e6ef3b14ed3dc27ed357bc060a813))
+
+## [5.0.2](https://github.com/nodejs/node-core-utils/compare/v5.0.1...v5.0.2) (2024-05-11)
+
+
+### Bug Fixes
+
+* define a fallback editor ([#802](https://github.com/nodejs/node-core-utils/issues/802)) ([86e61f4](https://github.com/nodejs/node-core-utils/commit/86e61f4057d03f6467e91cfc9fc42bb92e341ca3))
+* **v8:** remove trace_event starting with 12.6 ([#807](https://github.com/nodejs/node-core-utils/issues/807)) ([b30988a](https://github.com/nodejs/node-core-utils/commit/b30988ac0e106cb264ca0d4b3c4540f88169859c))
+
+## [5.0.1](https://github.com/nodejs/node-core-utils/compare/v5.0.0...v5.0.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* **ncu-ci:** fix missing `await` causing all CI requests to be rejected ([#799](https://github.com/nodejs/node-core-utils/issues/799)) ([7fc2f9d](https://github.com/nodejs/node-core-utils/commit/7fc2f9de22532381ebbbdb0373f876ccdb859920))
+
+## [5.0.0](https://github.com/nodejs/node-core-utils/compare/v4.4.0...v5.0.0) (2024-04-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ncu-ci:** require `--certify-safe` flag ([#798](https://github.com/nodejs/node-core-utils/issues/798))
+
+### Features
+
+* add releaseDate to json ([#796](https://github.com/nodejs/node-core-utils/issues/796)) ([b5d99ca](https://github.com/nodejs/node-core-utils/commit/b5d99cac3f98331f3f1c66c2aff1bae24ad15211))
+* **ncu-ci:** require `--certify-safe` flag ([#798](https://github.com/nodejs/node-core-utils/issues/798)) ([a5213cd](https://github.com/nodejs/node-core-utils/commit/a5213cde57b62ad5c6abb948415e3f110beaf929))
+* prompt dependency updates url in vulnerabilities.json creation ([#788](https://github.com/nodejs/node-core-utils/issues/788)) ([f521793](https://github.com/nodejs/node-core-utils/commit/f52179315be36040266736907cd76275c4db031d))
+* request cve automatically ([#777](https://github.com/nodejs/node-core-utils/issues/777)) ([8a04848](https://github.com/nodejs/node-core-utils/commit/8a048483b23c509e2d12afd1b1975f23fd647046))
+
 ## [4.4.0](https://github.com/nodejs/node-core-utils/compare/v4.3.0...v4.4.0) (2024-04-03)
 
 

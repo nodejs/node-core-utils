@@ -40,6 +40,7 @@ import {
   semverMajorPR,
   conflictingPR,
   closedPR,
+  labeledEvents,
   mergedPR,
   pullRequests
 } from '../fixtures/data.js';
@@ -2048,6 +2049,100 @@ describe('PRChecker', () => {
     });
   });
 
+  describe('checkCommitsAfterReviewOrLabel', () => {
+    it('should return true if PR passes post review checks', async() => {
+      const cli = new TestCLI();
+      const checker = new PRChecker(cli, {
+        pr: semverMajorPR,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => true,
+        getThread: PRData.prototype.getThread
+      }, {}, argv);
+
+      const status = await checker.checkCommitsAfterReviewOrLabel();
+      assert.strictEqual(status, true);
+    });
+
+    describe('without approvals', () => {
+      const data = {
+        pr: firstTimerPR,
+        reviewers: noReviewers,
+        comments: [],
+        reviews: [],
+        commits: [],
+        collaborators: [],
+        labeledEvents: [],
+        authorIsNew: () => true,
+        getThread: PRData.prototype.getThread,
+        getLabeledEvents: async() => {
+          data.labeledEvents = [];
+        },
+        getCollaborators: async() => {
+          data.collaborators = collaborators;
+        }
+      };
+
+      it('should return false if PR has no labels', async() => {
+        const cli = new TestCLI();
+        data.getLabeledEvents = async() => {
+          data.labeledEvents = [];
+        };
+        const checker = new PRChecker(cli, data, {}, argv);
+
+        const status = await checker.checkCommitsAfterReviewOrLabel();
+        assert.strictEqual(status, false);
+      });
+
+      it('should return false if PR has no request-ci label', async() => {
+        const cli = new TestCLI();
+        data.getLabeledEvents = async() => {
+          data.labeledEvents = labeledEvents['no-request-ci'];
+        };
+        const checker = new PRChecker(cli, data, {}, argv);
+
+        const status = await checker.checkCommitsAfterReviewOrLabel();
+        assert.strictEqual(status, false);
+      });
+
+      it('should return false if PR has request-ci from non-collaborator', async() => {
+        const cli = new TestCLI();
+        data.getLabeledEvents = async() => {
+          data.labeledEvents = labeledEvents['recent-request-ci-non-collaborator'];
+        };
+        const checker = new PRChecker(cli, data, {}, argv);
+
+        const status = await checker.checkCommitsAfterReviewOrLabel();
+        assert.strictEqual(status, false);
+      });
+
+      it('should return false if PR has outdated request-ci from a collaborator', async() => {
+        const cli = new TestCLI();
+        data.getLabeledEvents = async() => {
+          data.labeledEvents = labeledEvents['old-request-ci-collaborator'];
+        };
+        const checker = new PRChecker(cli, data, {}, argv);
+
+        const status = await checker.checkCommitsAfterReviewOrLabel();
+        assert.strictEqual(status, false);
+      });
+
+      it('should return true if PR has recent request-ci from a collaborator', async() => {
+        const cli = new TestCLI();
+        data.getLabeledEvents = async() => {
+          data.labeledEvents = labeledEvents['recent-request-ci-collaborator'];
+        };
+        const checker = new PRChecker(cli, data, {}, argv);
+
+        const status = await checker.checkCommitsAfterReviewOrLabel();
+        assert.strictEqual(status, true);
+      });
+    });
+  });
+
   describe('checkCommitsAfterReview', () => {
     const cli = new TestCLI();
 
@@ -2179,7 +2274,9 @@ describe('PRChecker', () => {
 
     it('should skip the check if there are no reviews', () => {
       const { commits } = multipleCommitsAfterReview;
-      const expectedLogs = {};
+      const expectedLogs = {
+        warn: [['No approving reviews found']]
+      };
 
       const data = {
         pr: firstTimerPR,

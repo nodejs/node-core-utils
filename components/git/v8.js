@@ -81,6 +81,7 @@ export function handler(argv) {
   options.execGitNode = function execGitNode(cmd, args, input) {
     args.unshift(cmd);
     return forceRunAsync('git', args, {
+      ignoreFailure: false,
       input,
       spawnArgs: {
         cwd: options.nodeDir,
@@ -91,6 +92,7 @@ export function handler(argv) {
 
   options.execGitV8 = function execGitV8(...args) {
     return forceRunAsync('git', args, {
+      ignoreFailure: false,
       captureStdout: true,
       spawnArgs: { cwd: options.v8Dir, stdio: ['ignore', 'pipe', 'ignore'] }
     });
