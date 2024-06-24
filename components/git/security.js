@@ -67,10 +67,10 @@ export function builder(yargs) {
       'Removes the Hackerone report based on ID provided from vulnerabilities.json'
     )
     .example(
-      'git node security --pre-release' +
+      'git node security --pre-release',
       'Create the pre-release announcement on the Nodejs.org repo'
     ).example(
-      'git node security --notify-pre-release' +
+      'git node security --notify-pre-release',
       'Notifies the community about the security release'
     )
     .example(
