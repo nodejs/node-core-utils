@@ -79,7 +79,7 @@ export function builder(yargs) {
       'Request CVEs for a security release of Node.js based on' +
       ' the next-security-release/vulnerabilities.json'
     ).example(
-      'git node security --post-release' +
+      'git node security --post-release',
       'Create the post-release announcement on the Nodejs.org repo'
     );
 }
