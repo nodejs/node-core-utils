@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.3.1](https://github.com/nodejs/node-core-utils/compare/v5.3.0...v5.3.1) (2024-07-03)
+
+
+### Bug Fixes
+
+* adjust --post-release description ([#825](https://github.com/nodejs/node-core-utils/issues/825)) ([5dd6614](https://github.com/nodejs/node-core-utils/commit/5dd66140c6c3880c8f185482f33f76b4b244b5fe))
+* fix --notify-pre-release ([a5750fa](https://github.com/nodejs/node-core-utils/commit/a5750fad3552094ac9580203afc33229e93f2f09))
+* remove post-release checks ([#826](https://github.com/nodejs/node-core-utils/issues/826)) ([30b816b](https://github.com/nodejs/node-core-utils/commit/30b816bf9ebf6848ac30bec7b645254604dc7f94))
+
 ## [5.3.0](https://github.com/nodejs/node-core-utils/compare/v5.2.1...v5.3.0) (2024-06-24)
 
 
