@@ -134,8 +134,7 @@ async function main(state, argv, cli, dir) {
         'Username was undefined - do you have your .ncurc set up correctly?');
       return;
     } else if (releasers.every(r => r.login !== release.username)) {
-      cli.stopSpinner();
-      cli.error(`${release.username} is not a Releaser`);
+      cli.stopSpinner(`${release.username} is not a Releaser`, 'failed');
       if (!argv.dryRun) {
         throw new Error('aborted');
       }
