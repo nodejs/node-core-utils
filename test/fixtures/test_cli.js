@@ -1,7 +1,7 @@
-'use strict';
+import assert from 'node:assert';
 
-const assert = require('assert');
-const CLI = require('../../lib/cli');
+import CLI from '../../lib/cli.js';
+
 const functions = Object.getOwnPropertyNames(CLI.prototype)
   .filter(func => func !== 'constructor');
 
@@ -13,7 +13,7 @@ function newCalls() {
   return calls;
 }
 
-class TestCLI {
+export default class TestCLI {
   constructor() {
     this.spinner = {};
     this._calls = newCalls();
@@ -48,5 +48,3 @@ for (const func of functions) {
 for (const key of Object.keys(CLI)) {
   TestCLI[key] = CLI[key];  // constants
 }
-
-module.exports = TestCLI;

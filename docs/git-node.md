@@ -3,26 +3,33 @@
 A custom Git command for managing pull requests. You can run it as
 `git-node` or `git node`. To see the help text, run `git node`.
 
-- [`git node land`](#git-node-land)
-  - [Prerequisites](#git-node-land-prerequisites)
-  - [Git bash for Windows](#git-bash-for-windows)
-  - [Demo & Usage](#demo--usage)
-  - [Optional Settings](#git-node-land-optional-settings)
-- [`git node backport`](#git-node-backport)
-  - [Example](#example)
-- [`git node release`](#git-node-release)
-  - [Example](#example-1)
-- [`git node sync`](#git-node-sync)
-- [`git node metadata`](#git-node-metadata)
-  - [Optional Settings](#git-node-metadata-optional-settings)
-- [`git node v8`](#git-node-v8)
-  - [Prerequisites](#git-node-v8-prerequisites)
-  - [`git node v8 major`](#git-node-v8-major)
-  - [`git node v8 minor`](#git-node-v8-minor)
-  - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
-  - [General options](#general-options)
-- [`git node wpt`](#git-node-wpt)
-  - [Example](#example-2)
+- [git-node](#git-node)
+  - [`git node land`](#git-node-land)
+    - [Prerequisites](#prerequisites)
+    - [Git bash for Windows](#git-bash-for-windows)
+    - [Demo \& Usage](#demo--usage)
+    - [Optional Settings](#optional-settings)
+  - [`git node backport`](#git-node-backport)
+    - [Example](#example)
+  - [`git node release`](#git-node-release)
+    - [Example](#example-1)
+  - [`git node security`](#git-node-security)
+  - [`git node sync`](#git-node-sync)
+  - [`git node metadata`](#git-node-metadata)
+    - [Optional Settings](#optional-settings-1)
+  - [`git node v8`](#git-node-v8)
+    - [Prerequisites](#prerequisites-1)
+    - [`git node v8 major`](#git-node-v8-major)
+    - [`git node v8 minor`](#git-node-v8-minor)
+    - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
+    - [General options](#general-options)
+  - [`git node vote`](#git-node-vote)
+    - [Prerequisites](#prerequisites-2)
+    - [Usage](#usage)
+  - [`git node status`](#git-node-status)
+    - [Example](#example-2)
+  - [`git node wpt`](#git-node-wpt)
+    - [Example](#example-3)
 
 ## `git node land`
 
@@ -47,6 +54,8 @@ Options:
                   non-interactively. If an undesirable situation occurs, such as
                   a pull request or commit check fails, then git node land will
                   abort.                              [boolean] [default: false]
+  --skipRefs      Prevent Fixes and Refs information from being added to commit
+                  metadata                            [boolean] [default: false]
 
 
 Examples:
@@ -89,9 +98,20 @@ Examples:
    # Tell ncu that your upstream remote is named "upstream"
    $ ncu-config set upstream upstream
 
-   # Tell ncu that you are landing patches to "master" branch
-   $ ncu-config set branch master
+   # Tell ncu that you are landing patches to "main" branch
+   $ ncu-config set branch main
    ```
+
+Note: If you are behind a firewall and run into `ECONNREFUSED` issues with
+`raw.githubusercontent.com`, you can try setting up the command to read
+the README from the local file system (you may need to make sure that the
+collaborator contacts in this file is up-to-date and cover people you need
+to include in the patch you want to land).
+
+```
+$ cd path/to/node/project
+$ ncu-config set readme "$(pwd)/README.md"
+```
 
 ### Git bash for Windows
 
@@ -115,9 +135,9 @@ $ cd path/to/node/project
 
 # If you have not configured it before
 $ ncu-config set upstream <name-of-remote-to-nodejs/node>
-$ ncu-config set branch master   # Assuming you are landing commits on master
+$ ncu-config set branch main   # Assuming you are landing commits on main
 
-$ git checkout master
+$ git checkout main
 $ git node land --abort          # Abort a landing session, just in case
 $ git node land $PRID            # Start a new landing session
 $ git node land $URL             # Start a new landing session using the PR URL
@@ -150,8 +170,8 @@ Options:
 
 ### Optional Settings
 
-The same Settings used by 
-[`git node metadata`](#git-node-metadata-optional-settings) are also used by 
+The same Settings used by
+[`git node metadata`](#git-node-metadata-optional-settings) are also used by
 `git node land`.
 
 ## `git node backport`
@@ -177,11 +197,11 @@ Options:
 ```
 Backporting https://github.com/nodejs/node/pull/12344 to v10.x
 
-# Sync master with upstream for the commits, if they are not yet there
-$ git checkout master
+# Sync main with upstream for the commits, if they are not yet there
+$ git checkout main
 $ git node sync
 
-# Backport existing commits from master to v10.x-staging
+# Backport existing commits from main to v10.x-staging
 $ git checkout v10.x-staging
 $ git node sync
 $ git node backport 12344 --to 10
@@ -202,6 +222,8 @@ Options:
   --help      Show help                                                [boolean]
   --prepare   Prepare a new release of Node.js                         [boolean]
   --security  Demarcate the new security release as a security release [boolean]
+  --startLTS  Mark the release as the transition from Current to LTS   [boolean]
+  --filterLabel Filter PR by label when preparing a security release   [string]
 ```
 
 ### Example
@@ -214,6 +236,21 @@ git node release --prepare 1.2.3
 ```sh
 # Prepare a new release of Node.js with an automatically-determined version number.
 git node release --prepare
+```
+
+```sh
+# Prepare the first LTS release for a given release line
+git node release --prepare --startLTS
+```
+
+```sh
+# Prepare security release
+git node release --prepare --security --filterLabel 18.x 18.20.1
+```
+
+```
+# Skip the branch-diff initial check (useful when updating ongoing proposals)
+git node release --prepare 1.2.3 --skipBranchDiff
 ```
 
 ## `git node sync`
@@ -317,7 +354,7 @@ $ brew install gpatch
 
 And make sure `which patch` points to `/usr/local/bin/patch` installed by
 homebrew instead of `/usr/bin/patch` that comes with the system (e.g. by
-modifying yoru `PATH` environment variable).
+modifying your `PATH` environment variable).
 
 ### `git node v8 major`
 
@@ -365,6 +402,124 @@ Options:
   will be used instead of cloning V8 to `baseDir`.
 - `--verbose`: Enable verbose output.
 
+## `git node vote`
+
+### Prerequisites
+
+1. See the readme on how to
+   [set up credentials](../README.md#setting-up-credentials).
+1. It's a Git command, so make sure you have Git installed, of course.
+
+Additionally, if you want to close the vote, you also need:
+
+1. A GPG client. By default it will look at the `GPG_BIN` environment variable,
+   and fallback to `gpg` if not provided.
+
+### Usage
+
+```
+Steps to cast a vote:
+==============================================================================
+$ git node vote $PR_URL                 # Start a voting session
+$ git node vote $PR_URL --abstain       # Cast an empty ballot
+$ git node vote $PR_URL --protocol ssh  # Instruct git-node to use SSH
+==============================================================================
+
+Steps to close a vote:
+==============================================================================
+$ git node vote $PR_URL --decrypt-key-part   # Outputs the user's key part
+$ git node vote \
+  $PR_URL --decrypt-key-part --post-comment  # Post the key part as comment
+==============================================================================
+```
+
+## `git node security`
+
+Manage or starts a security release process.
+
+<a id="git-node-security-prerequisites"></a>
+
+### Prerequisites
+
+It's necessary to set up `.ncurc` with HackerOne keys:
+
+```console
+$ ncu-config --global set h1_token $H1_TOKEN
+$ ncu-config --global set h1_username $H1_TOKEN
+```
+
+- `h1_token`: HackerOne Organization API Token, preferable with read-only
+  access.
+- `h1_username`: HackerOne API Token username.
+
+### `git node security --start`
+
+This command creates the Next Security Issue in Node.js private repository
+following the [Security Release Process][] document.
+It will retrieve all the triaged HackerOne reports and add creates the `vulnerabilities.json`.
+
+### `git node security --update-date=YYYY/MM/DD`
+
+This command updates the `vulnerabilities.json` with target date of the security release.
+Example:
+  
+```sh
+  git node security --update-date=2023/12/31
+```
+
+### `git node security --pre-release`
+
+This command creates a pre-release announcement for the security release.
+Example:
+  
+```sh
+  git node security --pre-release
+```
+
+### `git node security --add-report=report-id`
+
+This command adds a HackerOne report to the `vulnerabilities.json`.
+Example:
+
+```sh
+  git node security --add-report=12345
+```
+
+### `git node security --remove-report=report-id`
+
+This command removes a HackerOne report from the `vulnerabilities.json`.
+Example:
+
+```sh
+  git node security --remove-report=12345
+```
+
+## `git node status`
+
+Return status and information about the current git-node land session. Shows the following information:
+
+- PR URL (`https:/github.com/nodejs/node/<prid>`)
+- `git-node` landing session status, one of:
+  - `APPLYING`
+  - `STARTED`
+  - `AMENDING`
+- Current username
+- Current upstream
+- Current target branch for the landing session
+
+### Example
+
+```sh
+node on git:main ❯ git node status                                             11:32AM
+   ✔  Landing session in progress
+--------------------------------------------------------------------------------
+PR:        https:/github.com/nodejs/node/pull/34800
+State:     AMENDING
+Username:  codebytere
+Upstream:  upstream
+Branch:    main
+```
+
 ## `git node wpt`
 
 Update or patch the Web Platform Tests in core.
@@ -399,4 +554,5 @@ $ git node wpt url  # Will update test/fixtures/wpt/url and related files
 $ git node wpt url --commit=43feb7f612fe9160639e09a47933a29834904d69
 ```
 
-[node.js abi version registry]: https://github.com/nodejs/node/blob/master/doc/abi_version_registry.json
+[node.js abi version registry]: https://github.com/nodejs/node/blob/main/doc/abi_version_registry.json
+[Security Release Process]: https://github.com/nodejs/node/blob/main/doc/contributing/security-release-process.md

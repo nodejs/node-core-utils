@@ -1,23 +1,26 @@
 {
-  "name": "node-core-utils",
-  "version": "1.21.0",
+  "name": "@node-core/utils",
+  "version": "5.3.1",
   "description": "Utilities for Node.js core collaborators",
+  "type": "module",
+  "engines": {
+    "node": "^18.18.0 || >=20.0.0"
+  },
   "bin": {
-    "get-metadata": "./bin/get-metadata",
-    "git-node": "./bin/git-node",
-    "ncu-config": "./bin/ncu-config",
-    "ncu-team": "./bin/ncu-team",
-    "ncu-ci": "./bin/ncu-ci"
+    "get-metadata": "./bin/get-metadata.js",
+    "git-node": "./bin/git-node.js",
+    "ncu-config": "./bin/ncu-config.js",
+    "ncu-team": "./bin/ncu-team.js",
+    "ncu-ci": "./bin/ncu-ci.js"
   },
   "scripts": {
     "test": "npm run test-unit && npm run lint",
-    "test-unit": "mocha test/unit/*.test.js",
-    "test-all": "mocha test/**/*.test.js",
-    "coverage": "nyc --reporter=html --reporter=text --reporter=text-summary npm test",
-    "coverage-all": "nyc --reporter=lcov --reporter=text --reporter=text-summary npm run test-all",
-    "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
-    "lint": "eslint . \"bin/*\" --cache",
-    "lint-fix": "eslint . \"bin/*\" --fix"
+    "test-unit": "node --test test/unit/**",
+    "test:reporters": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=@reporters/github --test-reporter-destination=stdout test/unit/**",
+    "coverage": "c8 --reporter=html --reporter=text --reporter=text-summary npm test",
+    "coverage:ci": "c8 --reporter=lcov --reporter=text --reporter=text-summary npm run test:reporters",
+    "lint": "eslint . --cache",
+    "lint-fix": "eslint . --fix"
   },
   "author": "Joyee Cheung <joyeec9h3@gmail.com>",
   "repository": {
@@ -53,16 +56,14 @@
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "eslint": "^7.0.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "intelli-espower-loader": "^1.0.1",
-    "mocha": "^7.1.2",
-    "nyc": "^15.0.1",
-    "power-assert": "^1.6.1",
-    "sinon": "^9.0.2"
-  }
+    "@reporters/github": "^1.7.0",
+    "c8": "^10.1.2",
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.4.0",
+    "sinon": "^18.0.0"
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

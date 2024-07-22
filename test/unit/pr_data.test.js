@@ -1,9 +1,11 @@
-'use strict';
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 
-const assert = require('assert');
-const sinon = require('sinon');
+import sinon from 'sinon';
 
-const {
+import PRData from '../../lib/pr_data.js';
+
+import {
   approvingReviews,
   allGreenReviewers,
   commentsWithLGTM,
@@ -11,9 +13,8 @@ const {
   collaborators,
   firstTimerPR,
   readme
-} = require('../fixtures/data');
-const TestCLI = require('../fixtures/test_cli');
-const PRData = require('../../lib/pr_data');
+} from '../fixtures/data.js';
+import TestCLI from '../fixtures/test_cli.js';
 
 function toRaw(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -30,7 +31,7 @@ describe('PRData', function() {
   };
 
   request.text
-    .withArgs('https://raw.githubusercontent.com/nodejs/node/master/README.md')
+    .withArgs('https://raw.githubusercontent.com/nodejs/node/HEAD/README.md')
     .returns(Promise.resolve(readme));
   request.text.returns(new Error('unknown query'));
   request.gql.withArgs('PR').returns(Promise.resolve(rawPR));

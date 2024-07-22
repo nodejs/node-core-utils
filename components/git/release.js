@@ -1,14 +1,13 @@
-'use strict';
+import auth from '../../lib/auth.js';
+import CLI from '../../lib/cli.js';
+import ReleasePreparation from '../../lib/prepare_release.js';
+import ReleasePromotion from '../../lib/promote_release.js';
+import TeamInfo from '../../lib/team_info.js';
+import Request from '../../lib/request.js';
+import { runPromise } from '../../lib/run.js';
 
-const yargs = require('yargs');
-
-const auth = require('../../lib/auth');
-const CLI = require('../../lib/cli');
-const ReleasePreparation = require('../../lib/prepare_release');
-const ReleasePromotion = require('../../lib/promote_release');
-const TeamInfo = require('../../lib/team_info');
-const Request = require('../../lib/request');
-const { runPromise } = require('../../lib/run');
+export const command = 'release [prid|options]';
+export const describe = 'Manage an in-progress release or start a new one.';
 
 const PREPARE = 'prepare';
 const PROMOTE = 'promote';
@@ -30,10 +29,25 @@ const releaseOptions = {
   newVersion: {
     describe: 'Version number of the release to be prepared',
     type: 'string'
+  },
+  filterLabel: {
+    describe: 'Labels separated by "," to filter security PRs',
+    type: 'string'
+  },
+  skipBranchDiff: {
+    describe: 'Skips the initial branch-diff check when preparing releases',
+    type: 'boolean'
+  },
+  startLTS: {
+    describe: 'Mark the release as the transition from Current to LTS',
+    type: 'boolean'
   }
 };
 
-function builder(yargs) {
+let yargsInstance;
+
+export function builder(yargs) {
+  yargsInstance = yargs;
   return yargs
     .options(releaseOptions).positional('prid', {
       describe: 'PR number of the release to be promoted',
@@ -44,10 +58,12 @@ function builder(yargs) {
     .example('git node release --prepare --newVersion=1.2.3',
       'Prepare a new release of Node.js tagged v1.2.3')
     .example('git node release --promote 12345',
-      'Promote a prepared release of Node.js with PR #12345');
+      'Promote a prepared release of Node.js with PR #12345')
+    .example('git node --prepare --startLTS',
+      'Prepare the first LTS release');
 }
 
-function handler(argv) {
+export function handler(argv) {
   if (argv.prepare) {
     return release(PREPARE, argv);
   } else if (argv.promote) {
@@ -56,7 +72,7 @@ function handler(argv) {
 
   // If more than one action is provided or no valid action
   // is provided, show help.
-  yargs.showHelp();
+  yargsInstance.showHelp();
 }
 
 function release(state, argv) {
@@ -71,14 +87,6 @@ function release(state, argv) {
     throw err;
   });
 }
-
-module.exports = {
-  command: 'release [prid|options]',
-  describe:
-    'Manage an in-progress release or start a new one.',
-  builder,
-  handler
-};
 
 async function main(state, argv, cli, dir) {
   let release;

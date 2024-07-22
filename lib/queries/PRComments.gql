@@ -13,6 +13,13 @@ query Comments($prid: Int!, $owner: String!, $repo: String!, $after: String) {
           author {
             login
           }
+          reactions(content: THUMBS_UP, first: 100) {
+            nodes {
+              user {
+                login
+              }
+            }
+          }
         }
       }
     }

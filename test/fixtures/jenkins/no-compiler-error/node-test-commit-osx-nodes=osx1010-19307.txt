@@ -33,7 +33,7 @@ Resetting working tree
  > git reset --hard # timeout=10
  > git clean -fdx # timeout=10
 [osx1010] $ /bin/sh -xe /var/folders/dr/m8hrvy3d71172187rtx7vm380000gp/T/jenkins17599764209366008267.sh
-+ curl https://raw.githubusercontent.com/nodejs/build/master/jenkins/scripts/node-test-commit-pre.sh
++ curl https://raw.githubusercontent.com/nodejs/build/main/jenkins/scripts/node-test-commit-pre.sh
 + bash -ex
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -76,7 +76,7 @@ Current branch HEAD is up to date, rebase forced.
 First, rewinding head to replay your work on top of it...
 Applying: workers,trace_events: set thread name for workers
 + '[' -n '' ']'
-+ curl https://raw.githubusercontent.com/nodejs/build/master/jenkins/scripts/node-test-commit-diagnostics.sh
++ curl https://raw.githubusercontent.com/nodejs/build/main/jenkins/scripts/node-test-commit-diagnostics.sh
 + bash -ex -s before
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed

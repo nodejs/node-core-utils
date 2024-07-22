@@ -18,6 +18,14 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
           name
         }
       },
+      files(first: 100) {
+        nodes {
+          path
+        }
+      },
+      timelineItems(itemTypes: [HEAD_REF_FORCE_PUSHED_EVENT, PULL_REQUEST_COMMIT]) {
+        updatedAt
+      },
       title,
       baseRefName,
       headRefName,

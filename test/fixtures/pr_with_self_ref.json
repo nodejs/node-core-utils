@@ -1,0 +1,20 @@
+{
+  "createdAt": "2017-10-24T11:13:43Z",
+  "url": "https://github.com/nodejs/node/pull/16438",
+  "bodyHTML":
+    "<p>Refs: <a href=\"https://github.com/nodejs/node/pull/16438\" class=\"issue-link js-issue-link\" data-error-text=\"Failed to load issue title\" data-id=\"271243248\" data-permission-text=\"Issue title is private\" data-url=\"https://github.com/nodejs/node/pull/16438\">#16438</a></p>",
+  "bodyText": "Refs: https://github.com/nodejs/node/pull/16438",
+  "labels": {
+    "nodes": [
+      {
+        "name": "build"
+      },
+      {
+        "name": "npm"
+      },
+      {
+        "name": "python"
+      }
+    ]
+  }
+}

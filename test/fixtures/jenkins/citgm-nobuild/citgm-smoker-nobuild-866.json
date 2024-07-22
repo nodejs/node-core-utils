@@ -1,0 +1,185 @@
+{
+   "_class":"hudson.matrix.MatrixBuild",
+   "actions":[
+      {
+         "_class":"hudson.model.CauseAction",
+         "causes":[
+            {
+               "_class":"hudson.model.Cause$UpstreamCause",
+               "shortDescription":"Started by upstream project \"citgm-smoker-pipeline\" build number 119",
+               "upstreamBuild":119,
+               "upstreamProject":"citgm-smoker-pipeline",
+               "upstreamUrl":"job/citgm-smoker-pipeline/"
+            }
+         ]
+      },
+      {
+
+      },
+      {
+         "_class":"hudson.model.ParametersAction",
+         "parameters":[
+            {
+               "_class":"hudson.model.StringParameterValue",
+               "name":"CITGM_LOGLEVEL",
+               "value":"verbose"
+            },
+            {
+               "_class":"hudson.model.StringParameterValue",
+               "name":"DOWNLOAD_LOCATION",
+               "value":"release"
+            },
+            {
+               "_class":"hudson.plugins.matrix_configuration_parameter.DefaultMatrixCombinationsParameterValue",
+               "name":"MACHINES"
+            },
+            {
+               "_class":"hudson.model.StringParameterValue",
+               "name":"CITGM_COMMAND",
+               "value":"citgm through2"
+            },
+            {
+               "_class":"hudson.model.StringParameterValue",
+               "name":"NPM_LOGLEVEL",
+               "value":"error"
+            },
+            {
+               "_class":"hudson.model.StringParameterValue",
+               "name":"CITGM",
+               "value":"richardlau/citgm#through2"
+            },
+            {
+               "_class":"hudson.model.StringParameterValue",
+               "name":"NODE_VERSION",
+               "value":"v14"
+            }
+         ]
+      },
+      {
+
+      },
+      {
+
+      },
+      {
+
+      },
+      {
+
+      },
+      {
+
+      },
+      {
+         "_class":"hudson.tasks.test.MatrixTestResult",
+         "failCount":3,
+         "skipCount":0,
+         "totalCount":12,
+         "urlName":"testReport"
+      },
+      {
+
+      },
+      {
+
+      },
+      {
+
+      },
+      {
+
+      },
+      {
+
+      },
+      {
+
+      }
+   ],
+   "artifacts":[
+
+   ],
+   "building":false,
+   "description":null,
+   "displayName":"#866",
+   "duration":304970,
+   "estimatedDuration":3455013,
+   "executor":null,
+   "fullDisplayName":"citgm-smoker-nobuild #866",
+   "id":"866",
+   "keepLog":false,
+   "number":866,
+   "queueId":818578,
+   "result":"FAILURE",
+   "timestamp":1593612323547,
+   "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/866/",
+   "builtOn":"test-packetnet-ubuntu1804-x64-1",
+   "changeSet":{
+      "_class":"hudson.scm.EmptyChangeLogSet",
+      "items":[
+
+      ],
+      "kind":null
+   },
+   "culprits":[
+
+   ],
+   "runs":[
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=aix71-ppc64/866/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=centos7-ppcle/866/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=debian9-64/866/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=fedora-last-latest-x64/866/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=fedora-latest-x64/866/"
+      },
+      {
+         "number":864,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=osx1010/864/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=osx1014/866/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=osx1015/866/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=rhel7-s390x/866/"
+      },
+      {
+         "number":864,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=ubuntu1404-64/864/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=ubuntu1604-64/866/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=ubuntu1804-64/866/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=win10-vs2019/866/"
+      },
+      {
+         "number":866,
+         "url":"https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=win2016-vs2017/866/"
+      }
+   ]
+}

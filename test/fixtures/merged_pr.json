@@ -17,7 +17,7 @@
     ]
   },
   "title": "lib: awesome changes",
-  "baseRefName": "master",
+  "baseRefName": "main",
   "headRefName": "awesome-changes",
   "closed": true,
   "closedAt": "2017-10-28T11:13:43Z",

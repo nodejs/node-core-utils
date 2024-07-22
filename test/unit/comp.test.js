@@ -1,7 +1,7 @@
-'use strict';
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 
-const assert = require('assert');
-const { ascending, descending } = require('../../lib/utils');
+import { ascending, descending } from '../../lib/utils.js';
 
 const arr = [
   '2017-10-30T15:47:52Z',

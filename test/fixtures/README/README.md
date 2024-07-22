@@ -234,18 +234,31 @@ For more information about the governance of the Node.js project, see
 
 ### TSC (Technical Steering Committee)
 
-* [bar](https://github.com/bar) -
-**Bar User** &lt;bar@example.com&gt; (she/her)
+#### TSC voting members
 
-### TSC Emeriti
+* [bar](https://github.com/bar) -
+  **Bar User** <<bar@example.com>> (she/her)
+
+#### TSC regular members
+
+* [Baz](https://github.com/Baz) -
+**Baz User** &lt;baz@example.com&gt; (he/him)
+
+<details>
+
+<summary>TSC emeriti members</summary>
+
+#### TSC emeriti members
 
 * [test](https://github.com/test) -
-**Test** &lt;test@example.com&gt;
+  **Test User** <<test@example.com>>
+
+</details>
 
 ### Collaborators
 
 * [bar](https://github.com/bar) -
-**Bar User** &lt;bar@example.com&gt; (she/her)
+  **Bar User** <<bar@example.com>> (she/her)
 * [Baz](https://github.com/Baz) -
 **Baz User** &lt;baz@example.com&gt; (he/him)
 * [foo](https://github.com/foo) -
@@ -257,10 +270,16 @@ For more information about the governance of the Node.js project, see
 * [ExtraSpace](https://github.com/extraspace) -
 **Extra Space**  &lt;extraspace@example.com&gt; (he/him)
 
-### Collaborator Emeriti
+<details>
+
+<summary>Emeriti</summary>
+
+### Collaborator emeriti
 
 * [bee](https://github.com/bee) -
 **bee** &lt;bee@example.com&gt;
+
+</details>
 
 Collaborators follow the [COLLABORATOR_GUIDE.md](./COLLABORATOR_GUIDE.md) in
 maintaining the Node.js project.
@@ -316,13 +335,13 @@ Previous releases may also have been signed with one of the following GPG keys:
 ### Working Groups
 
 Information on the current Node.js Working Groups can be found in the
-[TSC repository](https://github.com/nodejs/TSC/blob/master/WORKING_GROUPS.md).
+[TSC repository](https://github.com/nodejs/TSC/blob/main/WORKING_GROUPS.md).
 
 [npm]: https://www.npmjs.com
 [Website]: https://nodejs.org/en/
 [Contributing to the project]: CONTRIBUTING.md
 [Node.js Help]: https://github.com/nodejs/help
-[Node.js Moderation Policy]: https://github.com/nodejs/TSC/blob/master/Moderation-Policy.md
+[Node.js Moderation Policy]: https://github.com/nodejs/TSC/blob/main/Moderation-Policy.md
 [#node.js on chat.freenode.net]: https://webchat.freenode.net?channels=node.js&uio=d4
 [#node-dev on chat.freenode.net]: https://webchat.freenode.net?channels=node-dev&uio=d4
-[Code of Conduct]: https://github.com/nodejs/TSC/blob/master/CODE_OF_CONDUCT.md
+[Code of Conduct]: https://github.com/nodejs/TSC/blob/main/CODE_OF_CONDUCT.md

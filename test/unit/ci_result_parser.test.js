@@ -1,21 +1,31 @@
-'use strict';
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
-const {
-  PRBuild, BenchmarkRun, CommitBuild, jobCache
-} = require('../../lib/ci/ci_result_parser');
+import {
+  CITGMComparisonBuild
+} from '../../lib/ci/build-types/citgm_comparison_build.js';
+import { PRBuild } from '../../lib/ci/build-types/pr_build.js';
+import { CommitBuild } from '../../lib/ci/build-types/commit_build.js';
+import { BenchmarkRun } from '../../lib/ci/build-types/benchmark_run.js';
+import { CITGMBuild } from '../../lib/ci/build-types/citgm_build.js';
+import { jobCache } from '../../lib/ci/build-types/job.js';
 
-const TestCLI = require('../fixtures/test_cli');
-const { tmpdir, copyShallow } = require('../common');
-const path = require('path');
-const fixtures = require('../fixtures');
+import TestCLI from '../fixtures/test_cli.js';
+import { tmpdir, copyShallow } from '../common.js';
+import * as fixtures from '../fixtures/index.js';
 
-const assert = require('assert');
+function getFixturesDir(prefix) {
+  const base = fileURLToPath(new URL('../fixtures', import.meta.url));
+  return path.join(base, ...prefix);
+}
 
 describe('Jenkins', () => {
   it('should get failures in PR build and commit build', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'js-flake-1'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -60,7 +70,7 @@ describe('Jenkins', () => {
   it('should get successful PR build and commit build', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'success'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -87,7 +97,7 @@ describe('Jenkins', () => {
   it('should handle node-test-commit trigger failure', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'trigger-failure'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -110,7 +120,7 @@ describe('Jenkins', () => {
   it('should handle git failure', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'git-failure-1'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -133,7 +143,7 @@ describe('Jenkins', () => {
   it('should handle no compiler failure', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'no-compiler-error'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -156,7 +166,7 @@ describe('Jenkins', () => {
   it('should get benchmark run', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'benchmark-buffer'];
-    const fixturesDir = path.join(__dirname, '..', 'fixtures', ...prefix);
+    const fixturesDir = getFixturesDir(prefix);
     copyShallow(fixturesDir, tmpdir.path);
     jobCache.dir = tmpdir.path;
     jobCache.enable();
@@ -174,5 +184,101 @@ describe('Jenkins', () => {
 
     const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
     assert.deepStrictEqual(run.formatAsJson(), expectedJson);
+  });
+
+  it('should correctly fetch CITGM build results', async() => {
+    tmpdir.refresh();
+    const prefix = ['jenkins', 'citgm'];
+    const fixturesDir = getFixturesDir(prefix);
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+    const job = { jobid: 2400, noBuild: false };
+    const citgmBuild = new CITGMBuild(cli, {}, job);
+    await citgmBuild.getResults();
+
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
+    assert.deepStrictEqual(citgmBuild.formatAsJson(), expectedJson);
+
+    const markdown = citgmBuild.formatAsMarkdown();
+    const expected = fixtures.readFile(...prefix, 'expected.md');
+    assert.strictEqual(markdown, expected);
+  });
+
+  it('should correctly fetch CITGM nobuild job results', async() => {
+    tmpdir.refresh();
+    const prefix = ['jenkins', 'citgm-nobuild'];
+    const fixturesDir = getFixturesDir(prefix);
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+    const job = { jobid: 866, noBuild: true };
+    const citgmBuild = new CITGMBuild(cli, {}, job);
+    await citgmBuild.getResults();
+
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
+    assert.deepStrictEqual(citgmBuild.formatAsJson(), expectedJson);
+
+    const markdown = citgmBuild.formatAsMarkdown();
+    const expected = fixtures.readFile(...prefix, 'expected.md');
+    assert.strictEqual(markdown, expected);
+  });
+
+  it('should correctly fetch CITGM comparison build results', async() => {
+    tmpdir.refresh();
+    const prefix = ['jenkins', 'citgm-compare'];
+    const fixturesDir = getFixturesDir(prefix);
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+
+    const job = {
+      jobid: 2392,
+      jobid2: 2390,
+      noBuild: false
+    };
+
+    const comparisonBuild = new CITGMComparisonBuild(cli, {}, job);
+    await comparisonBuild.getResults();
+
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
+    assert.deepStrictEqual(comparisonBuild.formatAsJson(), expectedJson);
+
+    const markdown = comparisonBuild.formatAsMarkdown();
+    const expected = fixtures.readFile(...prefix, 'expected.md');
+    assert.strictEqual(markdown, expected);
+  });
+
+  it('should correctly fetch CITGM comparison noBuild results', async() => {
+    tmpdir.refresh();
+    const prefix = ['jenkins', 'citgm-compare-nobuild'];
+    const fixturesDir = getFixturesDir(prefix);
+    copyShallow(fixturesDir, tmpdir.path);
+    jobCache.dir = tmpdir.path;
+    jobCache.enable();
+
+    const cli = new TestCLI();
+
+    const job = {
+      jobid: 880,
+      jobid2: 2433,
+      noBuild: true
+    };
+
+    const comparisonBuild = new CITGMComparisonBuild(cli, {}, job);
+    await comparisonBuild.getResults();
+
+    const expectedJson = fixtures.readJSON(...prefix, 'expected.json');
+    assert.deepStrictEqual(comparisonBuild.formatAsJson(), expectedJson);
+
+    const markdown = comparisonBuild.formatAsMarkdown();
+    const expected = fixtures.readFile(...prefix, 'expected.md');
+    assert.strictEqual(markdown, expected);
   });
 });

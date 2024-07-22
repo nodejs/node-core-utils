@@ -28,7 +28,7 @@
         {
           "_class": "hudson.model.StringParameterValue",
           "name": "REBASE_ONTO",
-          "value": "origin/master"
+          "value": "origin/main"
         },
         {
           "_class": "hudson.model.StringParameterValue",

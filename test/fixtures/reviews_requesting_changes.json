@@ -5,6 +5,7 @@
   "author": {
     "login": "foo"
   },
+  "authorCanPushToRepository": true,
   "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624",
   "publishedAt": "2017-10-24T11:19:25Z"
 },
@@ -14,6 +15,7 @@
   "author": {
     "login": "Baz"
   },
+  "authorCanPushToRepository": true,
   "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71488392",
   "publishedAt": "2017-10-24T11:50:52Z"
 },
@@ -23,6 +25,7 @@
   "author": {
     "login": "Baz"
   },
+  "authorCanPushToRepository": true,
   "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-714882992",
   "publishedAt": "2017-10-24T12:30:52Z"
 },
@@ -32,6 +35,7 @@
   "author": {
     "login": "Quo"
   },
+  "authorCanPushToRepository": true,
   "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71817236",
   "publishedAt": "2017-10-24T19:09:52Z"
 },
@@ -41,6 +45,7 @@
   "author": {
     "login": "bot"
   },
+  "authorCanPushToRepository": true,
   "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71839232",
   "publishedAt": "2017-10-24T19:21:52Z"
 },
@@ -50,6 +55,7 @@
   "author": {
     "login": "bar"
   },
+  "authorCanPushToRepository": true,
   "url": "https://github.com/nodejs/node/pull/16438#pullrequestreview-71482624",
   "publishedAt": "2017-10-24T11:27:02Z"
 }]

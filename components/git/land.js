@@ -1,15 +1,17 @@
-'use strict';
+import auth from '../../lib/auth.js';
+import { parsePRFromURL } from '../../lib/links.js';
+import { getMetadata } from '../metadata.js';
+import CLI from '../../lib/cli.js';
+import Request from '../../lib/request.js';
+import { runPromise } from '../../lib/run.js';
+import LandingSession from '../../lib/landing_session.js';
+import epilogue from './epilogue.js';
 
-const { parsePRFromURL } = require('../../lib/links');
-const getMetadata = require('../metadata');
-const CLI = require('../../lib/cli');
-const Request = require('../../lib/request');
-const { runPromise } = require('../../lib/run');
-const LandingSession = require('../../lib/landing_session');
-const epilogue = require('./epilogue');
-const yargs = require('yargs');
+export const command = 'land [prid|options]';
+export const describe =
+  'Manage the current landing session or start a new one for a pull request';
 
-const landOptions = {
+const landActions = {
   apply: {
     describe: 'Apply a patch with the given PR id',
     type: 'number'
@@ -31,6 +33,35 @@ const landOptions = {
     describe: 'Abort the current landing session',
     type: 'boolean'
   },
+  backport: {
+    describe: 'Land a backport PR onto a staging branch',
+    default: false,
+    type: 'boolean'
+  },
+  'gpg-sign': {
+    describe: 'GPG-sign commits, will be passed to the git process',
+    alias: 'S'
+  },
+  autorebase: {
+    describe: 'Automatically rebase branches with multiple commits',
+    default: false,
+    type: 'boolean'
+  },
+  fixupAll: {
+    describe: 'Automatically fixup all commits to the first one dismissing ' +
+      'other commit messages',
+    default: false,
+    type: 'boolean'
+  },
+  oneCommitMax: {
+    describe: 'When run in conjunction with the --yes and --autorebase ' +
+      'options, will abort the session if trying to land more than one commit',
+    default: false,
+    type: 'boolean'
+  }
+};
+
+const landOptions = {
   yes: {
     type: 'boolean',
     default: false,
@@ -38,16 +69,30 @@ const landOptions = {
     'non-interactively. If an undesirable situation occurs, such as a pull ' +
     'request or commit check fails, then git node land will abort.'
   },
-  backport: {
-    describe: 'Land a backport PR onto a staging branch',
+  skipRefs: {
+    describe: 'Prevent adding Fixes and Refs information to commit metadata',
     default: false,
+    type: 'boolean'
+  },
+  lint: {
+    describe: 'Run linter while landing commits',
+    default: false,
+    type: 'boolean'
+  },
+  checkCI: {
+    describe: 'Query Jenkins CI results when checking the PR',
+    default: true,
     type: 'boolean'
   }
 };
 
-function builder(yargs) {
+let yargsInstance;
+
+export function builder(yargs) {
+  yargsInstance = yargs;
   return yargs
-    .options(landOptions).positional('prid', {
+    .options(Object.assign({}, landOptions, landActions))
+    .positional('prid', {
       describe: 'ID or URL of the Pull Request'
     })
     .epilogue(epilogue)
@@ -72,7 +117,7 @@ const FINAL = 'final';
 const CONTINUE = 'continue';
 const ABORT = 'abort';
 
-function handler(argv) {
+export function handler(argv) {
   if (argv.prid) {
     if (Number.isInteger(argv.prid)) {
       return land(START, argv);
@@ -83,12 +128,12 @@ function handler(argv) {
         return land(START, argv);
       }
     }
-    yargs.showHelp();
+    yargsInstance.showHelp();
     return;
   }
 
   const provided = [];
-  for (const type of Object.keys(landOptions)) {
+  for (const type of Object.keys(landActions)) {
     if (argv[type]) {
       provided.push(type);
     }
@@ -100,7 +145,7 @@ function handler(argv) {
 
   // If the more than one action is provided or no valid action
   // is provided, show help.
-  yargs.showHelp();
+  yargsInstance.showHelp();
 }
 
 function land(state, argv) {
@@ -108,10 +153,9 @@ function land(state, argv) {
   if (argv.yes) {
     cli.setAssumeYes();
   }
-  const req = new Request();
   const dir = process.cwd();
 
-  return runPromise(main(state, argv, cli, req, dir)).catch((err) => {
+  return runPromise(main(state, argv, cli, dir)).catch((err) => {
     if (cli.spinner.enabled) {
       cli.spinner.fail();
     }
@@ -119,23 +163,22 @@ function land(state, argv) {
   });
 }
 
-module.exports = {
-  command: 'land [prid|options]',
-  describe:
-    'Manage the current landing session or start a new one for a pull request',
-  builder,
-  handler
-};
-
-async function main(state, argv, cli, req, dir) {
+async function main(state, argv, cli, dir) {
+  const credentials = await auth({
+    github: true
+  });
+  const req = new Request(credentials);
   let session = new LandingSession(cli, req, dir);
-  if (session.warnForMissing()) {
-    return;
-  }
-  if (state !== AMEND && state !== CONTINUE && session.warnForWrongBranch()) {
+
+  if (state !== AMEND &&
+      state !== CONTINUE &&
+      await session.warnForWrongBranch()) {
     return;
   }
 
+  if (argv.yes) {
+    cli.setAssumeYes();
+  }
   try {
     session.restore();
   } catch (err) { // JSON error?
@@ -157,8 +200,8 @@ async function main(state, argv, cli, req, dir) {
       cli.log('run `git node land --abort` before starting a new session');
       return;
     }
-    session = new LandingSession(cli, req, dir, argv.prid, argv.backport);
-    const metadata = await getMetadata(session.argv, cli);
+    session = new LandingSession(cli, req, dir, argv);
+    const metadata = await getMetadata(session.argv, argv.skipRefs, cli);
     if (argv.backport) {
       const split = metadata.metadata.split('\n')[0];
       if (split === 'PR-URL: ') {

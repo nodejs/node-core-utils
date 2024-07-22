@@ -1,10 +1,10 @@
-'use strict';
+import { describe, it, beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert';
 
-const assert = require('assert');
+import CLI from '../../lib/cli.js';
+import * as figures from '../../lib/figures.js';
 
-const CLI = require('../../lib/cli');
-const LogStream = require('../fixtures/log_stream');
-const figures = require('../../lib/figures');
+import LogStream from '../fixtures/log_stream.js';
 
 function strip(text) {
   // eslint-disable-next-line
@@ -41,6 +41,8 @@ describe('cli', () => {
 
     describe('spinners', () => {
       beforeEach(() => {
+        stream = new LogStream();
+        cli = new CLI(stream);
         cli.startSpinner('foo');
       });
 
@@ -59,13 +61,23 @@ describe('cli', () => {
     });
 
     describe('write', () => {
+      beforeEach(() => {
+        stream = new LogStream();
+        cli = new CLI(stream);
+      });
       it('should write in stream', () => {
+        const stream = new LogStream();
+        const cli = new CLI(stream);
         cli.write('Getting commits...');
-        assert.strictEqual(logResult(), 'Getting commits...');
+        assert.strictEqual(strip(stream.toString()), 'Getting commits...');
       });
     });
 
     describe('log', () => {
+      beforeEach(() => {
+        stream = new LogStream();
+        cli = new CLI(stream);
+      });
       it('should write in stream', () => {
         cli.log('Getting commits...');
         assert.strictEqual(logResult(), 'Getting commits...\n');
@@ -73,6 +85,10 @@ describe('cli', () => {
     });
 
     describe('table', () => {
+      beforeEach(() => {
+        stream = new LogStream();
+        cli = new CLI(stream);
+      });
       it('should print the first element with bold style and padding', () => {
         cli.table('Title', 'description');
         assert.strictEqual(logResult(),
@@ -81,6 +97,10 @@ describe('cli', () => {
     });
 
     describe('separator', () => {
+      beforeEach(() => {
+        stream = new LogStream();
+        cli = new CLI(stream);
+      });
       it('should print a separator line with the specified text', () => {
         cli.separator('Separator');
         assert.strictEqual(
@@ -106,6 +126,10 @@ describe('cli', () => {
     });
 
     describe('ok', () => {
+      beforeEach(() => {
+        stream = new LogStream();
+        cli = new CLI(stream);
+      });
       it('should print a success message', () => {
         cli.ok('Perfect!');
         assert.strictEqual(logResult(), `   ${success}  Perfect!\n`);
@@ -119,6 +143,10 @@ describe('cli', () => {
     });
 
     describe('warn', () => {
+      beforeEach(() => {
+        stream = new LogStream();
+        cli = new CLI(stream);
+      });
       it('should print a warning message', () => {
         cli.warn('Warning!');
         assert.strictEqual(logResult(), `   ${warning}  Warning!\n`);
@@ -132,6 +160,10 @@ describe('cli', () => {
     });
 
     describe('info', () => {
+      beforeEach(() => {
+        stream = new LogStream();
+        cli = new CLI(stream);
+      });
       it('should print an info message', () => {
         cli.info('Info!');
         assert.strictEqual(logResult(), `   ${info}  Info!\n`);
@@ -144,6 +176,10 @@ describe('cli', () => {
     });
 
     describe('error', () => {
+      beforeEach(() => {
+        stream = new LogStream();
+        cli = new CLI(stream);
+      });
       it('should print an error message', () => {
         cli.error('Error!');
         assert.strictEqual(logResult(), `   ${error}  Error!\n`);
@@ -163,6 +199,28 @@ describe('cli', () => {
         cli.error(new Error('Error!'), { newline: true });
         assert.ok(logResult().startsWith(`\n   ${error}  Error!\n`));
       });
+    });
+  });
+
+  describe('prompt cares about spinner', () => {
+    beforeEach(() => {
+      stream = new LogStream();
+      cli = new CLI(stream, {
+        spinner: { isEnabled: true }
+      });
+      cli.setAssumeYes();
+    });
+
+    it('pauses when prompt a question', async() => {
+      cli.startSpinner('foo');
+      assert.deepEqual(cli.spinner.text, 'foo');
+      assert.deepEqual(cli.spinner.isSpinning, true);
+      await cli.prompt('So you think darkness is your ally?', {
+        defaultAnswer: 'Yes, I was born in it. Molded by it.',
+        questionType: cli.QUESTION_TYPE.INPUT
+      });
+      assert.strictEqual(cli.spinner.isSpinning, true);
+      cli.stopSpinner('foo');
     });
   });
 

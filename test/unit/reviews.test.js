@@ -1,16 +1,16 @@
-'use strict';
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 
-const assert = require('assert');
-const { ReviewAnalyzer } = require('../../lib/reviews');
+import { ReviewAnalyzer } from '../../lib/reviews.js';
 
-const {
+import {
   allGreenReviewers,
   requestedChangesReviewers,
   approvingReviews,
   requestingChangesReviews,
   commentsWithLGTM,
   collaborators
-} = require('../fixtures/data');
+} from '../fixtures/data.js';
 
 describe('ReviewAnalyzer', () => {
   it('should parse reviews and comments that all approve', () => {

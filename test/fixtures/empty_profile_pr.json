@@ -17,6 +17,6 @@
     ]
   },
   "title": "doc: fix mdn links",
-  "baseRefName": "master",
+  "baseRefName": "main",
   "headRefName": "fix-links"
 }

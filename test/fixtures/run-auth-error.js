@@ -1,10 +1,8 @@
-'use strict';
-
 async function mockCredentials() {
   throw new Error('Bad credentials');
 }
 
 (async function() {
-  const auth = require('../../lib/auth');
+  const { default: auth } = await import('../../lib/auth.js');
   await auth({ github: true }, mockCredentials);
 })();

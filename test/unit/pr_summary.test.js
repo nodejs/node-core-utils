@@ -1,14 +1,14 @@
-'use strict';
+import { describe, it } from 'node:test';
+import PRSummary from '../../lib/pr_summary.js';
 
-const {
+import {
   oddCommits,
   simpleCommits,
   firstTimerPR,
   semverMajorPR,
   emptyProfilePR
-} = require('../fixtures/data');
-const TestCLI = require('../fixtures/test_cli');
-const PRSummary = require('../../lib/pr_summary');
+} from '../fixtures/data.js';
+import TestCLI from '../fixtures/test_cli.js';
 
 describe('PRSummary', () => {
   const argv = { prid: 16348, owner: 'nodejs', repo: 'node' };
@@ -43,8 +43,8 @@ describe('PRSummary', () => {
         ['Author',
           'Their Github Account email <pr_author@example.com>' +
           ' (@pr_author, first-time contributor)'],
-        ['Branch', 'pr_author:awesome-changes -> nodejs:master'],
-        ['Labels', 'test, doc'],
+        ['Branch', 'pr_author:awesome-changes -> nodejs:main'],
+        ['Labels', 'needs-ci, test, doc'],
         ['Commits', '6'],
         ['Committers', '3']
       ]
@@ -77,7 +77,7 @@ describe('PRSummary', () => {
         ['Author',
           'Their Github Account email <pr_author@example.com>' +
           ' (@pr_author)'],
-        ['Branch', 'pr_author:awesome-changes -> nodejs:master'],
+        ['Branch', 'pr_author:awesome-changes -> nodejs:main'],
         ['Labels', 'semver-major'],
         ['Commits', '1'],
         ['Committers', '1']
@@ -105,7 +105,7 @@ describe('PRSummary', () => {
       ],
       table: [
         ['Title', 'doc: fix mdn links (#16348)'],
-        ['Branch', 'pr_author:fix-links -> nodejs:master'],
+        ['Branch', 'pr_author:fix-links -> nodejs:main'],
         ['Labels', 'doc'],
         ['Commits', '1'],
         ['Committers', '1']

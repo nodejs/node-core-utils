@@ -2,9 +2,9 @@
 // so assert.throws doesn't work with them.
 // The next allows us to try async error throws
 
-const assert = require('assert');
+import assert from 'node:assert';
 
-const assertThrowsAsync = async(fn, regExp) => {
+export default async function assertThrowsAsync(fn, regExp) {
   let throwFn = () => {};
   try {
     await fn();
@@ -14,5 +14,3 @@ const assertThrowsAsync = async(fn, regExp) => {
     assert.throws(throwFn, regExp);
   }
 };
-
-module.exports = assertThrowsAsync;

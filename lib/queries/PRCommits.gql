@@ -1,7 +1,7 @@
 query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $prid) {
-      commits(first: 100, after: $after) {
+      commits(last: 100, after: $after) {
         totalCount
         pageInfo {
           hasNextPage
@@ -25,8 +25,11 @@ query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
             message
             messageHeadline
             authoredByCommitter
-            checkSuites(first: 10) {
+            checkSuites(first: 100) {
               nodes {
+                app {
+                  slug
+                }
                 conclusion,
                 status
               }

@@ -1,0 +1,19 @@
+query PRLabeledEvents($prid: Int!, $owner: String!, $repo: String!, $after: String) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $prid) {
+      timelineItems(itemTypes: LABELED_EVENT, after: $after, last: 100) {
+        nodes { 
+          ... on LabeledEvent {
+            actor {
+              login
+            }
+            label {
+              name
+            }
+            createdAt
+          }
+        }
+      }
+    }
+  }
+}

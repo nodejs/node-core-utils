@@ -1,16 +1,16 @@
-'use strict';
+import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert';
 
-const assert = require('assert');
-const sinon = require('sinon');
+import sinon from 'sinon';
 
-const TestCLI = require('../fixtures/test_cli');
-const TeamInfo = require('../../lib/team_info');
-const { readJSON, readFile, path: getPath } = require('../fixtures');
+import TestCLI from '../fixtures/test_cli.js';
+import TeamInfo from '../../lib/team_info.js';
+import { readJSON, readFile, path as getPath } from '../fixtures/index.js';
 
 const collabList =
-`- [@Bar](https://github.com/Bar) - Bar Bar
-- [@foo](https://github.com/foo) - Mr. foo
-- [@quo](https://github.com/quo) - Ms. Quo`;
+`* [@Bar](https://github.com/Bar) - Bar Bar
+* [@foo](https://github.com/foo) - Mr. foo
+* [@quo](https://github.com/quo) - Ms. Quo`;
 
 describe('TeamInfo', function() {
   let request;

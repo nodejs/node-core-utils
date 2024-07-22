@@ -1,12 +1,11 @@
-'use strict';
-
-const assert = require('assert');
+import assert from 'assert';
 
 async function mockCredentials(options) {
   assert.deepStrictEqual(options, {
     noSave: true,
     scopes: ['user:email', 'read:org'],
-    note: 'node-core-utils CLI tools'
+    note: 'node-core-utils CLI tools',
+    noDeviceFlow: true
   });
   return {
     user: 'nyancat',
@@ -15,7 +14,7 @@ async function mockCredentials(options) {
 }
 
 (async function() {
-  const auth = require('../../lib/auth');
+  const { default: auth } = await import('../../lib/auth.js');
   const authParams = await auth({ github: true }, mockCredentials);
   process.stdout.write(`${JSON.stringify(authParams)}\n`);
 })().catch(err => {

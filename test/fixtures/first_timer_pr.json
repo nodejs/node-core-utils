@@ -12,6 +12,9 @@
   "labels": {
     "nodes": [
       {
+        "name": "needs-ci"
+      },
+      {
         "name": "test"
       },
       {
@@ -19,7 +22,8 @@
       }
     ]
   },
+  "timelineItems": { "updatedAt": "2017-10-24T11:13:43Z" },
   "title": "test: awesome changes",
-  "baseRefName": "master",
+  "baseRefName": "main",
   "headRefName": "awesome-changes"
 }

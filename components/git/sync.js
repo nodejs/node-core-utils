@@ -1,10 +1,11 @@
-'use strict';
+import CLI from '../../lib/cli.js';
+import { runPromise } from '../../lib/run.js';
+import SyncSession from '../../lib/sync_session.js';
 
-const CLI = require('../../lib/cli');
-const { runPromise } = require('../../lib/run');
-const SyncSession = require('../../lib/sync_session');
+export const command = 'sync';
+export const describe = 'Sync the branch specified by ncu-config.';
 
-function builder(yargs) {
+export function builder(yargs) {
   return yargs
     .epilogue('Demo: https://asciinema.org/a/221230')
     .wrap(90);
@@ -18,13 +19,6 @@ async function main() {
   await session.sync();
 }
 
-function handler(argv) {
+export function handler(argv) {
   return runPromise(main());
 }
-
-module.exports = {
-  command: 'sync',
-  describe: 'Sync the branch specified by ncu-config.',
-  builder,
-  handler
-};

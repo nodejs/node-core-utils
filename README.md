@@ -1,6 +1,6 @@
 # Node.js Core Utilities
-[![npm](https://img.shields.io/npm/v/node-core-utils.svg?style=flat-square)](https://npmjs.org/package/node-core-utils)
-[![Build Status](https://img.shields.io/github/workflow/status/nodejs/node-core-utils/Node.js%20CI/master?style=flat-square)](https://github.com/nodejs/node-core-utils/workflows/Node.js%20CI/badge.svg?branch=master)
+[![npm](https://img.shields.io/npm/v/@node-core/utils.svg?style=flat-square)](https://npmjs.org/package/@node-core/utils)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/nodejs/node-core-utils/nodejs.yml?branch=main&style=flat-square)](https://github.com/nodejs/node-core-utils/workflows/Node.js%20CI/badge.svg?branch=main)
 [![codecov](https://img.shields.io/codecov/c/github/nodejs/node-core-utils.svg?style=flat-square)](https://codecov.io/gh/nodejs/node-core-utils)
 [![Known Vulnerabilities](https://snyk.io/test/github/nodejs/node-core-utils/badge.svg?style=flat-square)](https://snyk.io/test/github/nodejs/node-core-utils)
 
@@ -11,8 +11,11 @@ CLI tools for Node.js Core collaborators.
 - [Tools](#tools)
 - [Usage](#usage)
   - [Install](#install)
-  - [Setting up credentials](#setting-up-credentials)
+  - [Setting up GitHub credentials](#setting-up-github-credentials)
+  - [Setting up Jenkins credentials](#setting-up-jenkins-credentials)
   - [Make sure your credentials won't be committed](#make-sure-your-credentials-wont-be-committed)
+  - [Shell autocomplete](#shell-autocomplete)
+  - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -36,7 +39,7 @@ CLI tools for Node.js Core collaborators.
 ### Install
 
 ```
-npm install -g node-core-utils
+npm install -g @node-core/utils
 ```
 
 If you would prefer to build from the source, install and link:
@@ -48,14 +51,14 @@ npm install
 npm link
 ```
 
-### Setting up credentials
+### Setting up GitHub credentials
 
 Most of the tools need your GitHub credentials to work. You can either
 
 1. Run any of the tools and you will be asked in a prompt to provide your
-  username and password in order to create a personal access token.
+   username and password in order to create a personal access token.
 2. Or, create a personal access token yourself on GitHub, then set them up
-  using an editor.
+   using an editor.
 
 
 If you prefer option 2, [follow these instructions](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
@@ -66,6 +69,10 @@ When creating the token, the following boxes need to be checked:
 - `user:email`: Used by `git-node` and `get-metadata` to read the email of the
   PR author in order to check if it matches the email of the commit author.
 - `read:org`: Used by `ncu-team` to read the list of team members.
+
+Optionally, if you want to grant write access so `git-node` can write comments:
+
+- `public_repo` (or `repo` if you intend to work with private repositories).
 
 You can also edit the permission of existing tokens later.
 
@@ -82,9 +89,38 @@ After the token is generated, create an rc file with the following content:
 Note: you could use `ncu-config` to configure these variables, but it's not
 recommended to leave your tokens in your command line history.
 
+### Setting up Jenkins credentials
+
+The `git-node` and `ncu-ci` commands need to query the Node.js Jenkins API for
+CI results, so you'll need to configure the Jenkins API token before using
+these commands.
+
+To obtain the Jenkins API token
+
+1. Open
+   `https://ci.nodejs.org/user/<your-github-username>/configure` (replace
+   \<your-github-username\> with your own GitHub username).
+2. Click on the `ADD NEW TOKEN` button in the `API Token` section.
+3. Enter an identifiable name (for example, `node-core-utils`) for this
+   token in the inbox that appears, and click `GENERATE`.
+4. Copy the generated token.
+5. Add it into your `ncurc` file (`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`)
+   with `jenkins_token` as key, like this:
+
+   ```json
+   {
+     "username": "your_github_username",
+     "token": "your_github_token",
+     "jenkins_token": "your_jenkins_token"
+   }
+   ```
+
+
 ### Make sure your credentials won't be committed
 
-Put the following entries into `~/.gitignore_global`
+Put the following entries into your
+[global `gitignore` file](https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreexcludesFile)
+(`$XDG_CONFIG_HOME/git/ignore` or a file specified by `core.excludesFile`):
 
 ```
 # node-core-utils configuration file
@@ -93,11 +129,25 @@ Put the following entries into `~/.gitignore_global`
 .ncu
 ```
 
-Mind that`.ncu/land` could contain your access token since it contains the
+Mind that `.ncu/land` could contain your access token since it contains the
 serialized configurations.
 
 If you ever accidentally commit your access token on GitHub, you can simply
 revoke that token and use a new one.
+
+### Shell autocomplete
+
+To add autocomplete just run `git-node completion` and follow the instructions.
+(same for the rest of the tools)
+
+### Troubleshooting
+
+If you encounter an error that you cannot fix by yourself, please
+
+1. Make sure you update NCU to the latest version
+2. Try again with the `NCU_VERBOSITY=debug` environment variable set and
+   open an issue at https://github.com/nodejs/node-core-utils/issues with
+   detailed logs.
 
 ## Contributing
 

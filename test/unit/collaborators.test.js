@@ -1,13 +1,13 @@
-'use strict';
+import { describe, it, beforeEach } from 'node:test';
+import { fileURLToPath } from 'node:url';
+import assert from 'node:assert';
 
-const assert = require('assert');
-const path = require('path');
-
-const {
+import {
   isCollaborator,
   getCollaborators
-} = require('../../lib/collaborators');
-const {
+} from '../../lib/collaborators.js';
+
+import {
   readme,
   readmeAlternative,
   readmeNoTsc,
@@ -17,9 +17,9 @@ const {
   readmeUnordered,
   collaborators,
   collaboratorsAlternative
-} = require('../fixtures/data');
-const TestCLI = require('../fixtures/test_cli');
-const assertThrowsAsync = require('../fixtures/assert_throws_async');
+} from '../fixtures/data.js';
+import TestCLI from '../fixtures/test_cli.js';
+import assertThrowsAsync from '../fixtures/assert_throws_async.js';
 
 describe('collaborators', function() {
   const collaborator = collaborators.get('bar');
@@ -40,7 +40,7 @@ describe('collaborators', function() {
       });
 
       it(
-        'should return true if the the collaborator and actor login are equal',
+        'should return true if the collaborator and actor login are equal',
         () => {
           assert.strictEqual(collaborator.isActor(collaborator), true);
         });
@@ -90,7 +90,7 @@ describe('collaborators', function() {
     function mockRequest(content, argv) {
       const { owner, repo } = argv;
       const expectedUrl =
-        `https://raw.githubusercontent.com/${owner}/${repo}/master/README.md`;
+        `https://raw.githubusercontent.com/${owner}/${repo}/HEAD/README.md`;
       return {
         async text(url) {
           assert.strictEqual(url, expectedUrl);
@@ -100,8 +100,8 @@ describe('collaborators', function() {
     }
 
     it('should use specified readme', async function() {
-      const readmePath = path.resolve(
-        __dirname, '..', 'fixtures', 'README', 'README.md');
+      const readmePath =
+        fileURLToPath(new URL('../fixtures/README/README.md', import.meta.url));
       const argv = { owner: 'nodejs', repo: 'node', readme: readmePath };
       const request = { async text() { assert.fail('should not call'); } };
       const parsed = await getCollaborators(cli, request, argv);
@@ -133,13 +133,13 @@ describe('collaborators', function() {
       });
 
     it(
-      'should throw error if there is no TSC Emeriti section in the README',
+      'should throw error if there is no TSC Regular Members section in the README',
       async() => {
         const argv = { owner: 'nodejs', repo: 'node' };
         const request = mockRequest(readmeNoTscE, argv);
         await assertThrowsAsync(
           async() => getCollaborators(cli, request, argv),
-          /Error: Couldn't find ### TSC Emeriti in the README/);
+          /Error: Couldn't find #### TSC regular members in the README/);
       });
 
     it('should throw error if there is no Collaborators section in the README',
@@ -159,7 +159,7 @@ describe('collaborators', function() {
         const request = mockRequest(readmeNoCollaboratorE, argv);
         await assertThrowsAsync(
           async() => getCollaborators(cli, request, argv),
-          /Error: Couldn't find ### Collaborator Emeriti in the README/);
+          /Error: Couldn't find ### Collaborator emeriti in the README/);
       });
 
     it(

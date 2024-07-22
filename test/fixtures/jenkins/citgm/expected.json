@@ -1,0 +1,132 @@
+{
+  "source": "https://github.com/nodejs/node/pull/34093/",
+  "upstream": "https://ci.nodejs.org/job/citgm-smoker/2400/",
+  "passed": 594,
+  "total": 848,
+  "skipped": 233,
+  "failed": 21,
+  "debian9-64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker/nodes=debian9-64/2400/",
+    "modules": [
+      {
+        "name": "coffeescript-v2.5.1",
+        "status": "FAILED"
+      },
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "rhel7-s390x": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker/nodes=rhel7-s390x/2400/",
+    "modules": [
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "fedora-latest-x64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker/nodes=fedora-latest-x64/2400/",
+    "modules": [
+      {
+        "name": "coffeescript-v2.5.1",
+        "status": "FAILED"
+      },
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "ubuntu1604-64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker/nodes=ubuntu1604-64/2400/",
+    "modules": [
+      {
+        "name": "coffeescript-v2.5.1",
+        "status": "FAILED"
+      },
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "osx1014": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker/nodes=osx1014/2400/",
+    "modules": [
+      {
+        "name": "acorn-v7.3.1",
+        "status": "FAILED"
+      },
+      {
+        "name": "coffeescript-v2.5.1",
+        "status": "FAILED"
+      },
+      {
+        "name": "clinic-v6.0.2",
+        "status": "FAILED"
+      },
+      {
+        "name": "ember-cli-v3.19.0",
+        "status": "FAILED"
+      },
+      {
+        "name": "semver-v7.3.2",
+        "status": "FAILED"
+      },
+      {
+        "name": "watchify-v3.11.1",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "ubuntu1804-64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker/nodes=ubuntu1804-64/2400/",
+    "modules": [
+      {
+        "name": "coffeescript-v2.5.1",
+        "status": "FAILED"
+      },
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "fedora-last-latest-x64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker/nodes=fedora-last-latest-x64/2400/",
+    "modules": [
+      {
+        "name": "coffeescript-v2.5.1",
+        "status": "FAILED"
+      },
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "centos7-ppcle": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker/nodes=centos7-ppcle/2400/",
+    "modules": [
+      {
+        "name": "coffeescript-v2.5.1",
+        "status": "FAILED"
+      },
+      {
+        "name": "clinic-v6.0.2",
+        "status": "FAILED"
+      },
+      {
+        "name": "torrent-stream-v1.2.0",
+        "status": "FAILED"
+      },
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  }
+}

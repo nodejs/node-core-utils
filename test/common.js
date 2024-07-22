@@ -1,27 +1,27 @@
-'use strict';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
-const path = require('path');
-const rimraf = require('rimraf');
-const fs = require('fs');
+const tmpdirPath = fileURLToPath(new URL('tmp', import.meta.url));
 
-exports.tmpdir = {
+export const tmpdir = {
   get path() {
-    return path.join(__dirname, 'tmp');
+    return tmpdirPath;
   },
   refresh() {
-    rimraf.sync(this.path);
+    fs.rmSync(this.path, { recursive: true, force: true });
     fs.mkdirSync(this.path, { recursive: true });
   }
 };
 
-exports.copyShallow = function(src, dest) {
+export function copyShallow(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   const list = fs.readdirSync(src);
   for (const file of list) {
     fs.copyFileSync(path.join(src, file), path.join(dest, file));
   }
-};
+}
 
-exports.raw = function(obj) {
+export function raw(obj) {
   return JSON.parse(JSON.stringify(obj));
-};
+}

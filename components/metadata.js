@@ -1,17 +1,16 @@
-'use strict';
+import fs from 'node:fs';
 
-const Request = require('../lib/request');
-const auth = require('../lib/auth');
-const PRData = require('../lib/pr_data');
-const PRSummary = require('../lib/pr_summary');
-const PRChecker = require('../lib/pr_checker');
-const MetadataGenerator = require('../lib/metadata_gen');
+import Request from '../lib/request.js';
+import auth from '../lib/auth.js';
+import PRData from '../lib/pr_data.js';
+import PRSummary from '../lib/pr_summary.js';
+import PRChecker from '../lib/pr_checker.js';
+import MetadataGenerator from '../lib/metadata_gen.js';
 
-const fs = require('fs');
-
-module.exports = async function getMetadata(argv, cli) {
+export async function getMetadata(argv, skipRefs, cli) {
   const credentials = await auth({
-    github: true
+    github: true,
+    jenkins: true
   });
   const request = new Request(credentials);
 
@@ -22,7 +21,7 @@ module.exports = async function getMetadata(argv, cli) {
   cli.separator('PR info');
   summary.display();
 
-  const metadata = new MetadataGenerator(data).getMetadata();
+  const metadata = new MetadataGenerator({ skipRefs, ...data }).getMetadata();
   if (!process.stdout.isTTY) {
     process.stdout.write(metadata);
   }
@@ -38,8 +37,8 @@ module.exports = async function getMetadata(argv, cli) {
   cli.write(metadata);
   cli.separator();
 
-  const checker = new PRChecker(cli, data, argv);
-  const status = checker.checkAll(argv.checkComments);
+  const checker = new PRChecker(cli, data, request, argv);
+  const status = await checker.checkAll(argv.checkComments, argv.checkCI);
   return {
     status,
     request,

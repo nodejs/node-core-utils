@@ -1,0 +1,70 @@
+{
+  "upstream": "https://ci.nodejs.org/job/citgm-smoker-nobuild/866/",
+  "passed": 9,
+  "total": 12,
+  "skipped": 0,
+  "failed": 3,
+  "osx1015": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=osx1015/866/",
+    "modules": []
+  },
+  "win2016-vs2017": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=win2016-vs2017/866/",
+    "modules": [
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "fedora-last-latest-x64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=fedora-last-latest-x64/866/",
+    "modules": []
+  },
+  "debian9-64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=debian9-64/866/",
+    "modules": []
+  },
+  "ubuntu1804-64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=ubuntu1804-64/866/",
+    "modules": []
+  },
+  "rhel7-s390x": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=rhel7-s390x/866/",
+    "modules": []
+  },
+  "aix71-ppc64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=aix71-ppc64/866/",
+    "modules": [
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "osx1014": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=osx1014/866/",
+    "modules": []
+  },
+  "win10-vs2019": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=win10-vs2019/866/",
+    "modules": [
+      {
+        "name": "through2-v4.0.2",
+        "status": "FAILED"
+      }
+    ]
+  },
+  "fedora-latest-x64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=fedora-latest-x64/866/",
+    "modules": []
+  },
+  "centos7-ppcle": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=centos7-ppcle/866/",
+    "modules": []
+  },
+  "ubuntu1604-64": {
+    "url": "https://ci.nodejs.org/job/citgm-smoker-nobuild/nodes=ubuntu1604-64/866/",
+    "modules": []
+  }
+}
