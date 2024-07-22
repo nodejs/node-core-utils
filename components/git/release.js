@@ -26,6 +26,10 @@ const releaseOptions = {
     describe: 'Promote new release of Node.js',
     type: 'boolean'
   },
+  'gpg-sign': {
+    describe: 'GPG-sign commits, will be passed to the git process',
+    alias: 'S'
+  },
   security: {
     describe: 'Demarcate the new security release as a security release',
     type: 'boolean'
