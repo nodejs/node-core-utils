@@ -50,8 +50,8 @@ export function builder(yargs) {
   yargsInstance = yargs;
   return yargs
     .options(releaseOptions).positional('prid', {
-      describe: 'PR number of the release to be promoted',
-      type: 'number'
+      describe: 'PR number or URL of the release proposal to be promoted',
+      type: 'string'
     })
     .example('git node release --prepare --security',
       'Prepare a new security release of Node.js with auto-determined version')
@@ -89,6 +89,10 @@ function release(state, argv) {
 }
 
 async function main(state, argv, cli, dir) {
+  const prID = /^(?:https:\/\/github\.com\/nodejs\/node\/pull\/)?(\d+)$/.exec(argv.prid);
+  if (prID) {
+    argv.prid = Number(prID[1]);
+  }
   if (state === PREPARE) {
     const release = new ReleasePreparation(argv, cli, dir);
 
