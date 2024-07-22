@@ -14,6 +14,10 @@ const PROMOTE = 'promote';
 const RELEASERS = 'releasers';
 
 const releaseOptions = {
+  dryRun: {
+    describe: 'Skip all the steps that involve touching more than the local clone',
+    type: 'boolean'
+  },
   prepare: {
     describe: 'Prepare a new release of Node.js',
     type: 'boolean'
