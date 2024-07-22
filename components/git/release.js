@@ -89,10 +89,8 @@ function release(state, argv) {
 }
 
 async function main(state, argv, cli, dir) {
-  let release;
-
   if (state === PREPARE) {
-    release = new ReleasePreparation(argv, cli, dir);
+    const release = new ReleasePreparation(argv, cli, dir);
 
     if (release.warnForWrongBranch()) return;
 
@@ -110,7 +108,7 @@ async function main(state, argv, cli, dir) {
 
     return release.prepare();
   } else if (state === PROMOTE) {
-    release = new ReleasePromotion(argv, cli, dir);
+    const release = new ReleasePromotion(argv, cli, dir);
 
     cli.startSpinner('Verifying Releaser status');
     const credentials = await auth({ github: true });
@@ -123,14 +121,12 @@ async function main(state, argv, cli, dir) {
       cli.info(
         'Username was undefined - do you have your .ncurc set up correctly?');
       return;
-    } else {
-      if (!releasers.some(r => r.login === release.username)) {
-        cli.stopSpinner(
-          `${release.username} is not a Releaser; aborting release`);
-        return;
-      }
-      cli.stopSpinner('Verified Releaser status');
+    } else if (releasers.every(r => r.login !== release.username)) {
+      cli.stopSpinner(
+        `${release.username} is not a Releaser; aborting release`);
+      return;
     }
+    cli.stopSpinner('Verified Releaser status');
 
     return release.promote();
   }
