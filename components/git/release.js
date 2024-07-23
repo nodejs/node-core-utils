@@ -15,7 +15,8 @@ const RELEASERS = 'releasers';
 
 const releaseOptions = {
   dryRun: {
-    describe: 'Skip all the steps that involve touching more than the local clone',
+    describe: 'Do not run steps that involve touching more than the local clone, ' +
+           'instead print the commands so the user can choose to run them manually',
     type: 'boolean'
   },
   prepare: {
