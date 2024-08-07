@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.4.0](https://github.com/nodejs/node-core-utils/compare/v5.3.1...v5.4.0) (2024-08-07)
+
+
+### Features
+
+* use sec release template in PR description ([#832](https://github.com/nodejs/node-core-utils/issues/832)) ([25ea992](https://github.com/nodejs/node-core-utils/commit/25ea9923c6cff813766678332130a8c4fdf93edb))
+
+
+### Bug Fixes
+
+* **git-node:** ignore codecov check suite ([#838](https://github.com/nodejs/node-core-utils/issues/838)) ([d796dd5](https://github.com/nodejs/node-core-utils/commit/d796dd5eac383177624a2c4b9284770c99ec3968))
+* handle dependencies empty on sec release blog ([#828](https://github.com/nodejs/node-core-utils/issues/828)) ([987aaca](https://github.com/nodejs/node-core-utils/commit/987aacaded33e94548cb22904c7fb828fd73e804))
+* listr overriding parent task ([#836](https://github.com/nodejs/node-core-utils/issues/836)) ([88c31eb](https://github.com/nodejs/node-core-utils/commit/88c31eb6bbea0ec44797c7287bafad2678d5ea46))
+
 ## [5.3.1](https://github.com/nodejs/node-core-utils/compare/v5.3.0...v5.3.1) (2024-07-03)
 
 
