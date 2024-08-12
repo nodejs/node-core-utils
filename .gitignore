@@ -8,3 +8,4 @@ tmp-*
 .eslintcache
 .ncu
 package-lock.json
+tags
