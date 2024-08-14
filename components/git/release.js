@@ -14,9 +14,10 @@ const PROMOTE = 'promote';
 const RELEASERS = 'releasers';
 
 const releaseOptions = {
-  dryRun: {
-    describe: 'Do not run steps that involve touching more than the local clone, ' +
-           'instead print the commands so the user can choose to run them manually',
+  run: {
+    describe: 'Run steps that involve touching more than the local clone, ' +
+           'including `git push` commands. Might not work if a passphrase ' +
+           'required to push to the remote clone.',
     type: 'boolean'
   },
   prepare: {
