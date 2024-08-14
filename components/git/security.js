@@ -43,6 +43,10 @@ const securityOptions = {
   'post-release': {
     describe: 'Create the post-release announcement',
     type: 'boolean'
+  },
+  cleanup: {
+    describe: 'cleanup the security release.',
+    type: 'boolean'
   }
 };
 
@@ -81,6 +85,9 @@ export function builder(yargs) {
     ).example(
       'git node security --post-release',
       'Create the post-release announcement on the Nodejs.org repo'
+    ).example(
+      'git node security --cleanup',
+      'Cleanup the security release. Merge the PR and close H1 reports'
     );
 }
 
@@ -111,6 +118,9 @@ export function handler(argv) {
   }
   if (argv['post-release']) {
     return createPostRelease(argv);
+  }
+  if (argv.cleanup) {
+    return cleanupSecurityRelease(argv);
   }
   yargsInstance.showHelp();
 }
@@ -165,6 +175,13 @@ async function startSecurityRelease() {
   const cli = new CLI(logStream);
   const release = new PrepareSecurityRelease(cli);
   return release.start();
+}
+
+async function cleanupSecurityRelease() {
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+  const release = new PrepareSecurityRelease(cli);
+  return release.cleanup();
 }
 
 async function syncSecurityRelease(argv) {
