@@ -78,6 +78,8 @@ async function main(state, argv, cli, dir) {
   if (state === PREPARE) {
     const prep = new ReleasePreparation(argv, cli, dir);
 
+    await prep.prepareLocalBranch();
+
     if (prep.warnForWrongBranch()) return;
 
     // If the new version was automatically calculated, confirm it.
