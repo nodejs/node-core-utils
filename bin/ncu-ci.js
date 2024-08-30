@@ -77,12 +77,13 @@ const args = yargs(hideBin(process.argv))
         })
         .option('stats', {
           default: false,
+          type: 'boolean',
           describe: 'Aggregate the results'
         })
         .option('cache', {
           default: false,
-          describe: 'Cache the responses from Jenkins in .ncu/cache/ under' +
-                    ' the node-core-utils installation directory'
+          type: 'boolean',
+          describe: 'Cache the responses from Jenkins in $tmpdir/ncu/cache for testing'
         })
         .option('limit', {
           default: 99,
@@ -199,13 +200,14 @@ const args = yargs(hideBin(process.argv))
     builder: (yargs) => {
       yargs
         .option('stats', {
+          type: 'boolean',
           default: false,
           describe: 'Aggregate the results'
         })
         .option('cache', {
+          type: 'boolean',
           default: false,
-          describe: 'Cache the responses from Jenkins in .ncu/cache/ under' +
-                    ' the node-core-utils installation directory'
+          describe: 'Cache the responses from Jenkins in $tmpdir/ncu/cache for testing'
         })
         .option('limit', {
           default: 15,

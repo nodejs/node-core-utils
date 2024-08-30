@@ -111,7 +111,7 @@ Possible use cases:
    is run, it picks up cached data written on disk for jobs whose results
    are known.
 
-   Note: results are cached in `${ncu_installation_path}/.ncu/cache`, so you
+   Note: results are cached in `$tmpdir/ncu/cache`, so you
    may want to clean it up from time to time.
 
    ```
