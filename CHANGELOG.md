@@ -1,5 +1,22 @@
 # Changelog
 
+## [5.5.0](https://github.com/nodejs/node-core-utils/compare/v5.4.0...v5.5.0) (2024-09-01)
+
+
+### Features
+
+* add git node security --cleanup ([#833](https://github.com/nodejs/node-core-utils/issues/833)) ([871a16f](https://github.com/nodejs/node-core-utils/commit/871a16f7968d112468f751ab019ca575151745d2))
+* add warning when fail on all platforms ([#843](https://github.com/nodejs/node-core-utils/issues/843)) ([4f7ec3e](https://github.com/nodejs/node-core-utils/commit/4f7ec3e7923592dbfef32206bf1c2b21a36e15dd))
+* **git-node:** auto-fetch comparison branch when preparing release ([#846](https://github.com/nodejs/node-core-utils/issues/846)) ([a8529ed](https://github.com/nodejs/node-core-utils/commit/a8529edaab765e293965054b7027774a3f4938f2))
+* **git-node:** auto-fetch latest release tag when preparing release ([#842](https://github.com/nodejs/node-core-utils/issues/842)) ([15ae401](https://github.com/nodejs/node-core-utils/commit/15ae4013b2cbf56ec7f3356d8a8bb682ceef29c3))
+* update next-security-release folder on cleanup ([#840](https://github.com/nodejs/node-core-utils/issues/840)) ([f420432](https://github.com/nodejs/node-core-utils/commit/f420432c6cbdba51da734276d20f73c75728b409))
+* **v8:** add fast_float to V8 deps ([#844](https://github.com/nodejs/node-core-utils/issues/844)) ([4e8ec9c](https://github.com/nodejs/node-core-utils/commit/4e8ec9c072283c8cb31155c66815027ed82fa210))
+
+
+### Bug Fixes
+
+* landing session on different repo/org ([#847](https://github.com/nodejs/node-core-utils/issues/847)) ([7734954](https://github.com/nodejs/node-core-utils/commit/77349540beee5c8d8808f5783e72e106b02f113b))
+
 ## [5.4.0](https://github.com/nodejs/node-core-utils/compare/v5.3.1...v5.4.0) (2024-08-07)
 
 
