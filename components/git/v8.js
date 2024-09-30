@@ -6,6 +6,7 @@ import { minor, major, backport } from '../../lib/update-v8/index.js';
 import { defaultBaseDir } from '../../lib/update-v8/constants.js';
 import { checkCwd } from '../../lib/update-v8/common.js';
 import { forceRunAsync } from '../../lib/run.js';
+import { type } from 'node:os';
 
 export const command = 'v8 [major|minor|backport]';
 export const describe = 'Update or patch the V8 engine';
@@ -22,6 +23,7 @@ export function builder(yargs) {
           default: 'lkgr'
         });
         yargs.option('version-bump', {
+          type: 'boolean',
           describe: 'Bump the NODE_MODULE_VERSION constant',
           default: true
         });
@@ -39,10 +41,12 @@ export function builder(yargs) {
       builder: (yargs) => {
         yargs
           .option('bump', {
+            type: 'boolean',
             describe: 'Bump V8 embedder version number or patch version',
             default: true
           })
           .option('squash', {
+            type: 'boolean',
             describe:
                 'If multiple commits are backported, squash them into one',
             default: false
@@ -62,8 +66,8 @@ export function builder(yargs) {
       describe: 'Directory of an existing V8 clone'
     })
     .option('verbose', {
+      type: 'boolean',
       describe: 'Enable verbose output',
-      boolean: true,
       default: false
     });
 }
