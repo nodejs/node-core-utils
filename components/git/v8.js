@@ -6,7 +6,6 @@ import { minor, major, backport } from '../../lib/update-v8/index.js';
 import { defaultBaseDir } from '../../lib/update-v8/constants.js';
 import { checkCwd } from '../../lib/update-v8/common.js';
 import { forceRunAsync } from '../../lib/run.js';
-import { type } from 'node:os';
 
 export const command = 'v8 [major|minor|backport]';
 export const describe = 'Update or patch the V8 engine';
