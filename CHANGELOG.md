@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.5.2](https://github.com/nodejs/node-core-utils/compare/v5.5.1...v5.5.2) (2024-10-04)
+
+
+### Bug Fixes
+
+* handle errors on H1 fetch reports ([#858](https://github.com/nodejs/node-core-utils/issues/858)) ([1f6bcf6](https://github.com/nodejs/node-core-utils/commit/1f6bcf693d6117c8a2d9ec372268635ceb453701))
+* **v8:** mark boolean CLI options as such ([#861](https://github.com/nodejs/node-core-utils/issues/861)) ([c953d93](https://github.com/nodejs/node-core-utils/commit/c953d93523cf2d88686e076f9abd4b661a9e8b0d))
+
 ## [5.5.1](https://github.com/nodejs/node-core-utils/compare/v5.5.0...v5.5.1) (2024-09-26)
 
 
