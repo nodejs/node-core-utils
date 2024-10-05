@@ -45,6 +45,7 @@
     "core-validate-commit": "^4.0.0",
     "figures": "^6.1.0",
     "ghauth": "^6.0.5",
+    "git-secure-tag": "^2.3.1",
     "inquirer": "^9.3.2",
     "js-yaml": "^4.1.0",
     "listr2": "^8.2.3",
