@@ -124,11 +124,11 @@ async function main(state, argv, cli, dir) {
 
     return release.prepare();
   } else if (state === PROMOTE) {
-    const release = new ReleasePromotion(argv, cli, dir);
-
-    cli.startSpinner('Verifying Releaser status');
     const credentials = await auth({ github: true });
     const request = new Request(credentials);
+    const release = new ReleasePromotion(argv, request, cli, dir);
+
+    cli.startSpinner('Verifying Releaser status');
     const info = new TeamInfo(cli, request, 'nodejs', RELEASERS);
 
     const releasers = await info.getMembers();
