@@ -224,6 +224,8 @@ Options:
   --security  Demarcate the new security release as a security release [boolean]
   --startLTS  Mark the release as the transition from Current to LTS   [boolean]
   --filterLabel Filter PR by label when preparing a security release   [string]
+  --yes       Assume "yes" as answer to all prompts and run
+              non-interactively. [boolean] [default: false]
 ```
 
 ### Example
@@ -336,7 +338,7 @@ ncu-config set waitTimeMultiApproval 48
 
 ## `git node v8`
 
-Update or patch the V8 engine.  
+Update or patch the V8 engine.
 This tool will maintain a clone of the V8 repository in `~/.update-v8/v8`
 if it's used without `--v8-dir`.
 
@@ -373,7 +375,7 @@ Options:
 ### `git node v8 minor`
 
 Compare current V8 version with latest upstream of the same major. Applies a
-patch if necessary.  
+patch if necessary.
 If the `git apply` command fails, a patch file will be written in the Node.js
 clone directory.
 
@@ -462,7 +464,7 @@ It will retrieve all the triaged HackerOne reports and add creates the `vulnerab
 
 This command updates the `vulnerabilities.json` with target date of the security release.
 Example:
-  
+
 ```sh
   git node security --update-date=2023/12/31
 ```
@@ -471,7 +473,7 @@ Example:
 
 This command creates a pre-release announcement for the security release.
 Example:
-  
+
 ```sh
   git node security --pre-release
 ```

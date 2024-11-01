@@ -32,6 +32,12 @@ const releaseOptions = {
   startLTS: {
     describe: 'Mark the release as the transition from Current to LTS',
     type: 'boolean'
+  },
+  yes: {
+    type: 'boolean',
+    default: false,
+    describe: 'Assume "yes" as answer to all prompts and run ' +
+    'non-interactively.'
   }
 };
 
@@ -65,6 +71,10 @@ function release(state, argv) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
   const dir = process.cwd();
+
+  if (argv.yes) {
+    cli.setAssumeYes();
+  }
 
   return runPromise(main(state, argv, cli, dir)).catch((err) => {
     if (cli.spinner.enabled) {
