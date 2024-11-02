@@ -338,7 +338,7 @@ ncu-config set waitTimeMultiApproval 48
 
 ## `git node v8`
 
-Update or patch the V8 engine.
+Update or patch the V8 engine.  
 This tool will maintain a clone of the V8 repository in `~/.update-v8/v8`
 if it's used without `--v8-dir`.
 
@@ -375,7 +375,7 @@ Options:
 ### `git node v8 minor`
 
 Compare current V8 version with latest upstream of the same major. Applies a
-patch if necessary.
+patch if necessary.  
 If the `git apply` command fails, a patch file will be written in the Node.js
 clone directory.
 
