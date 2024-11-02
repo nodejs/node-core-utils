@@ -10,6 +10,7 @@
       "checkSuites": {
         "nodes": [
           {
+            "app": { "slug": "github-actions" },
             "status": "COMPLETED",
             "conclusion": "SKIPPED"
           }

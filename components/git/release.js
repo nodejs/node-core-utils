@@ -17,6 +17,10 @@ const releaseOptions = {
     describe: 'Promote new release of Node.js',
     type: 'boolean'
   },
+  releaseDate: {
+    describe: 'Default relase date when --prepare is used. It must be YYYY-MM-DD',
+    type: 'string'
+  },
   security: {
     describe: 'Demarcate the new security release as a security release',
     type: 'boolean'
@@ -37,7 +41,7 @@ const releaseOptions = {
     type: 'boolean',
     default: false,
     describe: 'Assume "yes" as answer to all prompts and run ' +
-    'non-interactively.'
+    'non-interactively.',
   }
 };
 

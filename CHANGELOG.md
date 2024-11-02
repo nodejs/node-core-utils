@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.5.1](https://github.com/nodejs/node-core-utils/compare/v5.5.0...v5.5.1) (2024-09-26)
+
+
+### Bug Fixes
+
+* **git-node:** ignore all non-gha nodes when checking for GitHub CI ([#857](https://github.com/nodejs/node-core-utils/issues/857)) ([342ff5b](https://github.com/nodejs/node-core-utils/commit/342ff5baddbccd12d605547e718cec7508a50280))
+* **ncu-ci:** fix cache and stats option, and use tmpdir for cache ([#849](https://github.com/nodejs/node-core-utils/issues/849)) ([aa25318](https://github.com/nodejs/node-core-utils/commit/aa25318cd46e3698f59da59bf8e1ed6809da5ada))
+* **v8:** handle error in git apply ([#851](https://github.com/nodejs/node-core-utils/issues/851)) ([11d0a04](https://github.com/nodejs/node-core-utils/commit/11d0a04aa08a221b400515801a99702c339fd832))
+
 ## [5.5.0](https://github.com/nodejs/node-core-utils/compare/v5.4.0...v5.5.0) (2024-09-01)
 
 

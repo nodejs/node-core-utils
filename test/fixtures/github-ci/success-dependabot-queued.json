@@ -17,6 +17,7 @@
             "conclusion": null
           },
           {
+            "app": { "slug": "github-actions" },
             "status": "COMPLETED",
             "conclusion": "SUCCESS"
           }
