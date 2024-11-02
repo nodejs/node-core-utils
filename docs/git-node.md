@@ -224,7 +224,7 @@ Options:
   --security  Demarcate the new security release as a security release [boolean]
   --startLTS  Mark the release as the transition from Current to LTS   [boolean]
   --filterLabel Filter PR by label when preparing a security release   [string]
-  --yes       Assume "yes" as answer to all prompts and run
+  --yes       Skip all prompts and run
               non-interactively. [boolean] [default: false]
 ```
 
