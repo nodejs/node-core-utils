@@ -40,8 +40,7 @@ const releaseOptions = {
   yes: {
     type: 'boolean',
     default: false,
-    describe: 'Assume "yes" as answer to all prompts and run ' +
-    'non-interactively.',
+    describe: 'Skip all prompts and run non-interactively'
   }
 };
 
