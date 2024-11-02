@@ -32,6 +32,10 @@ const releaseOptions = {
   startLTS: {
     describe: 'Mark the release as the transition from Current to LTS',
     type: 'boolean'
+  },
+  releaseDate: {
+    describe: 'Default relase date when --prepare is used. It must be YYYY-MM-DD',
+    type: 'string'
   }
 };
 
