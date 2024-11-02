@@ -43,7 +43,7 @@ describe('Jenkins', () => {
     });
   });
 
-  it('should fail if starting node-pull-request throws', async() => {
+  it('should fail if starting node-pull-request throws', async(t) => {
     const cli = new TestCLI();
     const request = {
       fetch: sinon.stub().returns(Promise.resolve({ status: 400 })),
@@ -53,20 +53,20 @@ describe('Jenkins', () => {
     };
 
     const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
-    assert.strictEqual(await jobRunner.start(), false);
+    t.assert.strictEqual(await jobRunner.start(), false);
   });
 
-  it('should return false if crumb fails', async() => {
+  it('should return false if crumb fails', async(t) => {
     const cli = new TestCLI();
     const request = {
       json: sinon.stub().throws()
     };
 
     const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
-    assert.strictEqual(await jobRunner.start(), false);
+    t.assert.strictEqual(await jobRunner.start(), false);
   });
 
-  it('should start node-pull-request', async() => {
+  it('should start node-pull-request', async(t) => {
     const cli = new TestCLI();
 
     const request = {
@@ -81,36 +81,36 @@ describe('Jenkins', () => {
       }),
       fetch: sinon.stub()
         .callsFake((url, { method, headers, body }) => {
-          assert.strictEqual(url, CI_PR_URL);
-          assert.strictEqual(method, 'POST');
-          assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
-          assert.ok(body._validated);
+          t.assert.strictEqual(url, CI_PR_URL);
+          t.assert.strictEqual(method, 'POST');
+          t.assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
+          t.assert.ok(body._validated);
           return Promise.resolve({ status: 201 });
         }),
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
     };
     const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
-    assert.ok(await jobRunner.start());
+    t.assert.ok(await jobRunner.start());
   });
 
-  it('should return false if node-pull-request not started', async() => {
+  it('should return false if node-pull-request not started', async(t) => {
     const cli = new TestCLI();
 
     const request = {
       fetch: sinon.stub()
         .callsFake((url, { method, headers, body }) => {
-          assert.strictEqual(url, CI_PR_URL);
-          assert.strictEqual(method, 'POST');
-          assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
-          assert.ok(body._validated);
+          t.assert.strictEqual(url, CI_PR_URL);
+          t.assert.strictEqual(method, 'POST');
+          t.assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
+          t.assert.ok(body._validated);
           return Promise.resolve({ status: 401 });
         }),
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
     };
     const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
-    assert.strictEqual(await jobRunner.start(), false);
+    t.assert.strictEqual(await jobRunner.start(), false);
   });
 
   describe('without --certify-safe flag', { concurrency: false }, () => {
@@ -120,7 +120,7 @@ describe('Jenkins', () => {
     for (const certifySafe of [true, false]) {
       it(`should return ${certifySafe} if PR checker reports it as ${
         certifySafe ? '' : 'potentially un'
-      }safe`, async() => {
+      }safe`, async(t) => {
         const cli = new TestCLI();
 
         sinon.replace(PRChecker.prototype, 'checkCommitsAfterReview',
@@ -138,10 +138,10 @@ describe('Jenkins', () => {
           }),
           fetch: sinon.stub()
             .callsFake((url, { method, headers, body }) => {
-              assert.strictEqual(url, CI_PR_URL);
-              assert.strictEqual(method, 'POST');
-              assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
-              assert.ok(body._validated);
+              t.assert.strictEqual(url, CI_PR_URL);
+              t.assert.strictEqual(method, 'POST');
+              t.assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
+              t.assert.ok(body._validated);
               return Promise.resolve({ status: 201 });
             }),
           json: sinon.stub().withArgs(CI_CRUMB_URL)
@@ -149,7 +149,7 @@ describe('Jenkins', () => {
         };
 
         const jobRunner = new RunPRJob(cli, request, owner, repo, prid, false);
-        assert.strictEqual(await jobRunner.start(), certifySafe);
+        t.assert.strictEqual(await jobRunner.start(), certifySafe);
       });
     }
   });
