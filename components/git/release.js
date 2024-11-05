@@ -17,6 +17,10 @@ const releaseOptions = {
     describe: 'Promote new release of Node.js',
     type: 'boolean'
   },
+  releaseDate: {
+    describe: 'Default relase date when --prepare is used. It must be YYYY-MM-DD',
+    type: 'string'
+  },
   security: {
     describe: 'Demarcate the new security release as a security release',
     type: 'boolean'
@@ -33,9 +37,10 @@ const releaseOptions = {
     describe: 'Mark the release as the transition from Current to LTS',
     type: 'boolean'
   },
-  releaseDate: {
-    describe: 'Default relase date when --prepare is used. It must be YYYY-MM-DD',
-    type: 'string'
+  yes: {
+    type: 'boolean',
+    default: false,
+    describe: 'Skip all prompts and run non-interactively'
   }
 };
 
@@ -69,6 +74,10 @@ function release(state, argv) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
   const dir = process.cwd();
+
+  if (argv.yes) {
+    cli.setAssumeYes();
+  }
 
   return runPromise(main(state, argv, cli, dir)).catch((err) => {
     if (cli.spinner.enabled) {
