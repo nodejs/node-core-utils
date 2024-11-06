@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.6.0](https://github.com/nodejs/node-core-utils/compare/v5.5.1...v5.6.0) (2024-11-06)
+
+
+### Features
+
+* add --yes option to git node release ([#862](https://github.com/nodejs/node-core-utils/issues/862)) ([964aa53](https://github.com/nodejs/node-core-utils/commit/964aa537e7e54c45d06c362e7d61e0e6d227b85f))
+* **git-node:** add `--releaseDate` to `git node release` ([#863](https://github.com/nodejs/node-core-utils/issues/863)) ([48cbfd6](https://github.com/nodejs/node-core-utils/commit/48cbfd6b2dc74ae83359e74160502e0e15f3d2a9))
+
+
+### Bug Fixes
+
+* default answers in release --prepare ([#864](https://github.com/nodejs/node-core-utils/issues/864)) ([9a40d21](https://github.com/nodejs/node-core-utils/commit/9a40d21b51e4dddc7a6865569239eb5faf755706))
+* handle errors on H1 fetch reports ([#858](https://github.com/nodejs/node-core-utils/issues/858)) ([1f6bcf6](https://github.com/nodejs/node-core-utils/commit/1f6bcf693d6117c8a2d9ec372268635ceb453701))
+* **v8:** mark boolean CLI options as such ([#861](https://github.com/nodejs/node-core-utils/issues/861)) ([c953d93](https://github.com/nodejs/node-core-utils/commit/c953d93523cf2d88686e076f9abd4b661a9e8b0d))
+
 ## [5.5.1](https://github.com/nodejs/node-core-utils/compare/v5.5.0...v5.5.1) (2024-09-26)
 
 
