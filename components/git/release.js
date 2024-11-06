@@ -14,11 +14,17 @@ const PROMOTE = 'promote';
 const RELEASERS = 'releasers';
 
 const releaseOptions = {
-  run: {
-    describe: 'Run steps that involve touching more than the local clone, ' +
-           'including `git push` commands. Might not work if a passphrase ' +
-           'required to push to the remote clone.',
-    type: 'boolean'
+  filterLabel: {
+    describe: 'Labels separated by "," to filter security PRs',
+    type: 'string'
+  },
+  'gpg-sign': {
+    describe: 'GPG-sign commits, will be passed to the git process',
+    alias: 'S'
+  },
+  newVersion: {
+    describe: 'Version number of the release to be prepared',
+    type: 'string'
   },
   prepare: {
     describe: 'Prepare a new release of Node.js',
@@ -32,21 +38,15 @@ const releaseOptions = {
     describe: 'Default relase date when --prepare is used. It must be YYYY-MM-DD',
     type: 'string'
   },
+  run: {
+    describe: 'Run steps that involve touching more than the local clone, ' +
+           'including `git push` commands. Might not work if a passphrase ' +
+           'required to push to the remote clone.',
+    type: 'boolean'
+  },
   security: {
     describe: 'Demarcate the new security release as a security release',
     type: 'boolean'
-  },
-  newVersion: {
-    describe: 'Version number of the release to be prepared',
-    type: 'string'
-  },
-  filterLabel: {
-    describe: 'Labels separated by "," to filter security PRs',
-    type: 'string'
-  },
-  'gpg-sign': {
-    describe: 'GPG-sign commits, will be passed to the git process',
-    alias: 'S'
   },
   skipBranchDiff: {
     describe: 'Skips the initial branch-diff check when preparing releases',
