@@ -223,7 +223,10 @@ Options:
   --prepare   Prepare a new release of Node.js                         [boolean]
   --security  Demarcate the new security release as a security release [boolean]
   --startLTS  Mark the release as the transition from Current to LTS   [boolean]
+  --yes       Skip all prompts and run non-interactively               [boolean]
   --filterLabel Filter PR by label when preparing a security release   [string]
+  --releaseDate Default relase date when --prepare is used.
+                It must be YYYY-MM-DD   [string]
 ```
 
 ### Example
@@ -462,7 +465,7 @@ It will retrieve all the triaged HackerOne reports and add creates the `vulnerab
 
 This command updates the `vulnerabilities.json` with target date of the security release.
 Example:
-  
+
 ```sh
   git node security --update-date=2023/12/31
 ```
@@ -471,7 +474,7 @@ Example:
 
 This command creates a pre-release announcement for the security release.
 Example:
-  
+
 ```sh
   git node security --pre-release
 ```
