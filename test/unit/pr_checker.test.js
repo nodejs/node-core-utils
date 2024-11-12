@@ -2120,6 +2120,15 @@ describe('PRChecker', () => {
       });
 
       it('should return false if PR has outdated request-ci from a collaborator', async() => {
+        const expectedLogs = {
+          warn: [
+            ['No approving reviews found'],
+            ['Something was pushed to the Pull Request branch since the last request-ci label.']
+          ],
+          info: [],
+          error: []
+        };
+
         const cli = new TestCLI();
         data.getLabeledEvents = async() => {
           data.labeledEvents = labeledEvents['old-request-ci-collaborator'];
@@ -2128,6 +2137,7 @@ describe('PRChecker', () => {
 
         const status = await checker.checkCommitsAfterReviewOrLabel();
         assert.strictEqual(status, false);
+        cli.assertCalledWith(expectedLogs);
       });
 
       it('should return true if PR has recent request-ci from a collaborator', async() => {
@@ -2247,7 +2257,7 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should return true if PR can be landed', () => {
+    it('should return false if PR was updated after approvals', () => {
       const expectedLogs = {
         warn: [
           ['Something was pushed to the Pull Request branch since the last approving review.']
