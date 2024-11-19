@@ -44,10 +44,22 @@ export function builder(yargs) {
             describe: 'Bump V8 embedder version number or patch version',
             default: true
           })
+          .option('gpg-sign', {
+            alias: 'S',
+            type: 'boolean',
+            describe: 'GPG-sign commits',
+            default: false
+          })
+          .option('preserve-original-author', {
+            type: 'boolean',
+            describe: 'Preserve original commit author and date',
+            default: true
+          })
           .option('squash', {
             type: 'boolean',
             describe:
-                'If multiple commits are backported, squash them into one',
+                'If multiple commits are backported, squash them into one. When ' +
+                '`--squash` is passed, `--preserve-original-author` will be ignored',
             default: false
           });
       }
@@ -88,7 +100,7 @@ export function handler(argv) {
       input,
       spawnArgs: {
         cwd: options.nodeDir,
-        stdio: input ? ['pipe', 'ignore', 'ignore'] : 'ignore'
+        stdio: input ? ['pipe', 'inherit', 'inherit'] : 'inherit'
       }
     });
   };
@@ -97,7 +109,7 @@ export function handler(argv) {
     return forceRunAsync('git', args, {
       ignoreFailure: false,
       captureStdout: true,
-      spawnArgs: { cwd: options.v8Dir, stdio: ['ignore', 'pipe', 'ignore'] }
+      spawnArgs: { cwd: options.v8Dir, stdio: ['ignore', 'pipe', 'inherit'] }
     });
   };
 
