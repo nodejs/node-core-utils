@@ -52,7 +52,7 @@ async function main(argv) {
   if (fs.existsSync(statusFolder)) {
     const jsons = fs.readdirSync(statusFolder);
     supported = supported.concat(
-      jsons.map(item => item.replace('.json', '')));
+      jsons.map(item => path.basename(item, path.extname(item))));
   } else {
     cli.warn(`Please create the status JSON files in ${statusFolder}`);
   }
