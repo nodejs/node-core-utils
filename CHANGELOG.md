@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.7.0](https://github.com/nodejs/node-core-utils/compare/v5.6.0...v5.7.0) (2024-11-19)
+
+
+### Features
+
+* **git-node:** add release promotion step ([#835](https://github.com/nodejs/node-core-utils/issues/835)) ([dfa9c92](https://github.com/nodejs/node-core-utils/commit/dfa9c9201366e9f025034cd40cb5ec9a8968dc9e))
+* **git-node:** prompt before attempting branch-diff ([#869](https://github.com/nodejs/node-core-utils/issues/869)) ([391487b](https://github.com/nodejs/node-core-utils/commit/391487bb977fe122d322637c21c6f7ee8881f6b4))
+* **git-node:** use a single `git push` command ([#870](https://github.com/nodejs/node-core-utils/issues/870)) ([82527ad](https://github.com/nodejs/node-core-utils/commit/82527ad29271b9a07d58bffa6bb48c77127a089a))
+* **git-v8:** preserve original author when backporting ([#872](https://github.com/nodejs/node-core-utils/issues/872)) ([4eaad65](https://github.com/nodejs/node-core-utils/commit/4eaad654126a6ea7f4c7e684b8e04f9d94ae8d08))
+
+
+### Bug Fixes
+
+* **git-node:** do not assume release commit will conflict ([#871](https://github.com/nodejs/node-core-utils/issues/871)) ([ec6c6cb](https://github.com/nodejs/node-core-utils/commit/ec6c6cbf23d90738e4e73a17c245d24ac331de7d))
+* **git-node:** followup fix for supported wpt jsons ([#855](https://github.com/nodejs/node-core-utils/issues/855)) ([7822d08](https://github.com/nodejs/node-core-utils/commit/7822d08b3c91bdc2d2859d111bef28ac17448da6))
+
 ## [5.6.0](https://github.com/nodejs/node-core-utils/compare/v5.5.1...v5.6.0) (2024-11-08)
 
 

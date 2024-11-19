@@ -1,6 +1,6 @@
 {
   "name": "@node-core/utils",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "description": "Utilities for Node.js core collaborators",
   "type": "module",
   "engines": {
