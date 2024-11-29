@@ -29,8 +29,8 @@ const securityOptions = {
     type: 'string'
   },
   'pre-release': {
-    describe: 'Create the pre-release announcement',
-    type: 'boolean'
+    describe: 'Create the pre-release announcement to the given nodejs.org folder',
+    type: 'string'
   },
   'notify-pre-release': {
     describe: 'Notify the community about the security release',
@@ -73,7 +73,7 @@ export function builder(yargs) {
       'git node security --remove-report=H1-ID',
       'Removes the Hackerone report based on ID provided from vulnerabilities.json'
     ).example(
-      'git node security --pre-release',
+      'git node security --pre-release="../nodejs.org/"',
       'Create the pre-release announcement on the Nodejs.org repo'
     ).example(
       'git node security --notify-pre-release',
@@ -149,11 +149,12 @@ async function updateReleaseDate(argv) {
   return update.updateReleaseDate(releaseDate);
 }
 
-async function createPreRelease() {
+async function createPreRelease(argv) {
+  const nodejsOrgFolder = argv['pre-release'];
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
   const preRelease = new SecurityBlog(cli);
-  return preRelease.createPreRelease();
+  return preRelease.createPreRelease(nodejsOrgFolder);
 }
 
 async function requestCVEs() {
