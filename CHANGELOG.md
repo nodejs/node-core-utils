@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.8.0](https://github.com/nodejs/node-core-utils/compare/v5.7.0...v5.8.0) (2024-12-03)
+
+
+### Features
+
+* support nodejs org folder on post-release ([#878](https://github.com/nodejs/node-core-utils/issues/878)) ([5fe1456](https://github.com/nodejs/node-core-utils/commit/5fe1456718d3e5f019f53f73d9af9c7ccdd3405c))
+* use nodejs.org folder a base for --pre-release ([#874](https://github.com/nodejs/node-core-utils/issues/874)) ([121dfc8](https://github.com/nodejs/node-core-utils/commit/121dfc87435b6a64501ad785825a3fa18adff390))
+
+
+### Bug Fixes
+
+* **git-node:** support on shallow clones ([#876](https://github.com/nodejs/node-core-utils/issues/876)) ([eddb205](https://github.com/nodejs/node-core-utils/commit/eddb20554fc73c07be141d932838ae41e5ebe506))
+
 ## [5.7.0](https://github.com/nodejs/node-core-utils/compare/v5.6.0...v5.7.0) (2024-11-19)
 
 
