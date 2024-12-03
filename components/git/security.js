@@ -41,8 +41,8 @@ const securityOptions = {
     type: 'boolean'
   },
   'post-release': {
-    describe: 'Create the post-release announcement',
-    type: 'boolean'
+    describe: 'Create the post-release announcement to the given nodejs.org folder',
+    type: 'string'
   },
   cleanup: {
     describe: 'cleanup the security release.',
@@ -83,7 +83,7 @@ export function builder(yargs) {
       'Request CVEs for a security release of Node.js based on' +
       ' the next-security-release/vulnerabilities.json'
     ).example(
-      'git node security --post-release',
+      'git node security --post-release="../nodejs.org/"',
       'Create the post-release announcement on the Nodejs.org repo'
     ).example(
       'git node security --cleanup',
@@ -164,11 +164,12 @@ async function requestCVEs() {
   return hackerOneCve.requestCVEs();
 }
 
-async function createPostRelease() {
+async function createPostRelease(argv) {
+  const nodejsOrgFolder = argv['post-release'];
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
   const blog = new SecurityBlog(cli);
-  return blog.createPostRelease();
+  return blog.createPostRelease(nodejsOrgFolder);
 }
 
 async function startSecurityRelease() {

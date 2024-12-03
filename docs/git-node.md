@@ -479,6 +479,15 @@ Example:
   git node security --pre-release="/path/to/nodejs.org"
 ```
 
+### `git node security --post-release`
+
+This command creates the post-release announcement for the security release.
+Example:
+
+```sh
+  git node security --post-release="/path/to/nodejs.org"
+```
+
 ### `git node security --add-report=report-id`
 
 This command adds a HackerOne report to the `vulnerabilities.json`.
