@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.9.0](https://github.com/nodejs/node-core-utils/compare/v5.8.0...v5.9.0) (2024-12-20)
+
+
+### Features
+
+* **git-node:** verify tag signature during release promotion ([#879](https://github.com/nodejs/node-core-utils/issues/879)) ([4bd6820](https://github.com/nodejs/node-core-utils/commit/4bd6820800ef0fbb8c3edd0a9d3bf04f10ae5d8b))
+
 ## [5.8.0](https://github.com/nodejs/node-core-utils/compare/v5.7.0...v5.8.0) (2024-12-03)
 
 
