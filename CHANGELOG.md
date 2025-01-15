@@ -1,5 +1,22 @@
 # Changelog
 
+## [5.9.0](https://github.com/nodejs/node-core-utils/compare/v5.8.0...v5.9.0) (2025-01-15)
+
+
+### Features
+
+* **git-node:** verify tag signature during release promotion ([#879](https://github.com/nodejs/node-core-utils/issues/879)) ([4bd6820](https://github.com/nodejs/node-core-utils/commit/4bd6820800ef0fbb8c3edd0a9d3bf04f10ae5d8b))
+* update changelog-maker to a CVE-ID support ([#890](https://github.com/nodejs/node-core-utils/issues/890)) ([6eb25bd](https://github.com/nodejs/node-core-utils/commit/6eb25bdba30b5c35ef9d60ded4d7b3cc83426070))
+
+
+### Bug Fixes
+
+* add line break when updating banner ([#886](https://github.com/nodejs/node-core-utils/issues/886)) ([8d75721](https://github.com/nodejs/node-core-utils/commit/8d7572140bcddf415f254fde3195fe88c863b518))
+* adjust base branch when prepare --security release ([#889](https://github.com/nodejs/node-core-utils/issues/889)) ([8788be2](https://github.com/nodejs/node-core-utils/commit/8788be25fa40f2e6d9bb80e7e23f9ba8d0052b1e))
+* adjust cve request generation ([#888](https://github.com/nodejs/node-core-utils/issues/888)) ([d86c059](https://github.com/nodejs/node-core-utils/commit/d86c059346ebd24192f1277014335d68018e0c6b))
+* sort impacted versions DESC ([#885](https://github.com/nodejs/node-core-utils/issues/885)) ([8438ab7](https://github.com/nodejs/node-core-utils/commit/8438ab74ae3930e23e06e654d5588f90aad15dfb))
+* use vulnerability folder for sec announcements ([#887](https://github.com/nodejs/node-core-utils/issues/887)) ([170e4b0](https://github.com/nodejs/node-core-utils/commit/170e4b0bf898f1fcab33814ce8cd1b179f08d9d1))
+
 ## [5.8.0](https://github.com/nodejs/node-core-utils/compare/v5.7.0...v5.8.0) (2024-12-03)
 
 
