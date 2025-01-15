@@ -40,7 +40,7 @@
     "@pkgjs/nv": "^0.2.2",
     "branch-diff": "^3.1.1",
     "chalk": "^5.3.0",
-    "changelog-maker": "^4.1.1",
+    "changelog-maker": "^4.3.1",
     "cheerio": "^1.0.0",
     "clipboardy": "^4.0.0",
     "core-validate-commit": "^4.1.0",
