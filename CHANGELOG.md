@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.10.0](https://github.com/nodejs/node-core-utils/compare/v5.9.0...v5.10.0) (2025-01-20)
+
+
+### Features
+
+* **v8:** add highway to V8 deps ([#898](https://github.com/nodejs/node-core-utils/issues/898)) ([11d166b](https://github.com/nodejs/node-core-utils/commit/11d166be323c0f773d39828269dbf182f025c252))
+
+
+### Bug Fixes
+
+* fix post-release dependency updates generation ([#896](https://github.com/nodejs/node-core-utils/issues/896)) ([69e7bfa](https://github.com/nodejs/node-core-utils/commit/69e7bfaf8353f036dcfcbd3eacd9d4e6a56779b5))
+* update dependencies ([#894](https://github.com/nodejs/node-core-utils/issues/894)) ([ea47a00](https://github.com/nodejs/node-core-utils/commit/ea47a00c127f3f3c279bfb8ffe0127885f491e93))
+* use vulnerability as folder for post-release announcement ([#895](https://github.com/nodejs/node-core-utils/issues/895)) ([841e3e8](https://github.com/nodejs/node-core-utils/commit/841e3e8df7cc41942cdd83e354da3f04a30728f7))
+
 ## [5.9.0](https://github.com/nodejs/node-core-utils/compare/v5.8.0...v5.9.0) (2025-01-15)
 
 
