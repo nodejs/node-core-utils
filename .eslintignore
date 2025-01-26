@@ -1,5 +1,0 @@
-.git
-.nyc_output
-coverage
-node_modules
-lib/wpt/templates

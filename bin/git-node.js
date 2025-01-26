@@ -27,4 +27,6 @@ Promise.all(commandFiles.map(importCommand)).then((commands) => {
     .epilogue(epilogue)
     .help('help')
     .parse();
+}).catch((err) => {
+  throw err;
 });

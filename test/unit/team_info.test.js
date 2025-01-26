@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert';
 
