@@ -71,3 +71,9 @@ will update the file with text like this:
 
 <!-- ncu-team-sync end -->
 ```
+
+### Check GPG Releasers Signature
+
+```
+$ ncu-team check-gpg
+```
