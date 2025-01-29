@@ -90,5 +90,6 @@ export function handler(argv) {
       if (status === false) {
         throw new Error(IGNORE);
       }
+      return undefined;
     }));
 }
