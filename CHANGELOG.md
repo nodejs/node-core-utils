@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.11.0](https://github.com/nodejs/node-core-utils/compare/v5.10.0...v5.11.0) (2025-01-29)
+
+
+### Features
+
+* **v8:** add simdutf to V8 deps ([#903](https://github.com/nodejs/node-core-utils/issues/903)) ([8dd1e6c](https://github.com/nodejs/node-core-utils/commit/8dd1e6c313f3917be19aa021d197253f7b0b1dc9))
+
+
+### Bug Fixes
+
+* **git-node:** adjust `security --cleanup` ([#901](https://github.com/nodejs/node-core-utils/issues/901)) ([3cb5255](https://github.com/nodejs/node-core-utils/commit/3cb52551396ca5b00da94b9e2e7f1cae01264c9c))
+* handle UNKNOWN status and lint fix ([#892](https://github.com/nodejs/node-core-utils/issues/892)) ([cce9b81](https://github.com/nodejs/node-core-utils/commit/cce9b81a617ec9f23764904a01a4c821e4cb096a))
+
 ## [5.10.0](https://github.com/nodejs/node-core-utils/compare/v5.9.0...v5.10.0) (2025-01-20)
 
 
