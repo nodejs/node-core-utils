@@ -1,0 +1,12 @@
+query PR($prId: Int!, $owner: String!, $repo: String!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $prId) {
+      body,
+      labels(first: 100) {
+        nodes {
+          name
+        }
+      }
+    }
+  }
+}

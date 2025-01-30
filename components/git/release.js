@@ -116,8 +116,10 @@ async function main(state, argv, cli, dir) {
   if (prID) {
     argv.prid = Number(prID[1]);
   }
+  const credentials = await auth({ github: true });
+  const request = new Request(credentials);
   if (state === PREPARE) {
-    const release = new ReleasePreparation(argv, cli, dir);
+    const release = new ReleasePreparation(argv, request, cli, dir);
 
     await release.prepareLocalBranch();
 
@@ -137,8 +139,6 @@ async function main(state, argv, cli, dir) {
 
     return release.prepare();
   } else if (state === PROMOTE) {
-    const credentials = await auth({ github: true });
-    const request = new Request(credentials);
     const release = new ReleasePromotion(argv, request, cli, dir);
 
     cli.startSpinner('Verifying Releaser status');
