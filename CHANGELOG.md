@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.11.1](https://github.com/nodejs/node-core-utils/compare/v5.11.0...v5.11.1) (2025-03-01)
+
+
+### Bug Fixes
+
+* **git-node:** check the tag signature and not the commit one ([#907](https://github.com/nodejs/node-core-utils/issues/907)) ([f6dda1c](https://github.com/nodejs/node-core-utils/commit/f6dda1c002f4ec437b3b6e069883941ef43a9d7a))
+
 ## [5.11.0](https://github.com/nodejs/node-core-utils/compare/v5.10.0...v5.11.0) (2025-01-29)
 
 
