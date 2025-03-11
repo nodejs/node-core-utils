@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.11.1](https://github.com/nodejs/node-core-utils/compare/v5.11.0...v5.11.1) (2025-03-11)
+
+
+### Bug Fixes
+
+* adjust release commit message to messageonly on sec release ([c408dd9](https://github.com/nodejs/node-core-utils/commit/c408dd92eaf90fd83ed766c02cdd45bad9301c7e))
+* **git-node:** check the tag signature and not the commit one ([#907](https://github.com/nodejs/node-core-utils/issues/907)) ([f6dda1c](https://github.com/nodejs/node-core-utils/commit/f6dda1c002f4ec437b3b6e069883941ef43a9d7a))
+* use messageonly type when notable-changes sec release ([a21f963](https://github.com/nodejs/node-core-utils/commit/a21f9635e63524a12309f9fa91026078b9a5c67b))
+
 ## [5.11.0](https://github.com/nodejs/node-core-utils/compare/v5.10.0...v5.11.0) (2025-01-29)
 
 
