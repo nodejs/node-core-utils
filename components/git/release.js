@@ -112,9 +112,10 @@ function release(state, argv) {
 }
 
 async function main(state, argv, cli, dir) {
-  const prID = /^(?:https:\/\/github\.com\/nodejs\/node\/pull\/)?(\d+)$/.exec(argv.prid);
+  const prID = /^(?:https:\/\/github\.com\/nodejs(-private)?\/node\1\/pull\/)?(\d+)$/.exec(argv.prid);
   if (prID) {
-    argv.prid = Number(prID[1]);
+    if (prID[1]) argv.security = true;
+    argv.prid = Number(prID[2]);
   }
   if (state === PREPARE) {
     const release = new ReleasePreparation(argv, cli, dir);
