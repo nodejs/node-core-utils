@@ -16,9 +16,6 @@
       }
     ]
   },
-  "timelineItems": {
-    "updatedAt": "2017-10-24T11:13:43Z"
-  },
   "title": "lib: awesome changes",
   "baseRefName": "main",
   "headRefName": "awesome-changes"

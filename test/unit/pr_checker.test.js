@@ -2153,31 +2153,6 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
-    it('should return true if PR can be landed', () => {
-      const expectedLogs = {
-        warn: [
-          ['Something was pushed to the Pull Request branch since the last approving review.']
-        ],
-        info: [],
-        error: []
-      };
-
-      const checker = new PRChecker(cli, {
-        pr: { ...semverMajorPR, timelineItems: { updatedAt: new Date().toISOString() } },
-        reviewers: allGreenReviewers,
-        comments: commentsWithLGTM,
-        reviews: approvingReviews,
-        commits: simpleCommits,
-        collaborators,
-        authorIsNew: () => true,
-        getThread: PRData.prototype.getThread
-      }, {}, argv);
-
-      const status = checker.checkCommitsAfterReview();
-      assert.deepStrictEqual(status, false);
-      cli.assertCalledWith(expectedLogs);
-    });
-
     it('should skip the check if there are no reviews', () => {
       const { commits } = multipleCommitsAfterReview;
       const expectedLogs = {
