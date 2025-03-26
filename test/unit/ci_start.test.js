@@ -26,6 +26,7 @@ describe('Jenkins', () => {
       const { parameter } = JSON.parse(value);
       const expectedParameters = {
         CERTIFY_SAFE: 'on',
+        COMMIT_SHA_CHECK: 'deadbeef',
         TARGET_GITHUB_ORG: owner,
         TARGET_REPO_NAME: repo,
         PR_ID: prid,
@@ -91,7 +92,7 @@ describe('Jenkins', () => {
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
     };
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef');
     assert.ok(await jobRunner.start());
   });
 
@@ -124,8 +125,8 @@ describe('Jenkins', () => {
       }safe`, async() => {
         const cli = new TestCLI();
 
-        sinon.replace(PRChecker.prototype, 'checkCommitsAfterReview',
-          sinon.fake.returns(Promise.resolve(certifySafe)));
+        sinon.replace(PRChecker.prototype, 'getApprovedTipOfHead',
+          sinon.fake.returns(certifySafe && 'deadbeef'));
 
         const request = {
           gql: sinon.stub().returns({

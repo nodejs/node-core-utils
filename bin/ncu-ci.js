@@ -115,9 +115,9 @@ const args = yargs(hideBin(process.argv))
           type: 'number'
         })
         .positional('certify-safe', {
-          describe: 'If not provided, the command will reject PRs that have ' +
-                    'been pushed since the last review',
-          type: 'boolean'
+          describe: 'SHA of the commit that is expected to be at the tip of the PR head. ' +
+                    'If not provided, the command will use the SHA of the last approved commit.',
+          type: 'string'
         })
         .option('owner', {
           default: '',
