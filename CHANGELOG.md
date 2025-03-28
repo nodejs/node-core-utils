@@ -1,5 +1,22 @@
 # Changelog
 
+## [5.12.0](https://github.com/nodejs/node-core-utils/compare/v5.11.0...v5.12.0) (2025-03-28)
+
+
+### Features
+
+* **ncu-ci:** pass `COMMIT_SHA_CHECK` via `--certify-safe` ([#911](https://github.com/nodejs/node-core-utils/issues/911)) ([646e7e2](https://github.com/nodejs/node-core-utils/commit/646e7e2dae01676b3f5f65120c86da4eeb3e8386))
+
+
+### Bug Fixes
+
+* adjust release commit message to messageonly on sec release ([c408dd9](https://github.com/nodejs/node-core-utils/commit/c408dd92eaf90fd83ed766c02cdd45bad9301c7e))
+* **git-node:** allow security release promotion ([#900](https://github.com/nodejs/node-core-utils/issues/900)) ([4a03216](https://github.com/nodejs/node-core-utils/commit/4a03216a2fffad7ec352bf977a89759c7deba5af))
+* **git-node:** check the tag signature and not the commit one ([#907](https://github.com/nodejs/node-core-utils/issues/907)) ([f6dda1c](https://github.com/nodejs/node-core-utils/commit/f6dda1c002f4ec437b3b6e069883941ef43a9d7a))
+* **git-node:** do not rely on commit date ([#911](https://github.com/nodejs/node-core-utils/issues/911)) ([cdf482f](https://github.com/nodejs/node-core-utils/commit/cdf482f3eb96396f500844a9acff3e25dbdf739e))
+* **git-node:** prepare_release resilient checkout ([#882](https://github.com/nodejs/node-core-utils/issues/882)) ([5ac7927](https://github.com/nodejs/node-core-utils/commit/5ac79276237182a9ca6b602cbe5ccfce7d85b601))
+* use messageonly type when notable-changes sec release ([a21f963](https://github.com/nodejs/node-core-utils/commit/a21f9635e63524a12309f9fa91026078b9a5c67b))
+
 ## [5.11.0](https://github.com/nodejs/node-core-utils/compare/v5.10.0...v5.11.0) (2025-01-29)
 
 
