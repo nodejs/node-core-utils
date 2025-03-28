@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.12.1](https://github.com/nodejs/node-core-utils/compare/v5.12.0...v5.12.1) (2025-03-28)
+
+
+### Bug Fixes
+
+* **git-node:** retrieve reviewed commit info ([#912](https://github.com/nodejs/node-core-utils/issues/912)) ([32e18c8](https://github.com/nodejs/node-core-utils/commit/32e18c8e2b1c723ae2dcc78ace79cafd122844cb))
+
 ## [5.12.0](https://github.com/nodejs/node-core-utils/compare/v5.11.0...v5.12.0) (2025-03-28)
 
 
