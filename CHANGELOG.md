@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.12.2](https://github.com/nodejs/node-core-utils/compare/v5.12.1...v5.12.2) (2025-04-01)
+
+
+### Bug Fixes
+
+* **ncu-ci:** fetch commits instead of PR metadata ([#915](https://github.com/nodejs/node-core-utils/issues/915)) ([af52aa3](https://github.com/nodejs/node-core-utils/commit/af52aa3fa4ff3b5ef7573340ac38716aca77218c))
+
 ## [5.12.1](https://github.com/nodejs/node-core-utils/compare/v5.12.0...v5.12.1) (2025-03-28)
 
 
