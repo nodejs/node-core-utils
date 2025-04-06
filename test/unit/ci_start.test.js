@@ -20,6 +20,7 @@ describe('Jenkins', () => {
   const repo = 'node-auto-test';
   const prid = 123456;
   const crumb = 'asdf1234';
+  const dummySHA = '51ce389dc1d539216d30bba0986a8c270801d65f';
 
   before(() => {
     sinon.stub(FormData.prototype, 'append').callsFake(function(key, value) {
@@ -27,7 +28,7 @@ describe('Jenkins', () => {
       const { parameter } = JSON.parse(value);
       const expectedParameters = {
         CERTIFY_SAFE: 'on',
-        COMMIT_SHA_CHECK: 'deadbeef',
+        COMMIT_SHA_CHECK: dummySHA,
         TARGET_GITHUB_ORG: owner,
         TARGET_REPO_NAME: repo,
         PR_ID: prid,
@@ -42,7 +43,7 @@ describe('Jenkins', () => {
 
       this._validated = true;
 
-      return FormData.prototype.append.wrappedMethod.bind(this)(key, value);
+      return Reflect.apply(FormData.prototype.append.wrappedMethod, this, arguments);
     });
   });
 
@@ -55,7 +56,7 @@ describe('Jenkins', () => {
         .returns(Promise.resolve({ crumb }))
     };
 
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, dummySHA);
     assert.strictEqual(await jobRunner.start(), false);
   });
 
@@ -65,7 +66,7 @@ describe('Jenkins', () => {
       json: sinon.stub().throws()
     };
 
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, dummySHA);
     assert.strictEqual(await jobRunner.start(), false);
   });
 
@@ -93,7 +94,7 @@ describe('Jenkins', () => {
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
     };
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef');
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, dummySHA);
     assert.ok(await jobRunner.start());
   });
 
@@ -112,26 +113,56 @@ describe('Jenkins', () => {
       json: sinon.stub().withArgs(CI_CRUMB_URL)
         .returns(Promise.resolve({ crumb }))
     };
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, true);
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, dummySHA);
     assert.strictEqual(await jobRunner.start(), false);
   });
 
   describe('without --certify-safe flag', { concurrency: false }, () => {
-    afterEach(() => {
-      sinon.restore();
+    before(() => {
+      sinon.replace(PRData.prototype, 'getReviews', function() {});
+      sinon.replace(PRData.prototype, 'getCommits', function() {});
     });
-    for (const certifySafe of [true, false]) {
-      it(`should return ${certifySafe} if PR checker reports it as ${
-        certifySafe ? '' : 'potentially un'
-      }safe`, async() => {
+    afterEach(() => {
+      PRData.prototype.getCollaborators.restore();
+      PRData.prototype.getComments.restore();
+      PRChecker.prototype.getApprovedTipOfHead.restore();
+    });
+    for (const { headIsApproved = false, collaborators = [], comments = [], expected } of [{
+      headIsApproved: true,
+      expected: true,
+    }, {
+      headIsApproved: false,
+      expected: false,
+    }, {
+      collaborators: ['foo'],
+      comments: [{ login: 'foo' }],
+      expected: true,
+    }, {
+      // Validates that passing full commit URL also works.
+      collaborators: ['foo'],
+      comments: [{ login: 'foo', body: `@nodejs-github-bot test https://github.com/nodejs/node/commit/${dummySHA}.\n` }],
+      expected: true,
+    }, {
+      // Validates that non-collaborator commenting should have no effect.
+      collaborators: ['foo'],
+      comments: [{ login: 'bar' }],
+      expected: false,
+    }]) {
+      it(`should return ${expected} with ${
+        JSON.stringify({ headIsApproved, collaborators, comments })}`, async() => {
         const cli = new TestCLI();
 
-        sinon.replace(PRData.prototype, 'getCollaborators',
-          function() { this.collaborators = []; });
-        sinon.replace(PRData.prototype, 'getComments',
-          function() { this.comments = []; });
-        sinon.replace(PRChecker.prototype, 'getApprovedTipOfHead',
-          sinon.fake.returns(certifySafe && 'deadbeef'));
+        sinon.stub(PRData.prototype, 'getCollaborators').callsFake(function() {
+          this.collaborators = collaborators.map(login => ({ login }));
+        });
+        sinon.stub(PRData.prototype, 'getComments').callsFake(function() {
+          this.comments = comments.map(({ body, login }) => ({
+            body: body ?? `@nodejs-github-bot test ${dummySHA}`,
+            author: { login }
+          }));
+        });
+        sinon.stub(PRChecker.prototype, 'getApprovedTipOfHead').callsFake(
+          sinon.fake.returns(headIsApproved && dummySHA));
 
         const request = {
           gql: sinon.stub().returns({
@@ -156,7 +187,7 @@ describe('Jenkins', () => {
         };
 
         const jobRunner = new RunPRJob(cli, request, owner, repo, prid, false);
-        assert.strictEqual(await jobRunner.start(), certifySafe);
+        assert.strictEqual(await jobRunner.start(), expected);
       });
     }
   });
