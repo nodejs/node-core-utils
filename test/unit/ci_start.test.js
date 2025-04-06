@@ -11,6 +11,7 @@ import {
   CI_PR_URL
 } from '../../lib/ci/run_ci.js';
 import PRChecker from '../../lib/pr_checker.js';
+import PRData from '../../lib/pr_data.js';
 
 import TestCLI from '../fixtures/test_cli.js';
 
@@ -125,6 +126,10 @@ describe('Jenkins', () => {
       }safe`, async() => {
         const cli = new TestCLI();
 
+        sinon.replace(PRData.prototype, 'getCollaborators',
+          function() { this.collaborators = []; });
+        sinon.replace(PRData.prototype, 'getComments',
+          function() { this.comments = []; });
         sinon.replace(PRChecker.prototype, 'getApprovedTipOfHead',
           sinon.fake.returns(certifySafe && 'deadbeef'));
 
