@@ -23,7 +23,7 @@ describe('Jenkins', () => {
   const dummySHA = '51ce389dc1d539216d30bba0986a8c270801d65f';
 
   before(() => {
-    sinon.stub(FormData.prototype, 'append').callsFake(function(key, value) {
+    const stubbed = sinon.stub(FormData.prototype, 'append').callsFake(function(key, value) {
       assert.strictEqual(key, 'json');
       const { parameter } = JSON.parse(value);
       const expectedParameters = {
@@ -45,6 +45,8 @@ describe('Jenkins', () => {
 
       return Reflect.apply(FormData.prototype.append.wrappedMethod, this, arguments);
     });
+
+    return () => stubbed.restore();
   });
 
   it('should fail if starting node-pull-request throws', async() => {
@@ -121,12 +123,17 @@ describe('Jenkins', () => {
     before(() => {
       sinon.replace(PRData.prototype, 'getReviews', function() {});
       sinon.replace(PRData.prototype, 'getCommits', function() {});
+      return () => {
+        PRData.prototype.getReviews.restore();
+        PRData.prototype.getCommits.restore();
+      };
     });
     afterEach(() => {
       PRData.prototype.getCollaborators.restore();
       PRData.prototype.getComments.restore();
       PRChecker.prototype.getApprovedTipOfHead.restore();
     });
+
     for (const { headIsApproved = false, collaborators = [], comments = [], expected } of [{
       headIsApproved: true,
       expected: true,
