@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.13.0](https://github.com/nodejs/node-core-utils/compare/v5.12.2...v5.13.0) (2025-04-13)
+
+
+### Features
+
+* **git-node:** auto-unshallow shallow clones ([#918](https://github.com/nodejs/node-core-utils/issues/918)) ([7bf2350](https://github.com/nodejs/node-core-utils/commit/7bf2350bbf54a363978a1eaac2ae99d6e557e0d6))
+
 ## [5.12.2](https://github.com/nodejs/node-core-utils/compare/v5.12.1...v5.12.2) (2025-04-01)
 
 
