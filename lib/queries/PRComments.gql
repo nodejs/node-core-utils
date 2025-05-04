@@ -9,6 +9,7 @@ query Comments($prid: Int!, $owner: String!, $repo: String!, $after: String) {
         }
         nodes {
           publishedAt
+          body
           bodyText
           author {
             login
