@@ -47,7 +47,8 @@ async function main(argv) {
   const statusFolder = path.join(nodedir, 'test', 'wpt', 'status');
   let supported = [
     'dom',
-    'html'
+    'html',
+    'webcrypto'
   ];
   if (fs.existsSync(statusFolder)) {
     const jsons = fs.readdirSync(statusFolder);
