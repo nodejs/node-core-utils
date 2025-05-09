@@ -8,7 +8,8 @@ import { FormData } from 'undici';
 import {
   RunPRJob,
   CI_CRUMB_URL,
-  CI_PR_URL
+  CI_PR_URL,
+  CI_V8_URL
 } from '../../lib/ci/run_ci.js';
 import PRChecker from '../../lib/pr_checker.js';
 
@@ -24,15 +25,25 @@ describe('Jenkins', () => {
     sinon.stub(FormData.prototype, 'append').callsFake(function(key, value) {
       assert.strictEqual(key, 'json');
       const { parameter } = JSON.parse(value);
-      const expectedParameters = {
-        CERTIFY_SAFE: 'on',
-        COMMIT_SHA_CHECK: 'deadbeef',
-        TARGET_GITHUB_ORG: owner,
-        TARGET_REPO_NAME: repo,
-        PR_ID: prid,
-        REBASE_ONTO: '<pr base branch>',
-        DESCRIPTION_SETTER_DESCRIPTION: ''
-      };
+      // Expected parameters are different for node-test-pull-request and
+      // node-test-commit-v8-linux, but we don't know which this FormData
+      // is for, so we make a guess.
+      const expectedParameters = parameter.some(({ name, _ }) => name === 'PR_ID')
+        ? {
+            CERTIFY_SAFE: 'on',
+            COMMIT_SHA_CHECK: 'deadbeef',
+            TARGET_GITHUB_ORG: owner,
+            TARGET_REPO_NAME: repo,
+            PR_ID: prid,
+            REBASE_ONTO: '<pr base branch>',
+            DESCRIPTION_SETTER_DESCRIPTION: ''
+          }
+        : {
+            GITHUB_ORG: owner,
+            REPO_NAME: repo,
+            GIT_REMOTE_REF: `refs/pull/${prid}/head`,
+            COMMIT_SHA_CHECK: 'deadbeef'
+          };
       for (const { name, value } of parameter) {
         assert.strictEqual(value, expectedParameters[name]);
         delete expectedParameters[name];
@@ -84,6 +95,40 @@ describe('Jenkins', () => {
       fetch: sinon.stub()
         .callsFake((url, { method, headers, body }) => {
           assert.strictEqual(url, CI_PR_URL);
+          assert.strictEqual(method, 'POST');
+          assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
+          assert.ok(body._validated);
+          return Promise.resolve({ status: 201 });
+        }),
+      json: sinon.stub().withArgs(CI_CRUMB_URL)
+        .returns(Promise.resolve({ crumb }))
+    };
+    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef');
+    assert.ok(await jobRunner.start());
+  });
+
+  it('should start node-test-commit-v8-linux', async() => {
+    const cli = new TestCLI();
+
+    const request = {
+      gql: sinon.stub().returns({
+        repository: {
+          pullRequest: {
+            labels: {
+              nodes: [{ name: 'v8 engine' }]
+            }
+          }
+        }
+      }),
+      fetch: sinon.stub()
+        .callsFake((url, { method, headers, body }) => {
+          assert.strictEqual(url, CI_PR_URL);
+          assert.strictEqual(method, 'POST');
+          assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
+          assert.ok(body._validated);
+          return Promise.resolve({ status: 201 });
+        }).onSecondCall().callsFake((url, { method, headers, body }) => {
+          assert.strictEqual(url, CI_V8_URL);
           assert.strictEqual(method, 'POST');
           assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
           assert.ok(body._validated);
