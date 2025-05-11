@@ -114,7 +114,7 @@ const args = yargs(hideBin(process.argv))
           describe: 'ID of the PR',
           type: 'number'
         })
-        .positional('certify-safe', {
+        .option('certify-safe', {
           describe: 'SHA of the commit that is expected to be at the tip of the PR head. ' +
                     'If not provided, the command will use the SHA of the last approved commit.',
           type: 'string'
