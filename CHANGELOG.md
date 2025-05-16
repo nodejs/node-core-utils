@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.13.1](https://github.com/nodejs/node-core-utils/compare/v5.13.0...v5.13.1) (2025-05-16)
+
+
+### Bug Fixes
+
+* mention CI green on security --cleanup ([#932](https://github.com/nodejs/node-core-utils/issues/932)) ([52994d8](https://github.com/nodejs/node-core-utils/commit/52994d85903775669260d7b73876fa8b32915c6f))
+
 ## [5.13.0](https://github.com/nodejs/node-core-utils/compare/v5.12.2...v5.13.0) (2025-05-01)
 
 
