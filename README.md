@@ -98,7 +98,7 @@ these commands.
 To obtain the Jenkins API token
 
 1. Open
-   `https://ci.nodejs.org/user/<your-github-username>/configure` (replace
+   `https://ci.nodejs.org/user/<your-github-username>/security` (replace
    \<your-github-username\> with your own GitHub username).
 2. Click on the `ADD NEW TOKEN` button in the `API Token` section.
 3. Enter an identifiable name (for example, `node-core-utils`) for this
