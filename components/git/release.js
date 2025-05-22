@@ -6,7 +6,7 @@ import TeamInfo from '../../lib/team_info.js';
 import Request from '../../lib/request.js';
 import { runPromise } from '../../lib/run.js';
 
-export const command = 'release [prid|options]';
+export const command = 'release [prid..]';
 export const describe = 'Manage an in-progress release or start a new one.';
 
 const PREPARE = 'prepare';
@@ -34,8 +34,13 @@ const releaseOptions = {
     describe: 'Promote new release of Node.js',
     type: 'boolean'
   },
+  fetchFrom: {
+    describe: 'Remote to fetch the release proposal(s) from, if different from the one where to' +
+              'push the tags and commits.',
+    type: 'string',
+  },
   releaseDate: {
-    describe: 'Default relase date when --prepare is used. It must be YYYY-MM-DD',
+    describe: 'Default release date when --prepare is used. It must be YYYY-MM-DD',
     type: 'string'
   },
   run: {
@@ -112,11 +117,6 @@ function release(state, argv) {
 }
 
 async function main(state, argv, cli, dir) {
-  const prID = /^(?:https:\/\/github\.com\/nodejs(-private)?\/node\1\/pull\/)?(\d+)$/.exec(argv.prid);
-  if (prID) {
-    if (prID[1]) argv.security = true;
-    argv.prid = Number(prID[2]);
-  }
   if (state === PREPARE) {
     const release = new ReleasePreparation(argv, cli, dir);
 
@@ -160,6 +160,24 @@ async function main(state, argv, cli, dir) {
       cli.stopSpinner(`${release.username} is a Releaser`);
     }
 
-    return release.promote();
+    const releases = [];
+    for (const pr of argv.prid) {
+      const match = /^(?:https:\/\/github\.com\/([^/]+)\/([^/]+)\/pull\/)?(\d+)(?:#.*)?$/.exec(pr);
+      if (!match) throw new Error('Invalid PR ID or URL', { cause: pr });
+      const [,owner, repo, prid] = match;
+
+      if (
+        owner &&
+        (owner !== release.owner || repo !== release.repo) &&
+        !argv.fetchFrom
+      ) {
+        console.warn('The configured owner/repo does not match the PR URL.');
+        console.info('You should either pass `--fetch-from` flag or check your configuration');
+        console.info(`E.g. --fetch-from=git@github.com:${owner}/${repo}.git`);
+        throw new Error('You need to tell what remote use to fetch security release proposal.');
+      }
+      releases.push(await release.preparePromotion({ owner, repo, prid: Number(prid) }));
+    }
+    return release.promote(releases);
   }
 }
