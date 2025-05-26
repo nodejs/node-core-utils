@@ -1,5 +1,23 @@
 # Changelog
 
+## [5.14.0](https://github.com/nodejs/node-core-utils/compare/v5.13.0...v5.14.0) (2025-05-26)
+
+
+### Features
+
+* **git-node:** add support for promoting several releases at once ([#935](https://github.com/nodejs/node-core-utils/issues/935)) ([4399cf0](https://github.com/nodejs/node-core-utils/commit/4399cf0e4f8effd8a657ca6868d6476eb6c4e202))
+* **git-node:** rebase staging commits after promoting a release ([#934](https://github.com/nodejs/node-core-utils/issues/934)) ([197134f](https://github.com/nodejs/node-core-utils/commit/197134f4cd2f48beb072a13d763649ac363797f2))
+
+
+### Bug Fixes
+
+* auto-push git node --security ([#931](https://github.com/nodejs/node-core-utils/issues/931)) ([0b3d22d](https://github.com/nodejs/node-core-utils/commit/0b3d22d2ba14907642b338e0e7e1144ce3847c97))
+* **git-node:** batch requests in wpt ([#813](https://github.com/nodejs/node-core-utils/issues/813)) ([ce893fc](https://github.com/nodejs/node-core-utils/commit/ce893fc1f2048ab67547f60ddf00739fa7dca963))
+* mention CI green on security --cleanup ([#932](https://github.com/nodejs/node-core-utils/issues/932)) ([52994d8](https://github.com/nodejs/node-core-utils/commit/52994d85903775669260d7b73876fa8b32915c6f))
+* **ncu-ci:** do not document `--certify-safe` as positional ([#929](https://github.com/nodejs/node-core-utils/issues/929)) ([09fce0e](https://github.com/nodejs/node-core-utils/commit/09fce0ec61f53141a41e9a6b750d7cb60ab018fe))
+* **ncu-ci:** pass `COMMIT_SHA_CHECK` to V8 CI ([#928](https://github.com/nodejs/node-core-utils/issues/928)) ([259da2a](https://github.com/nodejs/node-core-utils/commit/259da2a709f68cc8e7fa7b7b4266d36f174bc9f8))
+* prepare interfaces updater for updated webcrypto ([#927](https://github.com/nodejs/node-core-utils/issues/927)) ([db407a9](https://github.com/nodejs/node-core-utils/commit/db407a9eccd378e47ea9664970c0123adf261838))
+
 ## [5.13.0](https://github.com/nodejs/node-core-utils/compare/v5.12.2...v5.13.0) (2025-05-01)
 
 
