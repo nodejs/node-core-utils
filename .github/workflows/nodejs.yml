@@ -26,10 +26,10 @@ jobs:
 
   test:
     name: Test on Node.js
-    uses: aduh95/action/.github/workflows/node-test.yaml@42bbdad025eed9e412bf3cd1d2ddc966a92a5086  # v0.1.10
+    uses: aduh95/action/.github/workflows/node-test.yaml@f6f22a37631916d230df6d3aac2cefdae1a6bfea  # v0.1.10
     with:
       action-repository: aduh95/action
-      action-ref: 42bbdad025eed9e412bf3cd1d2ddc966a92a5086
+      action-ref: f6f22a37631916d230df6d3aac2cefdae1a6bfea
       runs-on: ubuntu-latest, macos-latest
       test-command: npm run coverage:ci
       post-test-steps: |
