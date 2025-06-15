@@ -7,4 +7,3 @@ coverage.lcov
 tmp-*
 .eslintcache
 .ncu
-package-lock.json
