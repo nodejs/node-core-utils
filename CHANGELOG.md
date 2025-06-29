@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.14.1](https://github.com/nodejs/node-core-utils/compare/v5.14.0...v5.14.1) (2025-06-29)
+
+
+### Bug Fixes
+
+* **debug:** add HTTP status to verbose log ([#948](https://github.com/nodejs/node-core-utils/issues/948)) ([a7d21f7](https://github.com/nodejs/node-core-utils/commit/a7d21f7d15c0a7e7c67c47d9b70004b009ad613a))
+
 ## [5.14.0](https://github.com/nodejs/node-core-utils/compare/v5.13.0...v5.14.0) (2025-05-26)
 
 
