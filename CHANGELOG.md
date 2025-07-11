@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.14.1](https://github.com/nodejs/node-core-utils/compare/v5.14.0...v5.14.1) (2025-07-11)
+
+
+### Bug Fixes
+
+* **debug:** add HTTP status to verbose log ([#948](https://github.com/nodejs/node-core-utils/issues/948)) ([a7d21f7](https://github.com/nodejs/node-core-utils/commit/a7d21f7d15c0a7e7c67c47d9b70004b009ad613a))
+* **git-node:** correctly pass value from `ReleasePreparation` to `CherryPick` ([#953](https://github.com/nodejs/node-core-utils/issues/953)) ([1263d0f](https://github.com/nodejs/node-core-utils/commit/1263d0f07457d6c8f9f9720caa24227a2ba66621))
+* **git-node:** output vote keyPart to stdout, not stderr ([#941](https://github.com/nodejs/node-core-utils/issues/941)) ([7aaae02](https://github.com/nodejs/node-core-utils/commit/7aaae0263cc6dda228a168cc0a6b01a6d59be329))
+
 ## [5.14.0](https://github.com/nodejs/node-core-utils/compare/v5.13.0...v5.14.0) (2025-05-26)
 
 
