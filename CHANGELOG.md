@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.15.0](https://github.com/nodejs/node-core-utils/compare/v5.14.1...v5.15.0) (2025-07-15)
+
+
+### Features
+
+* add patchedVersions on --request-cve ([#956](https://github.com/nodejs/node-core-utils/issues/956)) ([0bafa24](https://github.com/nodejs/node-core-utils/commit/0bafa24deb0cb451c6dae44d3193c212fd03cb4d))
+* update announcement link on --pre-release ([#954](https://github.com/nodejs/node-core-utils/issues/954)) ([7a1c5d3](https://github.com/nodejs/node-core-utils/commit/7a1c5d313da1137e6fbb9b48753e0cac29d230f7))
+
 ## [5.14.1](https://github.com/nodejs/node-core-utils/compare/v5.14.0...v5.14.1) (2025-07-11)
 
 
