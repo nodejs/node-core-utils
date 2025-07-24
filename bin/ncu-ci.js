@@ -111,8 +111,8 @@ const args = yargs(hideBin(process.argv))
     builder: (yargs) => {
       yargs
         .positional('prid', {
-          describe: 'ID of the PR',
-          type: 'number'
+          describe: 'ID of the PR or URL to the PR or its head commit',
+          type: 'string'
         })
         .option('certify-safe', {
           describe: 'SHA of the commit that is expected to be at the tip of the PR head. ' +
@@ -574,6 +574,15 @@ async function main(command, argv) {
   // Prepare queue.
   switch (command) {
     case 'run': {
+      const maybeURL = URL.parse(argv.prid);
+      if (maybeURL?.host === 'github.com') {
+        const [, owner, repo, , prid, , commit_sha] = maybeURL.pathname.split('/');
+        argv.owner ||= owner;
+        argv.repo ||= repo;
+        argv.certifySafe ||= commit_sha;
+        argv.prid = prid;
+      }
+      argv.prid = Number(argv.prid);
       const jobRunner = new RunPRJobCommand(cli, request, argv);
       return jobRunner.start();
     }
