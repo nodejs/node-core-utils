@@ -68,6 +68,6 @@
     "eslint-plugin-promise": "^7.2.1",
     "globals": "^16.0.0",
     "neostandard": "^0.12.1",
-    "sinon": "^20.0.0"
+    "sinon": "^21.0.0"
   }
 }
