@@ -1267,7 +1267,8 @@ describe('PRChecker', () => {
           ['Last Jenkins CI successful']
         ],
         error: [
-          ['Last GitHub CI failed']
+          ['1 GitHub CI job(s) failed:'],
+          ['  - test-linux: FAILURE (https://github.com/nodejs/node/runs/12345)']
         ],
         info: [
           [`Last Full PR CI on 2018-10-22T04:16:36.458Z: ${jenkins.url}`]
@@ -1674,7 +1675,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['1 GitHub CI job(s) failed:'],
+          ['  - github-actions: FAILURE']
         ]
       };
 
@@ -1734,7 +1736,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['1 GitHub CI job(s) failed:'],
+          ['  - test-linux: FAILURE (https://github.com/nodejs/node/runs/12345)']
         ]
       };
 
@@ -1791,7 +1794,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['GitHub CI failed with status: FAILURE']
         ]
       };
 
@@ -1867,7 +1870,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['GitHub CI failed with status: FAILURE']
         ]
       };
 
@@ -1886,7 +1889,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['1 GitHub CI job(s) failed:'],
+          ['  - github-actions: FAILURE']
         ]
       };
 

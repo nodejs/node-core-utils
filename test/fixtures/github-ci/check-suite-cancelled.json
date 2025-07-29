@@ -12,17 +12,17 @@
           {
             "app": { "slug": "github-actions" },
             "status": "COMPLETED",
-            "conclusion": "FAILURE",
+            "conclusion": "CANCELLED",
             "checkRuns": {
               "nodes": [
                 {
                   "name": "test-linux",
                   "status": "COMPLETED",
-                  "conclusion": "FAILURE",
+                  "conclusion": "CANCELLED",
                   "detailsUrl": "https://github.com/nodejs/node/runs/12345"
                 },
                 {
-                  "name": "test-macos",
+                  "name": "lint",
                   "status": "COMPLETED",
                   "conclusion": "SUCCESS",
                   "detailsUrl": "https://github.com/nodejs/node/runs/12346"
