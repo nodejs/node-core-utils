@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.15.0](https://github.com/nodejs/node-core-utils/compare/v5.14.1...v5.15.0) (2025-08-08)
+
+
+### Features
+
+* add patchedVersions on --request-cve ([#956](https://github.com/nodejs/node-core-utils/issues/956)) ([0bafa24](https://github.com/nodejs/node-core-utils/commit/0bafa24deb0cb451c6dae44d3193c212fd03cb4d))
+* add support for PGP encrypted config files ([#683](https://github.com/nodejs/node-core-utils/issues/683)) ([ba44c74](https://github.com/nodejs/node-core-utils/commit/ba44c7423e9dd18ef2af774973b656803da96a72))
+* **ncu-ci:** accept URLs in `ncu-ci run` ([#959](https://github.com/nodejs/node-core-utils/issues/959)) ([c08bf62](https://github.com/nodejs/node-core-utils/commit/c08bf621bd67c917eb0f31987d9137936cc0bf28))
+* store build and docker issues when --notify-pre-release ([#957](https://github.com/nodejs/node-core-utils/issues/957)) ([a9d4268](https://github.com/nodejs/node-core-utils/commit/a9d42689c214dd03091f5b79d5098fdacec1ef7f))
+* update announcement link on --pre-release ([#954](https://github.com/nodejs/node-core-utils/issues/954)) ([7a1c5d3](https://github.com/nodejs/node-core-utils/commit/7a1c5d313da1137e6fbb9b48753e0cac29d230f7))
+
+
+### Bug Fixes
+
+* **git-node:** pass `-S` flag directly to Caritat ([#958](https://github.com/nodejs/node-core-utils/issues/958)) ([7cf0213](https://github.com/nodejs/node-core-utils/commit/7cf02138428b61219d389ae786af394e75634028))
+
 ## [5.14.1](https://github.com/nodejs/node-core-utils/compare/v5.14.0...v5.14.1) (2025-07-11)
 
 
