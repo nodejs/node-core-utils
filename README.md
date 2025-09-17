@@ -47,7 +47,7 @@ If you would prefer to build from the source, install and link:
 ```
 git clone git@github.com:nodejs/node-core-utils.git
 cd node-core-utils
-npm install
+npm ci
 npm link
 ```
 
