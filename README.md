@@ -89,14 +89,6 @@ After the token is generated, create an rc file with the following content:
 Note: you could use `ncu-config` to configure these variables, but it's not
 recommended to leave your tokens in your command line history.
 
-If you have `gpg` installed and setup on your local machine, it is recommended
-to store an encrypted version of this file:
-
-```console
-$ gpg --default-recipient-self --encrypt ~/.ncurc
-$ rm ~/.ncurc
-```
-
 ### Setting up Jenkins credentials
 
 The `git-node` and `ncu-ci` commands need to query the Node.js Jenkins API for
@@ -124,14 +116,29 @@ To obtain the Jenkins API token
    }
    ```
 
+### Protecting your credentials
 
-### Make sure your credentials won't be committed
+If you have `gpg` installed and setup on your local machine, it is strongly recommended
+to store an encrypted version of this file:
+
+```console
+$ gpg --default-recipient-self --encrypt ~/.ncurc
+$ rm ~/.ncurc
+# The credentials are now encrypted in ~/.ncurc.gpg and everytime it's needed,
+# node-core-utils will invoke gpg that may ask you to decrypt it using
+# your default key via pinentry.
+```
 
 Put the following entries into your
 [global `gitignore` file](https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreexcludesFile)
-(`$XDG_CONFIG_HOME/git/ignore` or a file specified by `core.excludesFile`):
+(`$XDG_CONFIG_HOME/git/ignore` or a file specified by `core.excludesFile`). For example:
+
+```console
+$ git config --global core.excludesfile ~/.gitignore_global
+```
 
 ```
+# In ~/.gitignore_global
 # node-core-utils configuration file
 .ncurc
 .ncurc.gpg
