@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.16.0](https://github.com/nodejs/node-core-utils/compare/v5.15.0...v5.16.0) (2025-09-18)
+
+
+### Features
+
+* comment on build and docker-node issue on cleanup ([#973](https://github.com/nodejs/node-core-utils/issues/973)) ([0f925ad](https://github.com/nodejs/node-core-utils/commit/0f925ad49c11d1b4ab334a00e73a3c0bbe2561f1))
+* **deps:** use shrinkwrap instead of package lock ([#976](https://github.com/nodejs/node-core-utils/issues/976)) ([c6ae8a4](https://github.com/nodejs/node-core-utils/commit/c6ae8a4e4b2ed38fc5d0cc72c6c67dae5c5b6e6b))
+
+
+### Bug Fixes
+
+* **deps:** update installation process for local development ([#975](https://github.com/nodejs/node-core-utils/issues/975)) ([440f3f6](https://github.com/nodejs/node-core-utils/commit/440f3f697b15e80ade5bd4398c3b4bd66884e7a9))
+* **ncu-config:** support encrypted config in ncu-config ([#964](https://github.com/nodejs/node-core-utils/issues/964)) ([c6cfc55](https://github.com/nodejs/node-core-utils/commit/c6cfc5526a4cd29af881382b1598c15d3cbbddc3))
+
 ## [5.15.0](https://github.com/nodejs/node-core-utils/compare/v5.14.1...v5.15.0) (2025-08-08)
 
 
