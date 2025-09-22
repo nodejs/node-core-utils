@@ -124,10 +124,11 @@ to store an encrypted version of this file:
 ```console
 $ gpg --default-recipient-self --encrypt ~/.ncurc
 $ rm ~/.ncurc
-# The credentials are now encrypted in ~/.ncurc.gpg and everytime it's needed,
-# node-core-utils will invoke gpg that may ask you to decrypt it using
-# your default key via pinentry.
 ```
+
+The credentials are now encrypted in `~/.ncurc.gpg` and everytime it's needed,
+node-core-utils will invoke `gpg` that may ask you to decrypt it using
+your default key via pinentry.
 
 Put the following entries into your
 [global `gitignore` file](https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreexcludesFile)
