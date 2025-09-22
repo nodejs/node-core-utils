@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.16.1](https://github.com/nodejs/node-core-utils/compare/v5.16.0...v5.16.1) (2025-09-22)
+
+
+### Bug Fixes
+
+* **deps:** fix package.json ([#980](https://github.com/nodejs/node-core-utils/issues/980)) ([e41427a](https://github.com/nodejs/node-core-utils/commit/e41427adca0039315580a8be16c711468028f248))
+* **docs:** Revise credential storage recommendations in README ([#979](https://github.com/nodejs/node-core-utils/issues/979)) ([cc50ceb](https://github.com/nodejs/node-core-utils/commit/cc50cebeac457b080642c201567cf2724daa5aca))
+
 ## [5.16.0](https://github.com/nodejs/node-core-utils/compare/v5.15.0...v5.16.0) (2025-09-18)
 
 
