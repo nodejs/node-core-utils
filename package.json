@@ -30,7 +30,8 @@
   "files": [
     "lib/",
     "bin/",
-    "components/"
+    "components/",
+    "npm-shrinkwrap.json"
   ],
   "license": "MIT",
   "dependencies": {
