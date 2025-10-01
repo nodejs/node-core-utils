@@ -2525,9 +2525,9 @@
       }
     },
     "node_modules/changelog-maker": {
-      "version": "4.4.2",
-      "resolved": "https://registry.npmjs.org/changelog-maker/-/changelog-maker-4.4.2.tgz",
-      "integrity": "sha512-2IViJwcOrQ9b+keGQIn6ro97zeVHa4LcQpNsIO5XOWsMX9wK1AgQu0PCxHc9kKWwezsh+Wr2wY4kyY0L05QsCQ==",
+      "version": "4.4.4",
+      "resolved": "https://registry.npmjs.org/changelog-maker/-/changelog-maker-4.4.4.tgz",
+      "integrity": "sha512-41aTj9z/XV4GfULGrCuR86uwwh4V8GlftAl4VXyXxLW20CrBC+EL4vDZxldr3eWrzrLrn/+zhZvZ46gthLzG8w==",
       "license": "MIT",
       "dependencies": {
         "@octokit/graphql": "^7.0.1",
