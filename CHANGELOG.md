@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.16.2](https://github.com/nodejs/node-core-utils/compare/v5.16.1...v5.16.2) (2025-10-06)
+
+
+### Bug Fixes
+
+* add warning before spawning `gpg` ([#986](https://github.com/nodejs/node-core-utils/issues/986)) ([00b57d3](https://github.com/nodejs/node-core-utils/commit/00b57d3d6a8c304ff17220549d86809037572b0b))
+
 ## [5.16.1](https://github.com/nodejs/node-core-utils/compare/v5.16.0...v5.16.1) (2025-09-22)
 
 
