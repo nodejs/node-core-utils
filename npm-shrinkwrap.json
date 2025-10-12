@@ -10787,9 +10787,9 @@
       }
     },
     "node_modules/undici": {
-      "version": "7.10.0",
-      "resolved": "https://registry.npmjs.org/undici/-/undici-7.10.0.tgz",
-      "integrity": "sha512-u5otvFBOBZvmdjWLVW+5DAc9Nkq8f24g0O9oY7qw2JVIF1VocIFoyz9JFkuVOS2j41AufeO0xnlweJ2RLT8nGw==",
+      "version": "7.16.0",
+      "resolved": "https://registry.npmjs.org/undici/-/undici-7.16.0.tgz",
+      "integrity": "sha512-QEg3HPMll0o3t2ourKwOeUAZ159Kn9mx5pnzHRQO8+Wixmh88YdZRiIwat0iNzNNXn0yoEtXJqFpyW7eM8BV7g==",
       "license": "MIT",
       "engines": {
         "node": ">=20.18.1"
