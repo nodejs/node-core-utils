@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.16.3](https://github.com/nodejs/node-core-utils/compare/v5.16.2...v5.16.3) (2025-10-18)
+
+
+### Bug Fixes
+
+* spawning of `gpg` to read config ([#991](https://github.com/nodejs/node-core-utils/issues/991)) ([100c694](https://github.com/nodejs/node-core-utils/commit/100c6946b167ab7b035db929f779274b79e07694))
+
 ## [5.16.2](https://github.com/nodejs/node-core-utils/compare/v5.16.1...v5.16.2) (2025-10-12)
 
 
