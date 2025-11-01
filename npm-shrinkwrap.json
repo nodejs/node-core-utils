@@ -1192,9 +1192,9 @@
       }
     },
     "node_modules/@reporters/github": {
-      "version": "1.7.2",
-      "resolved": "https://registry.npmjs.org/@reporters/github/-/github-1.7.2.tgz",
-      "integrity": "sha512-8mvTyKUxxDXkNIWfzv3FsHVwjr8JCwVtwidQws2neV6YgrsJW6OwTOBBhd01RKrDMXPxgpMQuFEfN9hRuUZGuA==",
+      "version": "1.11.0",
+      "resolved": "https://registry.npmjs.org/@reporters/github/-/github-1.11.0.tgz",
+      "integrity": "sha512-sP/fSOgIoMYXZFWVy2Hw6vWUG3akUBiykqnFjx2jWI/kdqj55VZNXAQ27MYuiNffWlITW6mMBcv8+i47O7C77w==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
