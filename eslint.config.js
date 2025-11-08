@@ -42,5 +42,22 @@ export default [
       'n/no-process-exit': 'off',
       'n/no-unsupported-features/node-builtins': 'off',
     },
+    settings: {
+      'import/resolver': {
+        node: {
+          pathFilter(pkg, path, relativePath) {
+            return pkg.exports?.[`./${relativePath}`]?.import?.default ??
+                   pkg.exports?.[`./${relativePath}`]?.import ??
+                   pkg.exports?.[`./${relativePath}`]?.default ??
+                   pkg.exports?.[`./${relativePath}`] ??
+                   pkg.exports?.['.']?.import?.default ??
+                   pkg.exports?.['.']?.import ??
+                   pkg.exports?.['.']?.default ??
+                   pkg.exports?.['.'] ??
+                   (relativePath || pkg.main);
+          },
+        },
+      },
+    },
   },
 ];
