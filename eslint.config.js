@@ -52,6 +52,7 @@ export default [
                    pkg.exports?.[`./${relativePath}`] ??
                    pkg.exports?.['.']?.import?.default ??
                    pkg.exports?.['.']?.import ??
+                   pkg.exports?.['.']?.[0]?.import ??
                    pkg.exports?.['.']?.default ??
                    pkg.exports?.['.'] ??
                    (relativePath || pkg.main);
