@@ -46,15 +46,14 @@ export default [
       'import/resolver': {
         node: {
           pathFilter(pkg, path, relativePath) {
-            return pkg.exports?.[`./${relativePath}`]?.import?.default ??
-                   pkg.exports?.[`./${relativePath}`]?.import ??
-                   pkg.exports?.[`./${relativePath}`]?.default ??
-                   pkg.exports?.[`./${relativePath}`] ??
-                   pkg.exports?.['.']?.import?.default ??
-                   pkg.exports?.['.']?.import ??
-                   pkg.exports?.['.']?.[0]?.import ??
-                   pkg.exports?.['.']?.default ??
-                   pkg.exports?.['.'] ??
+            const pkgExport = relativePath
+              ? pkg.exports?.[`./${relativePath}`]
+              : pkg.exports?.['.'];
+            return pkgExport?.import?.default ??
+                   pkgExport?.import ??
+                   pkgExport?.[0]?.import ??
+                   pkgExport?.default ??
+                   pkgExport ??
                    (relativePath || pkg.main);
           },
         },
