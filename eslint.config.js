@@ -18,11 +18,12 @@ export default [
       'coverage/',
       'node_modules/',
       'lib/wpt/templates/',
+      'test/fixtures/release/*.js', // Copied from the nodejs/node repo
     ],
   },
   {
     languageOptions: {
-      globals: globals.node,
+      globals: globals.nodeBuiltin,
       sourceType: 'module',
       ecmaVersion: 'latest',
     },
