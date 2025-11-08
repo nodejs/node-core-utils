@@ -1,6 +1,5 @@
 'use strict';
 
-// eslint-disable-next-line n/no-missing-require
 require('../common');
 
 const assert = require('assert');
