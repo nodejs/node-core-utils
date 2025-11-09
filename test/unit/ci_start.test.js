@@ -1,8 +1,7 @@
-/* eslint-disable import/no-named-as-default-member */
 import { describe, it, before, afterEach } from 'node:test';
 import assert from 'assert';
 
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 import { FormData } from 'undici';
 
 import {

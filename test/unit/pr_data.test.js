@@ -1,8 +1,7 @@
-/* eslint-disable import/no-named-as-default-member */
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 
 import PRData from '../../lib/pr_data.js';
 

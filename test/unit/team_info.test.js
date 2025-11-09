@@ -1,8 +1,7 @@
-/* eslint-disable import/no-named-as-default-member */
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert';
 
-import sinon from 'sinon';
+import * as sinon from 'sinon';
 
 import TestCLI from '../fixtures/test_cli.js';
 import TeamInfo from '../../lib/team_info.js';
