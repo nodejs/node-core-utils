@@ -18,11 +18,12 @@ export default [
       'coverage/',
       'node_modules/',
       'lib/wpt/templates/',
+      'test/fixtures/release/*.js', // Copied from the nodejs/node repo
     ],
   },
   {
     languageOptions: {
-      globals: globals.node,
+      globals: globals.nodeBuiltin,
       sourceType: 'module',
       ecmaVersion: 'latest',
     },
@@ -41,6 +42,23 @@ export default [
       'promise/always-return': ['error', { ignoreLastCallback: true }],
       'n/no-process-exit': 'off',
       'n/no-unsupported-features/node-builtins': 'off',
+    },
+    settings: {
+      'import/resolver': {
+        node: {
+          pathFilter(pkg, path, relativePath) {
+            const pkgExport = relativePath
+              ? pkg.exports?.[`./${relativePath}`]
+              : pkg.exports?.['.'];
+            return pkgExport?.import?.default ??
+                   pkgExport?.import ??
+                   pkgExport?.[0]?.import ??
+                   pkgExport?.default ??
+                   pkgExport ??
+                   (relativePath || pkg.main);
+          },
+        },
+      },
     },
   },
 ];
