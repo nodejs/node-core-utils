@@ -22,7 +22,7 @@ describe('auth', async function() {
     await runAuthScript(
       undefined,
       [FIRST_TIME_MSG, MOCKED_TOKEN],
-      /^Spawning gpg to encrypt the config value\r?\nError: spawn do-not-exist ENOENT(?:.*\n)+Failed encrypt token, storing unencrypted instead\r?\n$/,
+      /^Spawning gpg to encrypt the config value\r?\nError: spawn do-not-exist ENOENT(?:.*\n)+Failed encrypt token, storing unencrypted instead\r?\n$/
     );
   });
 
@@ -30,7 +30,7 @@ describe('auth', async function() {
     await runAuthScript(
       { HOME: 'this is not json' },
       [FIRST_TIME_MSG, MOCKED_TOKEN],
-      /^Spawning gpg to encrypt the config value\r?\nError: spawn do-not-exist ENOENT(?:.*\n)+Failed encrypt token, storing unencrypted instead\r?\n$/,
+      /^Spawning gpg to encrypt the config value\r?\nError: spawn do-not-exist ENOENT(?:.*\n)+Failed encrypt token, storing unencrypted instead\r?\n$/
     );
   });
 
