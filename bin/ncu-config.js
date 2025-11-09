@@ -7,10 +7,10 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import {
-  getConfig, updateConfig, GLOBAL_CONFIG, PROJECT_CONFIG, LOCAL_CONFIG
+  getConfig, updateConfig, GLOBAL_CONFIG, PROJECT_CONFIG, LOCAL_CONFIG,
+  encryptValue
 } from '../lib/config.js';
 import { setVerbosityFromEnv } from '../lib/verbosity.js';
-import { runSync } from '../lib/run.js';
 
 setVerbosityFromEnv();
 
@@ -91,9 +91,7 @@ async function setHandler(argv) {
     console.warn('Passing sensitive config value via the shell is discouraged');
   }
   if (argv.encrypt) {
-    argv.value = runSync('gpg', ['--default-recipient-self', '--encrypt', '--armor'], {
-      input: argv.value
-    });
+    argv.value = await encryptValue(argv.value);
   }
   console.log(
     `Updating ${configName} configuration ` +
