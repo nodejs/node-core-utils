@@ -1,5 +1,30 @@
 # Changelog
 
+## [6.0.0](https://github.com/nodejs/node-core-utils/compare/v5.16.2...v6.0.0) (2025-11-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop Node.js 18.x from supported engines ([#988](https://github.com/nodejs/node-core-utils/issues/988))
+
+### Features
+
+* **git-node:** enhance remote configuration error message ([#965](https://github.com/nodejs/node-core-utils/issues/965)) ([ea17768](https://github.com/nodejs/node-core-utils/commit/ea17768bc3d3aec853e698beaecc8d97da298d65))
+* **git-node:** verify tag with official keyring ([#989](https://github.com/nodejs/node-core-utils/issues/989)) ([48a418b](https://github.com/nodejs/node-core-utils/commit/48a418b1eee227096be438c38759c96b843b8bb8))
+
+
+### Bug Fixes
+
+* **git-node:** clarify remote configuration error message ([#1001](https://github.com/nodejs/node-core-utils/issues/1001)) ([8746db3](https://github.com/nodejs/node-core-utils/commit/8746db3aca61587a41de221f6bd6ae554c71f1fe))
+* **git-node:** include full URL in suggested `gh` command ([#1002](https://github.com/nodejs/node-core-utils/issues/1002)) ([caee3c5](https://github.com/nodejs/node-core-utils/commit/caee3c5f9dda188d62f24d0533882ce52c60dd16))
+* remove stack traces from non-debug output ([#990](https://github.com/nodejs/node-core-utils/issues/990)) ([687217f](https://github.com/nodejs/node-core-utils/commit/687217f7867add49f8be8461cf0a85fc9364dda0))
+* spawning of `gpg` to read config ([#991](https://github.com/nodejs/node-core-utils/issues/991)) ([100c694](https://github.com/nodejs/node-core-utils/commit/100c6946b167ab7b035db929f779274b79e07694))
+
+
+### Miscellaneous Chores
+
+* drop Node.js 18.x from supported engines ([#988](https://github.com/nodejs/node-core-utils/issues/988)) ([f8371dd](https://github.com/nodejs/node-core-utils/commit/f8371dde2d8c78b50c272c8f41dedbca7b54f57c))
+
 ## [5.16.2](https://github.com/nodejs/node-core-utils/compare/v5.16.1...v5.16.2) (2025-10-12)
 
 
