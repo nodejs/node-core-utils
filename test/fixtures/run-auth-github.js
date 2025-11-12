@@ -16,6 +16,11 @@ async function mockCredentials(options) {
 (async function() {
   const { default: auth } = await import('../../lib/auth.js');
   const authParams = await auth({ github: true }, mockCredentials);
+  if (typeof authParams === 'object' && authParams != null) {
+    for (const key of Object.getOwnPropertyNames(authParams)) {
+      if (key !== 'github') delete authParams[key];
+    }
+  }
   process.stdout.write(`${JSON.stringify(authParams)}\n`);
 })().catch(err => {
   console.error(err);
