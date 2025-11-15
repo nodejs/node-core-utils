@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
+
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import {
-  getConfig, updateConfig, GLOBAL_CONFIG, PROJECT_CONFIG, LOCAL_CONFIG
+  getConfig, updateConfig, GLOBAL_CONFIG, PROJECT_CONFIG, LOCAL_CONFIG,
+  encryptValue
 } from '../lib/config.js';
 import { setVerbosityFromEnv } from '../lib/verbosity.js';
 
@@ -13,10 +17,15 @@ setVerbosityFromEnv();
 const args = yargs(hideBin(process.argv))
   .completion('completion')
   .command({
-    command: 'set <key> <value>',
+    command: 'set <key> [<value>]',
     desc: 'Set a config variable',
     builder: (yargs) => {
       yargs
+        .option('encrypt', {
+          describe: 'Store the value encrypted using gpg',
+          alias: 'x',
+          type: 'boolean'
+        })
         .positional('key', {
           describe: 'key of the configuration',
           type: 'string'
@@ -61,8 +70,6 @@ const args = yargs(hideBin(process.argv))
   .conflicts('global', 'project')
   .help();
 
-const argv = args.parse();
-
 function getConfigType(argv) {
   if (argv.global) {
     return { configName: 'global', configType: GLOBAL_CONFIG };
@@ -73,9 +80,19 @@ function getConfigType(argv) {
   return { configName: 'local', configType: LOCAL_CONFIG };
 }
 
-function setHandler(argv) {
+async function setHandler(argv) {
   const { configName, configType } = getConfigType(argv);
   const config = getConfig(configType);
+  if (!argv.value) {
+    const rl = readline.createInterface({ input, output });
+    argv.value = await rl.question('What value do you want to set? ');
+    rl.close();
+  } else if (argv.encrypt) {
+    console.warn('Passing sensitive config value via the shell is discouraged');
+  }
+  if (argv.encrypt) {
+    argv.value = await encryptValue(argv.value);
+  }
   console.log(
     `Updating ${configName} configuration ` +
     `[${argv.key}]: ${config[argv.key]} -> ${argv.value}`);
@@ -95,6 +112,8 @@ function listHandler(argv) {
     console.log(`${key}: ${config[key]}`);
   }
 }
+
+const argv = await args.parse();
 
 if (!['get', 'set', 'list'].includes(argv._[0])) {
   args.showHelp();

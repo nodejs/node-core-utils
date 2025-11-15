@@ -21,14 +21,16 @@ describe('auth', async function() {
   it('asks for auth data if no ncurc is found', async function() {
     await runAuthScript(
       undefined,
-      [FIRST_TIME_MSG, MOCKED_TOKEN]
+      [FIRST_TIME_MSG, MOCKED_TOKEN],
+      /^Spawning gpg to encrypt the config value\r?\nError: spawn do-not-exist ENOENT(?:.*\n)+Failed encrypt token, storing unencrypted instead\r?\n$/
     );
   });
 
   it('asks for auth data if ncurc is invalid json', async function() {
     await runAuthScript(
       { HOME: 'this is not json' },
-      [FIRST_TIME_MSG, MOCKED_TOKEN]
+      [FIRST_TIME_MSG, MOCKED_TOKEN],
+      /^Spawning gpg to encrypt the config value\r?\nError: spawn do-not-exist ENOENT(?:.*\n)+Failed encrypt token, storing unencrypted instead\r?\n$/
     );
   });
 
@@ -117,7 +119,7 @@ describe('auth', async function() {
 function runAuthScript(
   ncurc = {}, expect = [], error = '', fixture = 'run-auth-github') {
   return new Promise((resolve, reject) => {
-    const newEnv = { HOME: undefined, XDG_CONFIG_HOME: undefined };
+    const newEnv = { HOME: undefined, XDG_CONFIG_HOME: undefined, GPG_BIN: 'do-not-exist' };
     if (ncurc.HOME === undefined) ncurc.HOME = ''; // HOME must always be set.
     for (const envVar in ncurc) {
       if (ncurc[envVar] === undefined) continue;
@@ -154,8 +156,9 @@ function runAuthScript(
     });
     proc.on('close', () => {
       try {
-        assert.strictEqual(stderr, error);
-        assert.strictEqual(expect.length, 0);
+        if (typeof error === 'string') assert.strictEqual(stderr, error);
+        else assert.match(stderr, error);
+        assert.deepStrictEqual(expect, []);
         if (newEnv.HOME) {
           fs.rmSync(newEnv.HOME, { recursive: true, force: true });
         }
