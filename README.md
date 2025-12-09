@@ -78,15 +78,27 @@ You can also edit the permission of existing tokens later.
 
 After the token is generated, you can give it to NCU using:
 
+<details open name="set-token"><summary>With encryption (Recommended)</summary>
+
 ```sh
 ncu-config set username your_github_username
-# It is strongly recommended to encrypt your token. Do not provide it in the CLI,
-# `ncu-config` will prompt you for it.
+# Do not provide the token in the CLI, `ncu-config` will prompt you for it.
 ncu-config set -x token
 ```
 
-Note: Encryption is available only if you have `gpg` setup on your machine. If
-not, do not pass the `-x` flag.
+Note: Encryption is available only if you have `gpg` setup on your machine.
+
+</details>
+
+<details name="set-token"><summary>Without encryption</summary>
+
+```sh
+ncu-config set username your_github_username
+# Do not provide the token in the CLI, `ncu-config` will prompt you for it.
+ncu-config set token
+```
+
+</details>
 
 ### Setting up Jenkins credentials
 
