@@ -119,9 +119,22 @@ To obtain the Jenkins API token
    `~/.ncurc.gpg` or `$XDG_CONFIG_HOME/ncurc.gpg`) with `jenkins_token` as key,
    like this:
 
+   <details open name="set-jenkins-token"><summary>With encryption (recommended)</summary>
+   
    ```sh
    ncu-config set -x jenkins_token
    ```
+
+   Note: Encryption is available only if you have `gpg` setup on your machine.
+
+   </details>
+   <details name="set-jenkins-token"><summary>Without encryption</summary>
+   
+   ```sh
+   ncu-config set jenkins_token
+   ```
+
+   </details>
 
 ### Protecting your credentials
 
