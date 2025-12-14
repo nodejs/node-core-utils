@@ -38,7 +38,7 @@
     "@inquirer/prompts": "^7.4.1",
     "@listr2/prompt-adapter-enquirer": "^2.0.12",
     "@node-core/caritat": "^1.6.0",
-    "@pkgjs/nv": "^0.2.2",
+    "@pkgjs/nv": "^0.3.0",
     "branch-diff": "^3.1.1",
     "chalk": "^5.4.1",
     "changelog-maker": "^4.4.1",

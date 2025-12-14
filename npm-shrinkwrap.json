@@ -12,7 +12,7 @@
         "@inquirer/prompts": "^7.4.1",
         "@listr2/prompt-adapter-enquirer": "^2.0.12",
         "@node-core/caritat": "^1.6.0",
-        "@pkgjs/nv": "^0.2.2",
+        "@pkgjs/nv": "^0.3.0",
         "branch-diff": "^3.1.1",
         "chalk": "^5.4.1",
         "changelog-maker": "^4.4.1",
@@ -1048,12 +1048,12 @@
       }
     },
     "node_modules/@pkgjs/nv": {
-      "version": "0.2.2",
-      "resolved": "https://registry.npmjs.org/@pkgjs/nv/-/nv-0.2.2.tgz",
-      "integrity": "sha512-LbQbUKwt2d4VsTM5MKG25WLiZtmXu89zeoqVdJz3POlnyICkZ/o63WLswLleIysYOGHY9rqeOF/SBwC4hbq90Q==",
+      "version": "0.3.0",
+      "resolved": "https://registry.npmjs.org/@pkgjs/nv/-/nv-0.3.0.tgz",
+      "integrity": "sha512-axZda7mqX9UIos07lh8hyl+sx+/oSNAY4esWiaCHWWavV3IPiqMyX1g6OufByCKwtAEsWhDvgdWgoiycMQHd7w==",
       "license": "MIT",
       "dependencies": {
-        "got": "^11.8.3",
+        "got": "^11.8.6",
         "semver": "^7.1.1",
         "yargs": "^16.2.0"
       },
