@@ -76,18 +76,29 @@ Optionally, if you want to grant write access so `git-node` can write comments:
 
 You can also edit the permission of existing tokens later.
 
-After the token is generated, create an rc file with the following content:
-(`~/.ncurc` or `$XDG_CONFIG_HOME/ncurc`):
+After the token is generated, you can give it to NCU using:
 
-```json
-{
-  "username": "your_github_username",
-  "token": "token_that_you_created"
-}
+<details open name="set-token"><summary>With encryption (Recommended)</summary>
+
+```sh
+ncu-config set username your_github_username
+# Do not provide the token in the CLI, `ncu-config` will prompt you for it.
+ncu-config set -x token
 ```
 
-Note: you could use `ncu-config` to configure these variables, but it's not
-recommended to leave your tokens in your command line history.
+Note: Encryption is available only if you have `gpg` setup on your machine.
+
+</details>
+
+<details name="set-token"><summary>Without encryption</summary>
+
+```sh
+ncu-config set username your_github_username
+# Do not provide the token in the CLI, `ncu-config` will prompt you for it.
+ncu-config set token
+```
+
+</details>
 
 ### Setting up Jenkins credentials
 
@@ -108,27 +119,24 @@ To obtain the Jenkins API token
    `~/.ncurc.gpg` or `$XDG_CONFIG_HOME/ncurc.gpg`) with `jenkins_token` as key,
    like this:
 
-   ```json
-   {
-     "username": "your_github_username",
-     "token": "your_github_token",
-     "jenkins_token": "your_jenkins_token"
-   }
+   <details open name="set-jenkins-token"><summary>With encryption (recommended)</summary>
+   
+   ```sh
+   ncu-config set -x jenkins_token
    ```
 
+   Note: Encryption is available only if you have `gpg` setup on your machine.
+
+   </details>
+   <details name="set-jenkins-token"><summary>Without encryption</summary>
+   
+   ```sh
+   ncu-config set jenkins_token
+   ```
+
+   </details>
+
 ### Protecting your credentials
-
-If you have `gpg` installed and setup on your local machine, it is strongly recommended
-to store an encrypted version of this file:
-
-```console
-$ gpg --default-recipient-self --encrypt ~/.ncurc
-$ rm ~/.ncurc
-```
-
-The credentials are now encrypted in `~/.ncurc.gpg` and everytime it's needed,
-node-core-utils will invoke `gpg` that may ask you to decrypt it using
-your default key via pinentry.
 
 Put the following entries into your
 [global `gitignore` file](https://git-scm.com/docs/git-config#Documentation/git-config.txt-coreexcludesFile)
