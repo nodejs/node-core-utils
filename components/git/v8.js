@@ -2,12 +2,12 @@ import path from 'node:path';
 
 import logSymbols from 'log-symbols';
 
-import { minor, major, backport } from '../../lib/update-v8/index.js';
+import { minor, major, backport, deps } from '../../lib/update-v8/index.js';
 import { defaultBaseDir } from '../../lib/update-v8/constants.js';
 import { checkCwd } from '../../lib/update-v8/common.js';
 import { forceRunAsync } from '../../lib/run.js';
 
-export const command = 'v8 [major|minor|backport]';
+export const command = 'v8 [major|minor|backport|deps]';
 export const describe = 'Update or patch the V8 engine';
 
 export function builder(yargs) {
@@ -25,6 +25,11 @@ export function builder(yargs) {
           type: 'boolean',
           describe: 'Bump the NODE_MODULE_VERSION constant',
           default: true
+        });
+        yargs.option('concurrent', {
+          type: 'boolean',
+          describe: 'Update dependencies concurrently',
+          default: true,
         });
       }
     })
@@ -61,6 +66,19 @@ export function builder(yargs) {
                 'If multiple commits are backported, squash them into one. When ' +
                 '`--squash` is passed, `--preserve-original-author` will be ignored',
             default: false
+          });
+      }
+    })
+    .command({
+      command: 'deps',
+      desc: 'Update V8 dependencies from the DEPS file',
+      handler,
+      builder: (yargs) => {
+        yargs
+          .option('concurrent', {
+            type: 'boolean',
+            describe: 'Update dependencies concurrently',
+            default: true,
           });
       }
     })
@@ -126,6 +144,8 @@ export function handler(argv) {
           return major(options);
         case 'backport':
           return backport(options);
+        case 'deps':
+          return deps(options);
       }
     })
     .catch((err) => {
