@@ -1,5 +1,34 @@
 # Changelog
 
+## [6.0.0](https://github.com/nodejs/node-core-utils/compare/v5.16.2...v6.0.0) (2025-12-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop Node.js 18.x from supported engines ([#988](https://github.com/nodejs/node-core-utils/issues/988))
+
+### Features
+
+* **git-node:** enhance remote configuration error message ([#965](https://github.com/nodejs/node-core-utils/issues/965)) ([ea17768](https://github.com/nodejs/node-core-utils/commit/ea17768bc3d3aec853e698beaecc8d97da298d65))
+* **git-node:** verify tag with official keyring ([#989](https://github.com/nodejs/node-core-utils/issues/989)) ([48a418b](https://github.com/nodejs/node-core-utils/commit/48a418b1eee227096be438c38759c96b843b8bb8))
+* **ncu-config:** add support for partially encrypted config files ([#1004](https://github.com/nodejs/node-core-utils/issues/1004)) ([7342aff](https://github.com/nodejs/node-core-utils/commit/7342affa6402a5f10130c0f486b5e1b08a4b3919))
+* **v8:** add command to sync V8 deps ([#1016](https://github.com/nodejs/node-core-utils/issues/1016)) ([aadc4fc](https://github.com/nodejs/node-core-utils/commit/aadc4fcb9c8d889424ddf51bd38a0dca1a8ec375))
+
+
+### Bug Fixes
+
+* **git-node:** clarify remote configuration error message ([#1001](https://github.com/nodejs/node-core-utils/issues/1001)) ([8746db3](https://github.com/nodejs/node-core-utils/commit/8746db3aca61587a41de221f6bd6ae554c71f1fe))
+* **git-node:** harmonize time left error messages ([#1007](https://github.com/nodejs/node-core-utils/issues/1007)) ([d5a488f](https://github.com/nodejs/node-core-utils/commit/d5a488f78bc5e143813251ae132e2c71aa79384f))
+* **git-node:** include full URL in suggested `gh` command ([#1002](https://github.com/nodejs/node-core-utils/issues/1002)) ([caee3c5](https://github.com/nodejs/node-core-utils/commit/caee3c5f9dda188d62f24d0533882ce52c60dd16))
+* **ncu-config:** do not override encrypted values silently ([#1006](https://github.com/nodejs/node-core-utils/issues/1006)) ([5d72b3e](https://github.com/nodejs/node-core-utils/commit/5d72b3e51b281e0300039e0824efe8251efce6f6))
+* remove stack traces from non-debug output ([#990](https://github.com/nodejs/node-core-utils/issues/990)) ([687217f](https://github.com/nodejs/node-core-utils/commit/687217f7867add49f8be8461cf0a85fc9364dda0))
+* spawning of `gpg` to read config ([#991](https://github.com/nodejs/node-core-utils/issues/991)) ([100c694](https://github.com/nodejs/node-core-utils/commit/100c6946b167ab7b035db929f779274b79e07694))
+
+
+### Miscellaneous Chores
+
+* drop Node.js 18.x from supported engines ([#988](https://github.com/nodejs/node-core-utils/issues/988)) ([f8371dd](https://github.com/nodejs/node-core-utils/commit/f8371dde2d8c78b50c272c8f41dedbca7b54f57c))
+
 ## [5.16.2](https://github.com/nodejs/node-core-utils/compare/v5.16.1...v5.16.2) (2025-10-12)
 
 
