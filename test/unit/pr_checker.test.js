@@ -1304,7 +1304,8 @@ describe('PRChecker', () => {
           ['Last Jenkins CI successful']
         ],
         error: [
-          ['Last GitHub CI failed']
+          ['1 GitHub CI job(s) failed:'],
+          ['  - test-linux: FAILURE (https://github.com/nodejs/node/runs/12345)']
         ],
         info: [
           [`Last Full PR CI on 2018-10-22T04:16:36.458Z: ${jenkins.url}`]
@@ -1711,7 +1712,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['1 GitHub CI job(s) failed:'],
+          ['  - github-actions: FAILURE']
         ]
       };
 
@@ -1771,7 +1773,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['1 GitHub CI job(s) failed:'],
+          ['  - test-linux: FAILURE (https://github.com/nodejs/node/runs/12345)']
         ]
       };
 
@@ -1828,7 +1831,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['GitHub CI failed with status: FAILURE']
         ]
       };
 
@@ -1904,7 +1907,7 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['GitHub CI failed with status: FAILURE']
         ]
       };
 
@@ -1923,7 +1926,8 @@ describe('PRChecker', () => {
 
       const expectedLogs = {
         error: [
-          ['Last GitHub CI failed']
+          ['1 GitHub CI job(s) failed:'],
+          ['  - github-actions: FAILURE']
         ]
       };
 
@@ -1972,6 +1976,297 @@ describe('PRChecker', () => {
 
       const status = await checker.checkCI();
       assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error if Check suite cancelled', async() => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['1 GitHub CI job(s) cancelled:'],
+          ['  - test-linux: CANCELLED (https://github.com/nodejs/node/runs/12345)']
+        ]
+      };
+
+      const commits = githubCI['check-suite-cancelled'];
+      const data = Object.assign({}, baseData, { commits });
+
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should handle multiple failed jobs with detailed output', async() => {
+      const cli = new TestCLI();
+
+      const multipleFailures = [{
+        commit: {
+          committedDate: '2017-10-26T12:10:20Z',
+          oid: '9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d',
+          messageHeadline: 'doc: add api description README',
+          author: { login: 'foo' },
+          checkSuites: {
+            nodes: [{
+              app: { slug: 'github-actions' },
+              status: 'COMPLETED',
+              conclusion: 'FAILURE',
+              checkRuns: {
+                nodes: [
+                  {
+                    name: 'test-linux',
+                    status: 'COMPLETED',
+                    conclusion: 'FAILURE',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/1'
+                  },
+                  {
+                    name: 'test-windows',
+                    status: 'COMPLETED',
+                    conclusion: 'FAILURE',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/2'
+                  },
+                  {
+                    name: 'lint',
+                    status: 'COMPLETED',
+                    conclusion: 'SUCCESS',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/3'
+                  }
+                ]
+              }
+            }]
+          }
+        }
+      }];
+
+      const expectedLogs = {
+        error: [
+          ['2 GitHub CI job(s) failed:'],
+          ['  - test-linux: FAILURE (https://github.com/nodejs/node/runs/1)'],
+          ['  - test-windows: FAILURE (https://github.com/nodejs/node/runs/2)']
+        ]
+      };
+
+      const data = Object.assign({}, baseData, { commits: multipleFailures });
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should handle mixed failed and cancelled jobs', async() => {
+      const cli = new TestCLI();
+
+      const mixedResults = [{
+        commit: {
+          committedDate: '2017-10-26T12:10:20Z',
+          oid: '9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d',
+          messageHeadline: 'doc: add api description README',
+          author: { login: 'foo' },
+          checkSuites: {
+            nodes: [{
+              app: { slug: 'github-actions' },
+              status: 'COMPLETED',
+              conclusion: 'FAILURE',
+              checkRuns: {
+                nodes: [
+                  {
+                    name: 'test-linux',
+                    status: 'COMPLETED',
+                    conclusion: 'FAILURE',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/1'
+                  },
+                  {
+                    name: 'test-macos',
+                    status: 'COMPLETED',
+                    conclusion: 'CANCELLED',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/2'
+                  }
+                ]
+              }
+            }]
+          }
+        }
+      }];
+
+      const expectedLogs = {
+        error: [
+          ['1 GitHub CI job(s) failed:'],
+          ['  - test-linux: FAILURE (https://github.com/nodejs/node/runs/1)'],
+          ['1 GitHub CI job(s) cancelled:'],
+          ['  - test-macos: CANCELLED (https://github.com/nodejs/node/runs/2)']
+        ]
+      };
+
+      const data = Object.assign({}, baseData, { commits: mixedResults });
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should fallback to checkSuite level when no checkRuns available', async() => {
+      const cli = new TestCLI();
+
+      const noCheckRuns = [{
+        commit: {
+          committedDate: '2017-10-26T12:10:20Z',
+          oid: '9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d',
+          messageHeadline: 'doc: add api description README',
+          author: { login: 'foo' },
+          checkSuites: {
+            nodes: [{
+              app: { slug: 'github-actions' },
+              status: 'COMPLETED',
+              conclusion: 'CANCELLED'
+              // No checkRuns field
+            }]
+          }
+        }
+      }];
+
+      const expectedLogs = {
+        error: [
+          ['1 GitHub CI job(s) cancelled:'],
+          ['  - github-actions: CANCELLED']
+        ]
+      };
+
+      const data = Object.assign({}, baseData, { commits: noCheckRuns });
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should handle empty checkRuns array', async() => {
+      const cli = new TestCLI();
+
+      const emptyCheckRuns = [{
+        commit: {
+          committedDate: '2017-10-26T12:10:20Z',
+          oid: '9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d',
+          messageHeadline: 'doc: add api description README',
+          author: { login: 'foo' },
+          checkSuites: {
+            nodes: [{
+              app: { slug: 'github-actions' },
+              status: 'COMPLETED',
+              conclusion: 'FAILURE',
+              checkRuns: { nodes: [] }
+            }]
+          }
+        }
+      }];
+
+      const expectedLogs = {
+        error: [
+          ['1 GitHub CI job(s) failed:'],
+          ['  - github-actions: FAILURE']
+        ]
+      };
+
+      const data = Object.assign({}, baseData, { commits: emptyCheckRuns });
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should handle jobs without URLs', async() => {
+      const cli = new TestCLI();
+
+      const noUrlJobs = [{
+        commit: {
+          committedDate: '2017-10-26T12:10:20Z',
+          oid: '9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d',
+          messageHeadline: 'doc: add api description README',
+          author: { login: 'foo' },
+          checkSuites: {
+            nodes: [{
+              app: { slug: 'github-actions' },
+              status: 'COMPLETED',
+              conclusion: 'FAILURE',
+              checkRuns: {
+                nodes: [{
+                  name: 'test-linux',
+                  status: 'COMPLETED',
+                  conclusion: 'FAILURE'
+                  // No detailsUrl field
+                }]
+              }
+            }]
+          }
+        }
+      }];
+
+      const expectedLogs = {
+        error: [
+          ['1 GitHub CI job(s) failed:'],
+          ['  - test-linux: FAILURE']
+        ]
+      };
+
+      const data = Object.assign({}, baseData, { commits: noUrlJobs });
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should ignore non-completed checkRuns when processing failures', async() => {
+      const cli = new TestCLI();
+
+      const mixedStatusJobs = [{
+        commit: {
+          committedDate: '2017-10-26T12:10:20Z',
+          oid: '9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d',
+          messageHeadline: 'doc: add api description README',
+          author: { login: 'foo' },
+          checkSuites: {
+            nodes: [{
+              app: { slug: 'github-actions' },
+              status: 'COMPLETED',
+              conclusion: 'FAILURE',
+              checkRuns: {
+                nodes: [
+                  {
+                    name: 'test-linux',
+                    status: 'COMPLETED',
+                    conclusion: 'FAILURE',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/1'
+                  },
+                  {
+                    name: 'test-pending',
+                    status: 'IN_PROGRESS',
+                    conclusion: null,
+                    detailsUrl: 'https://github.com/nodejs/node/runs/2'
+                  }
+                ]
+              }
+            }]
+          }
+        }
+      }];
+
+      const expectedLogs = {
+        error: [
+          ['1 GitHub CI job(s) failed:'],
+          ['  - test-linux: FAILURE (https://github.com/nodejs/node/runs/1)']
+        ]
+      };
+
+      const data = Object.assign({}, baseData, { commits: mixedStatusJobs });
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(!status);
       cli.assertCalledWith(expectedLogs);
     });
   });
