@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.1.0](https://github.com/nodejs/node-core-utils/compare/v6.0.0...v6.1.0) (2026-01-02)
+
+
+### Features
+
+* automatically include cveId trailling ([#1022](https://github.com/nodejs/node-core-utils/issues/1022)) ([89df053](https://github.com/nodejs/node-core-utils/commit/89df0538426b32826db9f8e39a3d1f687d42abaa))
+
+
+### Bug Fixes
+
+* improve suggestion next patch or next minor version ([#1014](https://github.com/nodejs/node-core-utils/issues/1014)) ([f15adf9](https://github.com/nodejs/node-core-utils/commit/f15adf903d91213e0042bdc108ddd8dab356769a))
+
 ## [6.0.0](https://github.com/nodejs/node-core-utils/compare/v5.16.2...v6.0.0) (2025-12-21)
 
 
