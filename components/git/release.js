@@ -50,8 +50,14 @@ const releaseOptions = {
     type: 'boolean'
   },
   security: {
-    describe: 'Demarcate the new security release as a security release',
-    type: 'boolean'
+    describe: 'Demarcate the new security release as a security release. ' +
+              'Optionally provide path to security-release repository for CVE auto-population',
+    type: 'string',
+    coerce: (arg) => {
+      // If --security=path is used, return the path
+      if (arg === '' || arg === true) return true;
+      return arg;
+    }
   },
   skipBranchDiff: {
     describe: 'Skips the initial branch-diff check when preparing releases',
