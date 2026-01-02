@@ -43,7 +43,7 @@
     "chalk": "^5.4.1",
     "changelog-maker": "^4.4.1",
     "cheerio": "^1.0.0",
-    "clipboardy": "^4.0.0",
+    "clipboardy": "^5.0.2",
     "core-validate-commit": "^4.1.0",
     "figures": "^6.1.0",
     "ghauth": "^6.0.12",
