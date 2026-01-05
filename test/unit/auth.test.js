@@ -99,6 +99,17 @@ describe('auth', async function() {
     );
   });
 
+  it('accepts a valid H1 token format', async function() {
+    await runAuthScript(
+      {
+        HOME: { h1_username: 'nyancat', h1_token: 'wWIDaa7wz7uGIryWLuqbJRhqUkLI6qlemK1KaMChhpC=' }
+      },
+      ['{"h1":"bnlhbmNhdDp3V0lEYWE3d3o3dUdJcnlXTHVxYkpSaHFVa0xJNnFsZW1LMUthTUNoaHBDPQ=="}'],
+      '',
+      'run-auth-h1'
+    );
+  });
+
   it('permits capital letters in token format', async function() {
     await runAuthScript(
       { HOME: { username: 'nyancat', token: '0123456789ABCDEF' } },
