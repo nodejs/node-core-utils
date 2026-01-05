@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.1](https://github.com/nodejs/node-core-utils/compare/v6.1.0...v6.1.1) (2026-01-05)
+
+
+### Bug Fixes
+
+* **auth:** validation of H1 tokens ([#1026](https://github.com/nodejs/node-core-utils/issues/1026)) ([2cc0b13](https://github.com/nodejs/node-core-utils/commit/2cc0b130f0b64dd7644c22c03a38c6ff6c180229))
+
 ## [6.1.0](https://github.com/nodejs/node-core-utils/compare/v6.0.0...v6.1.0) (2026-01-02)
 
 
