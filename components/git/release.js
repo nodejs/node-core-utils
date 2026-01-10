@@ -87,8 +87,8 @@ export function builder(yargs) {
       'Prepare a new security release of Node.js with auto-determined version')
     .example('git node release --prepare --newVersion=1.2.3',
       'Prepare a new release of Node.js tagged v1.2.3')
-    .example('git node release --promote 12345',
-      'Promote a prepared release of Node.js with PR #12345')
+    .example('git node release --promote https://github.com/nodejs/node/pull/12345 https://github.com/nodejs/node/pull/54321',
+      'Promote two prepared releases of Node.js with PR #12345 and #54321')
     .example('git node --prepare --startLTS',
       'Prepare the first LTS release');
 }
@@ -182,7 +182,11 @@ async function main(state, argv, cli, dir) {
         console.info(`E.g. --fetch-from=git@github.com:${owner}/${repo}.git`);
         throw new Error('You need to tell what remote use to fetch security release proposal.');
       }
-      releases.push(await release.preparePromotion({ owner, repo, prid: Number(prid) }));
+      releases.push(await release.preparePromotion({
+        owner: owner ?? release.owner,
+        repo: repo ?? release.repo,
+        prid: Number(prid)
+      }));
     }
     return release.promote(releases);
   }
