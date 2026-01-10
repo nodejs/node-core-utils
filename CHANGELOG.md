@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.2](https://github.com/nodejs/node-core-utils/compare/v6.1.1...v6.1.2) (2026-01-10)
+
+
+### Bug Fixes
+
+* **git-node:** promoting a release using only PR number ([#1028](https://github.com/nodejs/node-core-utils/issues/1028)) ([37604ef](https://github.com/nodejs/node-core-utils/commit/37604ef61465a614f2a645e170db57d6a041eb34))
+
 ## [6.1.1](https://github.com/nodejs/node-core-utils/compare/v6.1.0...v6.1.1) (2026-01-05)
 
 
