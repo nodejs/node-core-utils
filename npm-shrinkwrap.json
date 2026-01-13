@@ -4683,9 +4683,9 @@
       }
     },
     "node_modules/ghauth": {
-      "version": "6.0.13",
-      "resolved": "https://registry.npmjs.org/ghauth/-/ghauth-6.0.13.tgz",
-      "integrity": "sha512-wdeDPCl3RBSoYEhZ4J/PXK7/b1xYQj1zKgWx9QyUEo0ZGvwFiwe8HWMkpbtuDgo6kwaRUYw7izV7LtO233J5iw==",
+      "version": "6.0.19",
+      "resolved": "https://registry.npmjs.org/ghauth/-/ghauth-6.0.19.tgz",
+      "integrity": "sha512-eiZtW8EyJjk++Gs8vdY1/gJccbaPl3cH40z9VikfvBou5dkI4L/m9bbauLiGnQ6SdYhu0wT4DlDuoRpUMwbyIg==",
       "license": "MIT",
       "dependencies": {
         "application-config": "^2.0.0",
