@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.2.0](https://github.com/nodejs/node-core-utils/compare/v6.1.1...v6.2.0) (2026-01-15)
+
+
+### Features
+
+* add list detail of failed GHA jobs ([#960](https://github.com/nodejs/node-core-utils/issues/960)) ([19b468a](https://github.com/nodejs/node-core-utils/commit/19b468ad088a8200eabdc94a96f58a6027e2fc11))
+
+
+### Bug Fixes
+
+* **git-node:** promoting a release using only PR number ([#1028](https://github.com/nodejs/node-core-utils/issues/1028)) ([37604ef](https://github.com/nodejs/node-core-utils/commit/37604ef61465a614f2a645e170db57d6a041eb34))
+
 ## [6.1.1](https://github.com/nodejs/node-core-utils/compare/v6.1.0...v6.1.1) (2026-01-05)
 
 
