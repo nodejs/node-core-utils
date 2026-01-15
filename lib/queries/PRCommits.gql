@@ -31,7 +31,15 @@ query Commits($prid: Int!, $owner: String!, $repo: String!, $after: String) {
                   slug
                 }
                 conclusion,
-                status
+                status,
+                checkRuns(first: 40) {
+                  nodes {
+                    name
+                    status
+                    conclusion
+                    detailsUrl
+                  }
+                }
               }
             }
             status {
