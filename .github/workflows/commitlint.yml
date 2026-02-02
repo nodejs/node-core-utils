@@ -6,11 +6,24 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   commitlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Compute number of commits to fetch
+        id: nb-of-commits
+        # `+ 1` for PRs because of the merge commit
+        run: |
+          echo "toParse=$(echo "$EVENT" | jq -r 'if .commits then (.commits | length) else (.pull_request.commits + 1) end')" >> $GITHUB_OUTPUT
+        env:
+          EVENT: ${{ toJSON(github.event) }}
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
-          fetch-depth: 100
+          persist-credentials: false
+          sparse-checkout: .
+          fetch-depth: ${{ steps.nb-of-commits.outputs.toParse }}
       - uses: wagoid/commitlint-github-action@v6
