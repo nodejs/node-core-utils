@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   commitlint:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - name: Compute number of commits to fetch
         id: nb-of-commits
