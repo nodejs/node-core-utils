@@ -4,7 +4,7 @@ import ReleasePreparation from '../../lib/prepare_release.js';
 import ReleasePromotion from '../../lib/promote_release.js';
 import TeamInfo from '../../lib/team_info.js';
 import Request from '../../lib/request.js';
-import { runPromise } from '../../lib/run.js';
+import { forceRunAsync, runPromise } from '../../lib/run.js';
 
 export const command = 'release [prid..]';
 export const describe = 'Manage an in-progress release or start a new one.';
@@ -114,12 +114,29 @@ function release(state, argv) {
     cli.setAssumeYes();
   }
 
-  return runPromise(main(state, argv, cli, dir)).catch((err) => {
+  return runPromise(wrapStash(() => main(state, argv, cli, dir))).catch((err) => {
     if (cli.spinner.enabled) {
       cli.spinner.fail();
     }
     throw err;
   });
+}
+
+async function wrapStash(fn) {
+  let stashed = false;
+  try {
+    await forceRunAsync('git', ['--no-pager', 'diff', '--exit-code'], { ignoreFailure: false });
+  } catch {
+    await forceRunAsync('git', ['stash', '--include-untracked'], { ignoreFailure: false });
+    stashed = true;
+  }
+  try {
+    await fn();
+  } finally {
+    if (stashed) {
+      await forceRunAsync('git', ['stash', 'pop'], { ignoreFailure: false });
+    }
+  }
 }
 
 async function main(state, argv, cli, dir) {
