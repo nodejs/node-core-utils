@@ -123,17 +123,14 @@ function release(state, argv) {
 }
 
 async function wrapStash(fn) {
-  let stashed = false;
-  try {
-    await forceRunAsync('git', ['--no-pager', 'diff', '--exit-code'], { ignoreFailure: false });
-  } catch {
-    await forceRunAsync('git', ['stash', '--include-untracked'], { ignoreFailure: false });
-    stashed = true;
-  }
+  const stashTip = await forceRunAsync('git', ['stash', 'list', '-1', '--format="%gd"'], { ignoreFailure: false, captureStdout: true });
+  await forceRunAsync('git', ['stash', '--include-untracked'], { ignoreFailure: false });
+  const newStashTip = await forceRunAsync('git', ['stash', 'list', '-1', '--format="%gd"'], { ignoreFailure: false, captureStdout: true });
+  const hasStashed = newStashTip !== stashTip && newStashTip.trim();
   try {
     await fn();
   } finally {
-    if (stashed) {
+    if (hasStashed) {
       await forceRunAsync('git', ['stash', 'pop'], { ignoreFailure: false });
     }
   }
