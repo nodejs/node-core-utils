@@ -4,7 +4,7 @@ import ReleasePreparation from '../../lib/prepare_release.js';
 import ReleasePromotion from '../../lib/promote_release.js';
 import TeamInfo from '../../lib/team_info.js';
 import Request from '../../lib/request.js';
-import { runPromise } from '../../lib/run.js';
+import { forceRunAsync, runPromise } from '../../lib/run.js';
 
 export const command = 'release [prid..]';
 export const describe = 'Manage an in-progress release or start a new one.';
@@ -114,12 +114,28 @@ function release(state, argv) {
     cli.setAssumeYes();
   }
 
-  return runPromise(main(state, argv, cli, dir)).catch((err) => {
+  return runPromise(wrapStash(() => main(state, argv, cli, dir))).catch((err) => {
     if (cli.spinner.enabled) {
       cli.spinner.fail();
     }
     throw err;
   });
+}
+
+async function wrapStash(fn) {
+  const stashTip = await forceRunAsync('git', ['stash', 'list', '-1', '--format="%gd"'],
+    { ignoreFailure: false, captureStdout: true });
+  await forceRunAsync('git', ['stash', '--include-untracked'], { ignoreFailure: false });
+  const newStashTip = await forceRunAsync('git', ['stash', 'list', '-1', '--format="%gd"'],
+    { ignoreFailure: false, captureStdout: true });
+  const hasStashed = newStashTip !== stashTip && newStashTip.trim();
+  try {
+    await fn();
+  } finally {
+    if (hasStashed) {
+      await forceRunAsync('git', ['stash', 'pop'], { ignoreFailure: false });
+    }
+  }
 }
 
 async function main(state, argv, cli, dir) {
