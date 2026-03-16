@@ -202,12 +202,6 @@ async function main(state, argv, cli, dir) {
     }
     session = new LandingSession(cli, req, dir, argv);
     const metadata = await getMetadata(session.argv, argv.skipRefs, cli);
-    if (argv.backport) {
-      const split = metadata.metadata.split('\n')[0];
-      if (split === 'PR-URL: ') {
-        cli.error('Commit message is missing PR-URL');
-      }
-    }
     return session.start(metadata);
   } else if (state === APPLY) {
     return session.apply();
