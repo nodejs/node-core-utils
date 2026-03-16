@@ -1,4 +1,4 @@
-import { describe, it, before, afterEach } from 'node:test';
+import { describe, it, before, afterEach, beforeEach } from 'node:test';
 import assert from 'assert';
 
 import * as sinon from 'sinon';
@@ -13,6 +13,9 @@ import {
 import PRChecker from '../../lib/pr_checker.js';
 
 import TestCLI from '../fixtures/test_cli.js';
+import { PRBuild } from '../../lib/ci/build-types/pr_build.js';
+import { JobParser } from '../../lib/ci/ci_type_parser.js';
+import PRData from '../../lib/pr_data.js';
 
 describe('Jenkins', () => {
   const owner = 'nodejs';
@@ -198,5 +201,130 @@ describe('Jenkins', () => {
         assert.strictEqual(await jobRunner.start(), certifySafe);
       });
     }
+  });
+
+  describe('--check-for-duplicates', { concurrency: false }, () => {
+    beforeEach(() => {
+      sinon.replace(PRData.prototype, 'getComments', sinon.fake.resolves());
+      sinon.replace(PRData.prototype, 'getPR', sinon.fake.resolves());
+      sinon.replace(JobParser.prototype, 'parse',
+        sinon.fake.returns(new Map().set('PR', { jobid: 123456 })));
+    });
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    const getParameters = (commitHash) =>
+      [
+        {
+          _class: 'hudson.model.BooleanParameterValue',
+          name: 'CERTIFY_SAFE',
+          value: true
+        },
+        {
+          _class: 'hudson.model.StringParameterValue',
+          name: 'COMMIT_SHA_CHECK',
+          value: commitHash
+        },
+        {
+          _class: 'hudson.model.StringParameterValue',
+          name: 'TARGET_GITHUB_ORG',
+          value: 'nodejs'
+        },
+        {
+          _class: 'hudson.model.StringParameterValue',
+          name: 'TARGET_REPO_NAME',
+          value: 'node'
+        },
+        {
+          _class: 'hudson.model.StringParameterValue',
+          name: 'PR_ID',
+          value: prid
+        },
+        {
+          _class: 'hudson.model.StringParameterValue',
+          name: 'REBASE_ONTO',
+          value: '<pr base branch>'
+        },
+        {
+          _class: 'com.wangyin.parameter.WHideParameterValue',
+          name: 'DESCRIPTION_SETTER_DESCRIPTION',
+          value: ''
+        }
+      ];
+    const mockJenkinsResponse = parameters => ({
+      _class: 'com.tikal.jenkins.plugins.multijob.MultiJobBuild',
+      actions: [
+        { _class: 'hudson.model.CauseAction' },
+        { _class: 'hudson.model.ParametersAction', parameters },
+        { _class: 'hudson.model.ParametersAction', parameters },
+        { _class: 'hudson.model.ParametersAction', parameters },
+        {},
+        { _class: 'hudson.model.CauseAction' },
+        {},
+        {},
+        {},
+        {},
+        { _class: 'hudson.plugins.git.util.BuildData' },
+        {},
+        {},
+        {},
+        {},
+        { _class: 'hudson.model.ParametersAction', parameters },
+        {
+          _class: 'hudson.plugins.parameterizedtrigger.BuildInfoExporterAction'
+        },
+        {
+          _class: 'com.tikal.jenkins.plugins.multijob.MultiJobTestResults'
+        },
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {
+          _class: 'org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction'
+        }
+      ]
+    });
+
+    it('should return false if already started', async() => {
+      const cli = new TestCLI();
+      sinon.replace(PRBuild.prototype, 'getBuildData',
+        sinon.fake.resolves(mockJenkinsResponse(getParameters('deadbeef'))));
+
+      const jobRunner = new RunPRJob(cli, {}, owner, repo, prid, 'deadbeef', true);
+      assert.strictEqual(await jobRunner.start(), false);
+    });
+    it('should return true when last CI is on a different commit', async() => {
+      const cli = new TestCLI();
+      sinon.replace(PRBuild.prototype, 'getBuildData',
+        sinon.fake.resolves(mockJenkinsResponse(getParameters('123456789abcdef'))));
+
+      const request = {
+        gql: sinon.stub().returns({
+          repository: {
+            pullRequest: {
+              labels: {
+                nodes: []
+              }
+            }
+          }
+        }),
+        fetch: sinon.stub()
+          .callsFake((url, { method, headers, body }) => {
+            assert.strictEqual(url, CI_PR_URL);
+            assert.strictEqual(method, 'POST');
+            assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
+            return Promise.resolve({ status: 201 });
+          }),
+        json: sinon.stub().withArgs(CI_CRUMB_URL).resolves({ crumb })
+      };
+      const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef', true);
+      assert.strictEqual(await jobRunner.start(), true);
+    });
   });
 });

@@ -119,6 +119,11 @@ const args = yargs(hideBin(process.argv))
                     'If not provided, the command will use the SHA of the last approved commit.',
           type: 'string'
         })
+        .option('check-for-duplicates', {
+          describe: 'When set, NCU will query Jenkins recent builds to ensure ' +
+                    'there is not an existing job for the same commit.',
+          type: 'boolean'
+        })
         .option('owner', {
           default: '',
           describe: 'GitHub repository owner'
@@ -298,7 +303,10 @@ class RunPRJobCommand {
       this.cli.setExitCode(1);
       return;
     }
-    const jobRunner = new RunPRJob(cli, request, owner, repo, prid, this.argv.certifySafe);
+    const { certifySafe, checkForDuplicates } = this.argv;
+    const jobRunner = new RunPRJob(
+      cli, request, owner, repo, prid,
+      certifySafe, checkForDuplicates);
     if (!(await jobRunner.start())) {
       this.cli.setExitCode(1);
       process.exitCode = 1;
