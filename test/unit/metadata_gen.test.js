@@ -41,8 +41,7 @@ const backportArgv = {
   }
 };
 const backportData = Object.assign({}, data, { pr: backportPR }, backportArgv);
-const backportExpected = `PR-URL: https://github.com/nodejs/node/pull/29995
-Backport-PR-URL: https://github.com/nodejs/node/pull/30072
+const backportExpected = `Backport-PR-URL: https://github.com/nodejs/node/pull/30072
 Fixes: https://github.com/nodejs/build/issues/1961
 Refs: https://github.com/nodejs/node/commit/53ca0b9ae145c430842bf78e553e3b6cbd2823aa#commitcomment-35494896
 Reviewed-By: Foo User <foo@example.com>
