@@ -1,5 +1,21 @@
 # Changelog
 
+## [6.2.0](https://github.com/nodejs/node-core-utils/compare/v6.1.1...v6.2.0) (2026-03-18)
+
+
+### Features
+
+* add list detail of failed GHA jobs ([#960](https://github.com/nodejs/node-core-utils/issues/960)) ([19b468a](https://github.com/nodejs/node-core-utils/commit/19b468ad088a8200eabdc94a96f58a6027e2fc11))
+
+
+### Bug Fixes
+
+* ensure all webcrypto idls are downloaded ([b6ef8b5](https://github.com/nodejs/node-core-utils/commit/b6ef8b543191bc5e0e8ae6b7c0d693670affecf0))
+* **git-node:** do not enforce minimum wait time for release proposals ([#1032](https://github.com/nodejs/node-core-utils/issues/1032)) ([4586163](https://github.com/nodejs/node-core-utils/commit/45861633306db130a587174d6abda676694f1447))
+* **git-node:** promoting a release using only PR number ([#1028](https://github.com/nodejs/node-core-utils/issues/1028)) ([37604ef](https://github.com/nodejs/node-core-utils/commit/37604ef61465a614f2a645e170db57d6a041eb34))
+* **git-node:** use stash and detached head for release operations ([#1033](https://github.com/nodejs/node-core-utils/issues/1033)) ([21fe473](https://github.com/nodejs/node-core-utils/commit/21fe4732ba20cf57332341941de448a93d107319))
+* improve --request-cve ([#1037](https://github.com/nodejs/node-core-utils/issues/1037)) ([cc7645f](https://github.com/nodejs/node-core-utils/commit/cc7645fa3d24f4dc941c40004231848241d8dfc6))
+
 ## [6.1.1](https://github.com/nodejs/node-core-utils/compare/v6.1.0...v6.1.1) (2026-01-05)
 
 
