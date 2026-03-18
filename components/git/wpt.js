@@ -48,7 +48,9 @@ async function main(argv) {
   let supported = [
     'dom',
     'html',
-    'webcrypto'
+    'webcrypto',
+    'webcrypto-secure-curves',
+    'webcrypto-modern-algos',
   ];
   if (fs.existsSync(statusFolder)) {
     const jsons = fs.readdirSync(statusFolder);
