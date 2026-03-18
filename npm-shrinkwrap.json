@@ -1,12 +1,12 @@
 {
   "name": "@node-core/utils",
-  "version": "6.1.1",
+  "version": "6.2.0",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
       "name": "@node-core/utils",
-      "version": "6.1.1",
+      "version": "6.2.0",
       "license": "MIT",
       "dependencies": {
         "@inquirer/prompts": "^7.4.1",
