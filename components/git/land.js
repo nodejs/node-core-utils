@@ -168,7 +168,7 @@ async function main(state, argv, cli, dir) {
     github: true
   });
   const req = new Request(credentials);
-  let session = new LandingSession(cli, req, dir);
+  let session = new LandingSession(cli, req, dir, argv);
 
   if (state !== AMEND &&
       state !== CONTINUE &&
