@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.2.1](https://github.com/nodejs/node-core-utils/compare/v6.2.0...v6.2.1) (2026-03-20)
+
+
+### Bug Fixes
+
+* **git-node:** pass `argv` to `LandingSession` constructor ([#1039](https://github.com/nodejs/node-core-utils/issues/1039)) ([8224122](https://github.com/nodejs/node-core-utils/commit/82241222c4b03f4d19b558664a4f7b3a5ad685f6))
+* **ncu-config:** allow overriding global encrypted keys with local ones ([#1030](https://github.com/nodejs/node-core-utils/issues/1030)) ([f2f4194](https://github.com/nodejs/node-core-utils/commit/f2f4194b2bc00e4c8a734df74fbf354e80d64bca))
+
 ## [6.2.0](https://github.com/nodejs/node-core-utils/compare/v6.1.1...v6.2.0) (2026-03-18)
 
 
