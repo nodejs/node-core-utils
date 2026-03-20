@@ -1,6 +1,6 @@
 {
   "name": "@node-core/utils",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "description": "Utilities for Node.js core collaborators",
   "type": "module",
   "engines": {
@@ -44,7 +44,7 @@
     "changelog-maker": "^4.4.1",
     "cheerio": "^1.0.0",
     "clipboardy": "^5.0.2",
-    "core-validate-commit": "^5.0.1",
+    "core-validate-commit": "^4.1.0",
     "figures": "^6.1.0",
     "ghauth": "^6.0.12",
     "git-secure-tag": "^2.3.1",
