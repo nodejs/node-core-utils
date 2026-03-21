@@ -201,8 +201,8 @@ async function main(state, argv, cli, dir) {
       const response = await cli.prompt('Do you want to abort it?', { defaultAnswer: false });
       if (!response) throw new Error('Please run `git node land --abort`');
       await session.abort();
+      session = new LandingSession(cli, req, dir, argv);
     }
-    session = new LandingSession(cli, req, dir, argv);
     const metadata = await getMetadata(session.argv, argv.skipRefs, cli);
     if (argv.backport) {
       const split = metadata.metadata.split('\n')[0];
