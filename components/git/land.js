@@ -189,6 +189,7 @@ async function main(state, argv, cli, dir) {
     cli.warn(
       'Failed to detect previous session. ' +
       'please run `git node land --abort`');
+    process.exitCode ||= 1;
     return;
   }
 
@@ -197,8 +198,9 @@ async function main(state, argv, cli, dir) {
       cli.warn(
         'Previous `git node land` session for ' +
         `${session.pullName} in progress.`);
-      cli.log('run `git node land --abort` before starting a new session');
-      return;
+      const response = await cli.prompt('Do you want to abort it?', { defaultAnswer: false });
+      if (!response) throw new Error('Please run `git node land --abort`');
+      await session.abort();
     }
     session = new LandingSession(cli, req, dir, argv);
     const metadata = await getMetadata(session.argv, argv.skipRefs, cli);
