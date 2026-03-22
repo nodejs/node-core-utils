@@ -92,110 +92,93 @@ export function builder(yargs) {
 }
 
 export function handler(argv) {
+  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const cli = new CLI(logStream);
+
   if (argv.start) {
-    return startSecurityRelease(argv);
+    return startSecurityRelease(cli, argv);
   }
   if (argv.sync) {
-    return syncSecurityRelease(argv);
+    return syncSecurityRelease(cli, argv);
   }
   if (argv['update-date']) {
-    return updateReleaseDate(argv);
+    return updateReleaseDate(cli, argv);
   }
   if (argv['pre-release']) {
-    return createPreRelease(argv);
+    return createPreRelease(cli, argv);
   }
   if (argv['add-report']) {
-    return addReport(argv);
+    return addReport(cli, argv);
   }
   if (argv['remove-report']) {
-    return removeReport(argv);
+    return removeReport(cli, argv);
   }
   if (argv['notify-pre-release']) {
-    return notifyPreRelease(argv);
+    return notifyPreRelease(cli, argv);
   }
   if (argv['request-cve']) {
-    return requestCVEs(argv);
+    return requestCVEs(cli, argv);
   }
   if (argv['post-release']) {
-    return createPostRelease(argv);
+    return createPostRelease(cli, argv);
   }
   if (argv.cleanup) {
-    return cleanupSecurityRelease(argv);
+    return cleanupSecurityRelease(cli, argv);
   }
   yargsInstance.showHelp();
 }
 
-async function removeReport(argv) {
+async function removeReport(cli, argv) {
   const reportId = argv['remove-report'];
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
   const update = new UpdateSecurityRelease(cli);
   return update.removeReport(reportId);
 }
 
-async function addReport(argv) {
+async function addReport(cli, argv) {
   const reportId = argv['add-report'];
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
   const update = new UpdateSecurityRelease(cli);
   return update.addReport(reportId);
 }
 
-async function updateReleaseDate(argv) {
+async function updateReleaseDate(cli, argv) {
   const releaseDate = argv['update-date'];
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
   const update = new UpdateSecurityRelease(cli);
   return update.updateReleaseDate(releaseDate);
 }
 
-async function createPreRelease(argv) {
+async function createPreRelease(cli, argv) {
   const nodejsOrgFolder = argv['pre-release'];
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
   const preRelease = new SecurityBlog(cli);
   return preRelease.createPreRelease(nodejsOrgFolder);
 }
 
-async function requestCVEs() {
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
+async function requestCVEs(cli) {
   const hackerOneCve = new UpdateSecurityRelease(cli);
   return hackerOneCve.requestCVEs();
 }
 
-async function createPostRelease(argv) {
+async function createPostRelease(cli, argv) {
   const nodejsOrgFolder = argv['post-release'];
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
   const blog = new SecurityBlog(cli);
   return blog.createPostRelease(nodejsOrgFolder);
 }
 
-async function startSecurityRelease() {
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
+async function startSecurityRelease(cli) {
   const release = new PrepareSecurityRelease(cli);
   return release.start();
 }
 
-async function cleanupSecurityRelease() {
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
+async function cleanupSecurityRelease(cli) {
   const release = new PrepareSecurityRelease(cli);
   return release.cleanup();
 }
 
-async function syncSecurityRelease(argv) {
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
+async function syncSecurityRelease(cli) {
   const release = new UpdateSecurityRelease(cli);
   return release.sync();
 }
 
-async function notifyPreRelease() {
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
-  const cli = new CLI(logStream);
+async function notifyPreRelease(cli) {
   const preRelease = new SecurityAnnouncement(cli);
   return preRelease.notifyPreRelease();
 }
