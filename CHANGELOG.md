@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.0](https://github.com/nodejs/node-core-utils/compare/v6.2.1...v6.3.0) (2026-03-23)
+
+
+### Features
+
+* **ncu-ci:** add `--check-for-duplicates` flag ([#1035](https://github.com/nodejs/node-core-utils/issues/1035)) ([5a789fd](https://github.com/nodejs/node-core-utils/commit/5a789fd16cb9a2e49ef85090e899570a222cdd8e))
+
 ## [6.2.1](https://github.com/nodejs/node-core-utils/compare/v6.2.0...v6.2.1) (2026-03-20)
 
 
