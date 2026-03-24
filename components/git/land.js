@@ -189,7 +189,7 @@ async function main(state, argv, cli, dir) {
     cli.warn(
       'Failed to detect previous session. ' +
       'please run `git node land --abort`');
-    process.exitCode ||= 1;
+    cli.setErrorCode(1);
     return;
   }
 
