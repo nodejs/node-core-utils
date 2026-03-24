@@ -62,7 +62,7 @@ describe('auth', async function() {
     await runAuthScript(
       {},
       [FIRST_TIME_MSG],
-      'Could not get token: Bad credentials\n', 'run-auth-error'
+      /Could not get token: Bad credentials\n/, 'run-auth-error'
     );
   });
 
@@ -70,7 +70,7 @@ describe('auth', async function() {
     await runAuthScript(
       { HOME: { username: {}, token: '0123456789abcdef' } },
       [],
-      'username must be a string, received object\n'
+      /username must be a string, received object\n/
     );
   });
 
@@ -78,7 +78,7 @@ describe('auth', async function() {
     await runAuthScript(
       { HOME: { username: 'nyancat', token: 42 } },
       [],
-      'token must be a string, received number\n'
+      /token must be a string, received number\n/
     );
   });
 
@@ -86,8 +86,7 @@ describe('auth', async function() {
     await runAuthScript(
       { HOME: { username: ' ^^^ ', token: '0123456789abcdef' } },
       [],
-      'username may only contain alphanumeric characters or hyphens, ' +
-      'received  ^^^ \n'
+      /username may only contain alphanumeric characters or hyphens, received  \^\^\^ \n/
     );
   });
 
@@ -95,7 +94,7 @@ describe('auth', async function() {
     await runAuthScript(
       { HOME: { username: 'nyancat', token: '@fhqwhgads' } },
       [],
-      'token is misformatted: @fhqwhgads\n'
+      /token is misformatted: @fhqwhgads\n/
     );
   });
 
