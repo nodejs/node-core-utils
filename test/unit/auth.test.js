@@ -86,7 +86,7 @@ describe('auth', async function() {
     await runAuthScript(
       { HOME: { username: ' ^^^ ', token: '0123456789abcdef' } },
       [],
-      /username may only contain alphanumeric characters or hyphens, received  \^\^\^ \n/
+      /username may only contain alphanumeric characters or hyphens, received {2}\^\^\^ \n/
     );
   });
 
