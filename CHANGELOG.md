@@ -1,5 +1,24 @@
 # Changelog
 
+## [6.3.0](https://github.com/nodejs/node-core-utils/compare/v6.2.1...v6.3.0) (2026-03-27)
+
+
+### Features
+
+* **git-node:** add backport reviewers to metadata ([22f1f71](https://github.com/nodejs/node-core-utils/commit/22f1f7165433fd566fbc2ffec2f70ddd3e970cb5))
+* **git-node:** add limited support for cross-repo PRs ([#1043](https://github.com/nodejs/node-core-utils/issues/1043)) ([f70b2f5](https://github.com/nodejs/node-core-utils/commit/f70b2f5a4a455e5fa3f3fcf93e7e292c7f1c29b6))
+* **git-node:** do not trust user input metadata ([be846eb](https://github.com/nodejs/node-core-utils/commit/be846eb411ce38eb894a2f73f5f5ee9adb31de8a))
+* **git-node:** suggest abort previous session ([#1042](https://github.com/nodejs/node-core-utils/issues/1042)) ([3a427ee](https://github.com/nodejs/node-core-utils/commit/3a427eed683eeec5cb9e951c05e5b40b2463744d))
+* **ncu-ci:** add `--check-for-duplicates` flag ([#1035](https://github.com/nodejs/node-core-utils/issues/1035)) ([5a789fd](https://github.com/nodejs/node-core-utils/commit/5a789fd16cb9a2e49ef85090e899570a222cdd8e))
+
+
+### Bug Fixes
+
+* **git-node:** do not parse `PR-URL` from backport PR description ([8fc91ad](https://github.com/nodejs/node-core-utils/commit/8fc91ad31fc6b13f84d054ae2511c7882e3ae906))
+* **git-node:** remove duplicated code in `prepare_release.js` ([#1047](https://github.com/nodejs/node-core-utils/issues/1047)) ([673476f](https://github.com/nodejs/node-core-utils/commit/673476fe4585f1c16ae5cde267bc31083f73495d))
+* **git-node:** simplify `vulnerabilities.json` creation, add missing EOL ([#1044](https://github.com/nodejs/node-core-utils/issues/1044)) ([3070852](https://github.com/nodejs/node-core-utils/commit/3070852c189db34ca86f2c7d36a66d1567699d15))
+* throw `Error` objects to help with debugging ([#1045](https://github.com/nodejs/node-core-utils/issues/1045)) ([25082a4](https://github.com/nodejs/node-core-utils/commit/25082a4b7daca47396f462e7ccde676c84fb1294))
+
 ## [6.2.1](https://github.com/nodejs/node-core-utils/compare/v6.2.0...v6.2.1) (2026-03-20)
 
 
