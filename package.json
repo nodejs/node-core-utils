@@ -67,7 +67,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^17.17.0",
     "eslint-plugin-promise": "^7.2.1",
-    "globals": "^16.0.0",
+    "globals": "^17.4.0",
     "neostandard": "^0.12.1",
     "sinon": "^21.0.0"
   }
