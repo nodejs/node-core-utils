@@ -46,7 +46,7 @@
     "clipboardy": "^5.0.2",
     "core-validate-commit": "^4.1.0",
     "figures": "^6.1.0",
-    "ghauth": "^6.0.12",
+    "ghauth": "^7.0.1",
     "git-secure-tag": "^2.3.1",
     "js-yaml": "^4.1.0",
     "listr2": "^9.0.5",
