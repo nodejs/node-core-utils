@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.1](https://github.com/nodejs/node-core-utils/compare/v6.3.0...v6.3.1) (2026-04-11)
+
+
+### Bug Fixes
+
+* **git-node:** fix handling of existing trailers ([#1056](https://github.com/nodejs/node-core-utils/issues/1056)) ([d958465](https://github.com/nodejs/node-core-utils/commit/d958465c0341dc1e2eb61b93f189ad7234f5e138))
+
 ## [6.3.0](https://github.com/nodejs/node-core-utils/compare/v6.2.1...v6.3.0) (2026-03-27)
 
 
