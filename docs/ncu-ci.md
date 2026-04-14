@@ -134,7 +134,7 @@ Possible use cases:
 
 - a numeric pull request id, for example `34127`
 - a pull request URL, for example `https://github.com/nodejs/node/pull/34127`
-- a commit URL for the head commit of the pull request, for example `https://github.com/nodejs/node/pull/34127/commits/<sha>`
+- a commit URL for the head commit of the pull request, for example `https://github.com/nodejs/node/pull/34127/commits/35ea6ded7315cf9d0585a5d1cd7d09f358ca5993`
 
 If you pass a GitHub URL, `ncu-ci` will infer the repository owner, repository name,
 and pull request id from the URL. When you pass a commit URL, it also uses the commit
