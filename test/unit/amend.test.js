@@ -17,7 +17,7 @@ const createSession = (overrides = undefined) => {
   const options = {
     owner: 'nodejs',
     repo: 'node',
-    upstream: 'upstream',
+    upstream: 'origin',
     branch: 'main',
     prid: 123,
     oneCommitMax: false,
