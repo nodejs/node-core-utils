@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.2](https://github.com/nodejs/node-core-utils/compare/v6.3.1...v6.3.2) (2026-04-14)
+
+
+### Bug Fixes
+
+* **git-node:** handle single-line commit messages ([#1059](https://github.com/nodejs/node-core-utils/issues/1059)) ([f510b8a](https://github.com/nodejs/node-core-utils/commit/f510b8a2031a89912c5da20dd5b3ab7d0fb6f061))
+
 ## [6.3.1](https://github.com/nodejs/node-core-utils/compare/v6.3.0...v6.3.1) (2026-04-11)
 
 
