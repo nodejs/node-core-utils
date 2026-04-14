@@ -16,6 +16,7 @@ Commands:
   ncu-ci rate <type>        Calculate the green rate of a CI job in the last 100
                             runs
   ncu-ci walk <type>        Walk the CI and display the failures
+  ncu-ci run <prid>         Start a node-test-pull-request CI job for a PR
   ncu-ci url <url>          Automatically detect CI type and show results
   ncu-ci pr <jobid>         Show results of a node-test-pull-request CI job
   ncu-ci commit <jobid>     Show results of a node-test-commit CI job
@@ -124,6 +125,54 @@ Possible use cases:
    ```
    ncu-ci walk pr --json database.json
    ```
+
+### `ncu-ci run <prid>`
+
+`ncu-ci run <prid>` starts a `node-test-pull-request` Jenkins job for a pull request.
+
+`<prid>` can be one of the following:
+
+- a numeric pull request id, for example `34127`
+- a pull request URL, for example `https://github.com/nodejs/node/pull/34127`
+- a commit URL for the head commit of the pull request, for example `https://github.com/nodejs/node/pull/34127/commits/<sha>`
+
+If you pass a GitHub URL, `ncu-ci` will infer the repository owner, repository name,
+and pull request id from the URL. When you pass a commit URL, it also uses the commit
+SHA as the expected tip commit.
+
+By default, `ncu-ci run` only starts CI when it can verify that the tip of the PR head
+matches the latest approved commit. If that safety check cannot be satisfied, the
+command refuses to start CI.
+
+Options:
+
+- `--certify-safe <sha>`: explicitly set the commit SHA that must be at the tip of the PR head
+- `--check-for-duplicates`: check recent Jenkins runs and refuse to start a duplicate job for the same commit
+- `--owner <owner>`: GitHub repository owner, used when `<prid>` is not a GitHub URL
+- `--repo <repo>`: GitHub repository name, used when `<prid>` is not a GitHub URL
+
+Examples:
+
+Run CI for a PR number using repository information from config or flags:
+
+```sh
+ncu-ci run 34127 --owner nodejs --repo node
+```
+
+Run CI by passing the pull request URL:
+
+```sh
+ncu-ci run https://github.com/nodejs/node/pull/34127
+```
+
+Run CI for a specific approved head commit and avoid starting a duplicate Jenkins job:
+
+```sh
+ncu-ci run https://github.com/nodejs/node/pull/34127/commits/faa808326cb0 --check-for-duplicates
+```
+
+If the PR has the `v8 engine` label, `ncu-ci run` also triggers the `node-test-commit-v8-linux`
+job after the main PR CI job is started successfully.
 
 ### `ncu-ci pr <jobid>` 
 
