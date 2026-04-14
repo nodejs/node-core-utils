@@ -168,7 +168,7 @@ ncu-ci run https://github.com/nodejs/node/pull/34127
 Run CI for a specific approved head commit and avoid starting a duplicate Jenkins job:
 
 ```sh
-ncu-ci run https://github.com/nodejs/node/pull/34127/commits/faa808326cb0 --check-for-duplicates
+ncu-ci run https://github.com/nodejs/node/pull/34127/commits/35ea6ded7315cf9d0585a5d1cd7d09f358ca5993 --check-for-duplicates
 ```
 
 If the PR has the `v8 engine` label, `ncu-ci run` also triggers the `node-test-commit-v8-linux`
