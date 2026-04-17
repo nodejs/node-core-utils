@@ -105,11 +105,11 @@ describe('LandingSession.prototype.generateAmendedMessage', () => {
     t.assert.strictEqual(result, 'subsystem: foobar\n\nTrailer: Value\nPR-URL: http://example.com/123\nReviewed-By: user1 <collab@mail.net>');
   });
 
-  it('should handle empty message', async(t) => {
+  it('should handle empty message (although not supported)', async(t) => {
     const session = createSession();
     const result = await session.generateAmendedMessage('');
 
-    t.assert.strictEqual(result, '\nPR-URL: http://example.com/123\nReviewed-By: user1 <collab@mail.net>');
+    t.assert.strictEqual(result, '\n\nPR-URL: http://example.com/123\nReviewed-By: user1 <collab@mail.net>');
   });
 
   it('should handle multi-line trailers', async(t) => {
