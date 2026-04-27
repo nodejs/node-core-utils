@@ -105,11 +105,31 @@ describe('LandingSession.prototype.generateAmendedMessage', () => {
     t.assert.strictEqual(result, 'subsystem: foobar\n\nTrailer: Value\nPR-URL: http://example.com/123\nReviewed-By: user1 <collab@mail.net>');
   });
 
-  it('should handle empty message', async(t) => {
+  it('should handle empty message (although not supported)', async(t) => {
     const session = createSession();
     const result = await session.generateAmendedMessage('');
 
-    t.assert.strictEqual(result, '\nPR-URL: http://example.com/123\nReviewed-By: user1 <collab@mail.net>');
+    t.assert.strictEqual(result, '\n\nPR-URL: http://example.com/123\nReviewed-By: user1 <collab@mail.net>');
+  });
+
+  it('should handle multi-line trailers', async(t) => {
+    const session = createSession();
+    const result = await session.generateAmendedMessage(
+      'subsystem: foobar\n\nSigned-off-by: user1\n  <foobar@users.noreply.github.com>\n'
+    );
+
+    t.assert.strictEqual(result,
+      'subsystem: foobar\n\nSigned-off-by: user1 <foobar@users.noreply.github.com>\nPR-URL: http://example.com/123\nReviewed-By: user1 <collab@mail.net>');
+  });
+
+  it('should not remove lines that look like trailers in the commit body', async(t) => {
+    const session = createSession();
+    const result = await session.generateAmendedMessage(
+      'subsystem: foobar\n\nNot-A-Trailer: http://example.com/\n\nSigned-off-by: user1\n  <foobar@users.noreply.github.com>\n'
+    );
+
+    t.assert.strictEqual(result,
+      'subsystem: foobar\n\nNot-A-Trailer: http://example.com/\n\nSigned-off-by: user1 <foobar@users.noreply.github.com>\nPR-URL: http://example.com/123\nReviewed-By: user1 <collab@mail.net>');
   });
 
   it('should handle cherry-pick from upstream', async(t) => {
