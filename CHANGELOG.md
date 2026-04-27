@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.3.3](https://github.com/nodejs/node-core-utils/compare/v6.3.2...v6.3.3) (2026-04-27)
+
+
+### Bug Fixes
+
+* **git-node:** handle multi-line trailers ([#1062](https://github.com/nodejs/node-core-utils/issues/1062)) ([f131b09](https://github.com/nodejs/node-core-utils/commit/f131b097cf99c27af3c0d3de4a451879aa97a72a))
+
 ## [6.3.2](https://github.com/nodejs/node-core-utils/compare/v6.3.1...v6.3.2) (2026-04-14)
 
 
