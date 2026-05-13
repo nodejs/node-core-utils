@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.4.0](https://github.com/nodejs/node-core-utils/compare/v6.3.3...v6.4.0) (2026-05-13)
+
+
+### Features
+
+* check for reports without PR_URL on H1 ([#1074](https://github.com/nodejs/node-core-utils/issues/1074)) ([20f60af](https://github.com/nodejs/node-core-utils/commit/20f60af8d8bba56ebaf0bc173957e31633c55cc3))
+* **v8:** add llvm-libc to V8 deps ([#1073](https://github.com/nodejs/node-core-utils/issues/1073)) ([54be933](https://github.com/nodejs/node-core-utils/commit/54be933b1a86a123c62e19e907e157cb19c58d10))
+
 ## [6.3.3](https://github.com/nodejs/node-core-utils/compare/v6.3.2...v6.3.3) (2026-04-27)
 
 
