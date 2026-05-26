@@ -3,7 +3,6 @@ import assert from 'node:assert';
 
 import SecurityBlog from '../../lib/security_blog.js';
 import {
-  getHighestSeverity,
   getHighestSeverityAnnouncement
 } from '../../lib/security-release/security-release.js';
 
@@ -27,10 +26,46 @@ describe('security_release: severity announcement', () => {
       report(3, 'high')
     ];
 
-    assert.strictEqual(getHighestSeverity(reports), 'HIGH');
     assert.strictEqual(
       getHighestSeverityAnnouncement(reports),
       'The highest severity issue fixed in this release is HIGH.'
+    );
+  });
+
+  it('can be customized with second argument', () => {
+    const reports = [
+      report(1, 'low'),
+      report(2, 'medium'),
+      report(3, 'high')
+    ];
+
+    assert.strictEqual(
+      getHighestSeverityAnnouncement(reports, 'special release'),
+      'The highest severity issue fixed in special release is HIGH.'
+    );
+  });
+
+  it('invalid severity ratings are ignored', () => {
+    const reports = [
+      report(1, 'low'),
+      report(2, 'medium'),
+      report(3, 'hypercritical')
+    ];
+
+    assert.strictEqual(
+      getHighestSeverityAnnouncement(reports),
+      'The highest severity issue fixed in this release is MEDIUM.'
+    );
+  });
+
+  it('if no valid rating is passed, output NONE', () => {
+    const reports = [
+      report(3, 'hypercritical')
+    ];
+
+    assert.strictEqual(
+      getHighestSeverityAnnouncement(reports),
+      'The highest severity issue fixed in this release is NONE.'
     );
   });
 
@@ -40,7 +75,6 @@ describe('security_release: severity announcement', () => {
       report(2, 'medium')
     ];
 
-    assert.strictEqual(getHighestSeverity(reports), 'MEDIUM');
     assert.strictEqual(
       getHighestSeverityAnnouncement(reports),
       'The highest severity issue fixed in this release is MEDIUM.'
