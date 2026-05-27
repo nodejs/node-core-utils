@@ -527,6 +527,7 @@ only a local triage aid and still requires human review.
   git node security --validate-reports --llm=codex --llm-model=gpt-5.5
   git node security --validate-reports --llm=codex --no-validate-reports-confirm
   git node security --validate-reports --llm=codex --no-validate-reports-cache
+  git node security --validate-reports --llm=codex --llm-allow-paid-usage --no-validate-reports-confirm
   git node security --validate-reports --llm=claude --node-repo=/path/to/node
   git node security --validate-reports --llm=copilot --node-repo=/path/to/node
   git node security --validate-reports --llm=copilot --llm-command="copilot -p"
@@ -569,6 +570,11 @@ then asks whether to continue to the next report. Use
 `--no-validate-reports-confirm` for batch mode without the per-report prompts.
 Use `--validate-reports-limit=<n>` to test the flow against a smaller number of
 reports.
+
+Some LLM providers or custom commands may incur token-based charges beyond a
+regular subscription. The command asks for confirmation once before running those
+providers. Batch runs with `--no-validate-reports-confirm` must also pass
+`--llm-allow-paid-usage`.
 
 #### LLM prompt and reasoning
 
@@ -640,6 +646,7 @@ assessment.
 | `--llm=none\|codex\|claude\|copilot` | Print prompts for manual LLM use or ask an LLM CLI to assess each report. Defaults to `none`. |
 | `--llm-model=<model>` | Override the provider model and cache identity. |
 | `--llm-command=<command>` | Override the command used for LLM assessment. The prompt is sent on stdin. |
+| `--llm-allow-paid-usage` | Allow providers or custom commands that may incur token-based charges without prompting. Required for non-interactive paid-usage runs. |
 | `--node-repo=<path>` | Path to a Node.js checkout containing `SECURITY.md` and `doc/`. Defaults to the current directory. |
 
 ## `git node status`

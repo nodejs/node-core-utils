@@ -82,6 +82,10 @@ const securityOptions = {
     describe: 'Override the command used for --llm. The report prompt is sent on stdin.',
     type: 'string'
   },
+  'llm-allow-paid-usage': {
+    describe: 'Allow LLM providers that may incur token-based charges without prompting',
+    type: 'boolean'
+  },
   'node-repo': {
     default: process.cwd(),
     describe: 'Node.js checkout path the LLM should use to read SECURITY.md and doc/',
