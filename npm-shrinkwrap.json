@@ -913,19 +913,19 @@
       }
     },
     "node_modules/@node-core/caritat": {
-      "version": "1.6.0",
-      "resolved": "https://registry.npmjs.org/@node-core/caritat/-/caritat-1.6.0.tgz",
-      "integrity": "sha512-Hwxh0VALadfuvRFdgUS/cV/N8srhyHSsM9kwtqLG/QqegukZ+UtEAT8eIsDxYoR8xL7vKS9IyBTVws9kgT2TWw==",
+      "version": "1.7.0",
+      "resolved": "https://registry.npmjs.org/@node-core/caritat/-/caritat-1.7.0.tgz",
+      "integrity": "sha512-yvOQKx4cZZRsswYcqo7D97kLppgu28kUPy15l5wKLXC2BSDEZI3cMDQWA1/08Tovrk5wN73bmV46fic2Iz9X8w==",
       "license": "MIT",
       "dependencies": {
-        "@node-core/caritat-crypto": "1.6.0",
+        "@node-core/caritat-crypto": "1.7.0",
         "js-yaml": "^4.1.0"
       }
     },
     "node_modules/@node-core/caritat-crypto": {
-      "version": "1.6.0",
-      "resolved": "https://registry.npmjs.org/@node-core/caritat-crypto/-/caritat-crypto-1.6.0.tgz",
-      "integrity": "sha512-9XZkv/2AV0KVQHPnP2oRYv67PkYwo+VjA89vTGpj+lVNxOXPhu765olCeAgDN+rVZ/8tZQ9RbZ+q/lwADscOuA==",
+      "version": "1.7.0",
+      "resolved": "https://registry.npmjs.org/@node-core/caritat-crypto/-/caritat-crypto-1.7.0.tgz",
+      "integrity": "sha512-Dta8uA/9mELkho6w45IaMzryhJYcyaM373/B3VKTgMEiv2gFJgsQGEblOSaxh4r3yyW31B9xJUPBchcz3YkVYA==",
       "license": "MIT"
     },
     "node_modules/@nodelib/fs.scandir": {
