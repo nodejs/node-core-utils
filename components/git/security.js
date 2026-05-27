@@ -61,7 +61,7 @@ const securityOptions = {
   },
   'validate-reports-confirm': {
     default: true,
-    describe: 'Ask before continuing to the next report after each LLM assessment',
+    describe: 'Ask before each LLM prompt or assessment, and before continuing to the next report',
     type: 'boolean'
   },
   'validate-reports-cache': {
@@ -70,8 +70,8 @@ const securityOptions = {
     type: 'boolean'
   },
   llm: {
-    choices: ['codex', 'claude', 'copilot'],
-    describe: 'Ask an LLM CLI to assess each triaged report',
+    choices: ['none', 'codex', 'claude', 'copilot'],
+    describe: 'Print prompts for manual LLM use or ask an LLM CLI to assess each triaged report',
     type: 'string'
   },
   'llm-model': {

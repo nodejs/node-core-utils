@@ -522,6 +522,7 @@ only a local triage aid and still requires human review.
   git node security --validate-reports
   git node security --validate-reports --validate-reports-format=json
   git node security --validate-reports --validate-reports-output=reports.md
+  git node security --validate-reports --llm=none
   git node security --validate-reports --llm=codex --node-repo=/path/to/node
   git node security --validate-reports --llm=codex --llm-model=gpt-5.5
   git node security --validate-reports --llm=codex --no-validate-reports-confirm
@@ -531,9 +532,11 @@ only a local triage aid and still requires human review.
   git node security --validate-reports --llm=copilot --llm-command="copilot -p"
 ```
 
-By default, the command runs a heuristic pass only. The heuristic checks the
-report title, vulnerability information, impact, description, comments, current
-severity, CVSS vector, and weakness metadata for common Node.js security topics.
+By default, the command runs a heuristic pass and prints the generated LLM
+prompt for each report so it can be copied into any LLM tool. This is the same
+behavior as `--llm=none`. The heuristic checks the report title, vulnerability
+information, impact, description, comments, current severity, CVSS vector, and
+weakness metadata for common Node.js security topics.
 It can identify obvious mismatches, such as a CVSS vector whose calculated
 rating does not match the HackerOne rating. Keyword matches are treated only as
 topic hints, not as proof that a report is valid or invalid. This is deliberate:
@@ -543,11 +546,12 @@ heuristic output is deliberately conservative and always leaves threat-model
 validity as `needs-manual-review`.
 
 Use `--llm=<provider>` to ask an LLM CLI to produce a structured assessment for
-each report. Supported providers are `codex`, `claude`, and `copilot`.
+each report. Supported providers are `codex`, `claude`, and `copilot`. Use
+`--llm=none`, or omit `--llm`, to print the prompt without running an LLM CLI.
 
-When LLM mode is enabled, the command asks before assessing each report and shows
-the report title, current severity, CVSS vector, and weakness. After each LLM
-assessment, it prints a readable summary with:
+When an LLM CLI provider is enabled, the command asks before assessing each
+report and shows the report title, current severity, CVSS vector, and weakness.
+After each LLM assessment, it prints a readable summary with:
 
 - the report URL and title
 - the provider and model/cache identity
@@ -560,9 +564,11 @@ assessment, it prints a readable summary with:
 - threat model/documentation references used by the model
 - reasoning
 
-Use `--no-validate-reports-confirm` for batch mode without the per-report
-prompts. Use `--validate-reports-limit=<n>` to test the flow against a smaller
-number of reports.
+In manual prompt mode, the command asks before printing each report prompt and
+then asks whether to continue to the next report. Use
+`--no-validate-reports-confirm` for batch mode without the per-report prompts.
+Use `--validate-reports-limit=<n>` to test the flow against a smaller number of
+reports.
 
 #### LLM prompt and reasoning
 
@@ -627,11 +633,11 @@ assessment.
 | `--validate-reports-format=markdown\|json` | Select the final output format. Defaults to `markdown`. |
 | `--validate-reports-output=<file>` | Write the final output to a file instead of stdout. |
 | `--validate-reports-limit=<n>` | Validate at most `n` triaged reports. Useful for testing the flow. |
-| `--validate-reports-confirm` | Ask before each LLM assessment and before continuing to the next report. Enabled by default. |
+| `--validate-reports-confirm` | Ask before each LLM prompt or assessment, and before continuing to the next report. Enabled by default. |
 | `--no-validate-reports-confirm` | Disable interactive prompts for batch runs. |
 | `--validate-reports-cache` | Reuse cached successful LLM assessments. Enabled by default. |
 | `--no-validate-reports-cache` | Ignore existing LLM cache entries and do not reuse them. |
-| `--llm=codex\|claude\|copilot` | Ask an LLM CLI to assess each report. |
+| `--llm=none\|codex\|claude\|copilot` | Print prompts for manual LLM use or ask an LLM CLI to assess each report. Defaults to `none`. |
 | `--llm-model=<model>` | Override the provider model and cache identity. |
 | `--llm-command=<command>` | Override the command used for LLM assessment. The prompt is sent on stdin. |
 | `--node-repo=<path>` | Path to a Node.js checkout containing `SECURITY.md` and `doc/`. Defaults to the current directory. |
