@@ -3674,13 +3674,13 @@
       }
     },
     "node_modules/ghauth": {
-      "version": "7.0.1",
-      "resolved": "https://registry.npmjs.org/ghauth/-/ghauth-7.0.1.tgz",
-      "integrity": "sha512-yGqhD2tS6A78O3oVr7oA2SWe0zTqU9oCAzTVV3U2vx31OJ+KEiF5vgNPf4pI5437Lvr50maBjo6rM9GyTGpRzQ==",
+      "version": "7.0.4",
+      "resolved": "https://registry.npmjs.org/ghauth/-/ghauth-7.0.4.tgz",
+      "integrity": "sha512-cltwXBs9jGRSF57tiRMOOaSAvOsDdz6/bhxxxA0UuLalyIsuy8+CrqJdIXpe04oGMT4l88xGgJNPhGDFV1qaqg==",
       "license": "MIT",
       "dependencies": {
         "ora": "^9.1.0",
-        "read": "^5.0.1"
+        "read": "^6.0.0"
       },
       "engines": {
         "node": ">=20"
@@ -6826,24 +6826,24 @@
       "license": "MIT"
     },
     "node_modules/read": {
-      "version": "5.0.1",
-      "resolved": "https://registry.npmjs.org/read/-/read-5.0.1.tgz",
-      "integrity": "sha512-+nsqpqYkkpet2UVPG8ZiuE8d113DK4vHYEoEhcrXBAlPiq6di7QRTuNiKQAbaRYegobuX2BpZ6QjanKOXnJdTA==",
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/read/-/read-6.0.0.tgz",
+      "integrity": "sha512-Tg/LaEke7h9SDbp0xJJj53oa4s1VPPySVnxQF9nUS9DgA25M/ZCLk7RVF1kHjytC87XbkgQKmQ/79+DQgEIqLA==",
       "license": "ISC",
       "dependencies": {
-        "mute-stream": "^3.0.0"
+        "mute-stream": "^4.0.0"
       },
       "engines": {
-        "node": "^20.17.0 || >=22.9.0"
+        "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
       }
     },
     "node_modules/read/node_modules/mute-stream": {
-      "version": "3.0.0",
-      "resolved": "https://registry.npmjs.org/mute-stream/-/mute-stream-3.0.0.tgz",
-      "integrity": "sha512-dkEJPVvun4FryqBmZ5KhDo0K9iDXAwn08tMLDinNdRBNPcYEDiWYysLcc6k3mjTMlbP9KyylvRpd4wFtwrT9rw==",
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/mute-stream/-/mute-stream-4.0.0.tgz",
+      "integrity": "sha512-gSrprq0fJ3EiOErzjdIZrjysVVmJ4uu1QWfCDss5LypA5OXvrMje5Ym5z6V6RLyJ2eF87lasX7t6a0AnFvZblg==",
       "license": "ISC",
       "engines": {
-        "node": "^20.17.0 || >=22.9.0"
+        "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
       }
     },
     "node_modules/readable-stream": {
