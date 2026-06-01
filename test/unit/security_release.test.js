@@ -6,23 +6,6 @@ import {
   getHighestSeverityAnnouncement
 } from '../../lib/security-release/security-release.js';
 
-const cli = {
-  error() {}
-};
-
-function assertExits(fn) {
-  const originalExit = process.exit;
-  process.exit = () => {
-    throw new Error('process.exit');
-  };
-
-  try {
-    assert.throws(fn, /process\.exit/);
-  } finally {
-    process.exit = originalExit;
-  }
-}
-
 function report(id, rating, affectedVersions = ['24.x']) {
   return {
     id,
@@ -110,7 +93,7 @@ describe('security_release: severity announcement', () => {
 
 describe('security_blog: pre-release severity wording', () => {
   it('does not include severity counts in the summary', () => {
-    const blog = new SecurityBlog(cli);
+    const blog = new SecurityBlog();
     const content = {
       reports: [
         report(1, 'low'),
@@ -129,7 +112,7 @@ describe('security_blog: pre-release severity wording', () => {
   });
 
   it('uses the highest severity per release line in impact text', () => {
-    const blog = new SecurityBlog(cli);
+    const blog = new SecurityBlog();
     const content = {
       reports: [
         report(1, 'low', ['22.x', '20.x']),
@@ -146,7 +129,7 @@ describe('security_blog: pre-release severity wording', () => {
   });
 
   it('replaces the pre-release template placeholder with the highest severity sentence', () => {
-    const blog = new SecurityBlog(cli);
+    const blog = new SecurityBlog();
     const template = blog.getSecurityPreReleaseTemplate();
     const preRelease = blog.buildPreRelease(template, {
       annoucementDate: '2026-06-01T00:00:00.000Z',
@@ -170,12 +153,7 @@ describe('security_blog: pre-release severity wording', () => {
   });
 
   it('exits when a report is missing a severity rating', () => {
-    const errors = [];
-    const blog = new SecurityBlog({
-      error(message) {
-        errors.push(message);
-      }
-    });
+    const blog = new SecurityBlog();
     const content = {
       reports: [
         {
@@ -186,18 +164,14 @@ describe('security_blog: pre-release severity wording', () => {
       ]
     };
 
-    assertExits(() => blog.getPreReleaseVulnerabilities(content));
-    assertExits(() => blog.getImpact(content));
-    assert.deepStrictEqual(errors, [
-      'severity.rating not found for report 1.',
-      'severity.rating not found for report 1.'
-    ]);
+    assert.throws(() => blog.getPreReleaseVulnerabilities(content), /severity\.rating not found for report 1/);
+    assert.throws(() => blog.getImpact(content), /severity\.rating not found for report 1/);
   });
 });
 
 describe('security_blog: post-release severity wording', () => {
   it('keeps the vulnerability count list', () => {
-    const blog = new SecurityBlog(cli);
+    const blog = new SecurityBlog();
     const content = {
       reports: [
         report(1, 'low'),
@@ -213,12 +187,7 @@ describe('security_blog: post-release severity wording', () => {
   });
 
   it('exits when a report is missing a severity rating', () => {
-    const errors = [];
-    const blog = new SecurityBlog({
-      error(message) {
-        errors.push(message);
-      }
-    });
+    const blog = new SecurityBlog();
     const content = {
       reports: [
         {
@@ -229,9 +198,6 @@ describe('security_blog: post-release severity wording', () => {
       ]
     };
 
-    assertExits(() => blog.getVulnerabilities(content));
-    assert.deepStrictEqual(errors, [
-      'severity.rating not found for report 1.'
-    ]);
+    assert.throws(() => blog.getVulnerabilities(content), /severity\.rating not found for report 1/);
   });
 });
