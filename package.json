@@ -68,7 +68,7 @@
     "eslint-plugin-n": "^17.17.0",
     "eslint-plugin-promise": "^7.2.1",
     "globals": "^17.4.0",
-    "neostandard": "^0.12.1",
+    "neostandard": "^0.13.0",
     "sinon": "^21.0.0"
   },
   "overrides": {
