@@ -63,7 +63,7 @@
     "@eslint/js": "^10.0.1",
     "@reporters/github": "^1.7.2",
     "c8": "^11.0.0",
-    "eslint": "^9.24.0",
+    "eslint": "^9.39.4",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^17.17.0",
     "eslint-plugin-promise": "^7.2.1",
