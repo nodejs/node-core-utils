@@ -1725,9 +1725,9 @@
       }
     },
     "node_modules/branch-diff": {
-      "version": "3.1.1",
-      "resolved": "https://registry.npmjs.org/branch-diff/-/branch-diff-3.1.1.tgz",
-      "integrity": "sha512-axTmSVkBg8xR1AC8yuuV+p2qoY2aFjCFS44llGSgwagxEzNBPny4Gufw1LAbK/fjQsrUxRDWWC/EXfBg9xYeQw==",
+      "version": "3.1.4",
+      "resolved": "https://registry.npmjs.org/branch-diff/-/branch-diff-3.1.4.tgz",
+      "integrity": "sha512-RdS6Ko7IVxfXkXLOopF/9JqXVNFqNK22nC5VHKl0sXH/xiPQorjw4/xHiIsKA8XQ2V40imywDHYFK7LU7zfYyg==",
       "license": "MIT",
       "dependencies": {
         "changelog-maker": "^4.0.0",
