@@ -3,6 +3,7 @@ import PrepareSecurityRelease from '../../lib/prepare_security.js';
 import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import SecurityBlog from '../../lib/security_blog.js';
 import SecurityAnnouncement from '../../lib/security-announcement.js';
+import ValidateReports from '../../lib/validate_reports.js';
 
 export const command = 'security [options]';
 export const describe = 'Manage an in-progress security release or start a new one.';
@@ -39,6 +40,56 @@ const securityOptions = {
   'request-cve': {
     describe: 'Request CVEs for a security release',
     type: 'boolean'
+  },
+  'validate-reports': {
+    describe: 'Validate triaged HackerOne reports against the Node.js threat model',
+    type: 'boolean'
+  },
+  'validate-reports-format': {
+    choices: ['markdown', 'json'],
+    default: 'markdown',
+    describe: 'Output format for --validate-reports',
+    type: 'string'
+  },
+  'validate-reports-output': {
+    describe: 'Write --validate-reports output to a file instead of stdout',
+    type: 'string'
+  },
+  'validate-reports-limit': {
+    describe: 'Maximum number of triaged reports to validate',
+    type: 'number'
+  },
+  'validate-reports-confirm': {
+    default: true,
+    describe: 'Ask before each LLM prompt or assessment, and before continuing to the next report',
+    type: 'boolean'
+  },
+  'validate-reports-cache': {
+    default: true,
+    describe: 'Reuse cached LLM assessments for the same report, model, and prompt',
+    type: 'boolean'
+  },
+  llm: {
+    choices: ['none', 'codex', 'claude', 'copilot'],
+    describe: 'Print prompts for manual LLM use or ask an LLM CLI to assess each triaged report',
+    type: 'string'
+  },
+  'llm-model': {
+    describe: 'Override the LLM model used for command construction and cache identity',
+    type: 'string'
+  },
+  'llm-command': {
+    describe: 'Override the command used for --llm. The report prompt is sent on stdin.',
+    type: 'string'
+  },
+  'llm-allow-paid-usage': {
+    describe: 'Allow LLM providers that may incur token-based charges without prompting',
+    type: 'boolean'
+  },
+  'node-repo': {
+    default: process.cwd(),
+    describe: 'Node.js checkout path the LLM should use to read SECURITY.md and doc/',
+    type: 'string'
   },
   'post-release': {
     describe: 'Create the post-release announcement to the given nodejs.org folder',
@@ -83,6 +134,9 @@ export function builder(yargs) {
       'Request CVEs for a security release of Node.js based on' +
       ' the next-security-release/vulnerabilities.json'
     ).example(
+      'git node security --validate-reports',
+      'Validate triaged HackerOne reports against the Node.js threat model'
+    ).example(
       'git node security --post-release="../nodejs.org/"',
       'Create the post-release announcement on the Nodejs.org repo'
     ).example(
@@ -118,6 +172,9 @@ export function handler(argv) {
   }
   if (argv['request-cve']) {
     return requestCVEs(cli, argv);
+  }
+  if (argv['validate-reports']) {
+    return validateReports(cli, argv);
   }
   if (argv['post-release']) {
     return createPostRelease(cli, argv);
@@ -155,6 +212,11 @@ async function createPreRelease(cli, argv) {
 async function requestCVEs(cli) {
   const hackerOneCve = new UpdateSecurityRelease(cli);
   return hackerOneCve.requestCVEs();
+}
+
+async function validateReports(cli, argv) {
+  const validator = new ValidateReports(cli, argv);
+  return validator.validate();
 }
 
 async function createPostRelease(cli, argv) {

@@ -506,6 +506,149 @@ Example:
   git node security --remove-report=12345
 ```
 
+### `git node security --validate-reports`
+
+This command retrieves all triaged HackerOne reports for the Node.js program and
+produces a local validation report for each one. It is intended to help the
+security team review whether a report still looks valid under the Node.js threat
+model and whether the current HackerOne severity/CVSS is consistent with the
+available evidence.
+
+The command uses the existing HackerOne credentials configured in `.ncurc`. It
+does not modify HackerOne reports, labels, comments, or severity. The output is
+only a local triage aid and still requires human review.
+
+```sh
+  git node security --validate-reports
+  git node security --validate-reports --validate-reports-format=json
+  git node security --validate-reports --validate-reports-output=reports.md
+  git node security --validate-reports --llm=none
+  git node security --validate-reports --llm=codex --node-repo=/path/to/node
+  git node security --validate-reports --llm=codex --llm-model=gpt-5.5
+  git node security --validate-reports --llm=codex --no-validate-reports-confirm
+  git node security --validate-reports --llm=codex --no-validate-reports-cache
+  git node security --validate-reports --llm=codex --llm-allow-paid-usage --no-validate-reports-confirm
+  git node security --validate-reports --llm=claude --node-repo=/path/to/node
+  git node security --validate-reports --llm=copilot --node-repo=/path/to/node
+  git node security --validate-reports --llm=copilot --llm-command="copilot -p"
+```
+
+By default, the command runs a heuristic pass and prints the generated LLM
+prompt for each report so it can be copied into any LLM tool. This is the same
+behavior as `--llm=none`. The heuristic checks the report title, vulnerability
+information, impact, description, comments, current severity, CVSS vector, and
+weakness metadata for common Node.js security topics.
+It can identify obvious mismatches, such as a CVSS vector whose calculated
+rating does not match the HackerOne rating. Keyword matches are treated only as
+topic hints, not as proof that a report is valid or invalid. This is deliberate:
+HackerOne report text is reporter-controlled, so words like `request smuggling`
+or `permission model` are not enough to make a threat-model decision. The
+heuristic output is deliberately conservative and always leaves threat-model
+validity as `needs-manual-review`.
+
+Use `--llm=<provider>` to ask an LLM CLI to produce a structured assessment for
+each report. Supported providers are `codex`, `claude`, and `copilot`. Use
+`--llm=none`, or omit `--llm`, to print the prompt without running an LLM CLI.
+
+When an LLM CLI provider is enabled, the command asks before assessing each
+report and shows the report title, current severity, CVSS vector, and weakness.
+After each LLM assessment, it prints a readable summary with:
+
+- the report URL and title
+- the provider and model/cache identity
+- validity under the Node.js threat model
+- whether the current severity is correct
+- current severity/CVSS and suggested severity/CVSS
+- a colored CVSS metric diff when the suggested vector differs
+- CWE
+- confidence from 0 to 100
+- threat model/documentation references used by the model
+- reasoning
+
+In manual prompt mode, the command asks before printing each report prompt and
+then asks whether to continue to the next report. Use
+`--no-validate-reports-confirm` for batch mode without the per-report prompts.
+Use `--validate-reports-limit=<n>` to test the flow against a smaller number of
+reports.
+
+Some LLM providers or custom commands may incur token-based charges beyond a
+regular subscription. The command asks for confirmation once before running those
+providers. Batch runs with `--no-validate-reports-confirm` must also pass
+`--llm-allow-paid-usage`.
+
+#### LLM prompt and reasoning
+
+The LLM prompt is designed to keep the model anchored to the Node.js threat
+model and local documentation instead of only reasoning from the report text.
+For each report, the prompt instructs the model to:
+
+- read `SECURITY.md` from the Node.js checkout supplied through `--node-repo`
+- inspect relevant files under `doc/` for the affected API or subsystem
+- apply the documented Node.js threat model, including treatment of application
+  code, caller-supplied API inputs, third-party modules, unsupported platforms,
+  and inspector/debugger access
+- decide whether the report is valid under that threat model
+- decide whether the current HackerOne severity/CVSS is correct
+- use reports with the same CWE/weakness as precedent context when available
+- avoid copying precedent blindly when `SECURITY.md` or `doc/` point to a
+  different result
+- return only JSON matching the schema expected by the command
+
+The report payload sent to the model contains the HackerOne report id, title,
+URL, state, current severity, current CVSS vector, weakness metadata, reporter,
+report body fields, comments, heuristic findings, and comparable reports with
+the same weakness. Comparable reports include their title, URL, current
+severity/CVSS, state, and any team summary available through HackerOne. This
+helps the model account for previous team decisions while still checking the
+current report against the threat model.
+
+The model must return these fields:
+
+- `validity`: `valid`, `invalid`, or `needs-more-info`
+- `severity_correct`: boolean
+- `suggested_severity`: `none`, `low`, `medium`, `high`, `critical`, or
+  `informational`
+- `suggested_cvss`: a CVSS vector or `N/A`
+- `cwe`: the best matching CWE
+- `confidence`: a number from 0 to 100
+- `reasoning`: a concise explanation
+- `threat_model_references`: references to `SECURITY.md` and relevant `doc/`
+  material used for the decision
+
+#### LLM commands and cache
+
+The `--llm-command` option can override the default provider command. The prompt
+is sent on stdin and the command must print a JSON object matching the expected
+schema.
+
+The model label is inferred from the local LLM CLI configuration when possible.
+For example, Codex reads `~/.codex/config.toml` and includes
+`model_reasoning_effort` in the cache label. Use `--llm-model` to override the
+provider command model and the cache identity. If the model cannot be inferred,
+the cache entry includes a comment explaining that `default` was used.
+
+Successful LLM assessments are cached locally in
+`.ncu-cache/security-report-validation` using the report, provider, model, and
+prompt as the cache key. Use `--no-validate-reports-cache` to force a fresh LLM
+assessment.
+
+#### Options
+
+| Option | Description |
+| --- | --- |
+| `--validate-reports-format=markdown\|json` | Select the final output format. Defaults to `markdown`. |
+| `--validate-reports-output=<file>` | Write the final output to a file instead of stdout. |
+| `--validate-reports-limit=<n>` | Validate at most `n` triaged reports. Useful for testing the flow. |
+| `--validate-reports-confirm` | Ask before each LLM prompt or assessment, and before continuing to the next report. Enabled by default. |
+| `--no-validate-reports-confirm` | Disable interactive prompts for batch runs. |
+| `--validate-reports-cache` | Reuse cached successful LLM assessments. Enabled by default. |
+| `--no-validate-reports-cache` | Ignore existing LLM cache entries and do not reuse them. |
+| `--llm=none\|codex\|claude\|copilot` | Print prompts for manual LLM use or ask an LLM CLI to assess each report. Defaults to `none`. |
+| `--llm-model=<model>` | Override the provider model and cache identity. |
+| `--llm-command=<command>` | Override the command used for LLM assessment. The prompt is sent on stdin. |
+| `--llm-allow-paid-usage` | Allow providers or custom commands that may incur token-based charges without prompting. Required for non-interactive paid-usage runs. |
+| `--node-repo=<path>` | Path to a Node.js checkout containing `SECURITY.md` and `doc/`. Defaults to the current directory. |
+
 ## `git node status`
 
 Return status and information about the current git-node land session. Shows the following information:
