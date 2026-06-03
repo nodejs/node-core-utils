@@ -1,5 +1,16 @@
 # Changelog
 
+## [7.0.0](https://github.com/nodejs/node-core-utils/compare/v6.4.0...v7.0.0) (2026-06-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Node.js 20 and 25 ([#1072](https://github.com/nodejs/node-core-utils/issues/1072))
+
+### Miscellaneous Chores
+
+* drop support for Node.js 20 and 25 ([#1072](https://github.com/nodejs/node-core-utils/issues/1072)) ([c564d81](https://github.com/nodejs/node-core-utils/commit/c564d818fb55f7cdd3159708a65584db64fd43b6))
+
 ## [6.4.0](https://github.com/nodejs/node-core-utils/compare/v6.3.3...v6.4.0) (2026-05-13)
 
 
