@@ -46,6 +46,32 @@ describe('LinkParser', () => {
     }
   });
 
+  it('should parse alt PR URL from single PR-URL entry', () => {
+    const html = '<p>PR-URL: <a href="https://github.com/nodejs/node/pull/1234">https://github.com/nodejs/node/pull/1234</a></p>';
+    const parser = new LinkParser('nodejs', 'node', html);
+    assert.deepStrictEqual(parser.getAltPrUrl(), [
+      'https://github.com/nodejs/node/pull/1234'
+    ]);
+  });
+
+  it('should parse alt PR URLs from multiple PR-URL entries', () => {
+    const html = '<p>' +
+      'PR-URL: <a href="https://github.com/nodejs/node/pull/1234">https://github.com/nodejs/node/pull/1234</a>\n' +
+      'PR-URL: <a href="https://github.com/nodejs/node/pull/5678">https://github.com/nodejs/node/pull/5678</a>' +
+      '</p>';
+    const parser = new LinkParser('nodejs', 'node', html);
+    assert.deepStrictEqual(parser.getAltPrUrl(), [
+      'https://github.com/nodejs/node/pull/1234',
+      'https://github.com/nodejs/node/pull/5678'
+    ]);
+  });
+
+  it('should return empty array when no PR-URL entry exists', () => {
+    const html = '<p>No PR URL here</p>';
+    const parser = new LinkParser('nodejs', 'node', html);
+    assert.deepStrictEqual(parser.getAltPrUrl(), []);
+  });
+
   it('should parse PR URL', () => {
     const tests = [{
       input: 'https://github.com/nodejs/node/pull/15148',
