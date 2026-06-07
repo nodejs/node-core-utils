@@ -33,6 +33,7 @@ CLI tools for Node.js Core collaborators.
   **DEPRECATED**: use [`git node metadata`](./docs/git-node.md#git-node-metadata)
   instead.
 - [`ncu-ci`](./docs/ncu-ci.md): Parse the results of a Jenkins CI run and display a summary for all the failures.
+- [`ncu-mcp`](./docs/ncu-mcp.md): MCP server for using node-core-utils tools in AI agents.
 
 ## Usage
 
