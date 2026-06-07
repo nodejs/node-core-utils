@@ -42,6 +42,9 @@ export default [
       'promise/always-return': ['error', { ignoreLastCallback: true }],
       'n/no-process-exit': 'off',
       'n/no-unsupported-features/node-builtins': 'off',
+      // eslint-import-resolver-node doesn't support wildcard package.json exports (./*),
+      // so sub-path imports from this package appear unresolved despite being valid.
+      'import/no-unresolved': ['error', { ignore: ['^@modelcontextprotocol/'] }],
     },
     settings: {
       'import/resolver': {
