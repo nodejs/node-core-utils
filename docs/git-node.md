@@ -440,6 +440,12 @@ $ git node vote \
 
 Manage or starts a security release process.
 
+Every `git node security` action asks for permission before each mutating step.
+Read-only operations, such as reading files or fetching report data, run without
+confirmation. Each confirmation names the command or service action that will
+write state and explains the side effect, such as writing files, committing and
+pushing changes, creating issues, or updating HackerOne reports.
+
 <a id="git-node-security-prerequisites"></a>
 
 ### Prerequisites
