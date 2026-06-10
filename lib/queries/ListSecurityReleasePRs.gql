@@ -1,6 +1,6 @@
 query PR($owner: String!, $repo: String!) {
   repository(owner: $owner, name: $repo) {
-    pullRequests(states: OPEN, first: 2, orderBy: {field: CREATED_AT, direction: DESC}) {
+    pullRequests(states: OPEN, first: 2, headRefName: "next-security-release", orderBy: {field: CREATED_AT, direction: DESC}) {
       nodes {
         number
         headRefOid
