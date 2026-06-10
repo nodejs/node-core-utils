@@ -79,7 +79,7 @@ export function builder(yargs) {
       'Prepare a security release of Node.js'
     )
     .example(
-      'git node security --prepare-local-branch',
+      'git node security --apply-patches',
       'Fetch all the patches for an upcoming security release'
     )
     .example(
