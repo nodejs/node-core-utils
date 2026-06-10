@@ -298,7 +298,7 @@ async function applySecurityPatches(cli) {
     const backport = prURL !== pr.url;
 
     if (!hasDetachedHEAD) {
-      // Moving to a detached HEAD, we don't want the security patches to be pushed to the public repo
+      // Moving to a detached HEAD, we don't want security patches to be pushed to the public repo.
       await forceRunAsync('git', ['checkout', '--detach'], { ignoreFailure: false });
       hasDetachedHEAD = true;
     }
