@@ -455,6 +455,29 @@ $ ncu-config --global set h1_username $H1_TOKEN
   access.
 - `h1_username`: HackerOne API Token username.
 
+#### Optional: source CVEs from the OpenJS Foundation CNA
+
+By default, `--request-cve` reserves CVE identifiers through HackerOne (which
+acts as Node.js' CNA). You can switch to the **OpenJS Foundation CNA** as the
+issuer by setting `cve_source: 'openjs-cna'` in `.ncurc`. HackerOne is still
+used for the bug-bounty workflow (triage, sync, disclosure) and is updated with
+the resulting CVE id at the end of the request flow, so reports stay in sync.
+
+```console
+$ ncu-config --global set cve_source openjs-cna
+$ ncu-config --global set -x openjs_cna_token "<bucket>:<hex-secret>"
+$ ncu-config --global set -x openjs_cna_worker_url "https://<your-deployment>.workers.dev"
+```
+
+- `cve_source`: `hackerone` (default) or `openjs-cna`.
+- `openjs_cna_token`: **secret**. Bearer in `bucket:secret` form (e.g.
+  `prod_nodejs:<256 hex chars>`).
+- `openjs_cna_worker_url`: The Cloudflare Worker URL for your
+  deployment.
+
+To revert to HackerOne, either delete `cve_source` or set it back to
+`hackerone`.
+
 ### `git node security --start`
 
 This command creates the Next Security Issue in Node.js private repository
