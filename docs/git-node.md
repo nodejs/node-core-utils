@@ -539,7 +539,6 @@ The updated files are placed under `./test/fixtures/wpt` by default. In addition
 to the assets, this also updates:
 
 - `./test/fixtures/wpt/versions.json`
-- `./test/fixtures/wpt/README.md`
 - `./test/fixtures/wpt/LICENSE.md`
 
 ```
