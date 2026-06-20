@@ -3,8 +3,8 @@
 <!-- ncu-team-sync.team(nodejs/automation-collaborators) -->
 
 * [@Bar](https://github.com/Bar) - Bar Bar
-* [@foo](https://github.com/foo) - Mr. foo
-* [@quo](https://github.com/quo) - Ms. Quo
+* [@foo](https://github.com/foo) - Mr. foo <foo@example.com>
+* [@quo](https://github.com/quo) - Ms. Quo <quo@me.com>
 
 <!-- ncu-team-sync end -->
 
