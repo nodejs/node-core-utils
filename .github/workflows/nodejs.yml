@@ -10,6 +10,8 @@ jobs:
   lint:
     name: Lint using ESLint
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
       - name: Use latest Node.js LTS
