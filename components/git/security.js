@@ -11,7 +11,6 @@ import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import SecurityBlog from '../../lib/security_blog.js';
 import SecurityAnnouncement from '../../lib/security-announcement.js';
 import { forceRunAsync } from '../../lib/run.js';
-import PRData from '../../lib/pr_data.js';
 
 export const command = 'security [options]';
 export const describe = 'Manage an in-progress security release or start a new one.';
@@ -249,7 +248,9 @@ async function landingSession(cli, req, prURL, argv, cveIds = undefined) {
     // Moving to a detached HEAD, we don't want security patches to be pushed to the public repo.
     await forceRunAsync('git', ['checkout', '--detach'], { ignoreFailure: false });
   }
-  cli.hasDetachedHEAD = (await forceRunAsync('git', ['rev-parse', 'HEAD'], { ignoreFailure: false, captureStdout: true })).trim();
+  cli.hasDetachedHEAD = (await forceRunAsync(
+    'git', ['rev-parse', 'HEAD'],
+    { ignoreFailure: false, captureStdout: true })).trim();
 
   const session = new LandingSession(cli, req, process.cwd(), {
     autorebase: true, oneCommitMax: false, ...argv
@@ -280,7 +281,7 @@ async function applySecurityPatches(cli) {
   cli.info('N.B.: if there are commits on the staging branch that need to be included in the ' +
     'security release, please rebase them manually and answer no to the following question');
   // Try reset to the public upstream
-  const session = new Session(cli, process.cwd(), undefined, { branch })
+  const session = new Session(cli, process.cwd(), undefined, { branch });
   await session.tryResetBranch();
 
   const { owner, repo } = SECURITY_REPO;
@@ -291,7 +292,7 @@ async function applySecurityPatches(cli) {
     if (!affectedVersions.includes(`${nodeMajorVersion}.x`)) continue;
     cli.separator(`Taking care of ${title}...`);
     if (await skipIfExisting(cli, prURL)) continue;
-    
+
     const argv = parsePRFromURL(prURL);
     if (argv.owner === SECURITY_REPO.owner && argv.repo === SECURITY_REPO.repo) {
       await landingSession(cli, req, prURL, argv);
@@ -299,16 +300,19 @@ async function applySecurityPatches(cli) {
     }
 
     const existingCommits = (await forceRunAsync('git',
-      ['--no-pager', 'log', `${session.upstream}/v${nodeMajorVersion}.x-staging`, '--grep', `^PR-URL: ${prURL}$`, '--format=%H %h %s'],
+      ['--no-pager', 'log', `${session.upstream}/v${nodeMajorVersion}.x-staging`,
+        '--grep', `^PR-URL: ${prURL}$`,
+        '--format=%H %h %s'],
       { ignoreFailure: false, captureStdout: true })).trim().split('\n');
     if (existingCommits[0] === '') {
       cli.error(`${prURL} was not found on ${session.upstream}/v${nodeMajorVersion}.x-staging.`);
-      cli.info('Please cherry-pick the adequate commits to the public staging branch.')
+      cli.info('Please cherry-pick the adequate commits to the public staging branch.');
       cli.info('Skipping');
       cli.warn('The resulting HEAD will not be ready for a release proposal');
       continue;
     }
-    cli.info(`The following commit(s) have been found on ${session.upstream}/v${nodeMajorVersion}.x-staging:\n${existingCommits.map(c => ` - ${c.slice(41)}`).join('\n')}`)
+    cli.info(`The following commit(s) have been found on ${session.upstream}/v${nodeMajorVersion
+      }.x-staging:\n${existingCommits.map(c => ` - ${c.slice(41)}`).join('\n')}`);
     if (!await cli.prompt('Cherry-pick those for the current proposal?')) {
       cli.info('Skipping');
       cli.warn('The resulting HEAD will not be ready for a release proposal');
