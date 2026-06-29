@@ -453,7 +453,7 @@ pushing changes, creating issues, or updating HackerOne reports.
 It's necessary to set up `.ncurc` with HackerOne keys:
 
 ```console
-$ ncu-config --global set h1_token $H1_TOKEN
+$ ncu-config --global set -x h1_token
 $ ncu-config --global set h1_username $H1_TOKEN
 ```
 
@@ -466,6 +466,12 @@ $ ncu-config --global set h1_username $H1_TOKEN
 This command creates the Next Security Issue in Node.js private repository
 following the [Security Release Process][] document.
 It will retrieve all the triaged HackerOne reports and add creates the `vulnerabilities.json`.
+
+### `git node security --apply-patches`
+
+This command fetches the list of reports and the list of PRs labelled for the
+release corresponding to the CWD, and match them in pair, and run a
+`git node land` session for each.
 
 ### `git node security --update-date=YYYY/MM/DD`
 
