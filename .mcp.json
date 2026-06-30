@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ncu-mcp": {
+      "command": "node",
+      "args": ["bin/ncu-mcp.js"]
+    }
+  }
+}
