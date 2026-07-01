@@ -48,8 +48,8 @@ const landActions = {
     type: 'boolean'
   },
   fixupAll: {
-    describe: 'Automatically fixup all commits to the first one dismissing ' +
-      'other commit messages',
+    describe: 'Automatically fixup ("squash") all commits to the first one ' +
+      'dismissing other commit messages',
     default: false,
     type: 'boolean'
   },
