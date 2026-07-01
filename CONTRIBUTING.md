@@ -75,8 +75,6 @@ in `test/integration`. Test fixtures should be placed in `test/fixtures`.
 $ npm install
 # To run the unit tests
 $ npm test
-# To run all the tests
-$ npm run test-all
 ```
 
 Make sure the linter is happy and that all tests pass before submitting a
