@@ -45,6 +45,25 @@ yargs(hideBin(process.argv))
     },
     handler
   })
+  .command({
+    command: 'check-gpg',
+    desc: 'Check that all the team members have a valid GPG key',
+    builder: (yargs) => {
+      yargs
+        .option('org', {
+          describe: 'Name of the organization',
+          type: 'string',
+          default: 'nodejs'
+        });
+      yargs
+        .option('team', {
+          describe: 'Name of the team',
+          type: 'string',
+          default: 'releasers'
+        });
+    },
+    handler
+  })
   .demandCommand(1, 'must provide a valid command')
   .help()
   .parse();
@@ -69,6 +88,10 @@ async function main(argv) {
     }
     case 'sync':
       await TeamInfo.syncFile(cli, request, argv.file);
+      break;
+    case 'check-gpg':
+      const info = new TeamInfo(cli, request, argv.org, argv.team);
+      await info.checkTeamPGPKeys();
       break;
     default:
       throw new Error(`Unknown command ${command}`);
