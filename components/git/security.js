@@ -58,6 +58,11 @@ const securityOptions = {
     describe: 'Request CVEs for a security release',
     type: 'boolean'
   },
+  'publish-cve': {
+    describe:
+      'Publish reserved CVEs to MITRE via the OpenJS Foundation CNA',
+    type: 'boolean'
+  },
   'post-release': {
     describe: 'Create the post-release announcement to the given nodejs.org folder',
     type: 'string'
@@ -110,6 +115,9 @@ export function builder(yargs) {
     ).example(
       'git node security --cleanup',
       'Cleanup the security release. Merge the PR and close H1 reports'
+    ).example(
+      'git node security --publish-cve',
+      'Publish reserved CVEs to MITRE via the OpenJS Foundation CNA'
     );
 }
 
@@ -143,6 +151,9 @@ export function handler(argv) {
   }
   if (argv['request-cve']) {
     return requestCVEs(cli, argv);
+  }
+  if (argv['publish-cve']) {
+    return publishCVEs(cli, argv);
   }
   if (argv['post-release']) {
     return createPostRelease(cli, argv);
@@ -180,6 +191,11 @@ async function createPreRelease(cli, argv) {
 async function requestCVEs(cli) {
   const hackerOneCve = new UpdateSecurityRelease(cli);
   return hackerOneCve.requestCVEs();
+}
+
+async function publishCVEs(cli) {
+  const release = new UpdateSecurityRelease(cli);
+  return release.publishCVEs();
 }
 
 async function createPostRelease(cli, argv) {
