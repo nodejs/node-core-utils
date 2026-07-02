@@ -1,5 +1,28 @@
 # Changelog
 
+## [7.0.0](https://github.com/nodejs/node-core-utils/compare/v6.4.0...v7.0.0) (2026-07-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Node.js 20 and 25 ([#1072](https://github.com/nodejs/node-core-utils/issues/1072))
+
+### Features
+
+* add confirmation steps to any write operation ([#1092](https://github.com/nodejs/node-core-utils/issues/1092)) ([07d5ba0](https://github.com/nodejs/node-core-utils/commit/07d5ba0c2c2800ebf7cd7f14c826c0a43ca65894))
+* **git-node:** add `git node security --apply-patches` ([#1050](https://github.com/nodejs/node-core-utils/issues/1050)) ([bf990ac](https://github.com/nodejs/node-core-utils/commit/bf990ac8fdc9d92567a3b2e084c37051bfcff904))
+
+
+### Bug Fixes
+
+* **git-node:** add missing exit loop condition ([#1101](https://github.com/nodejs/node-core-utils/issues/1101)) ([2d1085f](https://github.com/nodejs/node-core-utils/commit/2d1085f5824c76f9fe7261cefc6ccd74c9ce4035))
+* **wpt:** avoid test/fixtures/wpt/README.md conflicts ([d9fff73](https://github.com/nodejs/node-core-utils/commit/d9fff73877c8cffdfb03b1cd8132bd6c640fc137))
+
+
+### Miscellaneous Chores
+
+* drop support for Node.js 20 and 25 ([#1072](https://github.com/nodejs/node-core-utils/issues/1072)) ([c564d81](https://github.com/nodejs/node-core-utils/commit/c564d818fb55f7cdd3159708a65584db64fd43b6))
+
 ## [6.4.0](https://github.com/nodejs/node-core-utils/compare/v6.3.3...v6.4.0) (2026-05-13)
 
 
