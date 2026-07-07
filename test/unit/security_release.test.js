@@ -2,6 +2,10 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
 import SecurityBlog from '../../lib/security_blog.js';
+import PrepareSecurityRelease, {
+  getNextTuesdayReleaseDateChoices,
+  getNextTuesdayReleaseDates
+} from '../../lib/prepare_security.js';
 import {
   getHighestSeverityAnnouncement
 } from '../../lib/security-release/security-release.js';
@@ -88,6 +92,61 @@ describe('security_release: severity announcement', () => {
       getHighestSeverityAnnouncement(reports),
       'The highest severity issue fixed in this release is MEDIUM.'
     );
+  });
+});
+
+describe('security_release: release date choices', () => {
+  it('starts with the next Tuesday when today is Tuesday', () => {
+    assert.deepStrictEqual(
+      getNextTuesdayReleaseDates(new Date(2026, 6, 7), 4),
+      ['2026/07/14', '2026/07/21', '2026/07/28', '2026/08/04']
+    );
+  });
+
+  it('uses the upcoming Tuesday when today is before Tuesday', () => {
+    assert.deepStrictEqual(
+      getNextTuesdayReleaseDates(new Date(2026, 6, 8), 3),
+      ['2026/07/14', '2026/07/21', '2026/07/28']
+    );
+  });
+
+  it('describes upcoming Tuesdays with relative timing', () => {
+    assert.deepStrictEqual(
+      getNextTuesdayReleaseDateChoices(new Date(2026, 6, 7), 2),
+      [
+        {
+          name: '2026/07/14',
+          value: '2026/07/14',
+          description: 'Tuesday, in 7 days'
+        },
+        {
+          name: '2026/07/21',
+          value: '2026/07/21',
+          description: 'Tuesday, in 14 days'
+        },
+        {
+          name: 'TBD',
+          value: 'TBD',
+          description: 'Release date not defined yet'
+        }
+      ]
+    );
+  });
+
+  it('prompts with upcoming Tuesdays and TBD', async() => {
+    const release = new PrepareSecurityRelease({
+      promptSelect(message, choices, options) {
+        assert.strictEqual(message, 'Select target release date:');
+        assert.deepStrictEqual(
+          choices.map(({ value }) => value),
+          [...getNextTuesdayReleaseDates(), 'TBD']
+        );
+        assert.strictEqual(options.defaultAnswer, choices[0].value);
+        return choices[0].value;
+      }
+    });
+
+    assert.strictEqual(await release.promptReleaseDate(), getNextTuesdayReleaseDates()[0]);
   });
 });
 
