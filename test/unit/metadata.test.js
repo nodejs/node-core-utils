@@ -66,10 +66,6 @@ describe('metadata command helpers', () => {
       checker: {
         reasons: [
           {
-            code: PR_CHECK_REASON_CODES.MISSING_APPROVAL,
-            message: 'Approvals: 0'
-          },
-          {
             code: PR_CHECK_REASON_CODES.WAIT_TIME,
             message: 'This PR needs to wait 24 more hours to land'
           }
@@ -79,6 +75,32 @@ describe('metadata command helpers', () => {
 
     assert.strictEqual(result.readiness, METADATA_READINESS.DEFERRABLE);
     assert.strictEqual(result.exitCode, METADATA_EXIT_CODES.DEFERRABLE);
+  });
+
+  it('classifies missing approvals as failed', () => {
+    const result = formatMetadataResult({
+      status: false,
+      data: {
+        owner: 'nodejs',
+        repo: 'node',
+        prid: 12345,
+        pr: {
+          url: 'https://github.com/nodejs/node/pull/12345'
+        }
+      },
+      metadata: 'PR-URL: https://github.com/nodejs/node/pull/12345\n',
+      checker: {
+        reasons: [
+          {
+            code: PR_CHECK_REASON_CODES.MISSING_APPROVAL,
+            message: 'Approvals: 0'
+          }
+        ]
+      }
+    });
+
+    assert.strictEqual(result.readiness, METADATA_READINESS.FAILED);
+    assert.strictEqual(result.exitCode, METADATA_EXIT_CODES.FAILED);
   });
 
   it('classifies mixed metadata JSON output as failed', () => {

@@ -334,9 +334,8 @@ of stable machine-readable codes such as `missing-approval`,
 The metadata JSON exit-code contract is:
 
 - `0`: the pull request is ready
-- `20`: the pull request is not ready, but only for deferrable metadata reasons
-  currently owned by the lightweight queue selector: `missing-approval`,
-  `missing-tsc-approval`, and `wait-time`
+- `20`: the pull request is not ready, but only for the deferrable metadata
+  reason currently owned by the lightweight queue selector: `wait-time`
 - `40`: the pull request is not ready for a hard or mixed reason and should be
   handled by the existing landing/failure path
 
