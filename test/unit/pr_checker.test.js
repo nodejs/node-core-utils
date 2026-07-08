@@ -4,7 +4,9 @@ import assert from 'node:assert';
 import * as sinon from 'sinon';
 
 import PRData from '../../lib/pr_data.js';
-import PRChecker from '../../lib/pr_checker.js';
+import PRChecker, {
+  PR_CHECK_REASON_CODES
+} from '../../lib/pr_checker.js';
 import { jobCache } from '../../lib/ci/build-types/job.js';
 
 import TestCLI from '../fixtures/test_cli.js';
@@ -54,6 +56,16 @@ const LT_48H_GT_47_59 = '2018-11-29T17:51:43.477Z';
 const NOW = '2018-11-31T17:50:44.477Z';
 
 const argv = { maxCommits: 3 };
+const {
+  CONFLICT,
+  MISSING_APPROVAL,
+  MISSING_GITHUB_CI,
+  MISSING_JENKINS_CI,
+  MISSING_TSC_APPROVAL,
+  REQUESTED_CHANGES,
+  STALE_REVIEW,
+  WAIT_TIME
+} = PR_CHECK_REASON_CODES;
 
 describe('PRChecker', () => {
   describe('checkAll', () => {
@@ -155,6 +167,12 @@ describe('PRChecker', () => {
 
       const status = checker.checkReviewsAndWait(new Date(NOW), true);
       assert(!status);
+      assert.deepStrictEqual(checker.reasons, [{
+        code: MISSING_TSC_APPROVAL,
+        message: 'semver-major requires at least 2 TSC approvals',
+        approvals: 1,
+        required: 2
+      }]);
       cli.assertCalledWith(expectedLogs);
     });
 
@@ -190,6 +208,17 @@ describe('PRChecker', () => {
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
+      assert.deepStrictEqual(checker.reasons, [
+        {
+          code: REQUESTED_CHANGES,
+          message: 'Requested Changes: 2',
+          count: 2
+        },
+        {
+          code: MISSING_APPROVAL,
+          message: 'Approvals: 0'
+        }
+      ]);
       cli.assertCalledWith(expectedLogs);
     });
 
@@ -227,6 +256,10 @@ describe('PRChecker', () => {
 
       const status = checker.checkReviewsAndWait(new Date(NOW));
       assert(!status);
+      assert.deepStrictEqual(checker.reasons, [{
+        code: WAIT_TIME,
+        message: 'This PR needs to wait 24 more hours to land'
+      }]);
       cli.assertCalledWith(expectedLogs);
     });
 
@@ -1475,6 +1508,18 @@ describe('PRChecker', () => {
 
       const status = await checker.checkCI();
       assert(!status);
+      assert.deepStrictEqual(checker.reasons, [
+        {
+          code: MISSING_GITHUB_CI,
+          message: 'No GitHub CI runs detected',
+          provider: 'github'
+        },
+        {
+          code: MISSING_JENKINS_CI,
+          message: 'No Jenkins CI runs detected',
+          provider: 'jenkins'
+        }
+      ]);
       cli.assertCalledWith(expectedLogs);
     });
 
@@ -2417,6 +2462,11 @@ describe('PRChecker', () => {
 
       const status = checker.checkCommitsAfterReview();
       assert.deepStrictEqual(status, false);
+      assert.deepStrictEqual(checker.reasons, [{
+        code: STALE_REVIEW,
+        message: 'Commits were pushed since the last approving review:',
+        commits: 1
+      }]);
       cli.assertCalledWith(expectedLogs);
     });
 
@@ -2610,6 +2660,10 @@ describe('PRChecker', () => {
 
       const status = checker.checkMergeableState();
       assert.deepStrictEqual(status, false);
+      assert.deepStrictEqual(checker.reasons, [{
+        code: CONFLICT,
+        message: 'This PR has conflicts that must be resolved'
+      }]);
       cli.assertCalledWith(expectedLogs);
     });
 

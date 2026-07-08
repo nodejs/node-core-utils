@@ -36,6 +36,10 @@ const options = {
     describe: 'Check for \'LGTM\' in comments',
     type: 'boolean'
   },
+  json: {
+    describe: 'Print metadata and PR readiness result as JSON',
+    type: 'boolean'
+  },
   'max-commits': {
     describe: 'Number of commits to warn',
     type: 'number',
@@ -44,6 +48,29 @@ const options = {
 };
 
 let yargsInstance;
+
+function writeStdout(text) {
+  return new Promise((resolve, reject) => {
+    process.stdout.write(text, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+export async function writeMetadataJsonResult(metadataPromise) {
+  try {
+    const { json } = await metadataPromise;
+    await writeStdout(`${JSON.stringify(json, null, 2)}\n`);
+    process.exitCode = json.exitCode;
+  } catch (error) {
+    console.error(error);
+    process.exitCode = 1;
+  }
+}
 
 export function builder(yargs) {
   yargsInstance = yargs;
@@ -81,10 +108,16 @@ export function handler(argv) {
     return yargsInstance.showHelp();
   }
 
-  const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
+  const logStream = argv.json || !process.stdout.isTTY
+    ? process.stderr
+    : process.stdout;
   const cli = new CLI(logStream);
 
   const merged = Object.assign({}, argv, parsed, config);
+  if (argv.json) {
+    return writeMetadataJsonResult(getMetadata(merged, false, cli));
+  }
+
   return runPromise(getMetadata(merged, false, cli)
     .then(({ status }) => {
       if (status === false) {
