@@ -291,6 +291,7 @@ Options:
   --file, -f        File to write the metadata in                                 [string]
   --readme          Path to file that contains collaborator contacts              [string]
   --check-comments  Check for 'LGTM' in comments                                 [boolean]
+  --json            Print metadata and PR readiness result as JSON               [boolean]
   --max-commits     Number of commits to warn                        [number] [default: 3]
 ```
 
@@ -309,6 +310,9 @@ $ git node metadata $PRID -o nodejs -r node
 # Or, redirect the metadata to a file while see the checks in stderr
 $ git node metadata $PRID > msg.txt
 
+# Or, get machine-readable metadata and readiness reason codes
+$ git node metadata $PRID --json
+
 # Using it to amend commit messages:
 $ git node metadata $PRID -f msg.txt
 $ echo -e "$(git show -s --format=%B)\n\n$(cat msg.txt)" > msg.txt
@@ -318,6 +322,26 @@ $ git commit --amend -F msg.txt
 # using the contact in ../node/README.md
 git node metadata 167 --repo llnode --readme ../node/README.md
 ```
+
+When `--json` is used, stdout contains a JSON object and progress/check output
+is written to stderr. The command still exits non-zero when the pull request is
+not ready to land. The JSON includes `ready`, `readiness`, `exitCode`,
+`metadata`, `reasonCodes`, and `reasons`. `reasonCodes` is a de-duplicated list
+of stable machine-readable codes such as `missing-approval`,
+`missing-tsc-approval`, `wait-time`, `missing-github-ci`, `pending-github-ci`,
+`conflict`, `requested-changes`, and `stale-review`.
+
+The metadata JSON exit-code contract is:
+
+- `0`: the pull request is ready
+- `20`: the pull request is not ready, but only for the deferrable metadata
+  reason currently owned by the lightweight queue selector: `wait-time`
+- `40`: the pull request is not ready for a hard or mixed reason and should be
+  handled by the existing landing/failure path
+
+Exit codes `20`-`29` are reserved for future deferrable metadata states, and
+`40`-`49` are reserved for future hard metadata failure states. Unexpected tool
+or runtime failures continue to use exit code `1`.
 
 <a id="git-node-metadata-optional-settings"></a>
 
