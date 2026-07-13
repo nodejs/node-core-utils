@@ -31,6 +31,10 @@ export function builder(yargs) {
           describe: 'Update dependencies concurrently',
           default: true,
         });
+        yargs.option('cargo', {
+          describe: 'The cargo binary that will be executed when updating the Rust crates',
+          default: 'cargo',
+        });
       }
     })
     .command({
