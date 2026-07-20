@@ -7,6 +7,7 @@ import PrepareSecurityRelease, {
   getNextTuesdayReleaseDates
 } from '../../lib/prepare_security.js';
 import {
+  getAffectedVersionLines,
   getHighestSeverityAnnouncement
 } from '../../lib/security-release/security-release.js';
 
@@ -91,6 +92,26 @@ describe('security_release: severity announcement', () => {
     assert.strictEqual(
       getHighestSeverityAnnouncement(reports),
       'The highest severity issue fixed in this release is MEDIUM.'
+    );
+  });
+});
+
+describe('security_release: affected versions', () => {
+  it('normalizes legacy arrays, strings, and keyed version objects', () => {
+    assert.deepStrictEqual(
+      getAffectedVersionLines(['v24.x', '22.x']),
+      ['24.x', '22.x']
+    );
+    assert.deepStrictEqual(
+      getAffectedVersionLines('24.x, v22.x'),
+      ['24.x', '22.x']
+    );
+    assert.deepStrictEqual(
+      getAffectedVersionLines({
+        '24.x': { affected: '<=24.4.0', patched: '24.4.1' },
+        '22.x': { affected: '<=22.17.0', patched: '22.17.1' }
+      }),
+      ['24.x', '22.x']
     );
   });
 });
@@ -184,6 +205,26 @@ describe('security_blog: pre-release severity wording', () => {
       blog.getImpact(content),
       'The highest severity issue fixed in the 22.x release line is MEDIUM.\n' +
         'The highest severity issue fixed in the 20.x release line is HIGH.'
+    );
+  });
+
+  it('supports keyed affected version objects with legacy arrays', () => {
+    const blog = new SecurityBlog();
+    const content = {
+      reports: [
+        report(1, 'low', {
+          '24.x': { affected: '<=24.4.0', patched: '24.4.1' },
+          '22.x': { affected: '<=22.17.0', patched: '22.17.1' }
+        }),
+        report(2, 'high', ['22.x'])
+      ]
+    };
+
+    assert.strictEqual(blog.getAffectedVersions(content), '24.x, 22.x');
+    assert.strictEqual(
+      blog.getImpact(content),
+      'The highest severity issue fixed in the 24.x release line is LOW.\n' +
+        'The highest severity issue fixed in the 22.x release line is HIGH.'
     );
   });
 

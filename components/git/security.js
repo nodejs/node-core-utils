@@ -11,6 +11,7 @@ import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import SecurityBlog from '../../lib/security_blog.js';
 import SecurityAnnouncement from '../../lib/security-announcement.js';
 import { forceRunAsync } from '../../lib/run.js';
+import { getAffectedVersionLines } from '../../lib/security-release/security-release.js';
 
 export const command = 'security [options]';
 export const describe = 'Manage an in-progress security release or start a new one.';
@@ -289,7 +290,7 @@ async function applySecurityPatches(cli) {
 
   let patchedVersion;
   for (const { affectedVersions, prURL, title } of Object.values(dependencies).flat()) {
-    if (!affectedVersions.includes(`${nodeMajorVersion}.x`)) continue;
+    if (!getAffectedVersionLines(affectedVersions).includes(`${nodeMajorVersion}.x`)) continue;
     cli.separator(`Taking care of ${title}...`);
     if (await skipIfExisting(cli, prURL)) continue;
 
@@ -330,7 +331,7 @@ async function applySecurityPatches(cli) {
   cli.stopSpinner(`Fetched all PRs labeled for v${nodeMajorVersion}.x`);
 
   for (const { affectedVersions, prURL, cveIds, patchedVersions } of reports) {
-    if (!affectedVersions.includes(`${nodeMajorVersion}.x`)) continue;
+    if (!getAffectedVersionLines(affectedVersions).includes(`${nodeMajorVersion}.x`)) continue;
     patchedVersion ??= patchedVersions?.find(v => v.startsWith(`${nodeMajorVersion}.`));
     cli.separator(`Taking care of ${cveIds.join(', ')}...`);
 
