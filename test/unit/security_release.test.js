@@ -817,6 +817,31 @@ describe('security_blog: post-release severity wording', () => {
     assert.throws(() => blog.getVulnerabilities(content), /severity\.rating not found for report 1/);
   });
 
+  it('sorts post-release reports by severity', async() => {
+    const blog = new SecurityBlog();
+    const createReport = (title, rating) => ({
+      title,
+      cveIds: [`CVE-2026-${title}`],
+      severity: { rating },
+      summary: 'summary',
+      affectedVersions: ['24.x'],
+      patchAuthors: ['nodejs'],
+      reporter: 'reporter',
+      link: `https://hackerone.com/reports/${title}`
+    });
+
+    const output = await blog.getReportsTemplate({
+      reports: [
+        createReport('low-report', 'low'),
+        createReport('high-report', 'high'),
+        createReport('medium-report', 'medium')
+      ]
+    });
+
+    assert.ok(output.indexOf('## high-report') < output.indexOf('## medium-report'));
+    assert.ok(output.indexOf('## medium-report') < output.indexOf('## low-report'));
+  });
+
   it('formats dependency update object versions', () => {
     const blog = new SecurityBlog();
 
