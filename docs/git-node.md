@@ -388,6 +388,7 @@ modifying your `PATH` environment variable).
 ### `git node v8 major`
 
 - Replaces `deps/v8` with a newer major version.
+- Synchronizes the manifest and vendored Rust crates in `deps/crates`.
 - Resets the embedder version number to `-node.0`.
 - Bumps `NODE_MODULE_VERSION` according to the [Node.js ABI version registry][].
 
@@ -398,6 +399,9 @@ Options:
 
 - `--no-version-bump`: Disable automatic bump of the `NODE_MODULE_VERSION`
   constant.
+
+- `--cargo=/path/to/cargo`: The Cargo binary that will be executed by the shell
+  when updating the Rust crates. Defaults to `cargo`.
 
 ### `git node v8 minor`
 
