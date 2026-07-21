@@ -3,6 +3,9 @@ import assert from 'node:assert';
 
 import SecurityBlog from '../../lib/security_blog.js';
 import PrepareSecurityRelease, {
+  buildIncludedTriagedReport,
+  groupMissingReportInformation,
+  getMissingReportInformation,
   getNextTuesdayReleaseDateChoices,
   getNextTuesdayReleaseDates
 } from '../../lib/prepare_security.js';
@@ -16,6 +19,59 @@ function report(id, rating, affectedVersions = ['24.x']) {
     id,
     severity: { rating },
     affectedVersions
+  };
+}
+
+function h1Report(overrides = {}) {
+  return {
+    id: '123',
+    attributes: {
+      title: 'Example vulnerability',
+      cve_ids: ['CVE-2026-0001'],
+      ...overrides.attributes
+    },
+    relationships: {
+      reporter: {
+        data: {
+          attributes: {
+            username: 'reporter'
+          }
+        }
+      },
+      custom_field_values: {
+        data: [
+          {
+            attributes: {
+              value: 'https://github.com/nodejs-private/node-private/pull/1'
+            }
+          }
+        ]
+      },
+      severity: {
+        data: {
+          attributes: {
+            rating: 'high',
+            cvss_vector_string: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
+          }
+        }
+      },
+      weakness: {
+        data: {
+          id: '79'
+        }
+      },
+      summaries: {
+        data: [
+          {
+            attributes: {
+              category: 'team',
+              content: 'A useful team summary.'
+            }
+          }
+        ]
+      },
+      ...overrides.relationships
+    }
   };
 }
 
@@ -167,7 +223,168 @@ describe('security_release: release date choices', () => {
       }
     });
 
-    assert.strictEqual(await release.promptReleaseDate(), getNextTuesdayReleaseDates()[0]);
+    assert.strictEqual(
+      await release.promptReleaseDate(),
+      getNextTuesdayReleaseDates()[0]
+    );
+  });
+});
+
+describe('security_release: include all triaged reports', () => {
+  it('builds a vulnerabilities.json report from a triaged H1 report', () => {
+    assert.deepStrictEqual(
+      buildIncludedTriagedReport(h1Report(), {
+        affectedVersions: '24.x,22.x',
+        patchAuthors: ['author']
+      }),
+      {
+        id: '123',
+        title: 'Example vulnerability',
+        cveIds: ['CVE-2026-0001'],
+        severity: {
+          rating: 'high',
+          cvss_vector_string: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H',
+          weakness_id: '79'
+        },
+        summary: 'A useful team summary.',
+        patchAuthors: ['author'],
+        prURL: 'https://github.com/nodejs-private/node-private/pull/1',
+        affectedVersions: ['24.x', '22.x'],
+        link: 'https://hackerone.com/reports/123',
+        reporter: 'reporter'
+      }
+    );
+  });
+
+  it('identifies missing information in included reports', () => {
+    const includedReport = buildIncludedTriagedReport(
+      h1Report({
+        attributes: {
+          cve_ids: []
+        },
+        relationships: {
+          custom_field_values: {
+            data: []
+          },
+          severity: {
+            data: {
+              attributes: {
+                rating: '',
+                cvss_vector_string: ''
+              }
+            }
+          },
+          weakness: {
+            data: {}
+          },
+          summaries: {
+            data: []
+          }
+        }
+      }),
+      { affectedVersions: '', patchAuthors: [] }
+    );
+
+    assert.deepStrictEqual(
+      getMissingReportInformation(includedReport),
+      [
+        'severity rating',
+        'CVSS vector',
+        'weakness ID',
+        'team summary',
+        'PR URL',
+        'patch authors',
+        'affected versions'
+      ]
+    );
+  });
+
+  it('groups missing information by field', () => {
+    assert.deepStrictEqual(
+      groupMissingReportInformation([
+        {
+          id: '1',
+          missing: ['CVSS vector', 'team summary']
+        },
+        {
+          id: '2',
+          missing: ['CVSS vector']
+        }
+      ]),
+      [
+        {
+          field: 'CVSS vector',
+          reports: [
+            {
+              id: '1',
+              missing: ['CVSS vector', 'team summary']
+            },
+            {
+              id: '2',
+              missing: ['CVSS vector']
+            }
+          ]
+        },
+        {
+          field: 'team summary',
+          reports: [
+            {
+              id: '1',
+              missing: ['CVSS vector', 'team summary']
+            }
+          ]
+        }
+      ]
+    );
+  });
+
+  it('prints a compact missing information summary', () => {
+    const output = [];
+    const release = new PrepareSecurityRelease({
+      ok: (message) => output.push(['ok', message]),
+      warn: (message) => output.push(['warn', message]),
+      info: (message) => output.push(['info', message])
+    });
+
+    release.displayMissingReportInformationSummary([
+      {
+        id: '1',
+        title: 'Long report title',
+        link: 'https://hackerone.com/reports/1',
+        missing: ['CVSS vector', 'team summary']
+      },
+      {
+        id: '2',
+        title: 'Another long report title',
+        link: 'https://hackerone.com/reports/2',
+        missing: ['CVSS vector']
+      }
+    ]);
+
+    assert.deepStrictEqual(output, [
+      ['warn', '2 included reports are missing information:'],
+      ['info', '- CVSS vector (2): H1 #1, H1 #2'],
+      ['info', '- team summary (1): H1 #1']
+    ]);
+  });
+
+  it('prompts for report selection mode', async() => {
+    const release = new PrepareSecurityRelease({
+      promptSelect(message, choices, options) {
+        assert.strictEqual(
+          message,
+          'How would you like to choose reports for the next security release?'
+        );
+        assert.deepStrictEqual(
+          choices.map(({ value }) => value),
+          ['review', 'include-all']
+        );
+        assert.strictEqual(options.defaultAnswer, 'review');
+        return 'include-all';
+      }
+    });
+
+    assert.strictEqual(await release.promptReportSelectionMode(), 'include-all');
   });
 });
 
