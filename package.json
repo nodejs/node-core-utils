@@ -71,8 +71,5 @@
     "globals": "^17.4.0",
     "neostandard": "^0.13.0",
     "sinon": "^22.0.0"
-  },
-  "overrides": {
-    "yargs": "^18.0.0"
   }
 }
