@@ -12,6 +12,7 @@ import SecurityBlog from '../../lib/security_blog.js';
 import SecurityAnnouncement from '../../lib/security-announcement.js';
 import { forceRunAsync } from '../../lib/run.js';
 import { getAffectedVersionLines } from '../../lib/security-release/security-release.js';
+import { getPullRequestURLForLine } from '../../lib/prepare_release.js';
 
 export const command = 'security [options]';
 export const describe = 'Manage an in-progress security release or start a new one.';
@@ -305,9 +306,12 @@ async function applySecurityPatches(cli) {
   const { releaseDate, reports, dependencies } = await fetchVulnerabilitiesDotJSON(cli, req);
 
   let patchedVersion;
-  for (const { affectedVersions, prURL, title } of Object.values(dependencies).flat()) {
-    if (!getAffectedVersionLines(affectedVersions).includes(`${nodeMajorVersion}.x`)) continue;
-    cli.separator(`Taking care of ${title}...`);
+  const releaseLine = `${nodeMajorVersion}.x`;
+  for (const [name, dep] of Object.entries(dependencies ?? {})) {
+    const prURL = getPullRequestURLForLine(
+      dep.affectedVersions, releaseLine, dep.prURL);
+    if (!prURL) continue;
+    cli.separator(`Taking care of ${name}...`);
     if (await skipIfExisting(cli, prURL)) continue;
 
     const argv = parsePRFromURL(prURL);
