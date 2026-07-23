@@ -817,3 +817,36 @@ describe('security_blog: post-release severity wording', () => {
     assert.throws(() => blog.getVulnerabilities(content), /severity\.rating not found for report 1/);
   });
 });
+
+describe('security_blog: getDependencyUpdatesTemplate', () => {
+  it('renders release lines from the reports-style affectedVersions object', () => {
+    const blog = new SecurityBlog();
+    const template = blog.getDependencyUpdatesTemplate({
+      undici: {
+        affectedVersions: {
+          '24.x': 'https://github.com/nodejs-private/node-private/pull/922',
+          '22.x': 'https://github.com/nodejs-private/node-private/pull/932'
+        }
+      }
+    });
+
+    assert.match(template, /- undici on 24\.x, 22\.x/);
+  });
+
+  it('keeps rendering versions from the legacy schema', () => {
+    const blog = new SecurityBlog();
+    const template = blog.getDependencyUpdatesTemplate({
+      undici: {
+        versions: ['8.5.0'],
+        affectedVersions: ['22.x', '24.x']
+      }
+    });
+
+    assert.match(template, /- undici \(8\.5\.0\) on 22\.x, 24\.x/);
+  });
+
+  it('returns an empty string when there are no dependency updates', () => {
+    const blog = new SecurityBlog();
+    assert.strictEqual(blog.getDependencyUpdatesTemplate({}), '');
+  });
+});

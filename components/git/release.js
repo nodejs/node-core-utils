@@ -14,10 +14,6 @@ const PROMOTE = 'promote';
 const RELEASERS = 'releasers';
 
 const releaseOptions = {
-  filterLabel: {
-    describe: 'Labels separated by "," to filter security PRs',
-    type: 'string'
-  },
   'gpg-sign': {
     describe: 'GPG-sign commits, will be passed to the git process',
     alias: 'S'
@@ -51,7 +47,9 @@ const releaseOptions = {
   },
   security: {
     describe: 'Demarcate the new security release as a security release. ' +
-              'Optionally provide path to security-release repository for CVE auto-population',
+              'Optionally provide the path to vulnerabilities.json (or the ' +
+              'security-release repository) to cherry-pick the reports and ' +
+              'dependency updates for this release line and auto-populate CVEs',
     type: 'string',
     coerce: (arg) => {
       // If --security=path is used, return the path
