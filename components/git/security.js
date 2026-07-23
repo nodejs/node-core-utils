@@ -71,6 +71,26 @@ const securityOptions = {
 
 let yargsInstance;
 
+function isPromptInterrupted(error) {
+  return error?.name === 'ExitPromptError' ||
+    error?.name === 'AbortPromptError' ||
+    error?.message?.includes('User force closed');
+}
+
+function runSecurityAction(cli, action) {
+  return Promise.resolve(action).catch((error) => {
+    if (!isPromptInterrupted(error)) {
+      throw error;
+    }
+
+    if (cli.spinner.isSpinning) {
+      cli.spinner.stop();
+    }
+    cli.warn('Aborted.');
+    cli.setExitCode(1);
+  });
+}
+
 export function builder(yargs) {
   yargsInstance = yargs;
   return yargs.options(securityOptions)
@@ -117,40 +137,36 @@ export function builder(yargs) {
 export function handler(argv) {
   const logStream = process.stdout.isTTY ? process.stdout : process.stderr;
   const cli = new CLI(logStream);
+  let action;
 
   if (argv.start) {
-    return startSecurityRelease(cli, argv);
+    action = startSecurityRelease(cli, argv);
+  } else if (argv['apply-patches']) {
+    action = applySecurityPatches(cli, argv);
+  } else if (argv.sync) {
+    action = syncSecurityRelease(cli, argv);
+  } else if (argv['update-date']) {
+    action = updateReleaseDate(cli, argv);
+  } else if (argv['pre-release']) {
+    action = createPreRelease(cli, argv);
+  } else if (argv['add-report']) {
+    action = addReport(cli, argv);
+  } else if (argv['remove-report']) {
+    action = removeReport(cli, argv);
+  } else if (argv['notify-pre-release']) {
+    action = notifyPreRelease(cli, argv);
+  } else if (argv['request-cve']) {
+    action = requestCVEs(cli, argv);
+  } else if (argv['post-release']) {
+    action = createPostRelease(cli, argv);
+  } else if (argv.cleanup) {
+    action = cleanupSecurityRelease(cli, argv);
   }
-  if (argv['apply-patches']) {
-    return applySecurityPatches(cli, argv);
+
+  if (action) {
+    return runSecurityAction(cli, action);
   }
-  if (argv.sync) {
-    return syncSecurityRelease(cli, argv);
-  }
-  if (argv['update-date']) {
-    return updateReleaseDate(cli, argv);
-  }
-  if (argv['pre-release']) {
-    return createPreRelease(cli, argv);
-  }
-  if (argv['add-report']) {
-    return addReport(cli, argv);
-  }
-  if (argv['remove-report']) {
-    return removeReport(cli, argv);
-  }
-  if (argv['notify-pre-release']) {
-    return notifyPreRelease(cli, argv);
-  }
-  if (argv['request-cve']) {
-    return requestCVEs(cli, argv);
-  }
-  if (argv['post-release']) {
-    return createPostRelease(cli, argv);
-  }
-  if (argv.cleanup) {
-    return cleanupSecurityRelease(cli, argv);
-  }
+
   yargsInstance.showHelp();
 }
 

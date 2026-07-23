@@ -9,6 +9,7 @@ import PrepareSecurityRelease, {
   getNextTuesdayReleaseDateChoices,
   getNextTuesdayReleaseDates
 } from '../../lib/prepare_security.js';
+import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import {
   getAffectedVersionLines,
   getHighestSeverityAnnouncement
@@ -169,6 +170,304 @@ describe('security_release: affected versions', () => {
       }),
       ['24.x', '22.x']
     );
+  });
+});
+
+describe('security_release: CVE request versions', () => {
+  it('shows reports selected for bulk CVE requests', () => {
+    const messages = [];
+    const release = new UpdateSecurityRelease({
+      info(message) {
+        messages.push(message);
+      }
+    });
+
+    release.showCVERequestSummary([
+      {
+        id: '3846922',
+        title: 'HTTP/2 retained header blocks evade maxSessionMemory',
+        severity: { rating: 'high' }
+      },
+      {
+        id: '3838601',
+        title: 'Permission Model bypass writes trace logs',
+        severity: { rating: 'medium' }
+      }
+    ]);
+
+    assert.deepStrictEqual(messages, [
+      'Reports selected for CVE requests (2):',
+      '- 3846922 [high] HTTP/2 retained header blocks evade maxSessionMemory',
+      '- 3838601 [medium] Permission Model bypass writes trace logs'
+    ]);
+  });
+
+  it('shows the bulk CVE summary before asking to request all reports', async() => {
+    const events = [];
+    const release = new UpdateSecurityRelease({
+      info(message) {
+        events.push(`info:${message}`);
+      },
+      warn() {},
+      prompt(message) {
+        events.push(`prompt:${message}`);
+        return false;
+      }
+    });
+    release.collectSuccessfulCVERequests = async() => [];
+
+    await release.promptRequestAllCVEs([
+      {
+        id: '1',
+        title: 'First report',
+        cveIds: [],
+        severity: {
+          rating: 'high',
+          weakness_id: '1',
+          cvss_vector_string: 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H'
+        },
+        affectedVersions: ['24.x'],
+        summary: 'First summary'
+      },
+      {
+        id: '2',
+        title: 'Second report',
+        cveIds: [],
+        severity: {
+          rating: 'medium',
+          weakness_id: '1',
+          cvss_vector_string: 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N'
+        },
+        affectedVersions: ['24.x'],
+        summary: 'Second summary'
+      }
+    ]);
+
+    assert.deepStrictEqual(events.slice(0, 4), [
+      'info:Reports selected for CVE requests (2):',
+      'info:- 1 [high] First report',
+      'info:- 2 [medium] Second report',
+      'prompt:Request CVEs for all reports without prompting for each report?'
+    ]);
+  });
+
+  it('reuses version answers for repeated release lines', async() => {
+    const prompts = [];
+    const radioPrompts = [];
+    const release = new UpdateSecurityRelease({
+      prompt(message, options) {
+        prompts.push(message);
+        assert.strictEqual(options.questionType, 'input');
+        if (message.includes('24.x')) return '24.18.0';
+        if (message.includes('22.x')) return '22.23.1';
+        throw new Error(`Unexpected prompt: ${message}`);
+      },
+      promptRadio(message, choices) {
+        radioPrompts.push(message);
+        return choices[0];
+      }
+    });
+    const supportedVersions = [
+      { major: 24, version: '24.18.0' },
+      { major: 22, version: '22.23.1' }
+    ];
+    const versionCache = new Map();
+
+    assert.deepStrictEqual(
+      (await release.calculateVersions(['24.x'], supportedVersions, [], versionCache))
+        .patchedVersions,
+      ['24.18.1']
+    );
+    assert.deepStrictEqual(
+      (await release.calculateVersions(['24.x', '22.x'], supportedVersions, [], versionCache))
+        .patchedVersions,
+      ['24.18.1', '22.23.2']
+    );
+    assert.deepStrictEqual(prompts, [
+      'What is the affected version (<=) for release line 24.x?',
+      'What is the affected version (<=) for release line 22.x?'
+    ]);
+    assert.deepStrictEqual(radioPrompts, [
+      'What is the patched version (>=) for release line 24.x?',
+      'What is the patched version (>=) for release line 22.x?'
+    ]);
+  });
+
+  it('applies successful CVE updates once after requests finish', async() => {
+    const messages = [];
+    const prompts = [];
+    const h1Updates = [];
+    const release = new UpdateSecurityRelease({
+      info(message) {
+        messages.push(message);
+      },
+      warn() {},
+      prompt(message) {
+        prompts.push(message);
+        return true;
+      }
+    });
+    const content = { reports: [] };
+    const successfulReports = [
+      { id: '1', cveIds: ['CVE-2026-0001'] },
+      { id: '2', cveIds: ['CVE-2026-0002'] }
+    ];
+    let jsonUpdates = 0;
+
+    release.updateVulnerabilitiesJSON = async(updatedContent) => {
+      assert.strictEqual(updatedContent, content);
+      jsonUpdates++;
+      return true;
+    };
+    release.updateHackonerReportCveWithoutConfirmation = async(req, report) => {
+      h1Updates.push(report.id);
+      return true;
+    };
+
+    await release.applySuccessfulCVEUpdates({}, content, successfulReports);
+
+    assert.deepStrictEqual(messages, [
+      'CVE requests succeeded:',
+      '- 1: CVE-2026-0001',
+      '- 2: CVE-2026-0002',
+      'HackerOne reports updated:',
+      '- 1: CVE-2026-0001',
+      '- 2: CVE-2026-0002'
+    ]);
+    assert.deepStrictEqual(prompts, [
+      'Update vulnerabilities.json with the successful CVE requests?',
+      'Update HackerOne reports with the successful CVE IDs?',
+      'Allow action: update 2 HackerOne reports with CVE IDs?\n\n' +
+        'This writes the assigned CVE IDs back to all successful HackerOne reports.'
+    ]);
+    assert.strictEqual(jsonUpdates, 1);
+    assert.deepStrictEqual(h1Updates, ['1', '2']);
+  });
+
+  it('skips HackerOne updates when vulnerabilities.json update is declined', async() => {
+    const warnings = [];
+    const release = new UpdateSecurityRelease({
+      info() {},
+      warn(message) {
+        warnings.push(message);
+      },
+      prompt() {
+        return false;
+      }
+    });
+    let h1Updates = 0;
+    release.updateVulnerabilitiesJSON = async() => {
+      throw new Error('should not update vulnerabilities.json');
+    };
+    release.updateHackonerReportCveWithoutConfirmation = async() => {
+      h1Updates++;
+    };
+
+    await release.applySuccessfulCVEUpdates({}, {}, [
+      { id: '1', cveIds: ['CVE-2026-0001'] }
+    ]);
+
+    assert.deepStrictEqual(warnings, [
+      'Skipping HackerOne updates because vulnerabilities.json was not updated.'
+    ]);
+    assert.strictEqual(h1Updates, 0);
+  });
+
+  it('skips HackerOne updates when vulnerabilities.json update fails', async() => {
+    const warnings = [];
+    let promptCount = 0;
+    const release = new UpdateSecurityRelease({
+      info() {},
+      warn(message) {
+        warnings.push(message);
+      },
+      prompt() {
+        promptCount++;
+        return true;
+      }
+    });
+    let h1Updates = 0;
+    release.updateVulnerabilitiesJSON = async() => false;
+    release.updateHackonerReportCveWithoutConfirmation = async() => {
+      h1Updates++;
+    };
+
+    await release.applySuccessfulCVEUpdates({}, {}, [
+      { id: '1', cveIds: ['CVE-2026-0001'] }
+    ]);
+
+    assert.deepStrictEqual(warnings, [
+      'Skipping HackerOne updates because vulnerabilities.json update failed.'
+    ]);
+    assert.strictEqual(promptCount, 1);
+    assert.strictEqual(h1Updates, 0);
+  });
+
+  it('summarizes HackerOne update failures', async() => {
+    const messages = [];
+    const warnings = [];
+    const release = new UpdateSecurityRelease({
+      info(message) {
+        messages.push(message);
+      },
+      warn(message) {
+        warnings.push(message);
+      },
+      prompt() {
+        return true;
+      }
+    });
+    release.updateVulnerabilitiesJSON = async() => true;
+    release.updateHackonerReportCveWithoutConfirmation = async(req, report) => report.id === '1';
+
+    await release.applySuccessfulCVEUpdates({}, {}, [
+      { id: '1', cveIds: ['CVE-2026-0001'] },
+      { id: '2', cveIds: ['CVE-2026-0002'] }
+    ]);
+
+    assert.deepStrictEqual(messages, [
+      'CVE requests succeeded:',
+      '- 1: CVE-2026-0001',
+      '- 2: CVE-2026-0002',
+      'HackerOne reports updated:',
+      '- 1: CVE-2026-0001'
+    ]);
+    assert.deepStrictEqual(warnings, [
+      'HackerOne reports not updated:',
+      '- 2: CVE-2026-0002'
+    ]);
+  });
+
+  it('keeps successful CVE requests when interrupted', async() => {
+    const warnings = [];
+    const reports = [{ id: '1' }, { id: '2' }, { id: '3' }];
+    const release = new UpdateSecurityRelease({
+      warn(message) {
+        warnings.push(message);
+      }
+    });
+    release.requestReportCVE = async({ report }) => {
+      if (report.id === '1') return true;
+      const error = new Error('User force closed the prompt');
+      error.name = 'ExitPromptError';
+      throw error;
+    };
+
+    assert.deepStrictEqual(
+      await release.collectSuccessfulCVERequests({
+        reports,
+        req: {},
+        programId: '123',
+        supportedVersions: [],
+        eolVersions: [],
+        versionCache: new Map(),
+        requestAll: false
+      }),
+      [reports[0]]
+    );
+    assert.deepStrictEqual(warnings, [
+      'CVE request interrupted. Finalizing successful requests.'
+    ]);
   });
 });
 
