@@ -1,5 +1,44 @@
 # Changelog
 
+## [7.0.0](https://github.com/nodejs/node-core-utils/compare/v6.4.0...v7.0.0) (2026-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **v8:** synchronize Rust crates with major updates ([#1117](https://github.com/nodejs/node-core-utils/issues/1117))
+* drop support for Node.js 20 and 25 ([#1072](https://github.com/nodejs/node-core-utils/issues/1072))
+
+### Features
+
+* add confirmation steps to any write operation ([#1092](https://github.com/nodejs/node-core-utils/issues/1092)) ([07d5ba0](https://github.com/nodejs/node-core-utils/commit/07d5ba0c2c2800ebf7cd7f14c826c0a43ca65894))
+* add metadata JSON readiness output ([#1113](https://github.com/nodejs/node-core-utils/issues/1113)) ([a22e127](https://github.com/nodejs/node-core-utils/commit/a22e127565e86238cc9d0b378cbbe297cdc58ea6))
+* **git-node:** add `git node benchmark` ([#1114](https://github.com/nodejs/node-core-utils/issues/1114)) ([eb405a1](https://github.com/nodejs/node-core-utils/commit/eb405a170d741d5fdb2f7cbc4f7e413ad9570c40))
+* **git-node:** add `git node security --apply-patches` ([#1050](https://github.com/nodejs/node-core-utils/issues/1050)) ([bf990ac](https://github.com/nodejs/node-core-utils/commit/bf990ac8fdc9d92567a3b2e084c37051bfcff904))
+* **git-node:** select security release PRs from affectedVersions ([#1124](https://github.com/nodejs/node-core-utils/issues/1124)) ([72bf756](https://github.com/nodejs/node-core-utils/commit/72bf75617d38a551788a2540738574524072fc77))
+* improve DX of request-cves ([#1120](https://github.com/nodejs/node-core-utils/issues/1120)) ([f2f4ac5](https://github.com/nodejs/node-core-utils/commit/f2f4ac59adba509c18f64276e479ae0f81502138))
+* **security:** add include-all report selection mode ([#1111](https://github.com/nodejs/node-core-utils/issues/1111)) ([e4a7c7d](https://github.com/nodejs/node-core-utils/commit/e4a7c7dea4529235ecb8e028377e961d66bab0b7))
+* **security:** offer Tuesday release date choices ([#1110](https://github.com/nodejs/node-core-utils/issues/1110)) ([1f46846](https://github.com/nodejs/node-core-utils/commit/1f46846c29b6e21962beb7d15b9f94eb5781c5d3))
+* support affectedVersions as object ([#1118](https://github.com/nodejs/node-core-utils/issues/1118)) ([c3b9dc6](https://github.com/nodejs/node-core-utils/commit/c3b9dc659b0433b5d92e3a6bd72ec998a24289fa))
+* **v8:** synchronize Rust crates with major updates ([#1117](https://github.com/nodejs/node-core-utils/issues/1117)) ([78e1dbb](https://github.com/nodejs/node-core-utils/commit/78e1dbb7f0c5bddc3db820bd9d0feaa0a3490a9c))
+
+
+### Bug Fixes
+
+* add announcement ref to top-level vuln json ([#1119](https://github.com/nodejs/node-core-utils/issues/1119)) ([3017208](https://github.com/nodejs/node-core-utils/commit/3017208dc95e56f2381a9a4abf32336942f803c6))
+* borrow generateAmendedMessage in CherryPick ([#1125](https://github.com/nodejs/node-core-utils/issues/1125)) ([5b3296a](https://github.com/nodejs/node-core-utils/commit/5b3296a199e94b802c6c9b62bf190a7236378db2))
+* **git-node:** add missing exit loop condition ([#1101](https://github.com/nodejs/node-core-utils/issues/1101)) ([2d1085f](https://github.com/nodejs/node-core-utils/commit/2d1085f5824c76f9fe7261cefc6ccd74c9ce4035))
+* **git-node:** fix SSH passphrase input when promoting a release ([#1097](https://github.com/nodejs/node-core-utils/issues/1097)) ([10c6f35](https://github.com/nodejs/node-core-utils/commit/10c6f35d8fde535f676d526c8ffe1eeb35951d9b))
+* **git-node:** prefill both patch and minor versions when requesting CVEs ([#1095](https://github.com/nodejs/node-core-utils/issues/1095)) ([0ead0a1](https://github.com/nodejs/node-core-utils/commit/0ead0a1a213fb67a43aec3ba2353613ec718dca3))
+* **git-node:** security release preparation should not use staging ([#1096](https://github.com/nodejs/node-core-utils/issues/1096)) ([4ad397f](https://github.com/nodejs/node-core-utils/commit/4ad397f9075cbcf7f741c4990629d1ff223ad5fb))
+* handle affectedVersions as object for post-release ([#1122](https://github.com/nodejs/node-core-utils/issues/1122)) ([c263c2a](https://github.com/nodejs/node-core-utils/commit/c263c2ae7d9be82feb79766a89a7bdaf5527b86b))
+* remove the separator for dep update ([#1112](https://github.com/nodejs/node-core-utils/issues/1112)) ([67fbf88](https://github.com/nodejs/node-core-utils/commit/67fbf883ad4234626d4ca1c5dd5226b7e663fc0a))
+* **wpt:** avoid test/fixtures/wpt/README.md conflicts ([d9fff73](https://github.com/nodejs/node-core-utils/commit/d9fff73877c8cffdfb03b1cd8132bd6c640fc137))
+
+
+### Miscellaneous Chores
+
+* drop support for Node.js 20 and 25 ([#1072](https://github.com/nodejs/node-core-utils/issues/1072)) ([c564d81](https://github.com/nodejs/node-core-utils/commit/c564d818fb55f7cdd3159708a65584db64fd43b6))
+
 ## [6.4.0](https://github.com/nodejs/node-core-utils/compare/v6.3.3...v6.4.0) (2026-05-13)
 
 
