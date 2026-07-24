@@ -12,6 +12,7 @@ import PrepareSecurityRelease, {
 import UpdateSecurityRelease from '../../lib/update_security_release.js';
 import {
   getAffectedVersionLines,
+  getDependencyUpdates,
   getHighestSeverityAnnouncement
 } from '../../lib/security-release/security-release.js';
 
@@ -909,8 +910,76 @@ describe('security_blog: getDependencyUpdatesTemplate', () => {
     assert.match(template, /- undici \(8\.5\.0\) on 22\.x, 24\.x/);
   });
 
+  it('does not repeat a version listed once per release line', () => {
+    const blog = new SecurityBlog();
+    const template = blog.getDependencyUpdatesTemplate({
+      llhttp: {
+        versions: [
+          { version: '9.4.3', affectedVersions: ['main'] },
+          { version: '9.4.3', affectedVersions: ['26.x'] },
+          { version: '9.4.3', affectedVersions: ['24.x'] }
+        ],
+        affectedVersions: {
+          main: 'https://github.com/nodejs-private/node-private/pull/935',
+          '26.x': 'https://github.com/nodejs-private/node-private/pull/935',
+          '24.x': 'https://github.com/nodejs-private/node-private/pull/935'
+        }
+      }
+    });
+
+    assert.match(template, /- llhttp \(9\.4\.3\) on 26\.x, 24\.x/);
+  });
+
+  it('renders a dependency holding a list of updates', () => {
+    const blog = new SecurityBlog();
+    const template = blog.getDependencyUpdatesTemplate({
+      nghttp2: [
+        {
+          title: 'deps: update nghttp2 to 1.68.0',
+          affectedVersions: ['24.x']
+        },
+        {
+          name: 'nghttp2',
+          versions: ['1.67.1'],
+          affectedVersions: ['22.x']
+        }
+      ]
+    });
+
+    assert.match(template, /- update nghttp2 to 1\.68\.0 on 24\.x/);
+    assert.match(template, /- nghttp2 \(1\.67\.1\) on 22\.x/);
+  });
+
   it('returns an empty string when there are no dependency updates', () => {
     const blog = new SecurityBlog();
     assert.strictEqual(blog.getDependencyUpdatesTemplate({}), '');
+    assert.strictEqual(blog.getDependencyUpdatesTemplate(undefined), '');
+  });
+});
+
+describe('security_release: getDependencyUpdates', () => {
+  it('names the updates of a map keyed by dependency', () => {
+    assert.deepStrictEqual(
+      getDependencyUpdates({ undici: { versions: ['8.9.0'] } }),
+      [{ versions: ['8.9.0'], name: 'undici' }]);
+  });
+
+  it('flattens a dependency holding a list of updates', () => {
+    assert.deepStrictEqual(
+      getDependencyUpdates({
+        nghttp2: [
+          { affectedVersions: ['24.x'] },
+          { name: 'nghttp2', affectedVersions: ['22.x'] }
+        ]
+      }),
+      [
+        { affectedVersions: ['24.x'], name: 'nghttp2' },
+        { affectedVersions: ['22.x'], name: 'nghttp2' }
+      ]);
+  });
+
+  it('returns an empty list when there are no dependency updates', () => {
+    assert.deepStrictEqual(getDependencyUpdates(undefined), []);
+    assert.deepStrictEqual(getDependencyUpdates({}), []);
   });
 });
