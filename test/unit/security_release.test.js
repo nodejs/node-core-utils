@@ -816,6 +816,70 @@ describe('security_blog: post-release severity wording', () => {
 
     assert.throws(() => blog.getVulnerabilities(content), /severity\.rating not found for report 1/);
   });
+
+  it('sorts post-release reports by severity', async() => {
+    const blog = new SecurityBlog();
+    const createReport = (title, rating) => ({
+      title,
+      cveIds: [`CVE-2026-${title}`],
+      severity: { rating },
+      summary: 'summary',
+      affectedVersions: ['24.x'],
+      patchAuthors: ['nodejs'],
+      reporter: 'reporter',
+      link: `https://hackerone.com/reports/${title}`
+    });
+
+    const output = await blog.getReportsTemplate({
+      reports: [
+        createReport('low-report', 'low'),
+        createReport('high-report', 'high'),
+        createReport('medium-report', 'medium')
+      ]
+    });
+
+    assert.ok(output.indexOf('## high-report') < output.indexOf('## medium-report'));
+    assert.ok(output.indexOf('## medium-report') < output.indexOf('## low-report'));
+  });
+
+  it('formats dependency update object versions', () => {
+    const blog = new SecurityBlog();
+
+    const output = blog.getDependencyUpdatesTemplate({
+      undici: {
+        versions: [
+          { version: '6.22.0' },
+          { version: '7.16.0' }
+        ],
+        affectedVersions: ['22.x', '24.x', '26.x']
+      },
+      llhttp: {
+        versions: ['9.3.0'],
+        affectedVersions: {
+          '24.x': { affected: '<=24.4.0', patched: '24.4.1' },
+          '22.x': { affected: '<=22.17.0', patched: '22.17.1' }
+        }
+      }
+    });
+
+    assert.match(output, /- undici \(6\.22\.0, 7\.16\.0\) on 22\.x, 24\.x, 26\.x/);
+    assert.match(output, /- llhttp \(9\.3\.0\) on 24\.x, 22\.x/);
+    assert.doesNotMatch(output, /\[object Object\]/);
+  });
+
+  it('formats legacy dependency update arrays', () => {
+    const blog = new SecurityBlog();
+
+    const output = blog.getDependencyUpdatesTemplate([
+      {
+        name: 'undici',
+        title: 'deps: update undici to 6.22.0',
+        affectedVersions: ['22.x', '24.x']
+      }
+    ]);
+
+    assert.match(output, /- update undici to 6\.22\.0 on 22\.x, 24\.x/);
+  });
 });
 
 describe('security_blog: getDependencyUpdatesTemplate', () => {
