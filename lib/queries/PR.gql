@@ -31,7 +31,10 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
       closed,
       closedAt,
       merged,
-      mergedAt
+      mergedAt,
+      mergeCommit {
+        oid
+      }
     }
   }
 }
