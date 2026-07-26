@@ -5,7 +5,8 @@ import { readFileSync } from 'node:fs';
 import * as utils from '../../lib/release/utils.js';
 import {
   parsePullRequestURL,
-  getPullRequestURLForLine
+  getPullRequestURLForLine,
+  formatSecurityNotableChanges
 } from '../../lib/prepare_release.js';
 
 describe('prepare_release: utils.getEOLDate', () => {
@@ -134,5 +135,72 @@ describe('prepare_release: getPullRequestURLForLine', () => {
   it('returns null for missing affectedVersions', () => {
     assert.strictEqual(getPullRequestURLForLine(undefined, '22.x'), null);
     assert.strictEqual(getPullRequestURLForLine(null, '22.x'), null);
+  });
+});
+
+describe('prepare_release: formatSecurityNotableChanges', () => {
+  it('sorts by severity then CVE-ID and formats each entry', () => {
+    const severityByCVE = new Map([
+      ['CVE-2026-48933', 'high'],
+      ['CVE-2026-48618', 'high'],
+      ['CVE-2026-48615', 'medium'],
+      ['CVE-2026-48617', 'low']
+    ]);
+    const commits = [
+      {
+        subject: 'permission: handle process.chdir on writereport',
+        author: 'RafaelGSS',
+        cveIds: ['CVE-2026-48617']
+      },
+      {
+        subject: 'lib,test: redact proxy credentials in tunnel errors',
+        author: 'Matteo Collina',
+        cveIds: ['CVE-2026-48615']
+      },
+      {
+        subject: 'crypto: guard WebCrypto cipher output length',
+        author: 'Filip Skokan',
+        cveIds: ['CVE-2026-48933']
+      },
+      {
+        subject: 'tls: normalize hostname for server identity checks',
+        author: 'Matteo Collina',
+        cveIds: ['CVE-2026-48618']
+      }
+    ];
+
+    assert.strictEqual(
+      formatSecurityNotableChanges(commits, severityByCVE),
+      '* (CVE-2026-48618) tls: normalize hostname for server identity ' +
+        'checks (Matteo Collina) – High\n' +
+      '* (CVE-2026-48933) crypto: guard WebCrypto cipher output length ' +
+        '(Filip Skokan) – High\n' +
+      '* (CVE-2026-48615) lib,test: redact proxy credentials in tunnel ' +
+        'errors (Matteo Collina) – Medium\n' +
+      '* (CVE-2026-48617) permission: handle process.chdir on writereport ' +
+        '(RafaelGSS) – Low\n'
+    );
+  });
+
+  it('lists commits without a CVE or severity last, without annotations', () => {
+    const severityByCVE = new Map([['CVE-2026-48618', 'HIGH']]);
+    const commits = [
+      { subject: 'deps: update undici to 6.21.2', author: 'Node.js GitHub Bot', cveIds: [] },
+      { subject: 'tls: some fix', author: 'A Contributor', cveIds: ['CVE-2026-1'] },
+      {
+        subject: 'tls: normalize hostname for server identity checks',
+        author: 'Matteo Collina',
+        cveIds: ['CVE-2026-48618']
+      }
+    ];
+
+    assert.strictEqual(
+      formatSecurityNotableChanges(commits, severityByCVE),
+      '* (CVE-2026-48618) tls: normalize hostname for server identity ' +
+        'checks (Matteo Collina) – High\n' +
+      '* (CVE-2026-1) tls: some fix (A Contributor)\n' +
+      '* deps: update undici to 6.21.2 (Node.js GitHub Bot)\n'
+    );
+    assert.strictEqual(formatSecurityNotableChanges([], severityByCVE), '');
   });
 });
