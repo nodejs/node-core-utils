@@ -14,7 +14,7 @@
         "@node-core/caritat": "^1.6.0",
         "@pkgjs/nv": "^0.3.0",
         "branch-diff": "^3.1.1",
-        "chalk": "^5.4.1",
+        "chalk": "^6.0.0",
         "changelog-maker": "^4.4.1",
         "cheerio": "^1.0.0",
         "clipboardy": "^5.0.2",
@@ -2086,12 +2086,12 @@
       }
     },
     "node_modules/chalk": {
-      "version": "5.6.2",
-      "resolved": "https://registry.npmjs.org/chalk/-/chalk-5.6.2.tgz",
-      "integrity": "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==",
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/chalk/-/chalk-6.0.0.tgz",
+      "integrity": "sha512-2uNTXIuTTxk7ciZgAU1BQcgnchcG0xXnrs6jzkQfj9SsRa9M2s5zE8WT96hS6KmG4MzWHSrvH43DF1m4XRkrFg==",
       "license": "MIT",
       "engines": {
-        "node": "^12.17.0 || ^14.13 || >=16.0.0"
+        "node": ">=22"
       },
       "funding": {
         "url": "https://github.com/chalk/chalk?sponsor=1"
@@ -2122,6 +2122,18 @@
       },
       "bin": {
         "changelog-maker": "changelog-maker.js"
+      }
+    },
+    "node_modules/changelog-maker/node_modules/chalk": {
+      "version": "5.6.2",
+      "resolved": "https://registry.npmjs.org/chalk/-/chalk-5.6.2.tgz",
+      "integrity": "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==",
+      "license": "MIT",
+      "engines": {
+        "node": "^12.17.0 || ^14.13 || >=16.0.0"
+      },
+      "funding": {
+        "url": "https://github.com/chalk/chalk?sponsor=1"
       }
     },
     "node_modules/character-entities": {
@@ -3884,6 +3896,18 @@
       },
       "engines": {
         "node": ">=20"
+      }
+    },
+    "node_modules/ghauth/node_modules/chalk": {
+      "version": "5.6.2",
+      "resolved": "https://registry.npmjs.org/chalk/-/chalk-5.6.2.tgz",
+      "integrity": "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==",
+      "license": "MIT",
+      "engines": {
+        "node": "^12.17.0 || ^14.13 || >=16.0.0"
+      },
+      "funding": {
+        "url": "https://github.com/chalk/chalk?sponsor=1"
       }
     },
     "node_modules/ghauth/node_modules/cli-spinners": {
@@ -6867,6 +6891,18 @@
         "url": "https://github.com/sponsors/sindresorhus"
       }
     },
+    "node_modules/ora/node_modules/chalk": {
+      "version": "5.6.2",
+      "resolved": "https://registry.npmjs.org/chalk/-/chalk-5.6.2.tgz",
+      "integrity": "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==",
+      "license": "MIT",
+      "engines": {
+        "node": "^12.17.0 || ^14.13 || >=16.0.0"
+      },
+      "funding": {
+        "url": "https://github.com/chalk/chalk?sponsor=1"
+      }
+    },
     "node_modules/ora/node_modules/cli-spinners": {
       "version": "3.3.0",
       "resolved": "https://registry.npmjs.org/cli-spinners/-/cli-spinners-3.3.0.tgz",
@@ -8418,6 +8454,18 @@
       },
       "engines": {
         "node": ">=18"
+      }
+    },
+    "node_modules/replace-in-file/node_modules/chalk": {
+      "version": "5.6.2",
+      "resolved": "https://registry.npmjs.org/chalk/-/chalk-5.6.2.tgz",
+      "integrity": "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==",
+      "license": "MIT",
+      "engines": {
+        "node": "^12.17.0 || ^14.13 || >=16.0.0"
+      },
+      "funding": {
+        "url": "https://github.com/chalk/chalk?sponsor=1"
       }
     },
     "node_modules/require-directory": {
