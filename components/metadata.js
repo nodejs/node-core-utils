@@ -114,4 +114,4 @@ export async function getMetadata(argv, skipRefs, cli) {
     ...result,
     json: formatMetadataResult(result)
   };
-};
+}

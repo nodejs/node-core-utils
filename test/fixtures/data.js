@@ -112,7 +112,7 @@ for (const item of readdirSync(path('./github-ci'))) {
     continue;
   }
   githubCI[basename(item, '.json')] = readJSON(`./github-ci/${item}`);
-};
+}
 
 export const pullRequests = {};
 
@@ -121,7 +121,7 @@ for (const item of readdirSync(path('./pull_requests'))) {
     continue;
   }
   pullRequests[basename(item, '.json')] = readJSON(`./pull_requests/${item}`);
-};
+}
 
 export const jenkinsCI = {};
 
@@ -133,4 +133,4 @@ for (const subdir of readdirSync(path('./jenkins'))) {
     jenkinsCI[`${subdir}/${basename(item, '.json')}`] =
       readJSON(`./jenkins/${subdir}/${item}`);
   }
-};
+}
