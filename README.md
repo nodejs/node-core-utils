@@ -29,9 +29,6 @@ CLI tools for Node.js Core collaborators.
   to use.
 - [`ncu-team`](./docs/ncu-team.md): Listing members of a team, synchronizing
   special blocks in files with the list of members.
-- [`get-metadata`](./docs/get-metadata.md): Retrieving metadata for a Pull Request.
-  **DEPRECATED**: use [`git node metadata`](./docs/git-node.md#git-node-metadata)
-  instead.
 - [`ncu-ci`](./docs/ncu-ci.md): Parse the results of a Jenkins CI run and display a summary for all the failures.
 
 ## Usage
@@ -66,8 +63,8 @@ to create the token.
 
 When creating the token, the following boxes need to be checked:
 
-- `user:email`: Used by `git-node` and `get-metadata` to read the email of the
-  PR author in order to check if it matches the email of the commit author.
+- `user:email`: Used by `git-node` to read the email of the PR author in order
+  to check if it matches the email of the commit author.
 - `read:org`: Used by `ncu-team` to read the list of team members.
 
 Optionally, if you want to grant write access so `git-node` can write comments:

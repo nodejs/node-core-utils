@@ -35,7 +35,6 @@
         "yargs": "^18.0.0"
       },
       "bin": {
-        "get-metadata": "bin/get-metadata.js",
         "git-node": "bin/git-node.js",
         "ncu-ci": "bin/ncu-ci.js",
         "ncu-config": "bin/ncu-config.js",
