@@ -13,4 +13,4 @@ export default async function assertThrowsAsync(fn, regExp) {
   } finally {
     assert.throws(throwFn, regExp);
   }
-};
+}

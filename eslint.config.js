@@ -7,7 +7,7 @@ import importPlugin from 'eslint-plugin-import';
 
 export default [
   pluginJs.configs.recommended,
-  ...neostandard(),
+  ...neostandard({ semi: true }),
   nodePlugin.configs['flat/recommended'],
   pluginPromise.configs['flat/recommended'],
   importPlugin.flatConfigs.recommended,
@@ -28,7 +28,6 @@ export default [
       ecmaVersion: 'latest',
     },
     rules: {
-      '@stylistic/semi': ['error', 'always'],
       '@stylistic/space-before-function-paren': ['error', 'never'],
       '@stylistic/no-multi-spaces': ['error', { ignoreEOLComments: true }],
       camelcase: 'off',
