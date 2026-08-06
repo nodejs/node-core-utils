@@ -38,6 +38,12 @@ export default [
         { ignoreRegExpLiterals: true, ignoreUrls: true },
       ],
       '@stylistic/object-property-newline': 'off',
+      'no-unused-vars': ['error', {
+        args: 'none',
+        caughtErrors: 'all',
+        ignoreRestSiblings: true,
+        vars: 'all',
+      }],
       'promise/always-return': ['error', { ignoreLastCallback: true }],
       'n/no-process-exit': 'off',
       'n/no-unsupported-features/node-builtins': 'off',

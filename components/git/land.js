@@ -181,7 +181,7 @@ async function main(state, argv, cli, dir) {
   }
   try {
     session.restore();
-  } catch (err) { // JSON error?
+  } catch { // JSON error?
     if (state === ABORT) {
       await session.abort();
       return;
