@@ -29,10 +29,10 @@
   "files": [
     "lib/",
     "bin/",
-    "components/",
-    "npm-shrinkwrap.json"
+    "components/"
   ],
   "license": "MIT",
+  "bundleDependencies": true,
   "dependencies": {
     "@inquirer/prompts": "^7.4.1",
     "@listr2/prompt-adapter-enquirer": "^2.0.12",
