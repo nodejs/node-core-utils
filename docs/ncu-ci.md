@@ -27,8 +27,6 @@ Commands:
 
 Options:
   --version          Show version number                               [boolean]
-  --copy             Write the results as markdown to clipboard
-                                                      [boolean] [default: false]
   --nobuild          If running cigtm, whether or not jobid is citgm-nobuild.
                                                       [boolean] [default: false]
   --json <path>      Write the results as json to <path>                [string]
