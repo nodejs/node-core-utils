@@ -1,11 +1,10 @@
 import path from 'node:path';
 
-import logSymbols from 'log-symbols';
-
 import { minor, major, backport, deps } from '../../lib/update-v8/index.js';
 import { defaultBaseDir } from '../../lib/update-v8/constants.js';
 import { checkCwd } from '../../lib/update-v8/common.js';
 import { forceRunAsync } from '../../lib/run.js';
+import { error } from '../../lib/figures.js';
 
 export const command = 'v8 [major|minor|backport|deps]';
 export const describe = 'Update or patch the V8 engine';
@@ -154,7 +153,7 @@ export function handler(argv) {
     })
     .catch((err) => {
       console.error(
-        logSymbols.error,
+        error,
         options.verbose ? err.stack : err.message
       );
       process.exitCode = 1;
