@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import yargs from 'yargs';
-import clipboardy from 'clipboardy';
 
 import {
   JobParser,
@@ -222,11 +221,6 @@ const args = yargs(hideBin(process.argv))
     handler
   })
   .demandCommand(1, 'must provide a valid command')
-  .option('copy', {
-    describe: 'Write the results as markdown to clipboard',
-    default: false,
-    type: 'boolean'
-  })
   .option('skip-more-than', {
     describe: 'Skip jobs that fail more than <limit> builds, when --stat is true, default to 10.',
     type: 'number',
@@ -397,7 +391,7 @@ class CICommand {
         this.json = this.json.concat(json);
       }
 
-      if ((argv.copy || argv.markdown) && !argv.stats) {
+      if (argv.markdown && !argv.stats) {
         this.markdown += build.formatAsMarkdown();
       }
     }
@@ -407,16 +401,6 @@ class CICommand {
 
   async serialize() {
     const { argv, cli } = this;
-
-    if (argv.copy) {
-      if (this.markdown) {
-        clipboardy.writeSync(this.markdown);
-        cli.separator('');
-        cli.log('Written markdown to clipboard');
-      } else {
-        cli.error('No markdown generated');
-      }
-    }
 
     if (argv.markdown) {
       if (this.markdown) {
@@ -483,7 +467,7 @@ class WalkCommand extends CICommand {
     cli.log('');
     aggregator.display();
 
-    if (argv.markdown || argv.copy) {
+    if (argv.markdown) {
       this.markdown = aggregator.formatAsMarkdown();
     }
   }
@@ -564,7 +548,7 @@ class DailyCommand extends CICommand {
     cli.log('');
     aggregator.display();
 
-    if (argv.markdown || argv.copy) {
+    if (argv.markdown) {
       this.markdown = aggregator.formatAsMarkdown();
     }
   }
