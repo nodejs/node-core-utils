@@ -30,4 +30,5 @@ jobs:
         with:
           node-version: 24.x
           registry-url: 'https://registry.npmjs.org'
+      - run: npm ci --omit=dev
       - run: npm publish --access public --provenance
