@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.0.1](https://github.com/nodejs/node-core-utils/compare/v7.0.0...v7.0.1) (2026-08-08)
+
+
+### Bug Fixes
+
+* **build:** retrieve dependency packages for npm bundle ([#1148](https://github.com/nodejs/node-core-utils/issues/1148)) ([4dcb93c](https://github.com/nodejs/node-core-utils/commit/4dcb93c19d5774281fb255376a10b688a20a5dcc))
+* remove fast-tracking from code-and-learn ([#1149](https://github.com/nodejs/node-core-utils/issues/1149)) ([8929f69](https://github.com/nodejs/node-core-utils/commit/8929f69b79177ae13b2c3b0cceeb4a169dc90a17))
+
 ## [7.0.0](https://github.com/nodejs/node-core-utils/compare/v6.4.0...v7.0.0) (2026-08-07)
 
 
