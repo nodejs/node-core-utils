@@ -14,6 +14,7 @@
         "nodes": [
           {
             "app": { "slug": "github-actions" },
+            "workflowRun": { "event": "pull_request", "runNumber": 1, "workflow": { "id": "workflow-1" } },
             "status": "COMPLETED",
             "conclusion": "FAILURE"
           }
@@ -22,4 +23,3 @@
     }
   }
 ]
-

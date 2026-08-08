@@ -36,7 +36,14 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
                 }
                 conclusion,
                 status,
-                checkRuns(first: 40) {
+                workflowRun {
+                  event
+                  runNumber
+                  workflow {
+                    id
+                  }
+                }
+                checkRuns(first: 40, filterBy: { checkType: LATEST }) {
                   nodes {
                     name
                     status

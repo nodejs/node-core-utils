@@ -1825,6 +1825,45 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
+    it('should ignore a superseded Check suite', async() => {
+      const cli = new TestCLI();
+      const commits = [{
+        commit: {
+          checkSuites: {
+            nodes: [
+              {
+                app: { slug: 'github-actions' },
+                workflowRun: {
+                  event: 'pull_request',
+                  runNumber: 2,
+                  workflow: { id: 'workflow-1' }
+                },
+                status: 'COMPLETED',
+                conclusion: 'SUCCESS'
+              },
+              {
+                app: { slug: 'github-actions' },
+                workflowRun: {
+                  event: 'pull_request',
+                  runNumber: 1,
+                  workflow: { id: 'workflow-1' }
+                },
+                status: 'COMPLETED',
+                conclusion: 'FAILURE'
+              }
+            ]
+          }
+        }
+      }];
+      const data = Object.assign({}, baseData, { commits });
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+
+      assert(status);
+      cli.assertCalledWith({ ok: [['Last GitHub CI successful']] });
+    });
+
     it('should error if commit status failed', async() => {
       const cli = new TestCLI();
 
@@ -2010,6 +2049,11 @@ describe('PRChecker', () => {
           checkSuites: {
             nodes: [{
               app: { slug: 'github-actions' },
+              workflowRun: {
+                event: 'pull_request',
+                runNumber: 1,
+                workflow: { id: 'workflow-1' }
+              },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: {
@@ -2067,6 +2111,11 @@ describe('PRChecker', () => {
           checkSuites: {
             nodes: [{
               app: { slug: 'github-actions' },
+              workflowRun: {
+                event: 'pull_request',
+                runNumber: 1,
+                workflow: { id: 'workflow-1' }
+              },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: {
@@ -2119,6 +2168,11 @@ describe('PRChecker', () => {
           checkSuites: {
             nodes: [{
               app: { slug: 'github-actions' },
+              workflowRun: {
+                event: 'pull_request',
+                runNumber: 1,
+                workflow: { id: 'workflow-1' }
+              },
               status: 'COMPLETED',
               conclusion: 'CANCELLED'
               // No checkRuns field
@@ -2154,6 +2208,11 @@ describe('PRChecker', () => {
           checkSuites: {
             nodes: [{
               app: { slug: 'github-actions' },
+              workflowRun: {
+                event: 'pull_request',
+                runNumber: 1,
+                workflow: { id: 'workflow-1' }
+              },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: { nodes: [] }
@@ -2189,6 +2248,11 @@ describe('PRChecker', () => {
           checkSuites: {
             nodes: [{
               app: { slug: 'github-actions' },
+              workflowRun: {
+                event: 'pull_request',
+                runNumber: 1,
+                workflow: { id: 'workflow-1' }
+              },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: {
@@ -2231,6 +2295,11 @@ describe('PRChecker', () => {
           checkSuites: {
             nodes: [{
               app: { slug: 'github-actions' },
+              workflowRun: {
+                event: 'pull_request',
+                runNumber: 1,
+                workflow: { id: 'workflow-1' }
+              },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: {
