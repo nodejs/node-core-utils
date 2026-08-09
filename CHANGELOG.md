@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.2](https://github.com/nodejs/node-core-utils/compare/v7.0.1...v7.0.2) (2026-08-09)
+
+
+### Performance Improvements
+
+* query CI metadata only for pull request head ([b470600](https://github.com/nodejs/node-core-utils/commit/b470600289e5ecc94c900c06858672a152825805))
+
 ## [7.0.1](https://github.com/nodejs/node-core-utils/compare/v7.0.0...v7.0.1) (2026-08-08)
 
 
