@@ -23,6 +23,35 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
           path
         }
       },
+      # CI data is only consumed for the pull request's head commit. Querying
+      # it for every commit multiplies the GraphQL rate-limit cost.
+      headCommit: commits(last: 1) {
+        nodes {
+          commit {
+            oid
+            checkSuites(first: 100) {
+              nodes {
+                app {
+                  slug
+                }
+                conclusion,
+                status,
+                checkRuns(first: 40) {
+                  nodes {
+                    name
+                    status
+                    conclusion
+                    detailsUrl
+                  }
+                }
+              }
+            }
+            status {
+              state
+            }
+          }
+        }
+      },
       title,
       baseRefName,
       headRefName,
