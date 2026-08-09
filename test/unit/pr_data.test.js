@@ -23,6 +23,24 @@ function toRaw(obj) {
 const rawPR = toRaw({
   repository: { pullRequest: firstTimerPR }
 });
+const headCommitChecks = {
+  oid: oddCommits.at(-1).commit.oid,
+  checkSuites: {
+    nodes: [{
+      app: { slug: 'github-actions' },
+      status: 'COMPLETED',
+      conclusion: 'SUCCESS',
+      checkRuns: { nodes: [] }
+    }]
+  },
+  status: { state: 'SUCCESS' }
+};
+rawPR.repository.pullRequest.headCommit = {
+  nodes: [{ commit: toRaw(headCommitChecks) }]
+};
+
+const commitsWithHeadChecks = toRaw(oddCommits);
+Object.assign(commitsWithHeadChecks.at(-1).commit, headCommitChecks);
 
 describe('PRData', function() {
   const request = {
@@ -34,7 +52,8 @@ describe('PRData', function() {
     .withArgs('https://raw.githubusercontent.com/nodejs/node/HEAD/README.md')
     .returns(Promise.resolve(readme));
   request.text.returns(new Error('unknown query'));
-  request.gql.withArgs('PR').returns(Promise.resolve(rawPR));
+  request.gql.withArgs('PR').callsFake(
+    () => Promise.resolve(toRaw(rawPR)));
   request.gql.withArgs('Reviews').returns(
     Promise.resolve(toRaw(approvingReviews)));
   request.gql.withArgs('PRComments').returns(
@@ -53,7 +72,45 @@ describe('PRData', function() {
     assert.deepStrictEqual(data.pr, firstTimerPR, 'pr');
     assert.deepStrictEqual(data.reviews, approvingReviews, 'reviews');
     assert.deepStrictEqual(data.comments, commentsWithLGTM, 'comments');
-    assert.deepStrictEqual(data.commits, oddCommits, 'commits');
+    assert.deepStrictEqual(
+      data.commits, commitsWithHeadChecks, 'commits');
     assert.deepStrictEqual(data.reviewers, allGreenReviewers, 'reviewers');
+  });
+
+  describe('mergeHeadCommitChecks', () => {
+    it('allows an empty commit list', () => {
+      const data = new PRData(argv, new TestCLI(), request);
+      data.pr = { headCommit: { nodes: [] } };
+      data.commits = [];
+
+      data.mergeHeadCommitChecks();
+
+      assert.deepStrictEqual(data.pr, {});
+      assert.deepStrictEqual(data.commits, []);
+    });
+
+    it('rejects missing head commit data', () => {
+      const data = new PRData(argv, new TestCLI(), request);
+      data.pr = {};
+      data.commits = toRaw(oddCommits);
+
+      assert.throws(
+        () => data.mergeHeadCommitChecks(),
+        /Unable to match pull request head commit/);
+    });
+
+    it('rejects a mismatched head commit', () => {
+      const data = new PRData(argv, new TestCLI(), request);
+      data.pr = {
+        headCommit: {
+          nodes: [{ commit: { ...headCommitChecks, oid: 'different' } }]
+        }
+      };
+      data.commits = toRaw(oddCommits);
+
+      assert.throws(
+        () => data.mergeHeadCommitChecks(),
+        /Unable to match pull request head commit/);
+    });
   });
 });
