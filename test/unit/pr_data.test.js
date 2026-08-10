@@ -27,7 +27,6 @@ const headCommitChecks = {
   oid: oddCommits.at(-1).commit.oid,
   checkSuites: {
     nodes: [{
-      app: { slug: 'github-actions' },
       status: 'COMPLETED',
       conclusion: 'SUCCESS',
       checkRuns: { nodes: [] }
