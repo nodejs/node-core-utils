@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.3](https://github.com/nodejs/node-core-utils/compare/v7.0.2...v7.0.3) (2026-08-10)
+
+
+### Bug Fixes
+
+* **git-node:** update regex to support GitHub App installation tokens ([#1156](https://github.com/nodejs/node-core-utils/issues/1156)) ([1baf447](https://github.com/nodejs/node-core-utils/commit/1baf447d5283e4b7e63cb639678fb5f4894ecd91))
+
 ## [7.0.2](https://github.com/nodejs/node-core-utils/compare/v7.0.1...v7.0.2) (2026-08-09)
 
 
