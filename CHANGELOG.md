@@ -1,5 +1,17 @@
 # Changelog
 
+## [7.1.0](https://github.com/nodejs/node-core-utils/compare/v7.0.3...v7.1.0) (2026-08-10)
+
+
+### Features
+
+* report GraphQL error details ([d498aa2](https://github.com/nodejs/node-core-utils/commit/d498aa28645583e7b3407d651f4770a69defecaf))
+
+
+### Bug Fixes
+
+* filter check suites to GitHub Actions ([812f207](https://github.com/nodejs/node-core-utils/commit/812f20732b2623bc41aec749ab5a75a4c066f17d))
+
 ## [7.0.3](https://github.com/nodejs/node-core-utils/compare/v7.0.2...v7.0.3) (2026-08-10)
 
 
