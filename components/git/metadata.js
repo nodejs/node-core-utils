@@ -2,7 +2,7 @@ import { parsePRFromURL } from '../../lib/links.js';
 import { getMetadata } from '../metadata.js';
 import CLI from '../../lib/cli.js';
 import { getMergedConfig } from '../../lib/config.js';
-import { runPromise, IGNORE } from '../../lib/run.js';
+import { runPromise, reportError, IGNORE } from '../../lib/run.js';
 
 export const command = 'metadata <identifier>';
 export const describe =
@@ -67,7 +67,7 @@ export async function writeMetadataJsonResult(metadataPromise) {
     await writeStdout(`${JSON.stringify(json, null, 2)}\n`);
     process.exitCode = json.exitCode;
   } catch (error) {
-    console.error(error);
+    reportError(error);
     process.exitCode = 1;
   }
 }
