@@ -1745,28 +1745,6 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
-    it(
-      'should succeed if status succeeded with queued Dependabot check',
-      async() => {
-        const cli = new TestCLI();
-
-        const expectedLogs = {
-          ok: [
-            ['Last GitHub CI successful']
-          ]
-        };
-
-        const commits = githubCI['success-dependabot-queued'];
-        const data = Object.assign({}, baseData, { commits });
-
-        const checker = new PRChecker(cli, data, {}, testArgv);
-
-        const status = await checker.checkCI();
-        assert(status);
-        cli.assertCalledWith(expectedLogs);
-      }
-    );
-
     it('should error if Check suite failed', async() => {
       const cli = new TestCLI();
 
@@ -2009,7 +1987,6 @@ describe('PRChecker', () => {
           author: { login: 'foo' },
           checkSuites: {
             nodes: [{
-              app: { slug: 'github-actions' },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: {
@@ -2066,7 +2043,6 @@ describe('PRChecker', () => {
           author: { login: 'foo' },
           checkSuites: {
             nodes: [{
-              app: { slug: 'github-actions' },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: {
@@ -2118,7 +2094,6 @@ describe('PRChecker', () => {
           author: { login: 'foo' },
           checkSuites: {
             nodes: [{
-              app: { slug: 'github-actions' },
               status: 'COMPLETED',
               conclusion: 'CANCELLED'
               // No checkRuns field
@@ -2153,7 +2128,6 @@ describe('PRChecker', () => {
           author: { login: 'foo' },
           checkSuites: {
             nodes: [{
-              app: { slug: 'github-actions' },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: { nodes: [] }
@@ -2188,7 +2162,6 @@ describe('PRChecker', () => {
           author: { login: 'foo' },
           checkSuites: {
             nodes: [{
-              app: { slug: 'github-actions' },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: {
@@ -2230,7 +2203,6 @@ describe('PRChecker', () => {
           author: { login: 'foo' },
           checkSuites: {
             nodes: [{
-              app: { slug: 'github-actions' },
               status: 'COMPLETED',
               conclusion: 'FAILURE',
               checkRuns: {

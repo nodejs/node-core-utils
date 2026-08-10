@@ -16,9 +16,12 @@ describe('GraphQL queries', () => {
 
     assert.notStrictEqual(headCommitStart, -1);
     assert.notStrictEqual(headCommitEnd, -1);
-    assert.match(headCommitQuery, /checkSuites\(first: 100\)/);
+    assert.match(
+      headCommitQuery,
+      /checkSuites\(first: 100, filterBy: \{ appId: 15368 \}\)/);
     assert.match(headCommitQuery, /checkRuns\(first: 40\)/);
     assert.match(headCommitQuery, /status \{\s+state\s+\}/);
+    assert.doesNotMatch(headCommitQuery, /\bapp\s*\{/);
     assert.doesNotMatch(commitsQuery, /checkSuites/);
     assert.doesNotMatch(commitsQuery, /checkRuns/);
     assert.doesNotMatch(commitsQuery, /\sstatus\s*\{/);

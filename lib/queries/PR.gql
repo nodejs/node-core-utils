@@ -29,11 +29,12 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
         nodes {
           commit {
             oid
-            checkSuites(first: 100) {
+            # 15368 is the GitHub Actions App ID on GitHub.com. Filtering avoids
+            # querying App metadata that GITHUB_TOKEN cannot read for suites
+            # created by third-party Apps such as Jenkins and Codecov.
+            # https://api.github.com/apps/github-actions
+            checkSuites(first: 100, filterBy: { appId: 15368 }) {
               nodes {
-                app {
-                  slug
-                }
                 conclusion,
                 status,
                 checkRuns(first: 40) {
