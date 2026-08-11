@@ -12,6 +12,25 @@ function createRequest(response) {
 }
 
 describe('Request', () => {
+  describe('closePullRequest', () => {
+    it('updates the pull request state with PATCH', async() => {
+      const request = createRequest({});
+      let requestOptions;
+      request.json = async(url, options) => {
+        assert.strictEqual(url, '/repos/nodejs/node/pulls/123');
+        requestOptions = options;
+        return {};
+      };
+
+      await request.closePullRequest(123, { owner: 'nodejs', repo: 'node' });
+
+      assert.strictEqual(requestOptions.method, 'PATCH');
+      assert.deepStrictEqual(JSON.parse(requestOptions.body), {
+        state: 'closed'
+      });
+    });
+  });
+
   describe('query', () => {
     it('preserves detailed GraphQL errors', async() => {
       const variables = { owner: 'nodejs', repo: 'node', prid: 65130 };

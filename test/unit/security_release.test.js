@@ -16,6 +16,55 @@ import {
   getHighestSeverityAnnouncement
 } from '../../lib/security-release/security-release.js';
 
+describe('security_release: cleanup pull requests', () => {
+  const vulnerabilities = {
+    reports: [
+      {
+        affectedVersions: {
+          main: 'https://github.com/nodejs-private/node-private/pull/2',
+          '24.x': 'https://github.com/nodejs-private/node-private/pull/3',
+          '22.x': 'https://github.com/nodejs-private/node-private/pull/3'
+        }
+      }
+    ],
+    dependencies: {
+      undici: {
+        affectedVersions: {
+          main: 'https://github.com/nodejs/node/pull/5'
+        }
+      }
+    }
+  };
+
+  it('closes each PR from affectedVersions once', async() => {
+    const prompts = [];
+    const closed = [];
+    const release = new PrepareSecurityRelease({
+      startSpinner() {},
+      updateSpinner() {},
+      stopSpinner() {},
+      prompt(message) {
+        prompts.push(message);
+        return true;
+      }
+    });
+    release.req = {
+      closePullRequest(prid, repository) {
+        closed.push({ prid, ...repository });
+      }
+    };
+
+    await release.closePullRequests(vulnerabilities);
+
+    assert.deepStrictEqual(closed, [
+      { owner: 'nodejs-private', repo: 'node-private', prid: 2 },
+      { owner: 'nodejs-private', repo: 'node-private', prid: 3 },
+      { owner: 'nodejs', repo: 'node', prid: 5 }
+    ]);
+    assert.strictEqual(prompts.length, closed.length);
+  });
+});
+
 function report(id, rating, affectedVersions = ['24.x']) {
   return {
     id,
