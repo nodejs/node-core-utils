@@ -1,4 +1,3 @@
-import globals from 'globals';
 import pluginJs from '@eslint/js';
 import neostandard from 'neostandard';
 import nodePlugin from 'eslint-plugin-n';
@@ -23,7 +22,6 @@ export default [
   },
   {
     languageOptions: {
-      globals: globals.nodeBuiltin,
       sourceType: 'module',
       ecmaVersion: 'latest',
     },
