@@ -52,7 +52,6 @@
     "semver": "^7.7.1",
     "smol-toml": "^1.7.0",
     "undici": "^8.3.0",
-    "which": "^7.0.0",
     "yargs": "^18.0.0"
   },
   "devDependencies": {
