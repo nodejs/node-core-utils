@@ -26,7 +26,13 @@ describe('metadata command helpers', () => {
         repo: 'node',
         prid: 12345,
         pr: {
-          url: 'https://github.com/nodejs/node/pull/12345'
+          url: 'https://github.com/nodejs/node/pull/12345',
+          labels: {
+            nodes: [
+              { name: 'commit-queue' },
+              { name: 'fast-track' }
+            ]
+          }
         }
       },
       metadata: 'PR-URL: https://github.com/nodejs/node/pull/12345\n',
@@ -43,7 +49,8 @@ describe('metadata command helpers', () => {
         owner: 'nodejs',
         repo: 'node',
         number: 12345,
-        url: 'https://github.com/nodejs/node/pull/12345'
+        url: 'https://github.com/nodejs/node/pull/12345',
+        labels: ['commit-queue', 'fast-track']
       },
       metadata: 'PR-URL: https://github.com/nodejs/node/pull/12345\n',
       reasonCodes: [PR_CHECK_REASON_CODES.WAIT_TIME],
@@ -59,7 +66,8 @@ describe('metadata command helpers', () => {
         repo: 'node',
         prid: 12345,
         pr: {
-          url: 'https://github.com/nodejs/node/pull/12345'
+          url: 'https://github.com/nodejs/node/pull/12345',
+          labels: { nodes: [] }
         }
       },
       metadata: 'PR-URL: https://github.com/nodejs/node/pull/12345\n',
@@ -75,6 +83,7 @@ describe('metadata command helpers', () => {
 
     assert.strictEqual(result.readiness, METADATA_READINESS.DEFERRABLE);
     assert.strictEqual(result.exitCode, METADATA_EXIT_CODES.DEFERRABLE);
+    assert.deepStrictEqual(result.pullRequest.labels, []);
   });
 
   it('classifies missing approvals as failed', () => {
@@ -85,7 +94,8 @@ describe('metadata command helpers', () => {
         repo: 'node',
         prid: 12345,
         pr: {
-          url: 'https://github.com/nodejs/node/pull/12345'
+          url: 'https://github.com/nodejs/node/pull/12345',
+          labels: { nodes: [] }
         }
       },
       metadata: 'PR-URL: https://github.com/nodejs/node/pull/12345\n',
@@ -111,7 +121,8 @@ describe('metadata command helpers', () => {
         repo: 'node',
         prid: 12345,
         pr: {
-          url: 'https://github.com/nodejs/node/pull/12345'
+          url: 'https://github.com/nodejs/node/pull/12345',
+          labels: { nodes: [] }
         }
       },
       metadata: 'PR-URL: https://github.com/nodejs/node/pull/12345\n',

@@ -61,7 +61,8 @@ export function formatMetadataResult({ status, data, metadata, checker }) {
       owner: data.owner,
       repo: data.repo,
       number: data.prid,
-      url: data.pr.url
+      url: data.pr.url,
+      labels: data.pr.labels.nodes.map(({ name }) => name)
     },
     metadata,
     reasonCodes,
