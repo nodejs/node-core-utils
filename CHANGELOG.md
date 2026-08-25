@@ -1,5 +1,17 @@
 # Changelog
 
+## [7.2.0](https://github.com/nodejs/node-core-utils/compare/v7.1.0...v7.2.0) (2026-08-25)
+
+
+### Features
+
+* expose pull request labels in metadata JSON ([297d58f](https://github.com/nodejs/node-core-utils/commit/297d58f3984ad392213b58242c2f628be1935564))
+
+
+### Bug Fixes
+
+* adjust --cleanup to close PRs ([c53f184](https://github.com/nodejs/node-core-utils/commit/c53f1845876b82c105a18e57c67898ffb3d21c2c))
+
 ## [7.1.0](https://github.com/nodejs/node-core-utils/compare/v7.0.3...v7.1.0) (2026-08-10)
 
 
