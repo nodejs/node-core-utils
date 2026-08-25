@@ -328,8 +328,9 @@ git node metadata 167 --repo llnode --readme ../node/README.md
 When `--json` is used, stdout contains a JSON object and progress/check output
 is written to stderr. The command still exits non-zero when the pull request is
 not ready to land. The JSON includes `ready`, `readiness`, `exitCode`,
-`metadata`, `reasonCodes`, and `reasons`. `reasonCodes` is a de-duplicated list
-of stable machine-readable codes such as `missing-approval`,
+`pullRequest`, `metadata`, `reasonCodes`, and `reasons`. `pullRequest.labels` is
+an array of the pull request's label names. `reasonCodes` is a de-duplicated
+list of stable machine-readable codes such as `missing-approval`,
 `missing-tsc-approval`, `wait-time`, `missing-github-ci`, `pending-github-ci`,
 `conflict`, `requested-changes`, and `stale-review`.
 
