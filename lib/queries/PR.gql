@@ -38,6 +38,7 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
                 conclusion,
                 status,
                 checkRuns(first: 40) {
+                  totalCount
                   nodes {
                     name
                     status
