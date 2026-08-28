@@ -35,7 +35,7 @@
   "bundleDependencies": true,
   "dependencies": {
     "@inquirer/prompts": "^7.4.1",
-    "@listr2/prompt-adapter-enquirer": "^2.0.12",
+    "@listr2/prompt-adapter-inquirer": "^3.0.5",
     "@node-core/caritat": "^1.6.0",
     "@pkgjs/nv": "^0.3.0",
     "branch-diff": "^3.1.1",
