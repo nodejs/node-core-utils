@@ -1,7 +1,13 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
-import { LinkParser, parsePRFromURL } from '../../lib/links.js';
+import {
+  getMachineUrl,
+  getPrURL,
+  LinkParser,
+  parsePrURL,
+  parsePRFromURL
+} from '../../lib/links.js';
 
 import * as fixtures from '../fixtures/index.js';
 
@@ -44,6 +50,38 @@ describe('LinkParser', () => {
       };
       assert.deepStrictEqual(actual, expected[i]);
     }
+  });
+
+  it('should parse an alternate PR URL', () => {
+    const url = 'https://github.com/nodejs/node/pull/12345';
+    const parser = new LinkParser(
+      'nodejs',
+      'node',
+      `PR-URL: <a href="${url}">${url}</a>`
+    );
+
+    assert.deepStrictEqual(parser.getAltPrUrl(), [url]);
+  });
+
+  it('should ignore references without matching links', () => {
+    const parser = new LinkParser(
+      'nodejs',
+      'node',
+      'Fixes: <a>#1</a>\nRefs: #2\nPR-URL: https://example.com/pull/3'
+    );
+
+    assert.deepStrictEqual(parser.getFixes(), []);
+    assert.deepStrictEqual(parser.getRefs(), []);
+    assert.deepStrictEqual(parser.getAltPrUrl(), []);
+  });
+
+  it('should ignore malformed array entries', () => {
+    const parser = new LinkParser('nodejs', 'node', '');
+
+    assert.deepStrictEqual(parser.getAltPrUrl(), []);
+    assert.deepStrictEqual(parser.getFixesUrlsFromArray(['invalid']), []);
+    assert.deepStrictEqual(parser.getRefsUrlsFromArray(['invalid']), []);
+    assert.deepStrictEqual(parser.getPRUrlsFromArray(['invalid']), []);
   });
 
   it('should parse PR URL', () => {
@@ -90,5 +128,35 @@ describe('LinkParser', () => {
       const actual = parsePRFromURL(test.input);
       assert.deepStrictEqual(actual, test.output);
     }
+  });
+});
+
+describe('link formatting', () => {
+  it('should format a pull request URL', () => {
+    assert.strictEqual(
+      getPrURL({ owner: 'nodejs', repo: 'node', prid: 12345 }),
+      'https://github.com/nodejs/node/pull/12345'
+    );
+  });
+
+  it('should format a machine link', () => {
+    assert.strictEqual(
+      getMachineUrl({ hostname: 'test-host', url: 'https://ci.example.test' }),
+      '[test-host](https://ci.example.test)'
+    );
+  });
+});
+
+describe('parsePrURL', () => {
+  it('should parse a PR-URL trailer', () => {
+    assert.deepStrictEqual(
+      parsePrURL('PR-URL: https://github.com/nodejs/node/pull/12345'),
+      { owner: 'nodejs', repo: 'node', prid: 12345 }
+    );
+  });
+
+  it('should return undefined for invalid input', () => {
+    assert.strictEqual(parsePrURL(12345), undefined);
+    assert.strictEqual(parsePrURL('not a PR-URL trailer'), undefined);
   });
 });
