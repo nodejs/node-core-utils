@@ -35,7 +35,7 @@
   "bundleDependencies": true,
   "dependencies": {
     "@inquirer/prompts": "^7.4.1",
-    "@listr2/prompt-adapter-inquirer": "^4.2.6",
+    "@listr2/prompt-adapter-inquirer": "^4.2.7",
     "@node-core/caritat": "^1.6.0",
     "@pkgjs/nv": "^0.3.0",
     "branch-diff": "^3.1.1",
@@ -47,7 +47,7 @@
     "ghauth": "^7.0.1",
     "git-secure-tag": "^2.3.1",
     "js-yaml": "^5.2.1",
-    "listr2": "^11.0.1",
+    "listr2": "^11.1.0",
     "ora": "^9.0.0",
     "semver": "^7.7.1",
     "smol-toml": "^1.7.0",
