@@ -291,13 +291,22 @@ describe('Jenkins', () => {
       ]
     });
 
-    it('should return false if already started', async() => {
+    it('should return false if inferred commit already has CI', async() => {
       const cli = new TestCLI();
+      sinon.replace(PRData.prototype, 'getReviews', sinon.fake.resolves());
+      sinon.replace(PRData.prototype, 'getCommits', sinon.fake.resolves());
+      sinon.replace(PRChecker.prototype, 'getApprovedTipOfHead',
+        sinon.fake.returns('deadbeef'));
       sinon.replace(PRBuild.prototype, 'getBuildData',
         sinon.fake.resolves(mockJenkinsResponse(getParameters('deadbeef'))));
 
-      const jobRunner = new RunPRJob(cli, {}, owner, repo, prid, 'deadbeef', true);
+      const request = {
+        fetch: sinon.stub().resolves({ status: 201 }),
+        json: sinon.stub().withArgs(CI_CRUMB_URL).resolves({ crumb })
+      };
+      const jobRunner = new RunPRJob(cli, request, owner, repo, prid, undefined, true);
       assert.strictEqual(await jobRunner.start(), false);
+      assert.strictEqual(request.fetch.callCount, 0);
     });
     it('should return true when last CI is on a different commit', async() => {
       const cli = new TestCLI();
