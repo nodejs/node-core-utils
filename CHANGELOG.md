@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.2.1](https://github.com/nodejs/node-core-utils/compare/v7.2.0...v7.2.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* **ncu-ci:** `--check-for-duplicates` not properly awaiting a promise ([#1188](https://github.com/nodejs/node-core-utils/issues/1188)) ([949fb8e](https://github.com/nodejs/node-core-utils/commit/949fb8e71408e684a0c190ce9e3f7354dc3905d3))
+
 ## [7.2.0](https://github.com/nodejs/node-core-utils/compare/v7.1.0...v7.2.0) (2026-08-25)
 
 
