@@ -29,9 +29,14 @@ describe('Streaming failure file scanner', () => {
     'error C2143: src/node.cc',
     'java.io.IOException: src/node.cc',
     'fatal: src/node.cc',
-    'ERROR: src/node.cc'
+    'ERROR: src/node.cc',
+    'src/node.cc:42\n[  FAILED  ] Example',
+    tap('  severity: fail\n  src/node.cc:42'),
+    'Changes not staged for commit:\n  modified: src/node.cc\nno changes added to commit',
+    'error: Your local changes to the following files\n  src/node.cc\n' +
+      'Failed to merge in the changes.'
   ]) {
-    it(`reuses diagnostic patterns across parsers without regex state leaking: ${message}`,
+    it(`reuses failure patterns across parsers without regex state leaking: ${message}`,
       async() => {
         const log = `Build started\n${message}\n`;
         for (let i = 0; i < 3; i++) {
