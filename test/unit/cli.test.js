@@ -55,6 +55,13 @@ describe('cli', () => {
         assert.strictEqual(cli.spinner.text, 'bar');
       });
 
+      it('prints the result after a nested operation has stopped the spinner', () => {
+        cli.stopSpinner('Data downloaded');
+        cli.stopSpinner('Refusing to resume CI', cli.SPINNER_STATUS.FAILED);
+        assert.ok(logResult().endsWith(
+          `${success}  Data downloaded\n${error}  Refusing to resume CI\n`));
+      });
+
       afterEach(() => {
         cli.stopSpinner('stop', 'info');
       });
