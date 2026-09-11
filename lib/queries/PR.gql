@@ -35,6 +35,7 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
             # https://api.github.com/apps/github-actions
             checkSuites(first: 100, filterBy: { appId: 15368 }) {
               nodes {
+                createdAt,
                 conclusion,
                 status,
                 checkRuns(first: 40) {

@@ -1803,6 +1803,28 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
+    it('should skip orphaned check suite with no runs older than the timeout',
+      async() => {
+        const cli = new TestCLI();
+
+        const expectedLogs = {
+          ok: [
+            ['Last GitHub CI successful']
+          ]
+        };
+
+        const commits = githubCI['check-suite-orphaned'];
+        const data = Object.assign({}, baseData, { commits });
+
+        const checker = new PRChecker(cli, data, {}, testArgv);
+
+        const status = await checker.checkCI();
+        assert(status);
+        // Ignore the warn channel: it reports the orphaned suite's age, which
+        // is computed from the current time and is therefore non-deterministic.
+        cli.assertCalledWith(expectedLogs, { ignore: ['warn'] });
+      });
+
     it('should error if commit status failed', async() => {
       const cli = new TestCLI();
 
