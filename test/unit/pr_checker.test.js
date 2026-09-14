@@ -2117,6 +2117,133 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
+    it('should ignore a check suite superseded by a later run', async() => {
+      const cli = new TestCLI();
+
+      const supersededSuite = [{
+        commit: {
+          committedDate: '2017-10-26T12:10:20Z',
+          oid: '9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d',
+          messageHeadline: 'doc: add api description README',
+          author: { login: 'foo' },
+          checkSuites: {
+            nodes: [
+              {
+                status: 'COMPLETED',
+                conclusion: 'CANCELLED',
+                workflowRun: {
+                  event: 'pull_request',
+                  runNumber: 1,
+                  workflow: { id: 'workflow-1' }
+                },
+                checkRuns: {
+                  nodes: [{
+                    name: 'test-linux',
+                    status: 'COMPLETED',
+                    conclusion: 'CANCELLED',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/1'
+                  }]
+                }
+              },
+              {
+                status: 'COMPLETED',
+                conclusion: 'SUCCESS',
+                workflowRun: {
+                  event: 'pull_request',
+                  runNumber: 2,
+                  workflow: { id: 'workflow-1' }
+                },
+                checkRuns: {
+                  nodes: [{
+                    name: 'test-linux',
+                    status: 'COMPLETED',
+                    conclusion: 'SUCCESS',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/2'
+                  }]
+                }
+              }
+            ]
+          }
+        }
+      }];
+
+      const expectedLogs = {
+        ok: [['Last GitHub CI successful']]
+      };
+
+      const data = Object.assign({}, baseData, { commits: supersededSuite });
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should not let a run supersede one from a different event', async() => {
+      const cli = new TestCLI();
+
+      const differentEvents = [{
+        commit: {
+          committedDate: '2017-10-26T12:10:20Z',
+          oid: '9d098ssiskj8dhd39js0sjd0cn2ng4is9n40sj12d',
+          messageHeadline: 'doc: add api description README',
+          author: { login: 'foo' },
+          checkSuites: {
+            nodes: [
+              {
+                status: 'COMPLETED',
+                conclusion: 'FAILURE',
+                workflowRun: {
+                  event: 'push',
+                  runNumber: 1,
+                  workflow: { id: 'workflow-1' }
+                },
+                checkRuns: {
+                  nodes: [{
+                    name: 'test-linux',
+                    status: 'COMPLETED',
+                    conclusion: 'FAILURE',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/1'
+                  }]
+                }
+              },
+              {
+                status: 'COMPLETED',
+                conclusion: 'SUCCESS',
+                workflowRun: {
+                  event: 'pull_request',
+                  runNumber: 2,
+                  workflow: { id: 'workflow-1' }
+                },
+                checkRuns: {
+                  nodes: [{
+                    name: 'test-linux',
+                    status: 'COMPLETED',
+                    conclusion: 'SUCCESS',
+                    detailsUrl: 'https://github.com/nodejs/node/runs/2'
+                  }]
+                }
+              }
+            ]
+          }
+        }
+      }];
+
+      const expectedLogs = {
+        error: [
+          ['1 GitHub CI job(s) failed:'],
+          ['  - test-linux: FAILURE (https://github.com/nodejs/node/runs/1)']
+        ]
+      };
+
+      const data = Object.assign({}, baseData, { commits: differentEvents });
+      const checker = new PRChecker(cli, data, {}, testArgv);
+
+      const status = await checker.checkCI();
+      assert(!status);
+      cli.assertCalledWith(expectedLogs);
+    });
+
     it('should handle empty checkRuns array', async() => {
       const cli = new TestCLI();
 
