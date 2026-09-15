@@ -1,5 +1,14 @@
 # Changelog
 
+## [7.2.2](https://github.com/nodejs/node-core-utils/compare/v7.2.1...v7.2.2) (2026-09-15)
+
+
+### Bug Fixes
+
+* exclude stale matrix runs from CI reports ([#1191](https://github.com/nodejs/node-core-utils/issues/1191)) ([98b8e3b](https://github.com/nodejs/node-core-utils/commit/98b8e3be26228ca845396bfc33eb21ed67196664))
+* handle unavailable Jenkins commit build data ([#1193](https://github.com/nodejs/node-core-utils/issues/1193)) ([517f5b8](https://github.com/nodejs/node-core-utils/commit/517f5b874511042e7bcaef95f04bc37923190ce2))
+* ignore fully skipped startup failures ([#1170](https://github.com/nodejs/node-core-utils/issues/1170)) ([9f665fa](https://github.com/nodejs/node-core-utils/commit/9f665faa719320adf57f5aae6934cc3e678a601a))
+
 ## [7.2.1](https://github.com/nodejs/node-core-utils/compare/v7.2.0...v7.2.1) (2026-09-09)
 
 
