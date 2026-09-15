@@ -94,6 +94,42 @@ describe('Jenkins', () => {
     assert.strictEqual(markdown, expected);
   });
 
+  for (const result of ['SUCCESS', 'FAILURE', null]) {
+    it(`should handle unavailable commit build data with result ${result}`, async(t) => {
+      const data = fixtures.readJSON(
+        'jenkins', 'success', 'node-test-pull-request-15237.json'
+      );
+      data.result = result;
+      data.subBuilds[0].result = result;
+      data.subBuilds[0].build = null;
+
+      const cli = new TestCLI();
+      const prBuild = new PRBuild(cli, {}, 15237);
+      t.mock.method(prBuild, 'getBuildData', async() => data);
+      const results = await prBuild.getResults();
+
+      assert.strictEqual(results.result, result);
+      assert.deepStrictEqual(results.builds, {
+        failed: [], aborted: [], pending: [], unstable: []
+      });
+      assert.strictEqual(prBuild.commitBuild.result, result);
+      assert.deepStrictEqual(prBuild.commitBuild.failures, prBuild.failures);
+      if (result === 'SUCCESS') {
+        assert.deepStrictEqual(results.failures, []);
+        assert.deepStrictEqual(prBuild.formatAsJson(), []);
+        assert.strictEqual(prBuild.formatAsMarkdown(), `Job ${prBuild.jobUrl} is green.`);
+      } else {
+        assert.strictEqual(results.failures.length, 1);
+        assert.strictEqual(results.failures[0].type, 'NCU_FAILURE');
+        assert.strictEqual(results.failures[0].url, prBuild.commitBuild.jobUrl);
+        assert.strictEqual(results.failures[0].reason, 'Build data is unavailable');
+        assert.match(prBuild.formatAsMarkdown(), /Build data is unavailable/);
+        assert.strictEqual(prBuild.formatAsJson()[0].reason, 'Build data is unavailable');
+      }
+      prBuild.display();
+    });
+  }
+
   it('should handle node-test-commit trigger failure', async() => {
     tmpdir.refresh();
     const prefix = ['jenkins', 'trigger-failure'];

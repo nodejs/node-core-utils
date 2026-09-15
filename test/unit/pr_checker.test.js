@@ -1386,6 +1386,38 @@ describe('PRChecker', () => {
       });
     });
 
+    for (const result of ['SUCCESS', 'FAILURE', null]) {
+      it(`should check CI with unavailable commit build data and result ${result}`, async() => {
+        const jenkins = structuredClone(jenkinsCI['success/node-test-pull-request-15237']);
+        jenkins.result = result;
+        jenkins.subBuilds[0].result = result;
+        jenkins.subBuilds[0].build = null;
+        const data = {
+          pr: firstTimerPR,
+          comments: commentsWithSuccessCI,
+          reviews: approvingReviews,
+          commits: githubCI['check-suite-success'],
+          getThread() {
+            return PRData.prototype.getThread.call(this);
+          }
+        };
+        const checker = new PRChecker(new TestCLI(), data, {
+          async json(url) {
+            assert(url.startsWith(jenkins.url));
+            return jenkins;
+          }
+        }, argv);
+
+        assert.strictEqual(Boolean(await checker.checkCI()), result === 'SUCCESS');
+        assert.deepStrictEqual(checker.reasons.map(({ code }) => code),
+          result === 'SUCCESS'
+            ? []
+            : [result === null
+                ? PR_CHECK_REASON_CODES.PENDING_JENKINS_CI
+                : PR_CHECK_REASON_CODES.FAILED_JENKINS_CI]);
+      });
+    }
+
     it('should error if failed Jenkins CI', async() => {
       const cli = new TestCLI();
 
