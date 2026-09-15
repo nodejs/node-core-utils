@@ -20,6 +20,7 @@ describe('GraphQL queries', () => {
       headCommitQuery,
       /checkSuites\(first: 100, filterBy: \{ appId: 15368 \}\)/);
     assert.match(headCommitQuery, /checkRuns\(first: 40\)/);
+    assert.match(headCommitQuery, /checkRuns\(first: 40\) \{\s+totalCount/);
     assert.match(headCommitQuery, /status \{\s+state\s+\}/);
     assert.doesNotMatch(headCommitQuery, /\bapp\s*\{/);
     assert.doesNotMatch(commitsQuery, /checkSuites/);

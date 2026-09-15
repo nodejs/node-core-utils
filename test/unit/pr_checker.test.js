@@ -1860,6 +1860,88 @@ describe('PRChecker', () => {
       cli.assertCalledWith(expectedLogs);
     });
 
+    it('should ignore startup failures with only skipped check runs',
+      async() => {
+        const cli = new TestCLI();
+
+        const expectedLogs = {
+          ok: [
+            ['Last GitHub CI successful']
+          ]
+        };
+
+        const commits = [{
+          commit: {
+            checkSuites: {
+              nodes: [{
+                status: 'COMPLETED',
+                conclusion: 'STARTUP_FAILURE',
+                checkRuns: {
+                  totalCount: 2,
+                  nodes: [
+                    {
+                      name: 'stale-comment',
+                      status: 'COMPLETED',
+                      conclusion: 'SKIPPED'
+                    },
+                    {
+                      name: 'notable-change',
+                      status: 'COMPLETED',
+                      conclusion: 'SKIPPED'
+                    }
+                  ]
+                }
+              }]
+            }
+          }
+        }];
+        const data = Object.assign({}, baseData, { commits });
+
+        const checker = new PRChecker(cli, data, {}, testArgv);
+
+        const status = await checker.checkCI();
+        assert(status);
+        cli.assertCalledWith(expectedLogs);
+      });
+
+    it('should report a suite failure when check runs are incomplete',
+      async() => {
+        const cli = new TestCLI();
+
+        const expectedLogs = {
+          error: [
+            ['1 GitHub CI job(s) failed:'],
+            ['  - github-actions: STARTUP_FAILURE']
+          ]
+        };
+
+        const commits = [{
+          commit: {
+            checkSuites: {
+              nodes: [{
+                status: 'COMPLETED',
+                conclusion: 'STARTUP_FAILURE',
+                checkRuns: {
+                  totalCount: 2,
+                  nodes: [{
+                    name: 'stale-comment',
+                    status: 'COMPLETED',
+                    conclusion: 'SKIPPED'
+                  }]
+                }
+              }]
+            }
+          }
+        }];
+        const data = Object.assign({}, baseData, { commits });
+
+        const checker = new PRChecker(cli, data, {}, testArgv);
+
+        const status = await checker.checkCI();
+        assert(!status);
+        cli.assertCalledWith(expectedLogs);
+      });
+
     it('should succeed if commit status succeeded', async() => {
       const cli = new TestCLI();
 
