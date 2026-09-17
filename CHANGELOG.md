@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.2.3](https://github.com/nodejs/node-core-utils/compare/v7.2.2...v7.2.3) (2026-09-17)
+
+
+### Bug Fixes
+
+* start CI when the duplicate check cannot query Jenkins ([#1195](https://github.com/nodejs/node-core-utils/issues/1195)) ([a3dc22c](https://github.com/nodejs/node-core-utils/commit/a3dc22cc0451016033c66b08d95d2867db6b67e0))
+
 ## [7.2.2](https://github.com/nodejs/node-core-utils/compare/v7.2.1...v7.2.2) (2026-09-15)
 
 
