@@ -335,5 +335,33 @@ describe('Jenkins', () => {
       const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef', true);
       assert.strictEqual(await jobRunner.start(), true);
     });
+    it('should start CI when the existing CI run cannot be queried', async() => {
+      const cli = new TestCLI();
+      const err = new SyntaxError('Unexpected token \'<\', "<!DOCTYPE " is not valid JSON');
+      sinon.replace(PRBuild.prototype, 'getBuildData', sinon.fake.rejects(err));
+
+      const request = {
+        gql: sinon.stub().returns({
+          repository: {
+            pullRequest: {
+              labels: {
+                nodes: []
+              }
+            }
+          }
+        }),
+        fetch: sinon.stub()
+          .callsFake((url, { method, headers, body }) => {
+            assert.strictEqual(url, CI_PR_URL);
+            assert.strictEqual(method, 'POST');
+            assert.deepStrictEqual(headers, { 'Jenkins-Crumb': crumb });
+            return Promise.resolve({ status: 201 });
+          }),
+        json: sinon.stub().withArgs(CI_CRUMB_URL).resolves({ crumb })
+      };
+      const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef', true);
+      assert.strictEqual(await jobRunner.start(), true);
+      assert.strictEqual(request.fetch.callCount, 1);
+    });
   });
 });
