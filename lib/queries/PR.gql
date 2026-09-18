@@ -37,6 +37,13 @@ query PR($prid: Int!, $owner: String!, $repo: String!) {
               nodes {
                 conclusion,
                 status,
+                workflowRun {
+                  event
+                  runNumber
+                  workflow {
+                    id
+                  }
+                }
                 checkRuns(first: 40) {
                   totalCount
                   nodes {
