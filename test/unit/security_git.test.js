@@ -5,6 +5,9 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
+import PrepareSecurityRelease from '../../lib/prepare_security.js';
+import { writeSecurityReleaseDraft } from '../../lib/security-release/draft.js';
+
 import {
   checkoutOnSecurityReleaseBranch,
   commitAndPushVulnerabilitiesJSON,
@@ -117,5 +120,82 @@ describe('security release git state', { concurrency: false }, () => {
     assert.strictEqual(prompts.length, 1);
     assert.match(prompts[0], /git commit/);
     assert.strictEqual(git('write-tree'), index);
+  });
+
+  it('rejects an existing draft before prompting or fetching reports', async(t) => {
+    const dir = repository(t);
+    const file = writeSecurityReleaseDraft(dir, { releaseDate: 'TBD', reports: [] });
+    const before = fs.readFileSync(file);
+    const release = new PrepareSecurityRelease({
+      prompt() { assert.fail('Existing releases must not start again'); }
+    });
+    await assert.rejects(release.start(), /draft already exists/);
+    assert.strictEqual(git('branch', '--show-current'), 'main');
+    assert.deepStrictEqual(fs.readFileSync(file), before);
+  });
+
+  it('preserves Git state if draft preparation fails', async(t) => {
+    repository(t);
+    const release = new PrepareSecurityRelease(cli);
+    release.chooseReports = async() => [];
+    release.getDependencyUpdates = async() => {
+      throw new Error('Preparation interrupted');
+    };
+    await assert.rejects(
+      release.startVulnerabilitiesJSONCreation('TBD', 'Release'), /Preparation interrupted/);
+    assert.strictEqual(git('branch', '--show-current'), 'main');
+    assert.strictEqual(git('branch', '--list', 'next-security-release'), '');
+    assert.strictEqual(git('status', '--porcelain'), '');
+  });
+
+  it('preserves a draft discovered on the existing release branch', async(t) => {
+    const dir = repository(t);
+    git('checkout', '-b', 'next-security-release');
+    const file = writeSecurityReleaseDraft(dir, { releaseDate: 'TBD', reports: [] });
+    const before = fs.readFileSync(file);
+    git('add', 'security-release');
+    git('commit', '-m', 'Existing release');
+    const head = git('rev-parse', 'HEAD');
+    git('checkout', 'main');
+    assert.ok(!fs.existsSync(file));
+
+    const release = new PrepareSecurityRelease(cli);
+    release.chooseReports = async() => [];
+    release.getDependencyUpdates = async() => ({});
+    await assert.rejects(
+      release.startVulnerabilitiesJSONCreation('2026-10-06', 'Release'), /draft already exists/);
+
+    assert.deepStrictEqual(fs.readFileSync(file), before);
+    assert.strictEqual(git('rev-parse', 'HEAD'), head);
+    assert.strictEqual(git('status', '--porcelain'), '');
+  });
+
+  it('creates a local draft without committing when publication is declined', async(t) => {
+    const dir = repository(t);
+    fs.writeFileSync('user-notes.txt', 'Staged user work\n');
+    git('add', 'user-notes.txt');
+    const index = git('write-tree');
+    const head = git('rev-parse', 'HEAD');
+    const release = new PrepareSecurityRelease({
+      ...cli, startSpinner() {}, stopSpinner() {}
+    });
+    release.chooseReports = async() => [];
+    release.getDependencyUpdates = async() => ({
+      undici: { affectedVersions: { '24.x': 'https://github.com/nodejs/node/pull/1' } }
+    });
+    release.promptReviewVulnerabilitiesJSON = async() => false;
+    release.createPullRequest = async() => assert.fail('Do not publish a local draft');
+
+    await release.startVulnerabilitiesJSONCreation('2026/10/06', 'Release');
+
+    const file = path.join(dir, 'security-release/next-security-release/vulnerabilities.json');
+    const draft = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.strictEqual(draft.releaseDate, '2026-10-06');
+    assert.deepStrictEqual(draft.reports, []);
+    assert.strictEqual(draft.dependencies.undici.affectedVersions['24.x'],
+      'https://github.com/nodejs/node/pull/1');
+    assert.strictEqual(git('write-tree'), index);
+    assert.strictEqual(git('rev-parse', 'HEAD'), head);
+    assert.strictEqual(git('branch', '--show-current'), 'next-security-release');
   });
 });
