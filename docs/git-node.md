@@ -500,7 +500,13 @@ Release pull request in `nodejs-private/security-release`, following the
 HackerOne reports and uses the same candidate list for exclusions and selection.
 The CLI prompts for the release date, report selection, and dependency updates
 before writing the draft. Commit, push, and PR creation remain separate
-confirmed steps.
+confirmed steps. An existing `next-security-release` branch is checked out
+without resetting it. If only `origin/next-security-release` exists locally,
+the command creates a tracking branch from that ref. Fetch first when remote
+state may have changed.
+
+Security release commits reject unrelated staged changes before staging their
+own files. Commit or unstage those changes before continuing.
 
 #### Preparing release data without the CLI
 
