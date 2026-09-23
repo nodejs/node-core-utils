@@ -506,7 +506,9 @@ the command creates a tracking branch from that ref. Fetch first when remote
 state may have changed.
 
 Security release commits reject unrelated staged changes before staging their
-own files. Commit or unstage those changes before continuing.
+own files. Commit or unstage those changes before continuing. `--start` refuses
+to overwrite an existing draft, including one found after switching branches.
+Use `--sync`, `--add-report`, or `--remove-report` to update that release.
 
 #### Preparing release data without the CLI
 
@@ -537,6 +539,15 @@ dates, and conflicting release-line mappings are rejected. Missing report
 metadata is listed for follow-up; a draft with no reports can still contain
 dependency updates. These checks prepare a draft, not a final-release approval.
 The caller owns selection, human review, persistence, and publication.
+
+After reviewing the prepared data, local tools can use
+`writeSecurityReleaseDraft(directory, release)` from
+`lib/security-release/draft.js`. The directory is an explicit security-release
+repository path. The helper validates the draft and creates
+`security-release/next-security-release/vulnerabilities.json` with an exclusive
+write, so an existing file cannot be overwritten. It does not change Git state
+or publish anything. Review and authorization belong to the calling tool; the
+CLI retains its directory and file-write confirmations.
 
 ### `git node security --apply-patches`
 
