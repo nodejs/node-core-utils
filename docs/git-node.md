@@ -494,9 +494,43 @@ $ ncu-config --global set h1_username $H1_TOKEN
 
 ### `git node security --start`
 
-This command creates the Next Security Issue in Node.js private repository
-following the [Security Release Process][] document.
-It will retrieve all the triaged HackerOne reports and add creates the `vulnerabilities.json`.
+This command prepares `vulnerabilities.json` and can open the Next Security
+Release pull request in `nodejs-private/security-release`, following the
+[Security Release Process][] document. It retrieves all pages of triaged
+HackerOne reports and uses the same candidate list for exclusions and selection.
+The CLI prompts for the release date, report selection, and dependency updates
+before writing the draft. Commit, push, and PR creation remain separate
+confirmed steps.
+
+#### Preparing release data without the CLI
+
+`lib/security-release/preparation.js` exposes helpers that can be used by other
+local tools:
+
+- `listSecurityReleaseCandidates(request)` accepts an authenticated NCU
+  `Request` and returns the triaged HackerOne report objects. A failed page
+  rejects the operation rather than returning an incomplete candidate list.
+  It does not fetch extra report history or make report-selection decisions.
+- `buildIncludedTriagedReport(report, options)` converts a HackerOne report to
+  release metadata. Supply affected lines and patch authors explicitly; it
+  does not discover them or fetch a patch.
+- `prepareSecurityRelease({ releaseDate, reports, dependencies })` accepts the
+  selected release report entries and dependency updates. It returns
+  `{ release, missingInformation }`, without requests, prompts, filesystem
+  writes, Git operations, or publication.
+
+The preparation helper accepts `TBD`, `YYYY/MM/DD`, or `YYYY-MM-DD` dates and
+normalizes defined dates to `YYYY-MM-DD`. It accepts legacy affected-line arrays
+and strings as well as PR maps, and writes maps keyed by release line. Existing
+map URLs are preserved. A report's canonical PR is not automatically assigned
+to every affected line: unknown backport URLs remain empty. Legacy dependency
+updates retain their explicit association between their PR and affected lines.
+
+The result is an independent copy of the input. Duplicate report IDs, invalid
+dates, and conflicting release-line mappings are rejected. Missing report
+metadata is listed for follow-up; a draft with no reports can still contain
+dependency updates. These checks prepare a draft, not a final-release approval.
+The caller owns selection, human review, persistence, and publication.
 
 ### `git node security --apply-patches`
 
