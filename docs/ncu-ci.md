@@ -17,6 +17,7 @@ Commands:
                             runs
   ncu-ci walk <type>        Walk the CI and display the failures
   ncu-ci run <prid>         Start a node-test-pull-request CI job for a PR
+  ncu-ci resume <prid>      Resume the latest node-test-pull-request CI job for a PR
   ncu-ci url <url>          Automatically detect CI type and show results
   ncu-ci pr <jobid>         Show results of a node-test-pull-request CI job
   ncu-ci commit <jobid>     Show results of a node-test-commit CI job
@@ -171,6 +172,38 @@ ncu-ci run https://github.com/nodejs/node/pull/34127/commits/35ea6ded7315cf9d058
 
 If the PR has the `v8 engine` label, `ncu-ci run` also triggers the `node-test-commit-v8-linux`
 job after the main PR CI job is started successfully.
+
+### `ncu-ci resume <prid>`
+
+`ncu-ci resume <prid>` resumes the latest `node-test-pull-request` CI run linked
+in the PR description, comments, or reviews. The job must have finished with
+`FAILURE` or `ABORTED` and expose Jenkins' resume action. Running jobs and jobs with
+other results are not resumed. If no PR CI run is found, the command reports that
+and exits unsuccessfully.
+
+The CI-approved commit (`COMMIT_SHA_CHECK`) must match the PR's current HEAD.
+The command refuses to resume if they differ or the approved commit cannot be
+determined.
+
+Before resuming, the command streams failed-job console output and compares
+failure diagnostics with the PR's changed files. It refuses to resume if a failed
+test or a file referenced in a failure diagnostic is changed by the PR. Logs are
+scanned one at a time with bounded memory. HTTP compression is decoded as the
+response arrives. A match cancels the download and skips remaining logs. Unknown
+or unavailable failure details do not prevent resuming; the check uses the
+available diagnostics. Failure to retrieve the PR's changed-file list prevents
+resuming.
+
+Pass a PR number with repository information from config or flags, or a PR URL:
+
+```sh
+ncu-ci resume 34127 --owner nodejs --repo node
+ncu-ci resume https://github.com/nodejs/node/pull/34127
+```
+
+This uses Jenkins' **Resume build** action on the existing job. It does not start
+a fresh CI run for the current PR head. Jenkins credentials with permission to
+resume the job are required.
 
 ### `ncu-ci pr <jobid>` 
 

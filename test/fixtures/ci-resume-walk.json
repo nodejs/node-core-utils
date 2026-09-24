@@ -1,0 +1,42 @@
+[
+  {
+    "filename": "test/fixtures/typescript/ts/test-mock-module.ts",
+    "failure": {
+      "type": "JS_TEST_FAILURE",
+      "file": "es-module/test-typescript",
+      "url": "https://ci.nodejs.org/job/node-test-binary-windows-js-suites/RUN_SUBSET=0,nodes=win10-COMPILED_BY-vs2022_clang/43103/console",
+      "upstream": "https://ci.nodejs.org/job/node-test-pull-request/77225/",
+      "reason": "not ok 141 es-module/test-typescript\n      '✖ c:\\\\workspace\\\\node-test-binary-windows-js-suites\\\\node\\\\test\\\\fixtures\\\\typescript\\\\ts\\\\test-mock-module.ts (45.1525ms)\\n' +"
+    }
+  },
+  {
+    "filename": "test/fixtures/rc/test.js",
+    "failure": {
+      "type": "JS_TEST_FAILURE",
+      "file": "parallel/test-config-file",
+      "url": "https://ci.nodejs.org/job/node-test-binary-windows-js-suites/RUN_SUBSET=0,nodes=win10-COMPILED_BY-vs2022_clang/43103/console",
+      "upstream": "https://ci.nodejs.org/job/node-test-pull-request/77225/",
+      "reason": "not ok 298 parallel/test-config-file\n    +   '✖ c:\\\\workspace\\\\node-test-binary-windows-js-suites\\\\node\\\\test\\\\fixtures\\\\rc\\\\test.js (106.6917ms)\\n' +"
+    }
+  },
+  {
+    "filename": "test/es-module/test-typescript.mjs",
+    "failure": {
+      "type": "JS_TEST_FAILURE",
+      "file": "es-module/test-typescript",
+      "url": "https://ci.nodejs.org/job/node-test-binary-windows-js-suites/RUN_SUBSET=0,nodes=win10-COMPILED_BY-vs2022_clang/43103/console",
+      "upstream": "https://ci.nodejs.org/job/node-test-pull-request/77225/",
+      "reason": "not ok 141 es-module/test-typescript\n    Location: test\\es-module\\test-typescript.mjs:240:1"
+    }
+  },
+  {
+    "filename": "lib/internal/vfs/file_handle.js",
+    "failure": {
+      "type": "JS_TEST_FAILURE",
+      "file": "/home/iojs/build/workspace/node-test-linter/lib/internal/vfs/file_handle.js",
+      "url": "https://ci.nodejs.org/job/node-test-linter/67148/console",
+      "upstream": "https://ci.nodejs.org/job/node-test-pull-request/77227/",
+      "reason": "not ok 1056 - /home/iojs/build/workspace/node-test-linter/lib/internal/vfs/file_handle.js"
+    }
+  }
+]
