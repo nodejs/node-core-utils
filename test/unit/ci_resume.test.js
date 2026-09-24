@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as sinon from 'sinon';
+import { fetch, MockAgent } from 'undici';
 
 import { ResumePRJob } from '../../lib/ci/resume_ci.js';
 import { CI_CRUMB_URL } from '../../lib/ci/run_ci.js';
@@ -14,12 +15,13 @@ import Request from '../../lib/request.js';
 import { PRBuild } from '../../lib/ci/build-types/pr_build.js';
 
 const approvedSHA = 'a'.repeat(40);
-const resumeTree = 'result,building,actions[_class,parameters[name,value]]';
+const resumeTree = 'result,building,actions[parameters[name,value]]';
 const resumeBuildData = {
   result: 'FAILURE',
   building: false,
   actions: [
-    { _class: 'com.tikal.jenkins.plugins.multijob.MultiJobResumeBuild' },
+    // Jenkins does not export MultiJobResumeBuild, so the action serializes as {}.
+    {},
     { parameters: [{ name: 'COMMIT_SHA_CHECK', value: approvedSHA }] }
   ]
 };
@@ -109,9 +111,9 @@ describe('Jenkins resume', () => {
     jobRunner = new ResumePRJob(cli, request, owner, repo, prid);
   });
 
-  it('resumes the PR job with a Jenkins crumb', async() => {
+  it('resumes the PR job with a Jenkins crumb and an unexported resume action', async() => {
     assert.equal(await jobRunner.resume(), true);
-    sinon.assert.calledOnceWithExactly(request.fetch, `${jobURL}resume`, {
+    sinon.assert.calledOnceWithExactly(request.fetch, `${jobURL}resume/`, {
       method: 'POST',
       headers: { 'Jenkins-Crumb': crumb }
     });
@@ -119,6 +121,30 @@ describe('Jenkins resume', () => {
     for (const call of request.gql.getCalls()) {
       assert.deepEqual(call.args[1], { owner, repo, prid });
     }
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), ['PR CI job successfully resumed']);
+  });
+
+  it('posts to the resume handler without redirecting the POST to a GET', async(t) => {
+    const agent = new MockAgent();
+    agent.disableNetConnect();
+    t.after(() => agent.close());
+    const pool = agent.get('https://ci.nodejs.org');
+    const jobPath = new URL(jobURL).pathname;
+    const projectPath = '/job/node-test-pull-request/';
+    // Stapler redirects a slashless action URL before invoking its POST handler.
+    pool.intercept({ path: `${jobPath}resume`, method: 'POST' })
+      .reply(302, '', { headers: { location: `${jobPath}resume/` } });
+    pool.intercept({ path: `${jobPath}resume/`, method: 'GET' }).reply(405, '');
+    let resumed = 0;
+    pool.intercept({ path: `${jobPath}resume/`, method: 'POST' }).reply(() => {
+      resumed++;
+      return { statusCode: 302, data: '', responseOptions: { headers: { location: projectPath } } };
+    });
+    pool.intercept({ path: projectPath, method: 'GET' }).reply(200, '');
+    request.fetch.callsFake((url, options) => fetch(url, { ...options, dispatcher: agent }));
+
+    assert.equal(await jobRunner.resume(), true);
+    assert.equal(resumed, 1);
     assert.deepEqual(cli._calls.stopSpinner.at(-1), ['PR CI job successfully resumed']);
   });
 
@@ -130,7 +156,7 @@ describe('Jenkins resume', () => {
     ]);
     request.gql.withArgs('Reviews').resolves([comment(jobURL)]);
     assert.equal(await jobRunner.resume(), true);
-    assert.equal(request.fetch.firstCall.args[0], `${jobURL}resume`);
+    assert.equal(request.fetch.firstCall.args[0], `${jobURL}resume/`);
   });
 
   it('finds CI links in the PR description', async() => {
@@ -141,7 +167,7 @@ describe('Jenkins resume', () => {
       }
     });
     assert.equal(await jobRunner.resume(), true);
-    assert.equal(request.fetch.firstCall.args[0], `${jobURL}resume`);
+    assert.equal(request.fetch.firstCall.args[0], `${jobURL}resume/`);
   });
 
   for (const comments of [[], [comment('https://ci.nodejs.org/job/node-test-commit/123456/')]]) {
@@ -174,7 +200,7 @@ describe('Jenkins resume', () => {
     sinon.assert.notCalled(request.fetch);
   });
 
-  it('resumes an aborted job with a resume action', async() => {
+  it('resumes an aborted job with an unexported resume action', async() => {
     request.json.withArgs(apiURL).resolves({ ...resumeBuildData, result: 'ABORTED' });
     request.json.withArgs(fullAPIURL).resolves({ ...failureBuildData, result: 'ABORTED' });
     assert.equal(await jobRunner.resume(), true);
@@ -191,11 +217,17 @@ describe('Jenkins resume', () => {
   });
 
   for (const result of ['FAILURE', 'ABORTED']) {
-    it(`refuses a ${result} job without a resume action`, async() => {
-      request.json.withArgs(apiURL).resolves({ ...resumeBuildData, result, actions: [] });
+    it(`reports an unavailable resume endpoint for a ${result} job`, async() => {
+      request.json.withArgs(apiURL).resolves({ ...resumeBuildData, result });
+      request.fetch.resolves({ status: 404, statusText: 'Not Found' });
       assert.equal(await jobRunner.resume(), false);
-      sinon.assert.notCalled(request.fetch);
-      assert.deepEqual(cli._calls.error, [[`CI job ${jobid} is not resumable`]]);
+      sinon.assert.calledOnceWithExactly(request.fetch, `${jobURL}resume/`, {
+        method: 'POST',
+        headers: { 'Jenkins-Crumb': crumb }
+      });
+      assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+        'Failed to resume PR CI: 404 Not Found', cli.SPINNER_STATUS.FAILED
+      ]);
     });
   }
 
@@ -485,7 +517,7 @@ describe('ncu-ci resume CLI', () => {
   const apiURL = `${jobURL}api/json?tree=${encodeURIComponent(resumeTree)}`;
 
   function run(t, args, hasCI = true, changedFile = 'README.md',
-    buildData = resumeBuildData, headSHA = approvedSHA) {
+    buildData = resumeBuildData, headSHA = approvedSHA, resumeResponse = { status: 200 }) {
     const dir = mkdtempSync(join(tmpdir(), 'ncu-ci-resume-'));
     t.after(() => rmSync(dir, { recursive: true, force: true }));
     writeFileSync(join(dir, 'ncurc'), JSON.stringify({ username: 'test', token: 'test' }));
@@ -518,10 +550,10 @@ describe('ncu-ci resume CLI', () => {
         yield Buffer.from(${JSON.stringify(failureLog)});
       };
       Request.prototype.fetch = async (url, options) => {
-        assert.equal(url, ${JSON.stringify(`${jobURL}resume`)});
+        assert.equal(url, ${JSON.stringify(`${jobURL}resume/`)});
         assert.equal(options.method, 'POST');
         assert.equal(options.headers['Jenkins-Crumb'], 'test-crumb');
-        return { status: 200 };
+        return ${JSON.stringify(resumeResponse)};
       };
       process.argv = [process.execPath, ${JSON.stringify(binary)}, ...${JSON.stringify(args)}];
       await import(${JSON.stringify(new URL('../../bin/ncu-ci.js', import.meta.url).href)});
@@ -577,18 +609,20 @@ describe('ncu-ci resume CLI', () => {
     assert.doesNotMatch(output, /PR CI job successfully resumed/);
   });
 
-  it('resumes an aborted job when Jenkins exposes the resume action', (t) => {
+  it('resumes an aborted job with an unexported resume action', (t) => {
     const { status, output } = run(t, ['resume', 'https://github.com/nodejs/node/pull/123456'],
       true, 'README.md', { ...resumeBuildData, result: 'ABORTED' });
     assert.equal(status, 0, output);
     assert.match(output, /PR CI job successfully resumed/);
   });
 
-  it('exits 1 when an aborted job is not resumable', (t) => {
+  it('exits 1 when Jenkins rejects resuming an aborted job', (t) => {
     const { status, output } = run(t, ['resume', 'https://github.com/nodejs/node/pull/123456'],
-      true, 'README.md', { ...resumeBuildData, result: 'ABORTED', actions: [] });
+      true, 'README.md', { ...resumeBuildData, result: 'ABORTED' }, approvedSHA,
+      { status: 404, statusText: 'Not Found' });
     assert.equal(status, 1, output);
-    assert.match(output, /is not resumable/);
+    assert.match(output, /Failed to resume PR CI: 404 Not Found/);
+    assert.doesNotMatch(output, /PR CI job successfully resumed/);
   });
 
   it('exits 1 when the CI-approved commit differs from the PR HEAD', (t) => {
