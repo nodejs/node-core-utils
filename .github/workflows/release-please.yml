@@ -19,7 +19,6 @@ jobs:
         id: release
         with:
           release-type: node
-          token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
   npm-publish:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
