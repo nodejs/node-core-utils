@@ -1,5 +1,19 @@
 # Changelog
 
+## [7.3.0](https://github.com/nodejs/node-core-utils/compare/v7.2.3...v7.3.0) (2026-09-24)
+
+
+### Features
+
+* add ncu-ci resume command ([#1187](https://github.com/nodejs/node-core-utils/issues/1187)) ([39774a1](https://github.com/nodejs/node-core-utils/commit/39774a179d6ba55f1e4f74aa502fecd9f72b3290))
+
+
+### Bug Fixes
+
+* **security:** fetch all pages of triaged reports ([3fc3948](https://github.com/nodejs/node-core-utils/commit/3fc3948b9b13d2d0899454730beb1707aef7d841))
+* **security:** preserve existing release branches and staged work ([8e08470](https://github.com/nodejs/node-core-utils/commit/8e0847029cb3a2735e87fe7cd17b8768f9df45fe))
+* **security:** refuse to overwrite an existing release draft ([27fd6ee](https://github.com/nodejs/node-core-utils/commit/27fd6eec11c1c5a2397149e106215b02c493e2e1))
+
 ## [7.2.3](https://github.com/nodejs/node-core-utils/compare/v7.2.2...v7.2.3) (2026-09-17)
 
 
