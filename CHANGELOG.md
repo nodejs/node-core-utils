@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.3.1](https://github.com/nodejs/node-core-utils/compare/v7.3.0...v7.3.1) (2026-09-24)
+
+
+### Bug Fixes
+
+* handle unexported Jenkins resume actions ([#1201](https://github.com/nodejs/node-core-utils/issues/1201)) ([42c89be](https://github.com/nodejs/node-core-utils/commit/42c89be54c29f09a1b1dfce5653a651706946f7a))
+
 ## [7.3.0](https://github.com/nodejs/node-core-utils/compare/v7.2.3...v7.3.0) (2026-09-24)
 
 
