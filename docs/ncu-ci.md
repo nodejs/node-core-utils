@@ -177,9 +177,9 @@ job after the main PR CI job is started successfully.
 
 `ncu-ci resume <prid>` resumes the latest `node-test-pull-request` CI run linked
 in the PR description, comments, or reviews. The job must have finished with
-`FAILURE` or `ABORTED` and expose Jenkins' resume action. Running jobs and jobs with
-other results are not resumed. If no PR CI run is found, the command reports that
-and exits unsuccessfully.
+`FAILURE` or `ABORTED`. Running jobs and jobs with other results are not resumed.
+If no PR CI run is found, or Jenkins rejects the resume request, the command
+reports the failure and exits unsuccessfully.
 
 The CI-approved commit (`COMMIT_SHA_CHECK`) must match the PR's current HEAD.
 The command refuses to resume if they differ or the approved commit cannot be
