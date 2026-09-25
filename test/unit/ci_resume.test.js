@@ -59,6 +59,8 @@ const walkFailures = JSON.parse(readFileSync(
   new URL('../fixtures/ci-resume-walk.json', import.meta.url), 'utf8'));
 const reliabilityFailures = JSON.parse(readFileSync(
   new URL('../fixtures/ci-reliability-failures.json', import.meta.url), 'utf8'));
+const makeFailure = JSON.parse(readFileSync(
+  new URL('../fixtures/ci-resume-make-failure.json', import.meta.url), 'utf8'));
 
 describe('Resume file checks against real CI diagnostics', () => {
   for (const { name, kind, filenames, log, url } of reliabilityFailures) {
@@ -176,6 +178,29 @@ describe('Jenkins resume', () => {
       assert.deepEqual(call.args[1], { owner, repo, prid });
     }
     assert.deepEqual(cli._calls.stopSpinner.at(-1), ['PR CI job successfully resumed']);
+  });
+
+  it('allows resuming when only a make exit summary references a changed file', async() => {
+    request.json.withArgs(filesURL).resolves([
+      { filename: 'Makefile' },
+      { filename: '.github/workflows/build-tarball.yml' },
+      { filename: '.github/workflows/test-shared.yml' }
+    ]);
+    request.text.resolves(`${makeFailure.failure}\n${makeFailure.summary}\n`);
+    assert.equal(await jobRunner.resume(), true);
+    sinon.assert.calledOnce(resumeRequest);
+    assert.deepEqual(cli._calls.error, []);
+  });
+
+  it('refuses resuming when the failing test changed despite a make exit summary', async() => {
+    request.json.withArgs(filesURL).resolves([
+      { filename: 'Makefile' }, { filename: makeFailure.filename }
+    ]);
+    request.text.resolves(`${makeFailure.failure}\n${makeFailure.summary}\n`);
+    assert.equal(await jobRunner.resume(), false);
+    sinon.assert.notCalled(resumeRequest);
+    assert.deepEqual(cli._calls.error, [[makeFailure.filename]]);
+    assert.deepEqual(cli._calls.log, [[makeFailure.failure]]);
   });
 
   for (const result of ['FAILURE', 'ABORTED']) {

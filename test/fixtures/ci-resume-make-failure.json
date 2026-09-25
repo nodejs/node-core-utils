@@ -1,0 +1,7 @@
+{
+  "pr": "https://github.com/nodejs/node/pull/66228",
+  "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=fedora-latest-x64/73461/consoleText",
+  "filename": "test/ffi/test-ffi-calls.js",
+  "failure": "not ok 81 ffi/test-ffi-calls\n  ---\n  duration_ms: 123029.13600\n  severity: fail\n  exitcode: -15\n  stack: |-\n    timeout\n    (node:1962772) ExperimentalWarning: FFI is an experimental feature and might change at any time\n    (Use `node --trace-warnings ...` to show where the warning was created)\n  ...",
+  "summary": "make[1]: *** [Makefile:660: test-ci] Error 1"
+}
