@@ -24,6 +24,7 @@ import {
   RunPRJob
 } from '../lib/ci/run_ci.js';
 import { ResumePRJob } from '../lib/ci/resume_ci.js';
+import { checkAvailability } from '../lib/ci/availability.js';
 import { writeJson, writeFile } from '../lib/file.js';
 import { getMergedConfig } from '../lib/config.js';
 import { runPromise } from '../lib/run.js';
@@ -54,6 +55,11 @@ const commandKeys = [
 
 const args = yargs(hideBin(process.argv))
   .completion('completion')
+  .command({
+    command: 'available',
+    desc: 'Check whether Jenkins is available for PR CI requests',
+    handler
+  })
   .command({
     command: 'rate <type>',
     desc: 'Calculate the green rate of a CI job in the last 100 runs',
@@ -598,7 +604,27 @@ class DailyCommand extends CICommand {
   }
 }
 
+async function checkJenkins() {
+  try {
+    let jenkins;
+    try {
+      const credentials = await auth({ github: false, jenkins: true });
+      jenkins = credentials.jenkins;
+    } catch {
+      throw new Error('Configure username and jenkins_token with ncu-config');
+    }
+    const request = new Request({ jenkins });
+    await checkAvailability(request);
+  } catch (err) {
+    console.error(`Unable to check Jenkins availability: ${err.message}`);
+    process.exitCode = 1;
+  }
+}
+
 async function main(command, argv) {
+  if (command === 'available') {
+    return checkJenkins();
+  }
   const cli = new CLI();
   const credentials = await auth({
     github: true,

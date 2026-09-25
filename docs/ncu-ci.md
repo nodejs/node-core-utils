@@ -13,6 +13,7 @@ Supported jobs:
 ncu-ci <command>
 
 Commands:
+  ncu-ci available          Check whether Jenkins is available for PR CI requests
   ncu-ci rate <type>        Calculate the green rate of a CI job in the last 100
                             runs
   ncu-ci walk <type>        Walk the CI and display the failures
@@ -33,6 +34,30 @@ Options:
   --json <path>      Write the results as json to <path>                [string]
   --markdown <path>  Write the results as markdown to <path>            [string]
   --help             Show help                                         [boolean]
+```
+
+### `ncu-ci available`
+
+`ncu-ci available` checks whether Jenkins is available for PR CI requests. It
+exits with status 0 and no output when the controller is not preparing for
+shutdown and `node-test-pull-request` is enabled and buildable. Otherwise it exits
+with status 1 and explains the reason on stderr. HTTP failures, timeouts, and
+unrecognized responses are treated as unavailable.
+
+The command only reads Jenkins state. It does not start or resume a build, check
+individual PRs, or require idle executors. Availability can change after the
+check.
+
+The command uses the configured `username` and `jenkins_token`; no GitHub token,
+repository configuration, or PR argument is required. It has a 20-second deadline
+for its Jenkins requests, including response bodies.
+
+For example, skip processing requests unless Jenkins is available:
+
+```sh
+ncu-ci available || exit 0
+
+# Process requests here.
 ```
 
 ### `ncu-ci rate <type>`
