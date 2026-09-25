@@ -86,6 +86,7 @@ export const firstTimerPR = readJSON('first_timer_pr.json');
 export const firstTimerPrivatePR =
   readJSON('first_timer_pr_with_private_email.json');
 export const semverMajorPR = readJSON('semver_major_pr.json');
+export const largePR = readJSON('large_pr.json');
 export const fixAndRefPR = readJSON('pr_with_fixes_and_refs.json');
 export const fixCrossPR = readJSON('pr_with_fixes_cross.json');
 export const duplicateRefPR = readJSON('pr_with_duplicate_refs.json');
