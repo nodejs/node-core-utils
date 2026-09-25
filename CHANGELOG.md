@@ -1,5 +1,21 @@
 # Changelog
 
+## [7.4.0](https://github.com/nodejs/node-core-utils/compare/v7.3.1...v7.4.0) (2026-09-25)
+
+
+### Features
+
+* add ncu-ci available ([fd6b826](https://github.com/nodejs/node-core-utils/commit/fd6b82641c439bedae5233fc375b394c63d86561))
+* add ncu-ci workload ([e2fc177](https://github.com/nodejs/node-core-utils/commit/e2fc1773f3b200ffb090f27b11fc361fd5dea7b8))
+* recover CI resumes through eligible ancestors ([8addd1e](https://github.com/nodejs/node-core-utils/commit/8addd1e7da05ed13800a4ec07c3ae091d3a07b67))
+* show failures that prevent CI resumes ([db7a98b](https://github.com/nodejs/node-core-utils/commit/db7a98bd8f2ad4d408552e310fac455178f900f0))
+
+
+### Bug Fixes
+
+* guide CI recovery without bypassing duplicates ([955b7ab](https://github.com/nodejs/node-core-utils/commit/955b7ab424dd03a70fdb2e0b5b8641fa8cd070b7))
+* ignore make exit summaries in resume checks ([22ff79b](https://github.com/nodejs/node-core-utils/commit/22ff79b6fb8ff062f36d9376bec8f911fb59c545))
+
 ## [7.3.1](https://github.com/nodejs/node-core-utils/compare/v7.3.0...v7.3.1) (2026-09-24)
 
 
