@@ -89,7 +89,8 @@ describe('Jenkins resume', () => {
   const jobURL = `https://ci.nodejs.org/job/node-test-pull-request/${jobid}/`;
   const menuURL = `${jobURL}contextMenu`;
   const unavailableMessage = `Cannot resume PR CI job ${jobid}: Jenkins does not offer a ` +
-    '"Resume build" action. Start a new CI run with: ' +
+    '"Resume build" action. Check the existing CI run in Jenkins and rebase the PR if needed. ' +
+    'To start a new CI run manually: ' +
     `ncu-ci run https://github.com/${owner}/${repo}/pull/${prid}`;
   const apiURL = `${jobURL}api/json?tree=${encodeURIComponent(resumeTree)}`;
   const fullAPIURL = new PRBuild(null, null, jobid).apiUrl;
@@ -163,9 +164,26 @@ describe('Jenkins resume', () => {
       assert.deepEqual(cli._calls.stopSpinner.at(-1), [
         unavailableMessage, cli.SPINNER_STATUS.FAILED
       ]);
+      assert.doesNotMatch(cli._calls.stopSpinner.at(-1)[0], /request-ci|resume-ci/);
       assert.deepEqual(cli._calls.error, [[jobURL]]);
     });
   }
+
+  it('suggests manual recovery for an unavailable nodejs/node run', async() => {
+    jobRunner = new ResumePRJob(cli, request, 'nodejs', 'node', prid);
+    request.json.withArgs(apiURL).resolves(getResumeBuildData('nodejs', 'node', prid));
+    menuRequest.resolves({ status: 200, json: async() => ({ items: [] }) });
+    assert.equal(await jobRunner.resume(), false);
+    sinon.assert.notCalled(resumeRequest);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      `Cannot resume PR CI job ${jobid}: Jenkins does not offer a "Resume build" action. ` +
+        'Check the existing CI run in Jenkins and rebase the PR if needed. ' +
+        'To start a new CI run manually: ' +
+        `ncu-ci run https://github.com/nodejs/node/pull/${prid}`,
+      cli.SPINNER_STATUS.FAILED
+    ]);
+    assert.doesNotMatch(cli._calls.stopSpinner.at(-1)[0], /request-ci|resume-ci/);
+  });
 
   for (const [name, value] of [
     ['TARGET_GITHUB_ORG', 'another-owner'], ['TARGET_GITHUB_ORG', undefined],
@@ -1128,16 +1146,20 @@ describe('ncu-ci resume CLI', () => {
       { status: 404, statusText: 'Not Found' });
     assert.equal(status, 1, output);
     assert.match(output, /Cannot resume PR CI job 654321: Jenkins does not offer a "Resume build" action/);
-    assert.match(output, /ncu-ci run https:\/\/github.com\/nodejs\/node\/pull\/123456/);
+    assert.ok(output.includes('Check the existing CI run in Jenkins and rebase the PR if needed. ' +
+      'To start a new CI run manually: ncu-ci run https://github.com/nodejs/node/pull/123456'));
+    assert.doesNotMatch(output, /request-ci|resume-ci/);
     assert.doesNotMatch(output, /PR CI job successfully resumed/);
   });
 
-  it('exits 1 with a new-run command when Jenkins offers no resume action', (t) => {
+  it('exits 1 with manual recovery guidance when Jenkins offers no resume action', (t) => {
     const { status, output } = run(t, ['resume', 'https://github.com/nodejs/node/pull/123456'],
       true, 'README.md', resumeBuildData, approvedSHA, { status: 200 }, { items: [] });
     assert.equal(status, 1, output);
     assert.match(output, /Cannot resume PR CI job 654321: Jenkins does not offer a "Resume build" action/);
-    assert.match(output, /ncu-ci run https:\/\/github.com\/nodejs\/node\/pull\/123456/);
+    assert.ok(output.includes('Check the existing CI run in Jenkins and rebase the PR if needed. ' +
+      'To start a new CI run manually: ncu-ci run https://github.com/nodejs/node/pull/123456'));
+    assert.doesNotMatch(output, /request-ci|resume-ci/);
     assert.ok(output.includes(jobURL));
     assert.doesNotMatch(output, /Checking failures|Resuming PR CI|PR CI job successfully resumed/);
   });

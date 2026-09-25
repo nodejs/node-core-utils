@@ -204,11 +204,18 @@ describe('Jenkins', () => {
   });
 
   describe('--check-for-duplicates', { concurrency: false }, () => {
+    const jobid = 123456;
+    const jobURL = `https://ci.nodejs.org/job/node-test-pull-request/${jobid}/`;
+    const menuURL = `${jobURL}contextMenu`;
+    const duplicateRefusal = 'Refusing to start a potentially duplicate CI job. ';
+    const resumeHint = `Resume CI with: ncu-ci resume https://github.com/${owner}/${repo}/pull/${prid}`;
+    const manualHint = 'Check the existing CI run in Jenkins and rebase the PR if needed. ' +
+      `To start a new CI run manually: ncu-ci run https://github.com/${owner}/${repo}/pull/${prid}`;
     beforeEach(() => {
       sinon.replace(PRData.prototype, 'getComments', sinon.fake.resolves());
       sinon.replace(PRData.prototype, 'getPR', sinon.fake.resolves());
       sinon.replace(JobParser.prototype, 'parse',
-        sinon.fake.returns(new Map().set('PR', { jobid: 123456 })));
+        sinon.fake.returns(new Map().set('PR', { jobid, link: jobURL })));
     });
     afterEach(() => {
       sinon.restore();
@@ -229,12 +236,12 @@ describe('Jenkins', () => {
         {
           _class: 'hudson.model.StringParameterValue',
           name: 'TARGET_GITHUB_ORG',
-          value: 'nodejs'
+          value: owner
         },
         {
           _class: 'hudson.model.StringParameterValue',
           name: 'TARGET_REPO_NAME',
-          value: 'node'
+          value: repo
         },
         {
           _class: 'hudson.model.StringParameterValue',
@@ -290,6 +297,15 @@ describe('Jenkins', () => {
         }
       ]
     });
+    const createRequest = () => {
+      const request = {
+        fetch: sinon.stub().rejects(new Error('Unexpected fetch request')),
+        json: sinon.stub().rejects(new Error('Unexpected JSON request'))
+      };
+      request.json.withArgs(CI_CRUMB_URL).resolves({ crumb });
+      request.fetch.withArgs(CI_PR_URL).resolves({ status: 201 });
+      return request;
+    };
 
     it('should return false if inferred commit already has CI', async() => {
       const cli = new TestCLI();
@@ -307,6 +323,196 @@ describe('Jenkins', () => {
       const jobRunner = new RunPRJob(cli, request, owner, repo, prid, undefined, true);
       assert.strictEqual(await jobRunner.start(), false);
       assert.strictEqual(request.fetch.callCount, 0);
+    });
+    const inProgress = 'The existing CI run is still in progress.';
+    const succeeded = 'CI has already succeeded for this commit.';
+    const checkJenkins = 'Check the existing CI run in Jenkins before retrying.';
+    for (const [state, reason] of [
+      [{ building: true, result: null }, inProgress],
+      [{ building: true, result: 'FAILURE' }, inProgress],
+      [{ building: false, result: null }, checkJenkins],
+      [{ building: false, result: 'SUCCESS' }, succeeded],
+      [{ building: false, result: 'UNSTABLE' }, checkJenkins],
+      [{ building: false, result: 'NOT_BUILT' }, checkJenkins],
+      [{ building: false, result: 'UNKNOWN' }, checkJenkins],
+      [{ building: false }, checkJenkins],
+      [{ result: 'FAILURE' }, checkJenkins]
+    ]) {
+      it(`should reject duplicate CI without a resume lookup for ${
+        JSON.stringify(state)}`, async() => {
+        const cli = new TestCLI();
+        sinon.replace(PRBuild.prototype, 'getBuildData', sinon.fake.resolves({
+          ...mockJenkinsResponse(getParameters('deadbeef')),
+          ...state
+        }));
+        const request = createRequest();
+        const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef', true);
+        assert.strictEqual(await jobRunner.start(), false);
+        sinon.assert.notCalled(request.fetch);
+        assert.deepStrictEqual(cli._calls.error, [[duplicateRefusal + reason]]);
+      });
+    }
+    for (const result of ['FAILURE', 'ABORTED']) {
+      for (const resumable of [true, false]) {
+        it(`should reject duplicate CI for a ${
+          result} job ${resumable ? 'with' : 'without'} a resume action`, async() => {
+          const cli = new TestCLI();
+          sinon.replace(PRBuild.prototype, 'getBuildData', sinon.fake.resolves({
+            ...mockJenkinsResponse(getParameters('deadbeef')),
+            result,
+            building: false
+          }));
+          const request = createRequest();
+          const menuRequest = request.fetch.withArgs(menuURL).resolves({
+            status: 200,
+            json: async() => ({ items: resumable ? [{ url: 'resume' }] : [] })
+          });
+          const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef', true);
+          assert.strictEqual(await jobRunner.start(), false);
+          sinon.assert.calledOnceWithExactly(menuRequest, menuURL, {
+            method: 'GET', redirect: 'error'
+          });
+          sinon.assert.notCalled(request.fetch.withArgs(CI_PR_URL));
+          assert.deepStrictEqual(cli._calls.error,
+            [[duplicateRefusal + (resumable ? resumeHint : manualHint)]]);
+        });
+      }
+    }
+    it('should suggest the resume-ci label for a resumable nodejs/node build', async() => {
+      const cli = new TestCLI();
+      const parameters = getParameters('deadbeef').map(parameter =>
+        parameter.name === 'TARGET_REPO_NAME' ? { ...parameter, value: 'node' } : parameter);
+      sinon.replace(PRBuild.prototype, 'getBuildData', sinon.fake.resolves({
+        ...mockJenkinsResponse(parameters),
+        result: 'FAILURE',
+        building: false
+      }));
+      const request = createRequest();
+      request.fetch.withArgs(menuURL).resolves({
+        status: 200,
+        json: async() => ({ items: [{ url: 'resume' }] })
+      });
+      const jobRunner = new RunPRJob(cli, request, owner, 'node', prid, 'deadbeef', true);
+      assert.strictEqual(await jobRunner.start(), false);
+      sinon.assert.notCalled(request.fetch.withArgs(CI_PR_URL));
+      assert.deepStrictEqual(cli._calls.error, [[duplicateRefusal +
+        'Resume CI by adding the "resume-ci" label to the PR, or run: ' +
+        `ncu-ci resume https://github.com/nodejs/node/pull/${prid}`]]);
+    });
+    for (const resumable of [true, false]) {
+      it(`should reject duplicate CI when the resume ancestor ${
+        resumable ? 'has' : 'does not have'} a resume action`, async() => {
+        const cli = new TestCLI();
+        const ancestorJobid = jobid - 1;
+        const ancestorURL = `https://ci.nodejs.org/job/node-test-pull-request/${ancestorJobid}/`;
+        const data = {
+          ...mockJenkinsResponse(getParameters('deadbeef')),
+          result: 'FAILURE',
+          building: false
+        };
+        const latestData = {
+          ...data,
+          actions: [...data.actions, {
+            causes: [{
+              _class: 'com.tikal.jenkins.plugins.multijob.ResumeCause',
+              upstreamProject: 'node-test-pull-request',
+              upstreamBuild: ancestorJobid,
+              upstreamUrl: 'job/node-test-pull-request/'
+            }]
+          }]
+        };
+        const getBuildData = sinon.stub(PRBuild.prototype, 'getBuildData');
+        getBuildData.onFirstCall().resolves(latestData);
+        getBuildData.onSecondCall().resolves(data);
+        const request = createRequest();
+        request.fetch.withArgs(menuURL).resolves({
+          status: 200,
+          json: async() => ({ items: [] })
+        });
+        const ancestorMenu = request.fetch.withArgs(`${ancestorURL}contextMenu`).resolves({
+          status: 200,
+          json: async() => ({ items: resumable ? [{ url: 'resume' }] : [] })
+        });
+        const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef', true);
+        assert.strictEqual(await jobRunner.start(), false);
+        sinon.assert.calledTwice(getBuildData);
+        assert.strictEqual(getBuildData.secondCall.thisValue.jobUrl, ancestorURL);
+        sinon.assert.calledOnce(ancestorMenu);
+        sinon.assert.notCalled(request.fetch.withArgs(CI_PR_URL));
+        assert.deepStrictEqual(cli._calls.error,
+          [[duplicateRefusal + (resumable ? resumeHint : manualHint)]]);
+      });
+    }
+    it('should reject duplicate CI when an ancestor cannot be queried', async() => {
+      const cli = new TestCLI();
+      const data = {
+        ...mockJenkinsResponse(getParameters('deadbeef')),
+        result: 'FAILURE',
+        building: false
+      };
+      data.actions.push({
+        causes: [{
+          _class: 'com.tikal.jenkins.plugins.multijob.ResumeCause',
+          upstreamProject: 'node-test-pull-request',
+          upstreamBuild: jobid - 1,
+          upstreamUrl: 'job/node-test-pull-request/'
+        }]
+      });
+      const getBuildData = sinon.stub(PRBuild.prototype, 'getBuildData');
+      getBuildData.onFirstCall().resolves(data);
+      getBuildData.onSecondCall().rejects(new Error('Ancestor metadata unavailable'));
+      const request = createRequest();
+      request.fetch.withArgs(menuURL).resolves({
+        status: 200,
+        json: async() => ({ items: [] })
+      });
+      const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef', true);
+      assert.strictEqual(await jobRunner.start(), false);
+      sinon.assert.notCalled(request.fetch.withArgs(CI_PR_URL));
+      assert.match(cli._calls.error[0][0], /Ancestor metadata unavailable/);
+    });
+    it('should reject a potential duplicate CI with conflicting approved commits', async() => {
+      const cli = new TestCLI();
+      const data = {
+        ...mockJenkinsResponse(getParameters('different-commit')),
+        result: 'FAILURE',
+        building: false
+      };
+      data.actions.push({ parameters: getParameters('deadbeef') });
+      sinon.replace(PRBuild.prototype, 'getBuildData', sinon.fake.resolves(data));
+      const request = createRequest();
+      const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef', true);
+      assert.strictEqual(await jobRunner.start(), false);
+      sinon.assert.notCalled(request.fetch);
+      assert.deepStrictEqual(cli._calls.error, [[duplicateRefusal + checkJenkins]]);
+    });
+    it('should reject duplicate CI when resume availability cannot be checked', async() => {
+      const cli = new TestCLI();
+      sinon.replace(PRBuild.prototype, 'getBuildData', sinon.fake.resolves({
+        ...mockJenkinsResponse(getParameters('deadbeef')),
+        result: 'FAILURE',
+        building: false
+      }));
+      const request = createRequest();
+      request.fetch.withArgs(menuURL).resolves({ status: 403, statusText: 'Forbidden' });
+      const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef', true);
+      assert.strictEqual(await jobRunner.start(), false);
+      sinon.assert.notCalled(request.fetch.withArgs(CI_PR_URL));
+      assert.match(cli._calls.error[0][0], /Could not check whether existing CI run/);
+      assert.ok(cli._calls.error[0][0].includes(jobURL));
+      assert.match(cli._calls.error[0][0], /403 Forbidden/);
+      assert.match(cli._calls.error[1][0], /Retry after checking Jenkins access/);
+    });
+    it('should not look up existing builds without the duplicate check flag', async() => {
+      const cli = new TestCLI();
+      const getBuildData = sinon.fake.rejects(new Error('Unexpected metadata lookup'));
+      sinon.replace(PRBuild.prototype, 'getBuildData', getBuildData);
+      const request = createRequest();
+      const jobRunner = new RunPRJob(cli, request, owner, repo, prid, 'deadbeef');
+      assert.strictEqual(await jobRunner.start(), true);
+      sinon.assert.notCalled(PRData.prototype.getComments);
+      sinon.assert.notCalled(getBuildData);
+      sinon.assert.calledOnceWithMatch(request.fetch, CI_PR_URL, { method: 'POST' });
     });
     it('should return true when last CI is on a different commit', async() => {
       const cli = new TestCLI();
