@@ -14,6 +14,7 @@ ncu-ci <command>
 
 Commands:
   ncu-ci available          Check whether Jenkins is available for PR CI requests
+  ncu-ci workload           Print the number of running and queued node-test-pull-request jobs
   ncu-ci rate <type>        Calculate the green rate of a CI job in the last 100
                             runs
   ncu-ci walk <type>        Walk the CI and display the failures
@@ -48,14 +49,30 @@ The command only reads Jenkins state. It does not start or resume a build, check
 individual PRs, or require idle executors. Availability can change after the
 check.
 
-The command uses the configured `username` and `jenkins_token`; no GitHub token,
-repository configuration, or PR argument is required. It has a 20-second deadline
-for its Jenkins requests, including response bodies.
+### `ncu-ci workload`
 
-For example, skip processing requests unless Jenkins is available:
+`ncu-ci workload` prints the number of running and queued `node-test-pull-request`
+jobs, followed by a newline. This includes PR builds waiting for downstream tests.
+Each PR build counts once; downstream test jobs do not add to the count. If no PR
+builds are running or queued, it prints `0`. A failed query exits with status 1,
+reports the reason on stderr, and does not print a count.
+
+The command reads Jenkins executors and the waiting queue, so older active builds
+are counted without relying on a limited build history. A request that starts
+between the two reads is counted once. The count is a snapshot and can change
+before a new request starts.
+
+Both commands use the configured `username` and `jenkins_token`; no GitHub token,
+repository configuration, or PR argument is required. Each command has a
+20-second deadline for its Jenkins requests, including response bodies.
+
+For example, skip processing requests unless Jenkins is available and fewer than
+five PR jobs are running or queued:
 
 ```sh
 ncu-ci available || exit 0
+workload=$(ncu-ci workload) || exit 0
+[ "$workload" -lt 5 ] || exit 0
 
 # Process requests here.
 ```

@@ -25,6 +25,7 @@ import {
 } from '../lib/ci/run_ci.js';
 import { ResumePRJob } from '../lib/ci/resume_ci.js';
 import { checkAvailability } from '../lib/ci/availability.js';
+import { getPRWorkload } from '../lib/ci/workload.js';
 import { writeJson, writeFile } from '../lib/file.js';
 import { getMergedConfig } from '../lib/config.js';
 import { runPromise } from '../lib/run.js';
@@ -58,6 +59,11 @@ const args = yargs(hideBin(process.argv))
   .command({
     command: 'available',
     desc: 'Check whether Jenkins is available for PR CI requests',
+    handler
+  })
+  .command({
+    command: 'workload',
+    desc: 'Print the number of running and queued node-test-pull-request jobs',
     handler
   })
   .command({
@@ -604,7 +610,7 @@ class DailyCommand extends CICommand {
   }
 }
 
-async function checkJenkins() {
+async function checkJenkins(command) {
   try {
     let jenkins;
     try {
@@ -614,16 +620,23 @@ async function checkJenkins() {
       throw new Error('Configure username and jenkins_token with ncu-config');
     }
     const request = new Request({ jenkins });
-    await checkAvailability(request);
+    if (command === 'available') {
+      await checkAvailability(request);
+    } else {
+      console.log(await getPRWorkload(request));
+    }
   } catch (err) {
-    console.error(`Unable to check Jenkins availability: ${err.message}`);
+    const action = command === 'available'
+      ? 'check Jenkins availability'
+      : 'read the PR CI workload';
+    console.error(`Unable to ${action}: ${err.message}`);
     process.exitCode = 1;
   }
 }
 
 async function main(command, argv) {
-  if (command === 'available') {
-    return checkJenkins();
+  if (command === 'available' || command === 'workload') {
+    return checkJenkins(command);
   }
   const cli = new CLI();
   const credentials = await auth({

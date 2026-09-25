@@ -9,12 +9,28 @@ import { fileURLToPath } from 'node:url';
 const binaryURL = new URL('../../bin/ncu-ci.js', import.meta.url);
 const requestURL = new URL('../../lib/request.js', import.meta.url);
 const undiciURL = import.meta.resolve('undici');
+const jobURL = 'https://ci.nodejs.org/job/node-test-pull-request/';
 const root = (data, extra = {}) => ({
   path: '/api/json', tree: 'quietingDown', data, ...extra
 });
 const job = (data, extra = {}) => ({
   path: '/job/node-test-pull-request/api/json', tree: 'disabled,buildable', data, ...extra
 });
+const queue = (data, extra = {}) => ({
+  path: '/queue/api/json', tree: 'items[id,task[url]]', data, ...extra
+});
+const computers = (data, extra = {}) => ({
+  path: '/computer/api/json',
+  tree: 'computer[executors[currentExecutable[url,queueId]],' +
+    'oneOffExecutors[currentExecutable[url,queueId]]]',
+  data,
+  ...extra
+});
+const idleComputers = () => computers({ computer: [] });
+const running = (number, queueId = number) => ({
+  currentExecutable: { url: `${jobURL}${number}/`, queueId }
+});
+
 function run(t, command, responses, credentials = {
   username: 'test', jenkins_token: 'test-jenkins-token'
 }) {
@@ -167,5 +183,134 @@ describe('ncu-ci available', () => {
     });
     assertFailure(result, /Configure username and jenkins_token with ncu-config/);
     assert.doesNotMatch(result.stdout + result.stderr, /secret-invalid-token/);
+  });
+});
+
+describe('ncu-ci workload', () => {
+  it('prints only the number of unfinished and queued PR jobs', (t) => {
+    const result = run(t, 'workload', [queue({
+      items: [
+        { id: 1, task: { url: jobURL } },
+        { task: { url: 'https://ci.nodejs.org/job/node-test-commit/' } },
+        { task: { url: `${jobURL}123/` } },
+        { task: { url: 'https://example.org/job/node-test-pull-request/' } },
+        { task: { url: 'https://ci.nodejs.org/job/node-test-pull-request-other/' } },
+        { id: 2, task: { url: jobURL.slice(0, -1) } },
+        { task: {} },
+        { task: { url: null } },
+        { id: 3, task: { url: jobURL } }
+      ]
+    }), idleComputers()]);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout, '3\n');
+    assert.equal(result.stderr, '');
+  });
+
+  it('includes running PR builds when the waiting queue is empty', (t) => {
+    const result = run(t, 'workload', [queue({ items: [] }), computers({
+      computer: [{
+        executors: Array.from({ length: 3 }, (_, i) => running(i + 1)),
+        oneOffExecutors: Array.from({ length: 17 }, (_, i) => running(i + 4))
+      }]
+    })]);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout, '20\n');
+    assert.equal(result.stderr, '');
+    assert.equal(result.trace.jsonReads, 2);
+  });
+
+  it('combines queued and working PR builds without double counting transitions', (t) => {
+    const result = run(t, 'workload', [queue({
+      items: [
+        { id: 10, task: { url: jobURL } },
+        { id: 11, task: { url: jobURL } },
+        { id: 12, task: { url: jobURL } }
+      ]
+    }), computers({
+      computer: [{
+        executors: [running(101, 10), running(102, 20), { currentExecutable: null }, {}],
+        oneOffExecutors: [
+          running(102, 20),
+          { currentExecutable: { url: `${jobURL}102`, queueId: 20 } },
+          { currentExecutable: { url: 'https://ci.nodejs.org/job/node-test-commit/1/' } },
+          { currentExecutable: { url: 'https://example.org/job/node-test-pull-request/1/' } },
+          { currentExecutable: {} }
+        ]
+      }]
+    })]);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout, '4\n');
+    assert.equal(result.stderr, '');
+  });
+
+  for (const items of [[], [{ task: { url: 'https://ci.nodejs.org/job/node-test-commit/' } }]]) {
+    it(`prints zero for a valid queue with no PR jobs: ${JSON.stringify(items)}`, (t) => {
+      const result = run(t, 'workload', [queue({ items }), idleComputers()]);
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(result.stdout, '0\n');
+      assert.equal(result.stderr, '');
+    });
+  }
+
+  for (const data of [null, {}, { items: null }, { items: {} }]) {
+    it(`fails without a misleading count for invalid queue data: ${JSON.stringify(data)}`, (t) => {
+      assertFailure(run(t, 'workload', [queue(data)]));
+    });
+  }
+
+  for (const item of [null, {}, { task: null }, { task: false }, { task: { url: 123 } }]) {
+    it(`fails for a malformed queue item: ${JSON.stringify(item)}`, (t) => {
+      assertFailure(run(t, 'workload', [queue({ items: [item] })]));
+    });
+  }
+
+  for (const id of [undefined, null, -1, 1.5, '1', Number.MAX_SAFE_INTEGER + 1]) {
+    it(`rejects a queued PR item with invalid ID: ${JSON.stringify(id)}`, (t) => {
+      assertFailure(run(t, 'workload', [queue({ items: [{ id, task: { url: jobURL } }] })]));
+    });
+  }
+
+  for (const data of [
+    null,
+    {},
+    { computer: null },
+    { computer: {} },
+    { computer: [{ executors: {}, oneOffExecutors: [] }] },
+    { computer: [{ executors: [], oneOffExecutors: null }] },
+    { computer: [{ executors: [{ currentExecutable: false }], oneOffExecutors: [] }] },
+    { computer: [{ executors: [], oneOffExecutors: [{ currentExecutable: { url: 1 } }] }] }
+  ]) {
+    it(`fails without a partial count for invalid executor data: ${JSON.stringify(data)}`, (t) => {
+      assertFailure(run(t, 'workload', [
+        queue({ items: [{ id: 1, task: { url: jobURL } }] }), computers(data)
+      ]));
+    });
+  }
+
+  it('reports executor API failure without printing the already counted queue', (t) => {
+    const result = run(t, 'workload', [
+      queue({ items: [{ id: 1, task: { url: jobURL } }] }),
+      computers(null, { status: 503, statusText: 'Service Unavailable' })
+    ]);
+    assertFailure(result, /503/);
+    assert.equal(result.trace.jsonReads, 1);
+    assert.equal(result.trace.cancellations, 1);
+  });
+
+  it('reports HTTP failures instead of printing zero', (t) => {
+    const result = run(t, 'workload', [queue(null, { status: 403, statusText: 'Forbidden' })]);
+    assertFailure(result, /403/);
+    assert.equal(result.trace.jsonReads, 0);
+    assert.equal(result.trace.cancellations, 1);
+  });
+
+  it('reports malformed JSON instead of printing zero', (t) => {
+    assertFailure(run(t, 'workload', [queue(null, { jsonError: 'Invalid queue JSON' })]),
+      /Jenkins returned invalid JSON/);
+  });
+
+  it('reports a network failure instead of printing zero', (t) => {
+    assertFailure(run(t, 'workload', [queue(null, { error: 'Connection reset' })]),
+      /Connection reset/);
   });
 });
