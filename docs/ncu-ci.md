@@ -181,14 +181,26 @@ in the PR description, comments, or reviews. The job must have finished with
 If no PR CI run is found, or Jenkins rejects the resume request, the command
 reports the failure and exits unsuccessfully.
 
+Before downloading failure logs or submitting a resume request, the command checks
+that Jenkins offers the **Resume build** action to your account. A failed or
+aborted result alone does not guarantee that this action is available. If it is
+missing, the command follows Jenkins' recorded resume ancestry to the nearest
+ancestor that offers the action, and reports which run it will resume. Each
+ancestor must have finished with `FAILURE` or `ABORTED` and match the PR,
+repository, and approved commit. It does not search unrelated older CI runs or
+skip past a mismatched ancestor. If no eligible ancestor is available, the command
+reports the build URL and a command to start a new CI run. Errors checking
+availability stop the command without attempting to resume.
+
 The CI-approved commit (`COMMIT_SHA_CHECK`) must match the PR's current HEAD.
 The command refuses to resume if they differ or the approved commit cannot be
 determined.
 
 Before resuming, the command streams failed-job console output and compares
-failure diagnostics with the PR's changed files. It refuses to resume if a failed
-test or a file referenced in a failure diagnostic is changed by the PR. Logs are
-scanned one at a time with bounded memory. HTTP compression is decoded as the
+failure diagnostics with the PR's changed files. When recovering through resume
+ancestry, it checks the latest run and every ancestor visited. It refuses to resume
+if a failed test or a file referenced in a failure diagnostic is changed by the PR.
+Logs are scanned one at a time with bounded memory. HTTP compression is decoded as the
 response arrives. A match cancels the download and skips remaining logs. Unknown
 or unavailable failure details do not prevent resuming; the check uses the
 available diagnostics. Failure to retrieve the PR's changed-file list prevents
