@@ -150,6 +150,11 @@ Options:
 - `--owner <owner>`: GitHub repository owner, used when `<prid>` is not a GitHub URL
 - `--repo <repo>`: GitHub repository name, used when `<prid>` is not a GitHub URL
 
+With `--check-for-duplicates`, an existing CI run for the same approved commit
+prevents starting another run, including when a failed or aborted build has no
+eligible resume action. Errors checking resume availability also prevent starting
+another run.
+
 Examples:
 
 Run CI for a PR number using repository information from config or flags:
@@ -189,7 +194,7 @@ ancestor that offers the action, and reports which run it will resume. Each
 ancestor must have finished with `FAILURE` or `ABORTED` and match the PR,
 repository, and approved commit. It does not search unrelated older CI runs or
 skip past a mismatched ancestor. If no eligible ancestor is available, the command
-reports the build URL and a command to start a new CI run. Errors checking
+reports the build URL and exits unsuccessfully. Errors checking
 availability stop the command without attempting to resume.
 
 The CI-approved commit (`COMMIT_SHA_CHECK`) must match the PR's current HEAD.
