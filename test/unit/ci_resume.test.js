@@ -15,16 +15,27 @@ import Request from '../../lib/request.js';
 import { PRBuild } from '../../lib/ci/build-types/pr_build.js';
 
 const approvedSHA = 'a'.repeat(40);
-const resumeTree = 'result,building,actions[parameters[name,value]]';
-const resumeBuildData = {
-  result: 'FAILURE',
-  building: false,
-  actions: [
-    // Jenkins does not export MultiJobResumeBuild, so the action serializes as {}.
-    {},
-    { parameters: [{ name: 'COMMIT_SHA_CHECK', value: approvedSHA }] }
-  ]
-};
+const resumeTree = 'result,building,actions[parameters[name,value],' +
+  'causes[_class,upstreamProject,upstreamBuild,upstreamUrl]]';
+function getResumeBuildData(owner, repo, prid) {
+  return {
+    result: 'FAILURE',
+    building: false,
+    actions: [
+      // Jenkins does not export MultiJobResumeBuild, so the action serializes as {}.
+      {},
+      {
+        parameters: [
+          { name: 'COMMIT_SHA_CHECK', value: approvedSHA },
+          { name: 'TARGET_GITHUB_ORG', value: owner },
+          { name: 'TARGET_REPO_NAME', value: repo },
+          { name: 'PR_ID', value: String(prid) }
+        ]
+      }
+    ]
+  };
+}
+const resumeBuildData = getResumeBuildData('nodejs', 'node', 123456);
 const failureLog = 'not ok 1 parallel/test-example\n' +
   '  ---\n  severity: fail\n  stack: |-\n    AssertionError\n  ...\n';
 const failureBuildData = {
@@ -72,9 +83,14 @@ describe('Jenkins resume', () => {
   const owner = 'nodejs';
   const repo = 'node-auto-test';
   const prid = 123456;
+  const resumeBuildData = getResumeBuildData(owner, repo, prid);
   const jobid = 654321;
   const crumb = 'asdf1234';
   const jobURL = `https://ci.nodejs.org/job/node-test-pull-request/${jobid}/`;
+  const menuURL = `${jobURL}contextMenu`;
+  const unavailableMessage = `Cannot resume PR CI job ${jobid}: Jenkins does not offer a ` +
+    '"Resume build" action. Start a new CI run with: ' +
+    `ncu-ci run https://github.com/${owner}/${repo}/pull/${prid}`;
   const apiURL = `${jobURL}api/json?tree=${encodeURIComponent(resumeTree)}`;
   const fullAPIURL = new PRBuild(null, null, jobid).apiUrl;
   const filesURL = `/repos/${owner}/${repo}/pulls/${prid}/files?per_page=100&page=1`;
@@ -84,6 +100,8 @@ describe('Jenkins resume', () => {
   let cli;
   let request;
   let jobRunner;
+  let menuRequest;
+  let resumeRequest;
 
   beforeEach(() => {
     cli = new TestCLI();
@@ -94,8 +112,13 @@ describe('Jenkins resume', () => {
       async * stream(url) { yield Buffer.from(await request.text(url)); },
       getPullRequestFiles: Request.prototype.getPullRequestFiles,
       getPullRequest: Request.prototype.getPullRequest,
-      fetch: sinon.stub().resolves({ status: 200 })
+      fetch: sinon.stub().rejects(new Error('Unexpected fetch request'))
     };
+    menuRequest = request.fetch.withArgs(menuURL).resolves({
+      status: 200,
+      json: async() => ({ items: [{ url: new URL(`${jobURL}resume`).pathname }] })
+    });
+    resumeRequest = request.fetch.withArgs(`${jobURL}resume/`).resolves({ status: 200 });
     request.json.withArgs(CI_CRUMB_URL).resolves({ crumb });
     request.json.withArgs(apiURL).resolves(resumeBuildData);
     request.json.withArgs(prURL).resolves({ head: { sha: approvedSHA } });
@@ -113,7 +136,10 @@ describe('Jenkins resume', () => {
 
   it('resumes the PR job with a Jenkins crumb and an unexported resume action', async() => {
     assert.equal(await jobRunner.resume(), true);
-    sinon.assert.calledOnceWithExactly(request.fetch, `${jobURL}resume/`, {
+    sinon.assert.calledOnceWithExactly(menuRequest, menuURL, {
+      method: 'GET', redirect: 'error'
+    });
+    sinon.assert.calledOnceWithExactly(resumeRequest, `${jobURL}resume/`, {
       method: 'POST',
       headers: { 'Jenkins-Crumb': crumb }
     });
@@ -124,6 +150,426 @@ describe('Jenkins resume', () => {
     assert.deepEqual(cli._calls.stopSpinner.at(-1), ['PR CI job successfully resumed']);
   });
 
+  for (const result of ['FAILURE', 'ABORTED']) {
+    it(`does not scan failures or POST when a ${result} job has no resume action`, async() => {
+      request.json.withArgs(apiURL).resolves({ ...resumeBuildData, result });
+      menuRequest.resolves({ status: 200, json: async() => ({ items: [] }) });
+      assert.equal(await jobRunner.resume(), false);
+      sinon.assert.notCalled(resumeRequest);
+      sinon.assert.neverCalledWith(request.json, filesURL);
+      sinon.assert.neverCalledWith(request.json, fullAPIURL);
+      sinon.assert.neverCalledWith(request.json, prURL);
+      sinon.assert.notCalled(request.text);
+      assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+        unavailableMessage, cli.SPINNER_STATUS.FAILED
+      ]);
+      assert.deepEqual(cli._calls.error, [[jobURL]]);
+    });
+  }
+
+  for (const [name, value] of [
+    ['TARGET_GITHUB_ORG', 'another-owner'], ['TARGET_GITHUB_ORG', undefined],
+    ['TARGET_REPO_NAME', 'another-repo'], ['TARGET_REPO_NAME', undefined],
+    ['PR_ID', String(prid + 1)], ['PR_ID', undefined]
+  ]) {
+    it(`rejects an initial build with mismatched ${name}: ${value}`, async() => {
+      const data = structuredClone(resumeBuildData);
+      data.actions[1].parameters.find(parameter => parameter.name === name).value = value;
+      request.json.withArgs(apiURL).resolves(data);
+      assert.equal(await jobRunner.resume(), false);
+      sinon.assert.notCalled(request.fetch);
+      sinon.assert.neverCalledWith(request.json, filesURL);
+      assert.match(cli._calls.stopSpinner.at(-1)[0],
+        /CI job 654321 does not match pull request nodejs\/node-auto-test#123456/);
+    });
+  }
+
+  it('rejects conflicting identity parameters on the initial build', async() => {
+    const data = structuredClone(resumeBuildData);
+    data.actions.push({ parameters: [{ name: 'PR_ID', value: String(prid + 1) }] });
+    request.json.withArgs(apiURL).resolves(data);
+    assert.equal(await jobRunner.resume(), false);
+    sinon.assert.notCalled(request.fetch);
+  });
+
+  it('accepts an initial build whose PR_ID parameter is a number', async() => {
+    const data = structuredClone(resumeBuildData);
+    data.actions[1].parameters.find(parameter => parameter.name === 'PR_ID').value = prid;
+    request.json.withArgs(apiURL).resolves(data);
+    assert.equal(await jobRunner.resume(), true);
+    sinon.assert.calledOnce(resumeRequest);
+  });
+
+  it('matches the initial build owner and repository case-insensitively', async() => {
+    const data = getResumeBuildData(owner.toUpperCase(), repo.toUpperCase(), prid);
+    request.json.withArgs(apiURL).resolves(data);
+    assert.equal(await jobRunner.resume(), true);
+    sinon.assert.calledOnce(resumeRequest);
+  });
+
+  describe('resume ancestry', () => {
+    const ancestorId = jobid - 1;
+    const resumeCause = (id, overrides = {}) => ({
+      _class: 'com.tikal.jenkins.plugins.multijob.ResumeCause',
+      upstreamProject: 'node-test-pull-request',
+      upstreamBuild: id,
+      upstreamUrl: 'job/node-test-pull-request/',
+      ...overrides
+    });
+
+    function latestWithoutAction(causes) {
+      request.json.withArgs(apiURL).resolves({
+        ...resumeBuildData,
+        actions: [...resumeBuildData.actions, { causes }]
+      });
+      menuRequest.resolves({ status: 200, json: async() => ({ items: [] }) });
+    }
+
+    function ancestor(id = ancestorId, { resumable = true, causes = [], overrides = {} } = {}) {
+      const build = new PRBuild(cli, request, id, undefined, resumeTree);
+      const data = {
+        ...resumeBuildData,
+        actions: [{
+          parameters: Object.entries({
+            COMMIT_SHA_CHECK: approvedSHA,
+            TARGET_GITHUB_ORG: owner,
+            TARGET_REPO_NAME: repo,
+            PR_ID: String(prid),
+            ...overrides
+          }).map(([name, value]) => ({ name, value }))
+        }, { causes }]
+      };
+      request.json.withArgs(build.apiUrl).resolves(data);
+      const menu = request.fetch.withArgs(`${build.jobUrl}contextMenu`).resolves({
+        status: 200,
+        json: async() => ({ items: resumable ? [{ url: `${build.jobUrl}resume/` }] : [] })
+      });
+      const post = request.fetch.withArgs(`${build.jobUrl}resume/`).resolves({ status: 200 });
+      const failures = structuredClone(failureBuildData);
+      failures.subBuilds[0].buildNumber = id;
+      failures.subBuilds[0].build.subBuilds[0].url =
+        `https://ci.nodejs.org/job/node-test-commit-linux-freestyle/${id}/`;
+      request.json.withArgs(new PRBuild(null, null, id).apiUrl).resolves(failures);
+      const consoleURL = `${failures.subBuilds[0].build.subBuilds[0].url}consoleText`;
+      request.text.withArgs(consoleURL)
+        .resolves(failureLog.replace('test-example', 'test-ancestor'));
+      return { build, data, menu, post, consoleURL };
+    }
+
+    it('resumes the nearest ancestor and checks both its failures and the latest run', async() => {
+      latestWithoutAction([resumeCause(ancestorId - 10), resumeCause(ancestorId)]);
+      const { build, post, consoleURL } = ancestor();
+      assert.equal(await jobRunner.resume(), true);
+      sinon.assert.notCalled(resumeRequest);
+      sinon.assert.calledOnceWithExactly(post, `${build.jobUrl}resume/`, {
+        method: 'POST', headers: { 'Jenkins-Crumb': crumb }
+      });
+      sinon.assert.calledWithExactly(request.text,
+        'https://ci.nodejs.org/job/node-test-commit-linux-freestyle/1/consoleText');
+      sinon.assert.calledWithExactly(request.text, consoleURL);
+      assert.deepEqual(cli._calls.info, [
+        [`Using resumable ancestor PR CI job ${ancestorId} for latest job ${jobid}`]
+      ]);
+    });
+
+    it('ignores malformed causes while following a valid resume cause', async() => {
+      latestWithoutAction([null, {}, resumeCause(ancestorId)]);
+      const { post } = ancestor();
+      assert.equal(await jobRunner.resume(), true);
+      sinon.assert.calledOnce(post);
+    });
+
+    it('follows multiple resume links until an ancestor offers the action', async() => {
+      latestWithoutAction([resumeCause(ancestorId)]);
+      const intermediate = ancestor(ancestorId, {
+        resumable: false, causes: [resumeCause(ancestorId - 1)]
+      });
+      const earlier = ancestor(ancestorId - 1);
+      assert.equal(await jobRunner.resume(), true);
+      sinon.assert.calledOnce(earlier.post);
+      sinon.assert.notCalled(intermediate.post);
+      sinon.assert.notCalled(resumeRequest);
+      sinon.assert.calledWithExactly(request.text, intermediate.consoleURL);
+      sinon.assert.calledWithExactly(request.text, earlier.consoleURL);
+    });
+
+    for (const filename of ['test/parallel/test-example.js', 'test/parallel/test-ancestor.js']) {
+      it(`refuses ancestor recovery when failures reference changed file ${filename}`, async() => {
+        latestWithoutAction([resumeCause(ancestorId)]);
+        const { post } = ancestor();
+        request.json.withArgs(filesURL).resolves([{ filename }]);
+        assert.equal(await jobRunner.resume(), false);
+        sinon.assert.notCalled(post);
+        sinon.assert.notCalled(resumeRequest);
+        assert.deepEqual(cli._calls.error, [[filename]]);
+        assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+          'Refusing to resume CI: failures reference files changed by this PR',
+          cli.SPINNER_STATUS.FAILED
+        ]);
+      });
+    }
+
+    for (const overrides of [
+      { COMMIT_SHA_CHECK: 'b'.repeat(40) },
+      { COMMIT_SHA_CHECK: undefined },
+      { TARGET_GITHUB_ORG: 'another-owner' },
+      { TARGET_REPO_NAME: 'another-repo' },
+      { PR_ID: prid + 1 },
+      { PR_ID: undefined }
+    ]) {
+      it(`stops at an ancestor with mismatched identity: ${JSON.stringify(overrides)}`, async() => {
+        latestWithoutAction([resumeCause(ancestorId), resumeCause(ancestorId - 1)]);
+        const candidate = ancestor(ancestorId, {
+          overrides, causes: [resumeCause(ancestorId - 1)]
+        });
+        const older = ancestor(ancestorId - 1);
+        assert.equal(await jobRunner.resume(), false);
+        sinon.assert.notCalled(candidate.menu);
+        sinon.assert.notCalled(candidate.post);
+        sinon.assert.notCalled(older.menu);
+        sinon.assert.notCalled(older.post);
+        sinon.assert.neverCalledWith(request.json, older.build.apiUrl);
+      });
+    }
+
+    it('accepts an ancestor whose PR_ID parameter is a number', async() => {
+      latestWithoutAction([resumeCause(ancestorId)]);
+      const { post } = ancestor(ancestorId, { overrides: { PR_ID: prid } });
+      assert.equal(await jobRunner.resume(), true);
+      sinon.assert.calledOnce(post);
+    });
+
+    it('rejects conflicting identity parameters on an ancestor', async() => {
+      latestWithoutAction([resumeCause(ancestorId)]);
+      const { data, menu, post } = ancestor();
+      data.actions.push({ parameters: [{ name: 'PR_ID', value: String(prid + 1) }] });
+      assert.equal(await jobRunner.resume(), false);
+      sinon.assert.notCalled(menu);
+      sinon.assert.notCalled(post);
+    });
+
+    for (const cause of [
+      null, {}, resumeCause('654320'), resumeCause(-1), resumeCause(1.5),
+      resumeCause(jobid), resumeCause(jobid + 1),
+      resumeCause(ancestorId, { _class: 'hudson.model.Cause$UpstreamCause' }),
+      resumeCause(ancestorId, { upstreamProject: 'node-test-commit' }),
+      resumeCause(ancestorId, { upstreamUrl: 'job/node-test-commit/' }),
+      resumeCause(ancestorId, { upstreamUrl: 'https://example.org/job/node-test-pull-request/' })
+    ]) {
+      it(`does not follow an invalid resume cause: ${JSON.stringify(cause)}`, async() => {
+        latestWithoutAction([cause]);
+        const { build, menu, post } = ancestor();
+        assert.equal(await jobRunner.resume(), false);
+        sinon.assert.neverCalledWith(request.json, build.apiUrl);
+        sinon.assert.notCalled(menu);
+        sinon.assert.notCalled(post);
+        sinon.assert.notCalled(resumeRequest);
+        assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+          unavailableMessage, cli.SPINNER_STATUS.FAILED
+        ]);
+      });
+    }
+
+    for (const state of [
+      { result: 'SUCCESS', building: false },
+      { result: 'UNSTABLE', building: false },
+      { result: 'FAILURE', building: true }
+    ]) {
+      it(`stops at an ancestor in state ${JSON.stringify(state)}`, async() => {
+        latestWithoutAction([resumeCause(ancestorId)]);
+        const { data, menu, post } = ancestor(ancestorId, {
+          causes: [resumeCause(ancestorId - 1)]
+        });
+        Object.assign(data, state);
+        const older = ancestor(ancestorId - 1);
+        assert.equal(await jobRunner.resume(), false);
+        sinon.assert.notCalled(menu);
+        sinon.assert.notCalled(post);
+        sinon.assert.neverCalledWith(request.json, older.build.apiUrl);
+      });
+    }
+
+    it('stops when the resume lineage points back to a newer build', async() => {
+      latestWithoutAction([resumeCause(ancestorId)]);
+      const { post } = ancestor(ancestorId, { resumable: false, causes: [resumeCause(jobid)] });
+      assert.equal(await jobRunner.resume(), false);
+      sinon.assert.notCalled(post);
+      sinon.assert.notCalled(resumeRequest);
+      sinon.assert.calledOnce(menuRequest);
+    });
+
+    it('does not recover through ancestry when the latest menu lookup fails', async() => {
+      latestWithoutAction([resumeCause(ancestorId)]);
+      menuRequest.rejects(new Error('Connection reset'));
+      const { build, menu, post } = ancestor();
+      assert.equal(await jobRunner.resume(), false);
+      sinon.assert.neverCalledWith(request.json, build.apiUrl);
+      sinon.assert.notCalled(menu);
+      sinon.assert.notCalled(post);
+      assert.match(cli._calls.stopSpinner.at(-1)[0], /Connection reset/);
+    });
+
+    for (const operation of ['metadata', 'menu']) {
+      it(`does not skip an ancestor after a failed ${operation} lookup`, async() => {
+        latestWithoutAction([resumeCause(ancestorId), resumeCause(ancestorId - 1)]);
+        const { build, menu, post } = ancestor();
+        if (operation === 'metadata') {
+          request.json.withArgs(build.apiUrl).rejects(new Error('Unavailable ancestor metadata'));
+        } else {
+          menu.rejects(new Error('Unavailable ancestor menu'));
+        }
+        const older = ancestor(ancestorId - 1);
+        assert.equal(await jobRunner.resume(), false);
+        sinon.assert.notCalled(post);
+        sinon.assert.notCalled(older.menu);
+        sinon.assert.neverCalledWith(request.json, older.build.apiUrl);
+        assert.match(cli._calls.stopSpinner.at(-1)[0], /Unavailable ancestor/);
+      });
+    }
+
+    it('rechecks current PR HEAD before resuming an ancestor', async() => {
+      latestWithoutAction([resumeCause(ancestorId)]);
+      const { post } = ancestor();
+      request.json.withArgs(prURL).resolves({ head: { sha: 'b'.repeat(40) } });
+      assert.equal(await jobRunner.resume(), false);
+      sinon.assert.notCalled(post);
+      sinon.assert.notCalled(resumeRequest);
+      assert.match(cli._calls.error.at(-1)[0], /does not match the current PR HEAD/);
+    });
+  });
+
+  for (const url of [
+    'resume', 'resume/', `${jobURL}resume`, `${jobURL}resume/`,
+    new URL(`${jobURL}resume`).pathname, new URL(`${jobURL}resume/`).pathname
+  ]) {
+    it(`recognizes the build's resume action URL: ${url}`, async() => {
+      menuRequest.resolves({ status: 200, json: async() => ({ items: [{ url }] }) });
+      assert.equal(await jobRunner.resume(), true);
+      sinon.assert.calledOnce(resumeRequest);
+    });
+
+    it(`recognizes the new build page's resume event URL: ${url}`, async() => {
+      // Jenkins' new build page exports Action.getEvent(), rather than the
+      // plugin's POST sidebar task. Its default event type is GET.
+      menuRequest.resolves({
+        status: 200,
+        json: async() => ({ items: [{ url: null, event: { url, type: 'GET' } }] })
+      });
+      assert.equal(await jobRunner.resume(), true);
+      sinon.assert.calledOnceWithExactly(resumeRequest, `${jobURL}resume/`, {
+        method: 'POST', headers: { 'Jenkins-Crumb': crumb }
+      });
+    });
+  }
+
+  it('recognizes a resume event when the top-level URL is omitted', async() => {
+    menuRequest.resolves({
+      status: 200,
+      json: async() => ({ items: [{ event: { url: 'resume', type: 'GET' } }] })
+    });
+    assert.equal(await jobRunner.resume(), true);
+    sinon.assert.calledOnceWithExactly(resumeRequest, `${jobURL}resume/`, {
+      method: 'POST', headers: { 'Jenkins-Crumb': crumb }
+    });
+  });
+
+  it('rejects malformed resume events and event URLs for other builds or servers', async() => {
+    menuRequest.resolves({
+      status: 200,
+      json: async() => ({
+        items: [
+          { event: null }, { event: {} }, { event: { url: false } },
+          { event: { url: 'http://[' } },
+          { event: { url: `${jobURL}console` }, displayName: 'Resume build' },
+          { url: null, event: { url: '/job/node-test-pull-request/654320/resume' } },
+          { event: { url: `${jobURL}resume?other=build` } },
+          { event: { url: `${jobURL}resume#other` } },
+          { event: { url: 'https://example.org/job/node-test-pull-request/654321/resume' } }
+        ]
+      })
+    });
+    assert.equal(await jobRunner.resume(), false);
+    sinon.assert.notCalled(resumeRequest);
+    sinon.assert.neverCalledWith(request.json, filesURL);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      unavailableMessage, cli.SPINNER_STATUS.FAILED
+    ]);
+  });
+
+  it('ignores malformed menu entries and resume links for other builds or servers', async() => {
+    menuRequest.resolves({
+      status: 200,
+      json: async() => ({
+        items: [
+          null, {}, { url: false }, { url: 'http://[' },
+          { url: `${jobURL}console`, displayName: 'Resume build' },
+          { url: '/job/node-test-pull-request/654320/resume' },
+          { url: `${jobURL}resume?other=build` },
+          { url: `${jobURL}resume#other` },
+          { url: 'https://example.org/job/node-test-pull-request/654321/resume' }
+        ]
+      })
+    });
+    assert.equal(await jobRunner.resume(), false);
+    sinon.assert.notCalled(resumeRequest);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      unavailableMessage, cli.SPINNER_STATUS.FAILED
+    ]);
+  });
+
+  for (const [status, statusText] of [
+    [401, 'Unauthorized'], [403, 'Forbidden'], [404, 'Not Found'], [500, 'Internal Server Error']
+  ]) {
+    it(`reports HTTP ${status} while checking resume availability`, async() => {
+      const cancel = sinon.stub().resolves();
+      const json = sinon.stub();
+      menuRequest.resolves({ status, statusText, body: { cancel }, json });
+      assert.equal(await jobRunner.resume(), false);
+      sinon.assert.calledOnce(cancel);
+      sinon.assert.notCalled(json);
+      sinon.assert.notCalled(resumeRequest);
+      sinon.assert.neverCalledWith(request.json, filesURL);
+      assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+        `Failed to check resume availability for PR CI job ${jobid}: ` +
+          `Jenkins returned HTTP ${status} ${statusText}`,
+        cli.SPINNER_STATUS.FAILED
+      ]);
+    });
+  }
+
+  for (const menu of [null, {}, { items: null }, { items: {} }]) {
+    it(`reports an invalid build menu: ${JSON.stringify(menu)}`, async() => {
+      menuRequest.resolves({ status: 200, json: async() => menu });
+      assert.equal(await jobRunner.resume(), false);
+      sinon.assert.notCalled(resumeRequest);
+      assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+        `Failed to check resume availability for PR CI job ${jobid}: ` +
+          'Jenkins returned an invalid build context menu',
+        cli.SPINNER_STATUS.FAILED
+      ]);
+    });
+  }
+
+  it('reports malformed JSON when checking resume availability', async() => {
+    menuRequest.resolves({ status: 200, json: sinon.stub().rejects(new Error('Invalid JSON')) });
+    assert.equal(await jobRunner.resume(), false);
+    sinon.assert.notCalled(resumeRequest);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      `Failed to check resume availability for PR CI job ${jobid}: Invalid JSON`,
+      cli.SPINNER_STATUS.FAILED
+    ]);
+  });
+
+  it('reports a network error when checking resume availability', async() => {
+    menuRequest.rejects(new Error('Connection reset'));
+    assert.equal(await jobRunner.resume(), false);
+    sinon.assert.notCalled(resumeRequest);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      `Failed to check resume availability for PR CI job ${jobid}: Connection reset`,
+      cli.SPINNER_STATUS.FAILED
+    ]);
+  });
+
   it('posts to the resume handler without redirecting the POST to a GET', async(t) => {
     const agent = new MockAgent();
     agent.disableNetConnect();
@@ -131,6 +577,8 @@ describe('Jenkins resume', () => {
     const pool = agent.get('https://ci.nodejs.org');
     const jobPath = new URL(jobURL).pathname;
     const projectPath = '/job/node-test-pull-request/';
+    pool.intercept({ path: `${jobPath}contextMenu`, method: 'GET' })
+      .reply(200, { items: [{ url: `${jobPath}resume` }] });
     // Stapler redirects a slashless action URL before invoking its POST handler.
     pool.intercept({ path: `${jobPath}resume`, method: 'POST' })
       .reply(302, '', { headers: { location: `${jobPath}resume/` } });
@@ -141,6 +589,7 @@ describe('Jenkins resume', () => {
       return { statusCode: 302, data: '', responseOptions: { headers: { location: projectPath } } };
     });
     pool.intercept({ path: projectPath, method: 'GET' }).reply(200, '');
+    request.fetch.resetBehavior();
     request.fetch.callsFake((url, options) => fetch(url, { ...options, dispatcher: agent }));
 
     assert.equal(await jobRunner.resume(), true);
@@ -156,7 +605,7 @@ describe('Jenkins resume', () => {
     ]);
     request.gql.withArgs('Reviews').resolves([comment(jobURL)]);
     assert.equal(await jobRunner.resume(), true);
-    assert.equal(request.fetch.firstCall.args[0], `${jobURL}resume/`);
+    assert.equal(resumeRequest.firstCall.args[0], `${jobURL}resume/`);
   });
 
   it('finds CI links in the PR description', async() => {
@@ -167,7 +616,7 @@ describe('Jenkins resume', () => {
       }
     });
     assert.equal(await jobRunner.resume(), true);
-    assert.equal(request.fetch.firstCall.args[0], `${jobURL}resume/`);
+    assert.equal(resumeRequest.firstCall.args[0], `${jobURL}resume/`);
   });
 
   for (const comments of [[], [comment('https://ci.nodejs.org/job/node-test-commit/123456/')]]) {
@@ -204,7 +653,7 @@ describe('Jenkins resume', () => {
     request.json.withArgs(apiURL).resolves({ ...resumeBuildData, result: 'ABORTED' });
     request.json.withArgs(fullAPIURL).resolves({ ...failureBuildData, result: 'ABORTED' });
     assert.equal(await jobRunner.resume(), true);
-    sinon.assert.calledOnce(request.fetch);
+    sinon.assert.calledOnce(resumeRequest);
   });
 
   it('checks failed tests inside an aborted job before resuming', async() => {
@@ -212,21 +661,21 @@ describe('Jenkins resume', () => {
     request.json.withArgs(fullAPIURL).resolves({ ...failureBuildData, result: 'ABORTED' });
     request.json.withArgs(filesURL).resolves([{ filename: 'test/parallel/test-example.js' }]);
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
     assert.deepEqual(cli._calls.error, [['test/parallel/test-example.js']]);
   });
 
   for (const result of ['FAILURE', 'ABORTED']) {
     it(`reports an unavailable resume endpoint for a ${result} job`, async() => {
       request.json.withArgs(apiURL).resolves({ ...resumeBuildData, result });
-      request.fetch.resolves({ status: 404, statusText: 'Not Found' });
+      resumeRequest.resolves({ status: 404, statusText: 'Not Found' });
       assert.equal(await jobRunner.resume(), false);
-      sinon.assert.calledOnceWithExactly(request.fetch, `${jobURL}resume/`, {
+      sinon.assert.calledOnceWithExactly(resumeRequest, `${jobURL}resume/`, {
         method: 'POST',
         headers: { 'Jenkins-Crumb': crumb }
       });
       assert.deepEqual(cli._calls.stopSpinner.at(-1), [
-        'Failed to resume PR CI: 404 Not Found', cli.SPINNER_STATUS.FAILED
+        unavailableMessage, cli.SPINNER_STATUS.FAILED
       ]);
     });
   }
@@ -244,7 +693,7 @@ describe('Jenkins resume', () => {
       request.json.withArgs(apiURL).resolves({ ...resumeBuildData, result });
       request.json.withArgs(prURL).resolves({ head: { sha: 'b'.repeat(40) } });
       assert.equal(await jobRunner.resume(), false);
-      sinon.assert.notCalled(request.fetch);
+      sinon.assert.notCalled(resumeRequest);
       assert.match(cli._calls.error.at(-1)[0], /does not match the current PR HEAD/);
     });
   }
@@ -285,7 +734,11 @@ describe('Jenkins resume', () => {
   it('refuses when the current PR HEAD cannot be retrieved', async() => {
     request.json.withArgs(prURL).rejects(new Error('Unavailable'));
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      `Failed to read the current HEAD for pull request ${prid}: Unavailable`,
+      cli.SPINNER_STATUS.FAILED
+    ]);
   });
 
   it('does not fall back to an older failed job when the latest job is successful', async() => {
@@ -307,6 +760,9 @@ describe('Jenkins resume', () => {
       assert.equal(await jobRunner.resume(), false);
       sinon.assert.notCalled(request.gql);
       sinon.assert.notCalled(request.fetch);
+      assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+        'Unable to validate Jenkins credentials: Missing Jenkins crumb', cli.SPINNER_STATUS.FAILED
+      ]);
     });
   }
 
@@ -315,33 +771,56 @@ describe('Jenkins resume', () => {
     assert.equal(await jobRunner.resume(), false);
     sinon.assert.notCalled(request.gql);
     sinon.assert.notCalled(request.fetch);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      'Unable to validate Jenkins credentials: Unauthorized', cli.SPINNER_STATUS.FAILED
+    ]);
   });
 
   it('fails if the PR cannot be loaded', async() => {
     request.gql.withArgs('PR').rejects(new Error('Not found'));
     assert.equal(await jobRunner.resume(), false);
     sinon.assert.notCalled(request.fetch);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      `Failed to find CI runs for pull request ${prid}: Not found`, cli.SPINNER_STATUS.FAILED
+    ]);
   });
 
   it('fails if build data cannot be loaded', async() => {
     request.json.withArgs(apiURL).rejects(new Error('Not found'));
     assert.equal(await jobRunner.resume(), false);
     sinon.assert.notCalled(request.fetch);
-  });
-
-  it('fails if the resume request throws', async() => {
-    request.fetch.rejects(new Error('Connection reset'));
-    assert.equal(await jobRunner.resume(), false);
     assert.deepEqual(cli._calls.stopSpinner.at(-1), [
-      'Failed to resume CI', cli.SPINNER_STATUS.FAILED
+      `Failed to load PR CI job ${jobid}: Not found`, cli.SPINNER_STATUS.FAILED
     ]);
   });
 
-  it('reports a failed resume request', async() => {
-    request.fetch.resolves({ status: 403, statusText: 'Forbidden' });
+  it('fails if the resume request throws', async() => {
+    resumeRequest.rejects(new Error('Connection reset'));
     assert.equal(await jobRunner.resume(), false);
     assert.deepEqual(cli._calls.stopSpinner.at(-1), [
-      'Failed to resume PR CI: 403 Forbidden', cli.SPINNER_STATUS.FAILED
+      `Failed to resume PR CI job ${jobid}: Connection reset`, cli.SPINNER_STATUS.FAILED
+    ]);
+  });
+
+  for (const [status, statusText] of [[401, 'Unauthorized'], [403, 'Forbidden']]) {
+    it(`reports HTTP ${status} with Jenkins credential and permission guidance`, async() => {
+      resumeRequest.resolves({ status, statusText });
+      assert.equal(await jobRunner.resume(), false);
+      assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+        `Failed to resume PR CI job ${jobid}: Jenkins denied the request ` +
+          `(HTTP ${status} ${statusText}). Check your Jenkins credentials and build permissions.`,
+        cli.SPINNER_STATUS.FAILED
+      ]);
+    });
+  }
+
+  it('reports a Jenkins failure with the build page URL', async() => {
+    resumeRequest.resolves({ status: 500, statusText: 'Internal Server Error' });
+    assert.equal(await jobRunner.resume(), false);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      `Failed to resume PR CI job ${jobid}: Jenkins returned HTTP 500 Internal Server Error. ` +
+        `Check the build page for details: ${jobURL}`,
+      cli.SPINNER_STATUS.FAILED
     ]);
   });
 
@@ -349,7 +828,7 @@ describe('Jenkins resume', () => {
     it(`refuses to resume a failed test changed by the PR: ${filename}`, async() => {
       request.json.withArgs(filesURL).resolves([{ filename }]);
       assert.equal(await jobRunner.resume(), false);
-      sinon.assert.notCalled(request.fetch);
+      sinon.assert.notCalled(resumeRequest);
       assert.deepEqual(cli._calls.error, [[filename]]);
     });
   }
@@ -362,7 +841,7 @@ describe('Jenkins resume', () => {
       previous_filename: 'test/fixtures/old-name.js'
     }]);
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
     assert.deepEqual(cli._calls.error, [['test/fixtures/old-name.js']]);
   });
 
@@ -371,7 +850,7 @@ describe('Jenkins resume', () => {
       request.text.resolves(failureLog.replace('AssertionError', `${path}: AssertionError`));
       request.json.withArgs(filesURL).resolves([{ filename: 'src/node.cc' }]);
       assert.equal(await jobRunner.resume(), false);
-      sinon.assert.notCalled(request.fetch);
+      sinon.assert.notCalled(resumeRequest);
     });
   }
 
@@ -379,27 +858,27 @@ describe('Jenkins resume', () => {
     request.text.resolves('../src/node.cc:42:5: error: no matching function\n');
     request.json.withArgs(filesURL).resolves([{ filename: 'src/node.cc' }]);
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
   });
 
   it('does not match test names that only share a prefix', async() => {
     request.json.withArgs(filesURL).resolves([{ filename: 'test/parallel/test-exam.js' }]);
     assert.equal(await jobRunner.resume(), true);
-    sinon.assert.calledOnce(request.fetch);
+    sinon.assert.calledOnce(resumeRequest);
   });
 
   it('checks all failed tests', async() => {
     request.text.resolves(failureLog + failureLog.replace('test-example', 'test-second'));
     request.json.withArgs(filesURL).resolves([{ filename: 'test/parallel/test-second.js' }]);
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
   });
 
   it('checks failed tests even when an infrastructure error takes precedence', async() => {
     request.text.resolves('Read-only file system\n' + failureLog);
     request.json.withArgs(filesURL).resolves([{ filename: 'test/parallel/test-example.js' }]);
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
   });
 
   it('checks available failures even when another build log cannot be downloaded', async() => {
@@ -412,7 +891,7 @@ describe('Jenkins resume', () => {
     request.text.withArgs(`${url}consoleText`).rejects(new Error('Unavailable'));
     request.json.withArgs(filesURL).resolves([{ filename: 'test/parallel/test-example.js' }]);
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
   });
 
   it('cancels a matching log and never opens queued logs', async() => {
@@ -437,7 +916,7 @@ describe('Jenkins resume', () => {
     assert.equal(await jobRunner.resume(), false);
     assert.equal(opened, 1);
     assert.equal(cancelled, true);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
   });
 
   it('continues to a matching log after a stream fails midway', async() => {
@@ -465,7 +944,7 @@ describe('Jenkins resume', () => {
     };
     assert.equal(await jobRunner.resume(), false);
     assert.equal(opened, 2);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
   });
 
   it('checks later pages of changed files', async() => {
@@ -475,37 +954,44 @@ describe('Jenkins resume', () => {
       { filename: 'test/parallel/test-example.js' }
     ]);
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
   });
 
   it('refuses to resume if fetching changed files fails', async() => {
     request.json.withArgs(filesURL).rejects(new Error('Unavailable'));
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      `Failed to check failures for PR CI job ${jobid}: Unavailable`, cli.SPINNER_STATUS.FAILED
+    ]);
   });
 
   it('refuses to resume if GitHub returns an error response for changed files', async() => {
     request.json.withArgs(filesURL).resolves({ message: 'Not Found' });
     assert.equal(await jobRunner.resume(), false);
-    sinon.assert.notCalled(request.fetch);
+    sinon.assert.notCalled(resumeRequest);
+    assert.deepEqual(cli._calls.stopSpinner.at(-1), [
+      `Failed to check failures for PR CI job ${jobid}: Unable to retrieve pull request files`,
+      cli.SPINNER_STATUS.FAILED
+    ]);
   });
 
   it('allows resuming if failure logs cannot be downloaded', async() => {
     request.text.rejects(new Error('Unavailable'));
     assert.equal(await jobRunner.resume(), true);
-    sinon.assert.calledOnce(request.fetch);
+    sinon.assert.calledOnce(resumeRequest);
   });
 
   it('allows resuming if failures cannot be parsed', async() => {
     request.text.resolves('Unrecognized failure output');
     assert.equal(await jobRunner.resume(), true);
-    sinon.assert.calledOnce(request.fetch);
+    sinon.assert.calledOnce(resumeRequest);
   });
 
   it('allows resuming if detailed build data cannot be downloaded', async() => {
     request.json.withArgs(fullAPIURL).rejects(new Error('Unavailable'));
     assert.equal(await jobRunner.resume(), true);
-    sinon.assert.calledOnce(request.fetch);
+    sinon.assert.calledOnce(resumeRequest);
   });
 });
 
@@ -517,10 +1003,13 @@ describe('ncu-ci resume CLI', () => {
   const apiURL = `${jobURL}api/json?tree=${encodeURIComponent(resumeTree)}`;
 
   function run(t, args, hasCI = true, changedFile = 'README.md',
-    buildData = resumeBuildData, headSHA = approvedSHA, resumeResponse = { status: 200 }) {
+    buildData = resumeBuildData, headSHA = approvedSHA, resumeResponse = { status: 200 },
+    contextMenu = { items: [{ url: 'resume' }] }, ancestor = null) {
     const dir = mkdtempSync(join(tmpdir(), 'ncu-ci-resume-'));
     t.after(() => rmSync(dir, { recursive: true, force: true }));
     writeFileSync(join(dir, 'ncurc'), JSON.stringify({ username: 'test', token: 'test' }));
+    const ancestorBuild = ancestor && new PRBuild(null, null, ancestor.id, undefined, resumeTree);
+    const ancestorFullAPIURL = ancestor && new PRBuild(null, null, ancestor.id).apiUrl;
     const script = `
       import assert from 'node:assert/strict';
       import Request from ${JSON.stringify(requestURL)};
@@ -535,6 +1024,14 @@ describe('ncu-ci resume CLI', () => {
         return [];
       };
       Request.prototype.json = async (url) => {
+        if (${Boolean(ancestor)}) {
+          if (url === ${JSON.stringify(ancestorBuild?.apiUrl)}) {
+            return ${JSON.stringify(ancestor?.data)};
+          }
+          if (url === ${JSON.stringify(ancestorFullAPIURL)}) {
+            return ${JSON.stringify(failureBuildData)};
+          }
+        }
         if (url.endsWith('/crumbIssuer/api/json')) return { crumb: 'test-crumb' };
         if (url === '/repos/nodejs/node/pulls/123456') {
           return { head: { sha: ${JSON.stringify(headSHA)} } };
@@ -550,7 +1047,16 @@ describe('ncu-ci resume CLI', () => {
         yield Buffer.from(${JSON.stringify(failureLog)});
       };
       Request.prototype.fetch = async (url, options) => {
-        assert.equal(url, ${JSON.stringify(`${jobURL}resume/`)});
+        if (url === ${JSON.stringify(`${jobURL}contextMenu`)}) {
+          assert.deepEqual(options, { method: 'GET', redirect: 'error' });
+          return { status: 200, json: async () => (${JSON.stringify(contextMenu)}) };
+        }
+        if (${Boolean(ancestor)} &&
+            url === ${JSON.stringify(`${ancestorBuild?.jobUrl}contextMenu`)}) {
+          assert.deepEqual(options, { method: 'GET', redirect: 'error' });
+          return { status: 200, json: async () => ({ items: [{ url: 'resume/' }] }) };
+        }
+        assert.equal(url, ${JSON.stringify(`${ancestorBuild?.jobUrl ?? jobURL}resume/`)});
         assert.equal(options.method, 'POST');
         assert.equal(options.headers['Jenkins-Crumb'], 'test-crumb');
         return ${JSON.stringify(resumeResponse)};
@@ -621,7 +1127,68 @@ describe('ncu-ci resume CLI', () => {
       true, 'README.md', { ...resumeBuildData, result: 'ABORTED' }, approvedSHA,
       { status: 404, statusText: 'Not Found' });
     assert.equal(status, 1, output);
-    assert.match(output, /Failed to resume PR CI: 404 Not Found/);
+    assert.match(output, /Cannot resume PR CI job 654321: Jenkins does not offer a "Resume build" action/);
+    assert.match(output, /ncu-ci run https:\/\/github.com\/nodejs\/node\/pull\/123456/);
+    assert.doesNotMatch(output, /PR CI job successfully resumed/);
+  });
+
+  it('exits 1 with a new-run command when Jenkins offers no resume action', (t) => {
+    const { status, output } = run(t, ['resume', 'https://github.com/nodejs/node/pull/123456'],
+      true, 'README.md', resumeBuildData, approvedSHA, { status: 200 }, { items: [] });
+    assert.equal(status, 1, output);
+    assert.match(output, /Cannot resume PR CI job 654321: Jenkins does not offer a "Resume build" action/);
+    assert.match(output, /ncu-ci run https:\/\/github.com\/nodejs\/node\/pull\/123456/);
+    assert.ok(output.includes(jobURL));
+    assert.doesNotMatch(output, /Checking failures|Resuming PR CI|PR CI job successfully resumed/);
+  });
+
+  it('reports which ancestor is resumed when the latest run has no action', (t) => {
+    const latest = {
+      ...resumeBuildData,
+      actions: [...resumeBuildData.actions, {
+        causes: [{
+          _class: 'com.tikal.jenkins.plugins.multijob.ResumeCause',
+          upstreamProject: 'node-test-pull-request',
+          upstreamBuild: 654320,
+          upstreamUrl: 'job/node-test-pull-request/'
+        }]
+      }]
+    };
+    const ancestor = {
+      id: 654320,
+      data: {
+        ...resumeBuildData,
+        actions: [...resumeBuildData.actions, {
+          parameters: [
+            { name: 'TARGET_GITHUB_ORG', value: 'nodejs' },
+            { name: 'TARGET_REPO_NAME', value: 'node' },
+            { name: 'PR_ID', value: '123456' }
+          ]
+        }]
+      }
+    };
+    const { status, output } = run(t, ['resume', 'https://github.com/nodejs/node/pull/123456'],
+      true, 'README.md', latest, approvedSHA, { status: 200 }, { items: [] }, ancestor);
+    assert.equal(status, 0, output);
+    assert.match(output, /Using resumable ancestor PR CI job 654320 for latest job 654321/);
+    assert.match(output, /PR CI job successfully resumed/);
+  });
+
+  it('exits 1 when Jenkins returns an invalid build context menu', (t) => {
+    const { status, output } = run(t, ['resume', 'https://github.com/nodejs/node/pull/123456'],
+      true, 'README.md', resumeBuildData, approvedSHA, { status: 200 }, {});
+    assert.equal(status, 1, output);
+    assert.match(output, /Failed to check resume availability for PR CI job 654321/);
+    assert.match(output, /Jenkins returned an invalid build context menu/);
+    assert.doesNotMatch(output, /PR CI job successfully resumed/);
+  });
+
+  it('exits 1 with credential guidance when Jenkins denies the resume request', (t) => {
+    const { status, output } = run(t, ['resume', 'https://github.com/nodejs/node/pull/123456'],
+      true, 'README.md', resumeBuildData, approvedSHA, { status: 403, statusText: 'Forbidden' });
+    assert.equal(status, 1, output);
+    assert.match(output, /Jenkins denied the request \(HTTP 403 Forbidden\)/);
+    assert.match(output, /Check your Jenkins credentials and build permissions/);
     assert.doesNotMatch(output, /PR CI job successfully resumed/);
   });
 
