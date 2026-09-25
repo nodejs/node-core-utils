@@ -31,6 +31,8 @@ async function scan(...args) {
 // Complete console diagnostics and truncated report excerpts from September 23–25, 2026.
 const reliabilityFailures = JSON.parse(readFileSync(
   new URL('../fixtures/ci-reliability-failures.json', import.meta.url), 'utf8'));
+const makeFailure = JSON.parse(readFileSync(
+  new URL('../fixtures/ci-resume-make-failure.json', import.meta.url), 'utf8'));
 
 describe('Reliability report diagnostics', () => {
   for (const { name, kind, filenames, log } of reliabilityFailures) {
@@ -44,6 +46,74 @@ describe('Reliability report diagnostics', () => {
           assert.deepEqual(await scanFailure(`${unexpected}\n`, filenames, size),
             { filename: filenames[0], reason: unexpected });
         }
+      }
+    });
+  }
+});
+
+describe('Make recipe failure summaries', () => {
+  const summary = makeFailure.summary;
+
+  it('attributes a test timeout to the test rather than the make recipe', async() => {
+    const log = `${makeFailure.failure}\n${summary}\n`;
+    for (const size of [1, 31, 8192]) {
+      assert.equal(await scan(log, ['Makefile'], size), undefined);
+      assert.deepEqual(await scanFailure(log, ['Makefile', makeFailure.filename], size),
+        { filename: makeFailure.filename, reason: makeFailure.failure });
+    }
+  });
+
+  for (const [name, footer] of [
+    ['recursive make', summary],
+    ['top-level make', 'make: *** [Makefile:660: test-ci] Error 2'],
+    ['gmake', 'gmake[2]: *** [Makefile:660: test-ci] Error 1'],
+    ['segmentation fault', 'make[1]: *** [Makefile:660: test-ci] Segmentation fault (core dumped)'],
+    ['abort', 'make[1]: *** [Makefile:660: test-ci] Aborted (core dumped)'],
+    ['failed recipe', "Makefile:660: recipe for target 'test-ci' failed"],
+    ['prefixed stdout', '  [out] make[1]: *** [Makefile:660: test-ci] Error 1'],
+    ['prefixed stderr', "    [err] Makefile:660: recipe for target 'test-ci' failed"]
+  ]) {
+    it(`ignores a propagated exit summary: ${name}`, async() => {
+      for (const size of [1, 31, 8192]) {
+        assert.equal(await scan(`${footer}\n`, ['Makefile'], size), undefined);
+      }
+    });
+  }
+
+  for (const [name, log] of [
+    ['preceding error', `error: unrelated failure\n${summary}\n`],
+    ['following filesystem error', `${summary}\nRead-only file system\n`],
+    ['following C++ failure', `${summary}\n[  FAILED  ] Example\n`],
+    ['following filename', `${summary}\nMakefile\n`],
+    ['TAP block', tap(`    ${summary}`)],
+    ['git failure block',
+      `Changes not staged for commit:\n${summary}\nno changes added to commit\n`]
+  ]) {
+    it(`does not use a propagated exit summary as failure context: ${name}`, async() => {
+      for (const size of [1, 31, 8192]) {
+        assert.equal(await scan(log, ['Makefile'], size), undefined);
+      }
+    });
+  }
+
+  it('continues to later failures and preserves the summary as output context', async() => {
+    const failure = tap(`    ${summary}\n    AssertionError: failure`);
+    const log = `${summary}\n${failure}`;
+    assert.deepEqual(await scanFailure(log, ['Makefile', filename], 1),
+      { filename, reason: failure.trimEnd() });
+  });
+
+  for (const [name, reason] of [
+    ['missing separator', 'Makefile:123: *** missing separator. Stop.'],
+    ['unterminated variable', 'Makefile:123: *** unterminated variable reference. Stop.'],
+    ['recipe before target', 'Makefile:123: *** recipe commences before first target. Stop.'],
+    ['invalid recipe', 'Makefile:123: error: invalid recipe'],
+    ['unreadable makefile', 'fatal: Unable to read Makefile: No such file or directory']
+  ]) {
+    it(`retains a genuine Makefile diagnostic: ${name}`, async() => {
+      for (const size of [1, 31, 8192]) {
+        assert.deepEqual(await scanFailure(`${reason}\n`, ['Makefile'], size),
+          { filename: 'Makefile', reason });
       }
     });
   }

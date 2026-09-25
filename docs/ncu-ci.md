@@ -247,6 +247,8 @@ Before resuming, the command streams failed-job console output and compares
 failure diagnostics with the PR's changed files. When recovering through resume
 ancestry, it checks the latest run and every ancestor visited. It refuses to resume
 if a failed test or a file referenced in a failure diagnostic is changed by the PR.
+Generic `make` recipe-failure summaries do not count as file references; direct
+Makefile diagnostics, such as syntax errors, still do.
 The refusal includes the first matching filename, failure excerpt, and console
 log URL. Large excerpts are truncated with an explicit marker.
 Logs are scanned one at a time with bounded memory. HTTP compression is decoded as the
