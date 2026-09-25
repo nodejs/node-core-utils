@@ -57,6 +57,7 @@
     "@reporters/github": "^1.12.0",
     "c8": "^12.0.0",
     "eslint": "^9.39.4",
+    "eslint-import-resolver-node": "^0.4.0",
     "eslint-plugin-import": "^2.32.0",
     "neostandard": "^0.13.0",
     "sinon": "^22.0.0"
