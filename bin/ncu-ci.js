@@ -516,8 +516,8 @@ class WalkCommand extends CICommand {
     if (this.queue.length === 0) {
       return;
     }
-    const aggregator = new FailureAggregator(cli, this.json);
-    this.json = aggregator.aggregate();
+    const aggregator = new FailureAggregator(cli, this.json, this.request);
+    this.json = await aggregator.aggregate();
     cli.log('');
     cli.separator('Stats');
     cli.log('');
@@ -597,8 +597,8 @@ class DailyCommand extends CICommand {
 
   async aggregate() {
     const { argv, cli } = this;
-    const aggregator = new FailureAggregator(cli, this.json);
-    this.json = aggregator.aggregate();
+    const aggregator = new FailureAggregator(cli, this.json, this.request);
+    this.json = await aggregator.aggregate();
     cli.log('');
     cli.separator('Stats');
     cli.log('');
