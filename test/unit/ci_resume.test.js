@@ -57,8 +57,35 @@ const failureBuildData = {
 // Diagnostic excerpts captured with ncu-ci walk pr on 2026-09-09.
 const walkFailures = JSON.parse(readFileSync(
   new URL('../fixtures/ci-resume-walk.json', import.meta.url), 'utf8'));
+const reliabilityFailures = JSON.parse(readFileSync(
+  new URL('../fixtures/ci-reliability-failures.json', import.meta.url), 'utf8'));
 
 describe('Resume file checks against real CI diagnostics', () => {
+  for (const { name, kind, filenames, log, url } of reliabilityFailures) {
+    if (kind !== 'failure') continue;
+    it(`prints the diagnostic and console URL for ${name}`, async() => {
+      const data = structuredClone(failureBuildData);
+      const buildURL = url.replace(/console(?:Text)?$/, '');
+      data.subBuilds[0].build.subBuilds[0].url = buildURL;
+      const request = {
+        async json() { return data; },
+        async * stream(url) {
+          assert.equal(url, `${buildURL}consoleText`);
+          yield Buffer.from(`${log}\n`);
+        },
+        async * getPullRequestFiles() {
+          for (const filename of filenames) yield { filename };
+        }
+      };
+      const cli = new TestCLI();
+      const runner = new ResumePRJob(cli, request, 'nodejs', 'node', 1);
+      assert.equal(await runner.checkFailures(1), false);
+      assert.deepEqual(cli._calls.error, [[filenames[0]]]);
+      assert.deepEqual(cli._calls.info, [[`${buildURL}consoleText`]]);
+      assert.deepEqual(cli._calls.log, [[log]]);
+    });
+  }
+
   for (const { filename, failure } of walkFailures) {
     it(`detects a PR change to ${filename}`, async() => {
       const request = {
@@ -848,6 +875,10 @@ describe('Jenkins resume', () => {
       assert.equal(await jobRunner.resume(), false);
       sinon.assert.notCalled(resumeRequest);
       assert.deepEqual(cli._calls.error, [[filename]]);
+      assert.deepEqual(cli._calls.info, [
+        ['https://ci.nodejs.org/job/node-test-commit-linux-freestyle/1/consoleText']
+      ]);
+      assert.deepEqual(cli._calls.log, [[failureLog.trimEnd()]]);
     });
   }
 
@@ -1130,6 +1161,8 @@ describe('ncu-ci resume CLI', () => {
     assert.equal(status, 1, output);
     assert.match(output, /Refusing to resume CI: failures reference files changed by this PR/);
     assert.match(output, /test\/parallel\/test-example.js/);
+    assert.ok(output.includes('https://ci.nodejs.org/job/node-test-commit-linux-freestyle/1/consoleText'));
+    assert.ok(output.includes(failureLog.trimEnd()));
     assert.doesNotMatch(output, /PR CI job successfully resumed/);
   });
 

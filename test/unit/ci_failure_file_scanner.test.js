@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { once } from 'node:events';
+import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { setImmediate } from 'node:timers/promises';
 import { gzipSync } from 'node:zlib';
@@ -13,7 +14,7 @@ import Request from '../../lib/request.js';
 const filename = 'test/parallel/test-example.js';
 const tap = (text) => `not ok 1 parallel/test-example\n  ---\n${text}\n  ...\n`;
 
-async function scan(text, files = [filename], size = 8192) {
+async function scanFailure(text, files = [filename], size = 8192) {
   const buffer = Buffer.from(text);
   async function * source() {
     for (let offset = 0; offset < buffer.length; offset += size) {
@@ -23,7 +24,79 @@ async function scan(text, files = [filename], size = 8192) {
   return new FailureFileScanner(files).scan(source());
 }
 
+async function scan(...args) {
+  return (await scanFailure(...args))?.filename;
+}
+
+// Complete console diagnostics and truncated report excerpts from September 23–25, 2026.
+const reliabilityFailures = JSON.parse(readFileSync(
+  new URL('../fixtures/ci-reliability-failures.json', import.meta.url), 'utf8'));
+
+describe('Reliability report diagnostics', () => {
+  for (const { name, kind, filenames, log } of reliabilityFailures) {
+    it(name, async() => {
+      const expected = kind === 'failure' ? { filename: filenames[0], reason: log } : undefined;
+      for (const size of [1, 31, 8192]) {
+        assert.deepEqual(await scanFailure(`${log}\n`, filenames, size), expected);
+        assert.equal(await scanFailure(`${log}\n`, ['test/unrelated.js'], size), undefined);
+        if (kind === 'todo') {
+          const unexpected = log.replace(/ # TODO :[^\n]*/, '');
+          assert.deepEqual(await scanFailure(`${unexpected}\n`, filenames, size),
+            { filename: filenames[0], reason: unexpected });
+        }
+      }
+    });
+  }
+});
+
 describe('Streaming failure file scanner', () => {
+  it('returns the matching TAP failure without duplicating chunk overlaps', async() => {
+    const failure = tap('  severity: fail\n  AssertionError: expected true, received false');
+    for (const size of [1, 31, 8192]) {
+      assert.deepEqual(await scanFailure(`unrelated output\n${failure}trailing output\n`,
+        [filename], size), { filename, reason: failure.trimEnd() });
+    }
+  });
+
+  it('returns the diagnostic preceding a matching file', async() => {
+    const reason = 'error: compilation failed\n  src/node.cc:42';
+    assert.deepEqual(await scanFailure(`unrelated output\n${reason}\n`, ['src/node.cc'], 1),
+      { filename: 'src/node.cc', reason });
+  });
+
+  it('returns the matching C++ failure with its preceding context', async() => {
+    const reason = 'test/cctest/test-example.cc:42\nExpected: 1\nActual: 2\n[  FAILED  ] Example';
+    assert.deepEqual(await scanFailure(`${reason}\n`, ['test/cctest/test-example.cc'], 1),
+      { filename: 'test/cctest/test-example.cc', reason });
+  });
+
+  it('returns the matching git failure block', async() => {
+    const reason = 'Changes not staged for commit:\n  modified: src/node.cc\n' +
+      'no changes added to commit';
+    assert.deepEqual(await scanFailure(`${reason}\n`, ['src/node.cc'], 1),
+      { filename: 'src/node.cc', reason });
+  });
+
+  it('bounds giant lines while retaining both ends of the diagnostic', async() => {
+    const reason = `src/node.cc ${'x'.repeat(200000)} error: failure`;
+    const failure = await scanFailure(`${reason}\n`, ['src/node.cc'], 31);
+    assert.equal(failure.filename, 'src/node.cc');
+    assert.ok(failure.reason.length < 8300);
+    assert.match(failure.reason, /^src\/node\.cc /);
+    assert.match(failure.reason, /failure output truncated/);
+    assert.match(failure.reason, / error: failure$/);
+  });
+
+  it('bounds giant TAP blocks while retaining the failure and final diagnostic', async() => {
+    const text = tap(`${'  context\n'.repeat(10000)}  AssertionError: failure`);
+    const failure = await scanFailure(text);
+    assert.equal(failure.filename, filename);
+    assert.ok(failure.reason.length < 8300);
+    assert.match(failure.reason, /^not ok 1 parallel\/test-example/);
+    assert.match(failure.reason, /failure output truncated/);
+    assert.match(failure.reason, /AssertionError: failure\n {2}\.\.\.$/);
+  });
+
   for (const message of [
     'src/node.cc: Read-only file system',
     'error C2143: src/node.cc',
@@ -53,6 +126,14 @@ describe('Streaming failure file scanner', () => {
     const log = tap('  c:\\\\workspace\\\\test\\\\fixtures\\\\é-example.js:42:1')
       .replaceAll('\n', '\r\n');
     assert.equal(await scan(log, [path], 1), path);
+    assert.deepEqual(await scanFailure(log, [path], 1),
+      { filename: path, reason: log.replaceAll('\r', '').trimEnd() });
+  });
+
+  it('preserves literal backslashes in failure output', async() => {
+    const failure = tap("  actual: '\\\\n'\n  expected: '\\\\t'");
+    assert.deepEqual(await scanFailure(failure, [filename], 1),
+      { filename, reason: failure.trimEnd() });
   });
 
   it('requires a real path boundary across chunks', async() => {
@@ -101,7 +182,8 @@ describe('Streaming failure file scanner', () => {
     assert.equal(await scanner.scan([Buffer.from('not ok 1 parallel/test-example\n')]),
       undefined);
     assert.equal(await scanner.scan([Buffer.from('unrelated output\n  ...\n')]), undefined);
-    assert.equal(await scanner.scan([Buffer.from(tap('  actual failure'))]), filename);
+    assert.deepEqual(await scanner.scan([Buffer.from(tap('  actual failure'))]),
+      { filename, reason: tap('  actual failure').trimEnd() });
   });
 
   it('matches a compiler diagnostic without a final newline', async() => {
@@ -137,8 +219,9 @@ describe('Streaming failure file scanner', () => {
         for (let i = 0; i < 2048; i++) yield chunk;
         yield Buffer.from('\\n  ...\\n');
       }
-      assert.equal(await new FailureFileScanner([${JSON.stringify(filename)}]).scan(source()),
-        ${JSON.stringify(filename)});
+      const failure = await new FailureFileScanner([${JSON.stringify(filename)}]).scan(source());
+      assert.equal(failure.filename, ${JSON.stringify(filename)});
+      assert.ok(failure.reason.length < 8300);
     `], { encoding: 'utf8', timeout: 30000 });
     assert.ifError(result.error);
     assert.equal(result.status, 0, result.stdout + result.stderr);
@@ -174,7 +257,8 @@ describe('Streaming HTTP logs', () => {
         await setImmediate();
       }
     });
-    assert.equal(await new FailureFileScanner([filename]).scan(request.stream(url)), filename);
+    assert.deepEqual(await new FailureFileScanner([filename]).scan(request.stream(url)),
+      { filename, reason: tap('  failure').trimEnd() });
     await responseClosed;
     assert.ok(sent < 1024 * 1024 * 1024, `Downloaded ${sent} trailing bytes`);
   });
@@ -185,7 +269,8 @@ describe('Streaming HTTP logs', () => {
       res.writeHead(200, { 'Content-Encoding': 'gzip' });
       res.end(gzipSync(tap('  failure')));
     });
-    assert.equal(await new FailureFileScanner([filename]).scan(request.stream(url)), filename);
+    assert.deepEqual(await new FailureFileScanner([filename]).scan(request.stream(url)),
+      { filename, reason: tap('  failure').trimEnd() });
   });
 
   it('cancels an error response instead of scanning its body', async(t) => {

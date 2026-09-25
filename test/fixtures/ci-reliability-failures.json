@@ -1,0 +1,174 @@
+[
+  {
+    "name": "assertion with escaped output and a Windows file URL",
+    "kind": "failure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-23.md",
+    "url": "https://ci.nodejs.org/job/node-test-binary-windows-js-suites/RUN_SUBSET=0,nodes=win11-arm64-COMPILED_BY-vs2022_clang-arm64/43426/console",
+    "filenames": [
+      "test/parallel/test-debugger-extract-function-name.mjs"
+    ],
+    "log": "not ok 294 parallel/test-debugger-extract-function-name\n  ---\n  duration_ms: 1399.99400\n  severity: fail\n  exitcode: 1\n  stack: |-\n    node:internal/modules/run_main:111\n        triggerUncaughtException(\n        ^\n    \n    AssertionError [ERR_ASSERTION]: The input did not match the regular expression /\\[GeneratorFunction\\]/. Input:\n    \n    '< \\n< \\n< #\\n< # Fatal error in , line 0\\n\\ndebug> '\n    \n        at file:///d:/workspace/node-test-binary-windows-js-suites/node/test/parallel/test-debugger-extract-function-name.mjs:34:10\n        at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {\n      generatedMessage: true,\n      code: 'ERR_ASSERTION',\n      actual: '< \\n< \\n< #\\n< # Fatal error in , line 0\\n\\ndebug> ',\n      expected: /\\[GeneratorFunction\\]/,\n      operator: 'match',\n      diff: 'simple'\n    }\n    \n    Node.js v27.0.0-pre\n  ..."
+  },
+  {
+    "name": "assertion with prefixed stderr (sample 1)",
+    "kind": "failure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-25.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-linux-containered/nodes=ubuntu2404_sharedlibs_icu_x64/59400/consoleText",
+    "filenames": [
+      "test/parallel/test-inspector-async-hook-setup-at-signal.js"
+    ],
+    "log": "not ok 2417 parallel/test-inspector-async-hook-setup-at-signal\n  ---\n  duration_ms: 733.63600\n  severity: fail\n  exitcode: 1\n  stack: |-\n    [err] Waiting until a signal enables the inspector...\n    [err] \n    [err] started\n    [err] \n    [test] Connecting to a child Node process\n    [test] Testing /json/list\n    [err] Debugger listening on ws://127.0.0.1:43821/6b9a4948-8ecc-4ce7-9fd7-ee9c45aa4c55\n    [err] For help, see: https://nodejs.org/learn/getting-started/debugging\n    [err] \n    [err] Signal received, waiting for debugger setup\n    [err] (node:2142537) internal/test/binding: These APIs are for internal testing only. Do not use them.\n    [err] (Use `node --trace-warnings ...` to show where the warning was created)\n    [err] \n    [err] Debugger attached.\n    [err] \n    [err] Debugger ready, setting up timeout with a break\n    [err] \n    [test] Waiting for initial setup\n    [test] Setting up timeout for async stack trace\n    [test] Verify basic properties of asyncStackTrace\n    AssertionError [ERR_ASSERTION]: callFrames,reason,hitBreakpoints contains \"asyncStackTrace\" property\n        at checkAsyncStackTrace (/home/iojs/build/workspace/node-test-commit-linux-containered/test/parallel/test-inspector-async-hook-setup-at-signal.js:59:3)\n        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n        at async runTests (/home/iojs/build/workspace/node-test-commit-linux-containered/test/parallel/test-inspector-async-hook-setup-at-signal.js:80:3) {\n      generatedMessage: false,\n      code: 'ERR_ASSERTION',\n      actual: undefined,\n      expected: true,\n      operator: '==',\n      diff: 'simple'\n    }\n    1\n  ..."
+  },
+  {
+    "name": "assertion with prefixed stderr (sample 2)",
+    "kind": "failure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-25.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-osx/nodes=macos15-x64/73649/consoleText",
+    "filenames": [
+      "test/parallel/test-inspector-async-hook-setup-at-signal.js"
+    ],
+    "log": "not ok 2418 parallel/test-inspector-async-hook-setup-at-signal\n  ---\n  duration_ms: 2144.64200\n  severity: fail\n  exitcode: 1\n  stack: |-\n    [err] Waiting until a signal enables the inspector...\n    [err] started\n    [err] \n    [test] Connecting to a child Node process\n    [test] Testing /json/list\n    [err] Debugger listening on ws://127.0.0.1:53035/aaf719fc-9123-43a1-ab43-109964bece98\n    [err] For help, see: https://nodejs.org/learn/getting-started/debugging\n    [err] \n    [err] Signal received, waiting for debugger setup\n    [err] (node:54211) internal/test/binding: These APIs are for internal testing only. Do not use them.\n    [err] (Use `node --trace-warnings ...` to show where the warning was created)\n    [err] \n    [err] Debugger attached.\n    [err] \n    [err] Debugger ready, setting up timeout with a break\n    [err] \n    [test] Waiting for initial setup\n    [test] Setting up timeout for async stack trace\n    [test] Verify basic properties of asyncStackTrace\n    AssertionError [ERR_ASSERTION]: callFrames,reason,hitBreakpoints contains \"asyncStackTrace\" property\n        at checkAsyncStackTrace (/Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/parallel/test-inspector-async-hook-setup-at-signal.js:59:3)\n        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n        at async runTests (/Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/parallel/test-inspector-async-hook-setup-at-signal.js:80:3) {\n      generatedMessage: false,\n      code: 'ERR_ASSERTION',\n      actual: undefined,\n      expected: true,\n      operator: '==',\n      diff: 'simple'\n    }\n    1\n  ..."
+  },
+  {
+    "name": "assertion with a relative test location and a file URL (sample 1)",
+    "kind": "failure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-25.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-osx/nodes=macos15-x64/73654/consoleText",
+    "filenames": [
+      "test/parallel/test-runner-run.mjs"
+    ],
+    "log": "not ok 3553 parallel/test-runner-run\n  ---\n  duration_ms: 24692.55700\n  severity: fail\n  exitcode: 1\n  stack: |-\n    Test failure: 'should support timeout'\n    Location: test/parallel/test-runner-run.mjs:91:3\n    AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'uncaughtException'\n    - 'testTimeoutFailure'\n    \n        at TestsStream.<anonymous> (file:///Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/parallel/test-runner-run.mjs:96:14)\n        at TestsStream.<anonymous> (/Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/common/index.js:512:15)\n        at TestsStream.emit (node:events:514:20)\n        at [kEmitMessage] (node:internal/test_runner/tests_stream:198:10)\n        at TestsStream.fail (node:internal/test_runner/tests_stream:39:23)\n        at FileTest.report (node:internal/test_runner/test:1705:21)\n        at FileTest.report (node:internal/test_runner/runner:398:13)\n        at FileTest.finalize (node:internal/test_runner/test:1629:10)\n        at Test.processReadySubtestRange (node:internal/test_runner/test:1022:15)\n        at FileTest.postRun (node:internal/test_runner/test:1541:19) {\n      generatedMessage: true,\n      code: 'ERR_ASSERTION',\n      actual: 'uncaughtException',\n      expected: 'testTimeoutFailure',\n      operator: 'strictEqual',\n      diff: 'simple'\n    }\n    \n    (node:15655) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 uncaughtException listeners added to [process]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit\n    (Use `node --trace-warnings ...` to show where the warning was created)\n    (node:15655) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 unhandledRejection listeners added to [process]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit\n    (node:15655) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 beforeExit listeners added to [process]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit\n  ..."
+  },
+  {
+    "name": "assertion with a relative test location and a file URL (sample 2)",
+    "kind": "failure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-25.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-osx/nodes=macos15-x64/73650/consoleText",
+    "filenames": [
+      "test/parallel/test-runner-run.mjs"
+    ],
+    "log": "not ok 3552 parallel/test-runner-run\n  ---\n  duration_ms: 19896.59500\n  severity: fail\n  exitcode: 1\n  stack: |-\n    Test failure: 'should support timeout'\n    Location: test/parallel/test-runner-run.mjs:91:3\n    AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'uncaughtException'\n    - 'testTimeoutFailure'\n    \n        at TestsStream.<anonymous> (file:///Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/parallel/test-runner-run.mjs:96:14)\n        at TestsStream.<anonymous> (/Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/common/index.js:512:15)\n        at TestsStream.emit (node:events:514:20)\n        at [kEmitMessage] (node:internal/test_runner/tests_stream:198:10)\n        at TestsStream.fail (node:internal/test_runner/tests_stream:39:23)\n        at FileTest.report (node:internal/test_runner/test:1705:21)\n        at FileTest.report (node:internal/test_runner/runner:398:13)\n        at FileTest.finalize (node:internal/test_runner/test:1629:10)\n        at Test.processReadySubtestRange (node:internal/test_runner/test:1022:15)\n        at FileTest.postRun (node:internal/test_runner/test:1541:19) {\n      generatedMessage: true,\n      code: 'ERR_ASSERTION',\n      actual: 'uncaughtException',\n      expected: 'testTimeoutFailure',\n      operator: 'strictEqual',\n      diff: 'simple'\n    }\n    \n    (node:54169) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 uncaughtException listeners added to [process]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit\n    (Use `node --trace-warnings ...` to show where the warning was created)\n    (node:54169) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 unhandledRejection listeners added to [process]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit\n    (node:54169) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 beforeExit listeners added to [process]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit\n  ..."
+  },
+  {
+    "name": "native assertion with a stack trace",
+    "kind": "failure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-25.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-smartos/nodes=smartos23-x64/68645/consoleText",
+    "filenames": [
+      "test/parallel/test-worker-init-failure.js"
+    ],
+    "log": "not ok 6641 parallel/test-worker-init-failure\n  ---\n  duration_ms: 1248.38300\n  severity: fail\n  exitcode: 1\n  stack: |-\n    child stdout: \n    \n    child stderr: \n      #  [35614]: node::InitializeOncePerProcessInternal(const std::vector<std::__cxx11::basic_string<char> >&, ProcessInitializationFlags::Flags)::<lambda(unsigned char*, size_t)> at ../src/node.cc:1339\n      #  Assertion failed: (uv_random(nullptr, nullptr, buffer, length, 0, nullptr)) == (0)\n    \n    ----- Native stack trace -----\n    \n     1: 1e56ace node::(anonymous namespace)::DefaultAbortHandler(char const*, char const*) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     2: 1e57544 node::Assert(node::AssertionInfo const&) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     3: 1de10b2 node::InitializeOncePerProcessInternal(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&, node::ProcessInitializationFlags::Flags)::{lambda(unsigned char*, unsigned long)#1}::_FUN(unsigned char*, unsigned long) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     4: 3f9a8e0 v8::base::RandomNumberGenerator::RandomNumberGenerator() [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     5: 3f9d149 v8::base::VirtualAddressSpace::AllocateSubspace(unsigned long, unsigned long, unsigned long, v8::PagePermissions, std::optional<int>, std::optional<v8::SharedMemoryHandle>) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     6: 2426c0a v8::internal::SegmentedTable<v8::internal::JSDispatchEntry, 268435456ul>::Initialize() [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     7: 242241a v8::internal::Isolate::Init(v8::internal::SnapshotData*, v8::internal::SnapshotData*, v8::internal::SnapshotData*, bool) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     8: 29fd35d v8::internal::Snapshot::Initialize(v8::internal::Isolate*) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     9: 22709cb v8::Isolate::Initialize(v8::Isolate*, v8::Isolate::CreateParams const&) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n    10: 1cab9b0 node::NewIsolate(v8::Isolate::CreateParams*, uv_loop_s*, node::MultiIsolatePlatform*, node::SnapshotData const*, node::IsolateSettings const&) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n    11: 202269a node::worker::WorkerThreadData::WorkerThreadData(node::worker::Worker*) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n    12: 2020143 node::worker::Worker::Run() [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n    13: 2020c36 node::worker::Worker::StartThread(v8::FunctionCallbackInfo<v8::Value> const&)::{lambda(void*)#1}::_FUN(void*) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n    14: fffffc7fef0405fc _thrp_setup [/lib/amd64/libc.so.1]\n    15: fffffc7fef040910 _lwp_start [/lib/amd64/libc.so.1]\n    /bin/sh: 35614: Abort\n    \n    \n    node:internal/assert/utils:146\n      throw error;\n      ^\n    \n    AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    \n    null !== 0\n    \n        at ChildProcess.<anonymous> (/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/test/parallel/test-worker-init-failure.js:67:12)\n        at ChildProcess.<anonymous> (/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/test/common/index.js:512:15)\n        at ChildProcess.emit (node:events:514:20)\n        at ChildProcess._handle.onexit (node:internal/child_process:323:12) {\n      generatedMessage: true,\n      code: 'ERR_ASSERTION',\n      actual: null,\n      expected: 0,\n      operator: 'strictEqual',\n      diff: 'simple'\n    }\n    \n    Node.js v27.0.0-pre\n  ..."
+  },
+  {
+    "name": "TODO-marked TAP failure",
+    "kind": "todo",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-25.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-osx/nodes=macos15-x64/73649/consoleText",
+    "filenames": [
+      "test/sequential/test-watch-mode.mjs"
+    ],
+    "log": "not ok 7347 sequential/test-watch-mode # TODO : Fix flaky test\n  ---\n  duration_ms: 47606.28900\n  severity: flaky\n  exitcode: 1\n  stack: |-\n    Test failure: 'should reload env variables when --env-file changes'\n    Location: test/sequential/test-watch-mode.mjs:228:3\n    Error: Timed out waiting for restart\n        at Timeout.<anonymous> (file:///Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/sequential/test-watch-mode.mjs:97:25)\n        at listOnTimeout (node:internal/timers:685:17)\n        at process.processTimers (node:internal/timers:618:7)\n    \n    Test failure: 'should strip multiple --watch-path entries from NODE_OPTIONS'\n    Location: test/sequential/test-watch-mode.mjs:1080:3\n    Error: Timed out waiting for restart\n        at Timeout.<anonymous> (file:///Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/sequential/test-watch-mode.mjs:97:25)\n        at listOnTimeout (node:internal/timers:685:17)\n        at process.processTimers (node:internal/timers:618:7)\n    \n  ..."
+  },
+  {
+    "name": "truncated TAP assertion with prefixed stderr",
+    "kind": "incomplete",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-25.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-linux-containered/nodes=ubuntu2404_sharedlibs_icu_x64/59400/console",
+    "filenames": [
+      "test/parallel/test-inspector-async-hook-setup-at-signal.js"
+    ],
+    "log": "not ok 2417 parallel/test-inspector-async-hook-setup-at-signal\n  ---\n  duration_ms: 733.63600\n  severity: fail\n  exitcode: 1\n  stack: |-\n    [err] Waiting until a signal enables the inspector...\n    [err] \n    [err] started\n    [err] \n    [test] Connecting to a child Node process\n    [test] Testing /json/list\n    [err] Debugger listening on ws://127.0.0.1:43821/6b9a4948-8ecc-4ce7-9fd7-ee9c45aa4c55\n    [err] For help, see: https://nodejs.org/learn/getting-started/debugging\n    [err] \n    [err] Signal received, waiting for debugger setup\n    [err] (node:2142537) internal/test/binding: These APIs are for internal testing only. Do not use them.\n    [err] (Use `node --trace-warnings ...` to show where the warning was created)\n    [err] \n    [err] Debugger attached.\n    [err] \n    [err] Debugger ready, setting up timeout with a break\n    [err] \n    [test] Waiting for initial setup\n    [test] Setting up timeout for async stack trace\n    [test] Verify basic properties of asyncStackTrace\n    AssertionError [ERR_ASSERT..."
+  },
+  {
+    "name": "truncated TAP assertion with a file URL",
+    "kind": "incomplete",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-25.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-osx/nodes=macos15-x64/73654/console",
+    "filenames": [
+      "test/parallel/test-runner-run.mjs"
+    ],
+    "log": "not ok 3553 parallel/test-runner-run\n  ---\n  duration_ms: 24692.55700\n  severity: fail\n  exitcode: 1\n  stack: |-\n    Test failure: 'should support timeout'\n    Location: test/parallel/test-runner-run.mjs:91:3\n    AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n    + actual - expected\n    \n    + 'uncaughtException'\n    - 'testTimeoutFailure'\n    \n        at TestsStream.<anonymous> (file:///Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/parallel/test-runner-run.mjs:96:14)\n        at TestsStream.<anonymous> (/Users/admin/build/workspace/node-test-commit-osx/nodes/macos15-x64/test/common/index.js:512:15)\n        at TestsStream.emit (node:events:514:20)\n        at [kEmitMessage] (node:internal/test_runner/tests_stream:198:10)\n        at TestsStream.fail (node:internal/test_runner/tests_stream:39:23)\n        at FileTest.report (node:internal/test_runner/test:1705:21)\n        at FileTest.report (node:internal/test_runner/runner:398:13)\n        at FileTest.finalize (node..."
+  },
+  {
+    "name": "truncated TAP native assertion",
+    "kind": "incomplete",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-25.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-smartos/nodes=smartos23-x64/68645/console",
+    "filenames": [
+      "test/parallel/test-worker-init-failure.js"
+    ],
+    "log": "not ok 6641 parallel/test-worker-init-failure\n  ---\n  duration_ms: 1248.38300\n  severity: fail\n  exitcode: 1\n  stack: |-\n    child stdout: \n    \n    child stderr: \n      #  [35614]: node::InitializeOncePerProcessInternal(const std::vector<std::__cxx11::basic_string<char> >&, ProcessInitializationFlags::Flags)::<lambda(unsigned char*, size_t)> at ../src/node.cc:1339\n      #  Assertion failed: (uv_random(nullptr, nullptr, buffer, length, 0, nullptr)) == (0)\n    \n    ----- Native stack trace -----\n    \n     1: 1e56ace node::(anonymous namespace)::DefaultAbortHandler(char const*, char const*) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     2: 1e57544 node::Assert(node::AssertionInfo const&) [/home/iojs/build/workspace/node-test-commit-smartos/nodes/smartos23-x64/out/Release/node]\n     3: 1de10b2 node::InitializeOncePerProcessInternal(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string..."
+  },
+  {
+    "name": "temporary-file creation error",
+    "kind": "infrastructure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-24.md",
+    "url": "https://ci.nodejs.org/job/node-compile-windows/nodes=win-vs2022_clang-arm64/69264/console",
+    "filenames": [
+      "README.md",
+      "lib/fs.js",
+      "src/node.cc"
+    ],
+    "log": "java.io.IOException: Failed to create a temp file on C:\\workspace\\node-compile-windows\n\tat hudson.FilePath.createTextTempFile(FilePath.java:1652)\n\tat hudson.tasks.CommandInterpreter.createScriptFile(CommandInterpreter.java:202)\n\tat hudson.tasks.CommandInterpreter.perform(CommandInterpreter.java:120)\n\tat hudson.tasks.CommandInterpreter.perform(CommandInterpreter.java:92)\n\tat PluginClassLoader for flexible-publish//org.jenkins_ci.plugins.flexible_publish.builder.FailAtEndBuilder.perform(FailAtEndBuilder.java:105)"
+  },
+  {
+    "name": "Git fetch error",
+    "kind": "infrastructure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-24.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-linux/73375/console",
+    "filenames": [
+      "README.md",
+      "lib/fs.js",
+      "src/node.cc"
+    ],
+    "log": "ERROR: Error fetching remote repo 'origin'\nhudson.plugins.git.GitException: Failed to fetch from git@github.com:nodejs/node.git\n\tat PluginClassLoader for git//hudson.plugins.git.GitSCM.fetchFrom(GitSCM.java:998)\n\tat PluginClassLoader for git//hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1239)\n\tat PluginClassLoader for git//hudson.plugins.git.GitSCM._checkout(GitSCM.java:1310)\n\tat PluginClassLoader for git//hudson.plugins.git.GitSCM.checkout(GitSCM.java:1277)"
+  },
+  {
+    "name": "shell condition error",
+    "kind": "infrastructure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-24.md",
+    "url": "https://ci.nodejs.org/job/node-compile-windows/nodes=win-vs2022_clang-arm64/69268/console",
+    "filenames": [
+      "README.md",
+      "lib/fs.js",
+      "src/node.cc"
+    ],
+    "log": "sh: line 12: [: -gt: unary operator expected"
+  },
+  {
+    "name": "Git rebase error",
+    "kind": "infrastructure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-24.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-linux/nodes=alpine-last-latest-x64/73401/console",
+    "filenames": [
+      "README.md",
+      "lib/fs.js",
+      "src/node.cc"
+    ],
+    "log": "fatal: no rebase in progress"
+  },
+  {
+    "name": "process spawn error",
+    "kind": "infrastructure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-24.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit/92539/console",
+    "filenames": [
+      "README.md",
+      "lib/fs.js",
+      "src/node.cc"
+    ],
+    "log": "java.io.IOException: Failed to exec spawn helper: pid: 760962, exit code: 1, error: 0 (none) \nPossible reasons:\n  - Spawn helper ran into JDK version mismatch\n  - Spawn helper ran into unexpected internal error\n  - Spawn helper was terminated by another process\nPossible solutions:"
+  },
+  {
+    "name": "missing JUnit report",
+    "kind": "infrastructure",
+    "report": "https://github.com/nodejs/reliability/blob/main/reports/2026-09-24.md",
+    "url": "https://ci.nodejs.org/job/node-test-commit-smartos/nodes=smartos23-x64/68610/console",
+    "filenames": [
+      "README.md",
+      "lib/fs.js",
+      "src/node.cc"
+    ],
+    "log": "ERROR: Step ‘Publish JUnit test result report’ failed: No test report files were found. Configuration error?\nCollecting metadata...\nMetadata collection done.\n[Checks API] No suitable checks publisher found.\nNotifying upstream projects of job completion\nFinished: FAILURE"
+  }
+]
