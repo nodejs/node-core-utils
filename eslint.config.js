@@ -45,25 +45,7 @@ export default [
       'n/no-unsupported-features/node-builtins': 'off',
     },
     settings: {
-      'import/resolver': {
-        node: {
-          pathFilter(pkg, path, relativePath) {
-            let pkgExport;
-            if (relativePath) {
-              pkgExport = pkg.exports?.[`./${relativePath}`];
-            }
-            if (!relativePath || (!pkgExport && relativePath === 'index')) {
-              pkgExport = pkg.exports?.['.'] ?? pkg.exports;
-            }
-            return pkgExport?.import?.default ??
-                   pkgExport?.import ??
-                   pkgExport?.[0]?.import ??
-                   pkgExport?.default ??
-                   pkgExport ??
-                   (relativePath || pkg.main);
-          },
-        },
-      },
+      'import/resolver': 'node',
     },
   },
 ];
