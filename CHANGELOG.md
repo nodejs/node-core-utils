@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.4.1](https://github.com/nodejs/node-core-utils/compare/v7.4.0...v7.4.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* **v8:** concatenate adjacent strings in V8 DEPS files ([#1212](https://github.com/nodejs/node-core-utils/issues/1212)) ([69bd53c](https://github.com/nodejs/node-core-utils/commit/69bd53cc7eb5d95859a78bd006973b85d7ea683f))
+
 ## [7.4.0](https://github.com/nodejs/node-core-utils/compare/v7.3.1...v7.4.0) (2026-09-25)
 
 
