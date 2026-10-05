@@ -34,7 +34,7 @@
   "license": "MIT",
   "bundleDependencies": true,
   "dependencies": {
-    "@inquirer/prompts": "^7.4.1",
+    "@inquirer/prompts": "^8.7.2",
     "@listr2/prompt-adapter-inquirer": "^4.2.7",
     "@node-core/caritat": "^1.6.0",
     "@pkgjs/nv": "^0.3.0",
