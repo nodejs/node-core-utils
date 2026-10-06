@@ -9,8 +9,8 @@ import { readJSON, readFile, path as getPath } from '../fixtures/index.js';
 
 const collabList =
 `* [@Bar](https://github.com/Bar) - Bar Bar
-* [@foo](https://github.com/foo) - Mr. foo
-* [@quo](https://github.com/quo) - Ms. Quo`;
+* [@foo](https://github.com/foo) - Mr. foo <foo@example.com>
+* [@quo](https://github.com/quo) - Ms. Quo <quo@me.com>`;
 
 describe('TeamInfo', function() {
   let request;
