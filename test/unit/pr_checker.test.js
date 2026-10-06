@@ -40,6 +40,7 @@ import {
   firstTimerPR,
   firstTimerPrivatePR,
   semverMajorPR,
+  largePR,
   conflictingPR,
   closedPR,
   mergedPR,
@@ -61,6 +62,7 @@ const {
   MISSING_APPROVAL,
   MISSING_GITHUB_CI,
   MISSING_JENKINS_CI,
+  MISSING_LARGE_PR_TSC_APPROVAL,
   MISSING_TSC_APPROVAL,
   REQUESTED_CHANGES,
   STALE_REVIEW,
@@ -170,6 +172,55 @@ describe('PRChecker', () => {
       assert.deepStrictEqual(checker.reasons, [{
         code: MISSING_TSC_APPROVAL,
         message: 'semver-major requires at least 2 TSC approvals',
+        approvals: 1,
+        required: 2
+      }]);
+      cli.assertCalledWith(expectedLogs);
+    });
+
+    it('should error when large PR has only 1 TSC approval', () => {
+      const cli = new TestCLI();
+
+      const expectedLogs = {
+        error: [
+          ['large pull requests require at least 2 TSC approvals']
+        ],
+        ok: [
+          ['Approvals: 4'],
+          ['- Foo User (@foo): https://github.com/nodejs/node/pull/16438#pullrequestreview-71480624'],
+          ['- Quux User (@Quux): LGTM'],
+          ['- Baz User (@Baz): https://github.com/nodejs/node/pull/16438#pullrequestreview-71488236'],
+          ['- Bar User (@bar) (TSC): lgtm']
+        ],
+        info: [
+          ['This PR was created on Fri, 23 Nov 2018 17:50:44 GMT'],
+          ['- Quux User (@Quux) approved in via LGTM in comments'],
+          ['- Bar User (@bar) approved in via LGTM in comments']
+        ]
+      };
+      const pr = Object.assign({}, largePR, {
+        createdAt: GT_7D
+      });
+
+      const data = {
+        pr,
+        reviewers: allGreenReviewers,
+        comments: commentsWithLGTM,
+        reviews: approvingReviews,
+        commits: simpleCommits,
+        collaborators,
+        authorIsNew: () => false,
+        getThread() {
+          return PRData.prototype.getThread.call(this);
+        }
+      };
+      const checker = new PRChecker(cli, data, {}, argv);
+
+      const status = checker.checkReviewsAndWait(new Date(NOW), true);
+      assert(!status);
+      assert.deepStrictEqual(checker.reasons, [{
+        code: MISSING_LARGE_PR_TSC_APPROVAL,
+        message: 'large pull requests require at least 2 TSC approvals',
         approvals: 1,
         required: 2
       }]);
