@@ -112,7 +112,7 @@ describe('PRSummary', () => {
       ],
       warn: [
         ['Could not retrieve the email or name ' +
-        "of the PR author's from user's GitHub profile!"]
+        "of the PR's author from user's GitHub profile!"]
       ]
     };
 
