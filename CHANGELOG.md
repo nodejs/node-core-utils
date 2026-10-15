@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.5.1](https://github.com/nodejs/node-core-utils/compare/v7.5.0...v7.5.1) (2026-10-15)
+
+
+### Bug Fixes
+
+* **ncu-ci:** only filter `main` branch when it's the only one ([78f6452](https://github.com/nodejs/node-core-utils/commit/78f645217fccec70a03fabc251088845acfa5bb3))
+
 ## [7.5.0](https://github.com/nodejs/node-core-utils/compare/v7.4.1...v7.5.0) (2026-10-15)
 
 
