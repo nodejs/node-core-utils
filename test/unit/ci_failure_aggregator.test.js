@@ -45,8 +45,8 @@ describe('Failure aggregation target branches', () => {
 
     const markdown = aggregator.formatAsMarkdown();
     assert.ok(markdown.includes('| Failed PR | 2 (' +
-      `[${failures[3].source}](${failures[3].upstream}) (target: v22.x), ` +
-      `[${failures[0].source}](${failures[0].upstream}) (target: main, v24.x)) |`));
+      `[nodejs/node#2](${failures[3].upstream}) (target: v22.x), ` +
+      `[nodejs/node#1](${failures[0].upstream}) (target: v24.x)) |`));
     assert.ok(markdown.includes(`| First CI | ${failures[3].upstream} |`));
     assert.ok(markdown.includes(`| Last CI | ${failures[0].upstream} |`));
     assert.ok(markdown.includes('Health summary\n'));
@@ -55,8 +55,8 @@ describe('Failure aggregation target branches', () => {
 
     aggregator.display();
     assert.deepEqual(cli._calls.table.filter(([key]) => key === 'Failed PR'), [
-      ['Failed PR', '2 (#2 (target: v22.x), #1 (target: main, v24.x))'],
-      ['Failed PR', '1 (#3 (target: main))']
+      ['Failed PR', '2 (nodejs/node#2 (target: v22.x), nodejs/node#1 (target: v24.x))'],
+      ['Failed PR', '1 (nodejs/node#3)']
     ]);
   });
 
@@ -66,11 +66,26 @@ describe('Failure aggregation target branches', () => {
       failure(1, 104), failure(1, 103, 'main'), failure(1, 102), failure(2, 101)
     ]);
     const markdown = aggregator.formatAsMarkdown();
-    assert.ok(markdown.includes('(target: unknown, main)'));
+    assert.equal(markdown.includes('target: unknown, main'), false);
     assert.ok(markdown.includes('(target: unknown)'));
     aggregator.display();
     assert.deepEqual(cli._calls.table.find(([key]) => key === 'Failed PR'),
-      ['Failed PR', '2 (#2 (target: unknown), #1 (target: unknown, main))']);
+      ['Failed PR', '2 (nodejs/node#2 (target: unknown), nodejs/node#1 (target: unknown))']);
+  });
+
+  it('hides main targets and abbreviates PR labels without changing CI links', () => {
+    const cli = new TestCLI();
+    const failures = [failure(1, 102, 'main'), failure(2, 101, 'main')];
+    failures[1].source = 'https://github.com/nodejs-private/node-private/pull/2/';
+    const aggregator = new FailureAggregator(cli, [health, ...failures]);
+    const markdown = aggregator.formatAsMarkdown();
+    assert.ok(markdown.includes('| Failed PR | 2 (' +
+      `[nodejs-private/node-private#2](${failures[1].upstream}), ` +
+      `[nodejs/node#1](${failures[0].upstream})) |`));
+    assert.equal(markdown.includes('target:'), false);
+    aggregator.display();
+    assert.deepEqual(cli._calls.table.find(([key]) => key === 'Failed PR'),
+      ['Failed PR', '2 (nodejs-private/node-private#2, nodejs/node#1)']);
   });
 
   it('escapes Markdown and HTML in branch names while preserving terminal text', () => {
