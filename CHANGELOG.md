@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.5.1](https://github.com/nodejs/node-core-utils/compare/v7.5.0...v7.5.1) (2026-10-15)
+
+
+### Bug Fixes
+
+* **ncu-ci:** retain `main` in mixed PR target lists ([#1219](https://github.com/nodejs/node-core-utils/issues/1219)) ([bdc212b](https://github.com/nodejs/node-core-utils/commit/bdc212b5f9de47479e74d5b321b88281215d0280))
+
 ## [7.5.0](https://github.com/nodejs/node-core-utils/compare/v7.4.1...v7.5.0) (2026-10-15)
 
 
