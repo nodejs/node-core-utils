@@ -1,5 +1,18 @@
 # Changelog
 
+## [7.5.0](https://github.com/nodejs/node-core-utils/compare/v7.4.1...v7.5.0) (2026-10-15)
+
+
+### Features
+
+* hide default-branch target and shorten URLs ([f4bd00a](https://github.com/nodejs/node-core-utils/commit/f4bd00a8e622e9b39bf28a72796b5ca83a20be15))
+* show PR target branches in CI reports ([a7e84b3](https://github.com/nodejs/node-core-utils/commit/a7e84b3ede9884d58fe4a0bc8bed5a0787f70124))
+
+
+### Bug Fixes
+
+* correct text of warning message ([8cc3608](https://github.com/nodejs/node-core-utils/commit/8cc36089792c2deb9f90c88b7cf267425c4b1963))
+
 ## [7.4.1](https://github.com/nodejs/node-core-utils/compare/v7.4.0...v7.4.1) (2026-10-05)
 
 
