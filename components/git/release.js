@@ -85,6 +85,8 @@ export function builder(yargs) {
       'Prepare a new security release of Node.js with auto-determined version')
     .example('git node release --prepare --newVersion=1.2.3',
       'Prepare a new release of Node.js tagged v1.2.3')
+    .example('git node release --prepare --newVersion=27.0.0-alpha.1.0.0',
+      'Prepare a new Alpha release of Node.js tagged v27.0.0-alpha.1.0.0')
     .example('git node release --promote https://github.com/nodejs/node/pull/12345 https://github.com/nodejs/node/pull/54321',
       'Promote two prepared releases of Node.js with PR #12345 and #54321')
     .example('git node --prepare --startLTS',
