@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.5.2](https://github.com/nodejs/node-core-utils/compare/v7.5.1...v7.5.2) (2026-10-21)
+
+
+### Bug Fixes
+
+* **git-node-vote:** specify GH API version ([#1222](https://github.com/nodejs/node-core-utils/issues/1222)) ([ff0f558](https://github.com/nodejs/node-core-utils/commit/ff0f558535822b3c99ea69bb800455b8a97a0887))
+* **v8:** set the V8 version during minor updates ([#1225](https://github.com/nodejs/node-core-utils/issues/1225)) ([9bf563f](https://github.com/nodejs/node-core-utils/commit/9bf563f04d8df15b50f449390d2fb8f880d6d51f))
+
 ## [7.5.1](https://github.com/nodejs/node-core-utils/compare/v7.5.0...v7.5.1) (2026-10-15)
 
 
