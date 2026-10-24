@@ -343,6 +343,30 @@ describe('security_release: CVE request versions', () => {
     ]);
   });
 
+  it('offers the next Alpha versions on an Alpha release line', async() => {
+    const radioChoices = [];
+    const release = new UpdateSecurityRelease({
+      prompt(message, options) {
+        assert.strictEqual(options.defaultAnswer, '');
+        return '27.0.0-alpha.1.2.3';
+      },
+      promptRadio(message, choices, options) {
+        radioChoices.push(choices, options.defaultAnswer);
+        return choices[0];
+      }
+    });
+
+    assert.deepStrictEqual(
+      (await release.calculateVersions(['27.x'], [{ major: 26, version: '26.12.0' }], []))
+        .patchedVersions,
+      ['27.0.0-alpha.1.2.4']
+    );
+    assert.deepStrictEqual(radioChoices, [
+      ['27.0.0-alpha.1.2.4', '27.0.0-alpha.1.3.0'],
+      '27.0.0-alpha.1.2.4'
+    ]);
+  });
+
   it('applies successful CVE updates once after requests finish', async() => {
     const messages = [];
     const prompts = [];
