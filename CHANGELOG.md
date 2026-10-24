@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.5.3](https://github.com/nodejs/node-core-utils/compare/v7.5.2...v7.5.3) (2026-10-24)
+
+
+### Bug Fixes
+
+* ignore check suites superseded by a later run ([#1192](https://github.com/nodejs/node-core-utils/issues/1192)) ([ade9a85](https://github.com/nodejs/node-core-utils/commit/ade9a8597c90f7fef9241e2a7199acf6afad48f6))
+
 ## [7.5.2](https://github.com/nodejs/node-core-utils/compare/v7.5.1...v7.5.2) (2026-10-21)
 
 
