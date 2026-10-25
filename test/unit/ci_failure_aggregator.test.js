@@ -20,6 +20,18 @@ function failure(prid, jobid, targetBranch, reason = 'Example failure') {
 const health = { formatAsMarkdown: () => 'Health summary\n' };
 
 describe('Failure aggregation target branches', () => {
+  it('reports health when no failures remain', () => {
+    const cli = new TestCLI();
+    const aggregator = new FailureAggregator(cli, [health]);
+    assert.deepEqual(Object.keys(aggregator.aggregate()), []);
+    const markdown = aggregator.formatAsMarkdown();
+    assert.ok(markdown.startsWith('No failures to report\n'));
+    assert.ok(markdown.includes('Health summary\n'));
+    assert.equal(markdown.includes('Failed PR'), false);
+    aggregator.display();
+    assert.deepEqual(cli._calls.table, []);
+  });
+
   it('preserves branches across runs without changing PR counts or CI ordering', () => {
     const cli = new TestCLI();
     const failures = [
