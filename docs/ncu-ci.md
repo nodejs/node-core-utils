@@ -81,6 +81,8 @@ workload=$(ncu-ci workload) || exit 0
 
 `ncu-ci rate <type>` calculate the success rate for CI jobs in the last 100 runs per [CI Health History](https://github.com/nodejs/reliability#ci-health-history), where `<type>` can be either `pr` for `node-test-pull-request` or `commit` for `node-test-commit`. See `ncu-ci rate --help` for more.
 
+Builds targeting the `nodejs-private` organization are excluded from the counts.
+
 Examples:
 
 ```sh
@@ -108,6 +110,9 @@ node on git:main ❯ ncu-ci rate commit
 ### `ncu-ci walk <type>`
 
 `ncu-ci walk <type>` walks CI and displays failures, where `<type>` can be either `pr` for `node-test-pull-request` or `commit` for `node-test-commit`. See `ncu-ci walk --help` for more.
+
+Builds targeting the `nodejs-private` organization are excluded from the health
+summary and failure report.
 
 Example:
 ```sh
