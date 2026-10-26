@@ -36,15 +36,18 @@ describe('prepare_release: utils.getLTSMaintenanceStartDate', () => {
 describe('prepare_release: utils.getStartLTSBlurb', () => {
   it('generates first LTS release text with correct dates', () => {
     const expected = [
-      'This release marks the transition of Node.js 14.x into Long Term Support (LTS)',
-      'with the codename \'Fermium\'. The 14.x release line now moves into "Active LTS"',
-      'and will remain so until October 2021. After that time, it will move into',
-      '"Maintenance" until end of life in April 2023.'
+      'This release marks the transition of Node.js 27.x into Long Term Support (LTS)',
+      'with the codename \'Magnesium\'. It will continue to receive updates through to',
+      'the end of April 2030.',
+      '',
+      'Other than updating metadata, such as the `process.release` object, to reflect',
+      'that the release is LTS, no further changes since the previous release are',
+      'included.'
     ].join('\n');
     const text = utils.getStartLTSBlurb({
-      date: '2020-10-27',
-      ltsCodename: 'Fermium',
-      versionComponents: { major: 14 }
+      date: '2027-10-20',
+      ltsCodename: 'Magnesium',
+      versionComponents: { major: 27 }
     });
     assert.strictEqual(text, expected);
   });
