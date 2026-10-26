@@ -244,12 +244,8 @@ git node release --prepare
 ```
 
 ```sh
-# Prepare an Alpha release of Node.js. Alpha release lines are detected from
-# the NODE_ALPHA_*_VERSION macros in src/node_version.h, and the alpha
-# version is automatically determined when no version is given. When the
-# release line has no CHANGELOG_VN.md yet, the first release
-# (N.0.0-alpha.0.0.0) creates it from the commits that are not on vN-1.x.
-git node release --prepare 27.0.0-alpha.1.0.0
+# Prepare the first Alpha release of a new release line
+git node release --prepare 27.0.0-alpha.0.0.0
 ```
 
 ```sh

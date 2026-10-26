@@ -167,25 +167,31 @@ function repository(t, releaseTitle, releaseNodeVersionH) {
 }
 
 describe('promote_release: cherryPickReleaseCommit', { concurrency: false }, () => {
-  it('keeps node_version.h of the default branch for Alpha releases', async(t) => {
-    const title = `${today}, Version 27.0.0-alpha.1.0.0 (Alpha)`;
-    const sha = repository(t, title, nodeVersionH(27, 1, [1, 0, 0]));
+  const keepsNodeVersionH = async(t, version, releaseInfo, header) => {
+    const title = `${today}, Version ${version} ${releaseInfo}`;
+    const sha = repository(t, title, header);
     const { release } = releasePromotion();
     await release.cherryPickReleaseCommit(sha, {
-      isAlpha: true, versionComponents: { major: 27, minor: 0, patch: 0 }
+      version, versionComponents: { major: 27, minor: 0, patch: 0 }
     });
     assert.strictEqual(git('log', '-1', '--format=%s'), title);
     assert.strictEqual(git('show', '--format=', '--name-only', 'HEAD'), 'CHANGELOG.md');
     assert.strictEqual(
       fs.readFileSync('src/node_version.h', 'utf8'), nodeVersionH(27, 0, [0, 0, 0]));
-  });
+  };
 
-  it('moves the default branch to the next major after a major release', async(t) => {
-    const title = `${today}, Version 27.0.0 (Current)`;
-    const sha = repository(t, title, nodeVersionH(27, 1));
+  it('keeps node_version.h of the default branch for Alpha releases', (t) =>
+    keepsNodeVersionH(t, '27.0.0-alpha.1.0.0', '(Alpha)', nodeVersionH(27, 1, [1, 0, 0])));
+
+  it('keeps node_version.h of the default branch for the major release', (t) =>
+    keepsNodeVersionH(t, '27.0.0', '(Current)', nodeVersionH(27, 1)));
+
+  it('moves the default branch to the next major after the first Alpha release', async(t) => {
+    const title = `${today}, Version 27.0.0-alpha.0.0.0 (Alpha)`;
+    const sha = repository(t, title, nodeVersionH(27, 1, [0, 0, 0]));
     const { release } = releasePromotion();
     await release.cherryPickReleaseCommit(sha, {
-      versionComponents: { major: 27, minor: 0, patch: 0 }
+      version: '27.0.0-alpha.0.0.0', versionComponents: { major: 27, minor: 0, patch: 0 }
     });
     assert.strictEqual(git('log', '-1', '--format=%s'), title);
     assert.strictEqual(

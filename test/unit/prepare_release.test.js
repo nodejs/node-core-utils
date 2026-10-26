@@ -13,8 +13,7 @@ import ReleasePreparation, {
   filterAlphaReleaseCommits,
   formatMajorReleaseCommits,
   formatReleaseInfo,
-  formatSecurityNotableChanges,
-  parseReverts
+  formatSecurityNotableChanges
 } from '../../lib/prepare_release.js';
 
 function nodeVersionH({ major, minor, patch, isRelease = 0, alpha }) {
@@ -556,21 +555,10 @@ describe('prepare_release: utils.updateNodeVersionForNextMajor', () => {
   it('moves the default branch to the next major release line', () => {
     assert.strictEqual(
       utils.updateNodeVersionForNextMajor(nodeVersionH({
-        major: 27, minor: 0, patch: 0, isRelease: 1, alpha: { major: 0, minor: 0, patch: 0 }
+        major: 27, minor: 0, patch: 0, alpha: { major: 0, minor: 0, patch: 0 }
       }), 28),
       nodeVersionH({ major: 28, minor: 0, patch: 0, alpha: { major: 0, minor: 0, patch: 0 } })
     );
-  });
-
-  it('resets the alpha macros, or adds them if missing', () => {
-    const expected =
-      nodeVersionH({ major: 28, minor: 0, patch: 0, alpha: { major: 0, minor: 0, patch: 0 } });
-    assert.strictEqual(utils.updateNodeVersionForNextMajor(nodeVersionH({
-      major: 27, minor: 0, patch: 0, alpha: { major: 3, minor: 2, patch: 1 }
-    }), 28), expected);
-    assert.strictEqual(utils.updateNodeVersionForNextMajor(nodeVersionH({
-      major: 27, minor: 0, patch: 0, isRelease: 1
-    }), 28), expected);
   });
 });
 
@@ -599,14 +587,6 @@ describe('prepare_release: filterAlphaReleaseCommits', () => {
   });
 });
 
-describe('prepare_release: parseReverts', () => {
-  it('parses the reverted commits from git log', () => {
-    const log = 'abc1230000\x1fThis reverts commit def4560000111.\n\nPR-URL: x\x1e\n' +
-      'fff0000000\x1fRefs: y\x1e\n';
-    assert.deepStrictEqual(parseReverts(log), [['abc1230000', 'def4560000111']]);
-  });
-});
-
 describe('prepare_release: formatMajorReleaseCommits', () => {
   it('groups the commits by semver label', () => {
     const commits = [
@@ -615,7 +595,7 @@ describe('prepare_release: formatMajorReleaseCommits', () => {
       commitLine('3333333333', '**doc**: fix typo'),
       ''
     ].join('\n');
-    assert.strictEqual(formatMajorReleaseCommits(commits, []), [
+    assert.strictEqual(formatMajorReleaseCommits(commits), [
       '### Semver-Major Commits',
       '',
       commitLine('2222222222', '**lib**: break things', 'SEMVER-MAJOR'),
@@ -627,33 +607,6 @@ describe('prepare_release: formatMajorReleaseCommits', () => {
       '### Semver-Patch Commits',
       '',
       commitLine('3333333333', '**doc**: fix typo'),
-      ''
-    ].join('\n'));
-  });
-
-  it('drops reverted commits along with their reverts, keeping relands', () => {
-    const commits = [
-      commitLine('4444444444', '_**Revert**_ "**lib**: revert the revert"'),
-      commitLine('3333333333', '_**Revert**_ "**lib**: break things"'),
-      commitLine('2222222222', '**lib**: break things', 'SEMVER-MAJOR'),
-      commitLine('1111111111', '_**Revert**_ "**src**: not in this release line"'),
-      commitLine('5555555555', '**http**: drop me', 'SEMVER-MAJOR'),
-      commitLine('6666666666', '_**Revert**_ "**http**: drop me"')
-    ].join('\n');
-    const reverts = [
-      ['6666666666aaaa', '5555555555bbbb'],
-      ['4444444444cccc', '3333333333dddd'],
-      ['3333333333dddd', '2222222222eeee'],
-      ['1111111111ffff', '0000000000aaaa']
-    ];
-    assert.strictEqual(formatMajorReleaseCommits(commits, reverts), [
-      '### Semver-Major Commits',
-      '',
-      commitLine('2222222222', '**lib**: break things', 'SEMVER-MAJOR'),
-      '',
-      '### Semver-Patch Commits',
-      '',
-      commitLine('1111111111', '_**Revert**_ "**src**: not in this release line"'),
       ''
     ].join('\n'));
   });
