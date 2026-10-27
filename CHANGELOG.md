@@ -1,5 +1,14 @@
 # Changelog
 
+## [7.5.3](https://github.com/nodejs/node-core-utils/compare/v7.5.2...v7.5.3) (2026-10-27)
+
+
+### Bug Fixes
+
+* ignore check suites superseded by a later run ([#1192](https://github.com/nodejs/node-core-utils/issues/1192)) ([ade9a85](https://github.com/nodejs/node-core-utils/commit/ade9a8597c90f7fef9241e2a7199acf6afad48f6))
+* **ncu-ci:** exclude nodejs-private from reports ([#1227](https://github.com/nodejs/node-core-utils/issues/1227)) ([31ac767](https://github.com/nodejs/node-core-utils/commit/31ac767aa84a1c2769b865aa2866053e066fe515))
+* **update-v8:** resolve temporal_capi deps in vendored sources ([#1230](https://github.com/nodejs/node-core-utils/issues/1230)) ([0120702](https://github.com/nodejs/node-core-utils/commit/0120702ac8d962980802e40458654fe74cf8ea93))
+
 ## [7.5.2](https://github.com/nodejs/node-core-utils/compare/v7.5.1...v7.5.2) (2026-10-21)
 
 
