@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.6.0](https://github.com/nodejs/node-core-utils/compare/v7.5.3...v7.6.0) (2026-10-28)
+
+
+### Features
+
+* **release:** support alpha releases ([#1224](https://github.com/nodejs/node-core-utils/issues/1224)) ([8f02c22](https://github.com/nodejs/node-core-utils/commit/8f02c22c7f3d587986487ba38b00fe1b87ebb147))
+
 ## [7.5.3](https://github.com/nodejs/node-core-utils/compare/v7.5.2...v7.5.3) (2026-10-27)
 
 
