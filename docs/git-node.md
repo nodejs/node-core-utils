@@ -503,6 +503,37 @@ $ ncu-config --global set h1_username $H1_TOKEN
   access.
 - `h1_username`: HackerOne API Token username.
 
+#### Optional: reserve CVEs through the OpenJS Foundation CNA
+
+By default `--request-cve` reserves CVE ids through HackerOne, which acts as
+the Node.js CNA. Set `cve_source` to `openjs-cna` to reserve them through the
+OpenJS Foundation CNA instead. HackerOne is still used for the bug-bounty
+workflow (triage, `--sync`, disclosure) and is updated with the resulting CVE
+id, so reports stay in sync.
+
+```console
+$ ncu-config --global set cve_source openjs-cna
+$ ncu-config --global set -x openjs_cna_token
+$ ncu-config --global set openjs_cna_worker_url https://<deployment>.workers.dev
+```
+
+- `cve_source`: `hackerone` (default) or `openjs-cna`.
+- `openjs_cna_token`: **secret**, store it encrypted with `-x`. The bucket
+  token issued by the OpenJS CNA coordinators, in `<bucket>:<secret>` form
+  (for example `prod_nodejs:<256 hex chars>`).
+- `openjs_cna_worker_url`: the OpenJS CNA API base URL.
+- `openjs_cna_timeout`: optional, seconds to wait for a reservation before
+  pausing (default `600`).
+
+Reservations are asynchronous. The command saves the correlation id of each
+dispatched reservation to `vulnerabilities.json` (`pendingCve`) before
+waiting, so an interrupted or timed-out run never loses a reserved id. On a
+supervised bucket the reservation waits for an OpenJS CNA coordinator to
+approve it, which can exceed the timeout: re-run
+`git node security --request-cve` to resume the pending reservations.
+
+To revert to HackerOne, delete `cve_source` or set it back to `hackerone`.
+
 ### `git node security --start`
 
 This command prepares `vulnerabilities.json` and can open the Next Security
