@@ -244,6 +244,17 @@ git node release --prepare
 ```
 
 ```sh
+# Prepare the first Alpha release of a new release line
+git node release --prepare 27.0.0-alpha.0.0.0
+```
+
+```sh
+# Prepare the semver-major release of an Alpha release line, which marks it
+# as out of Alpha.
+git node release --prepare 27.0.0
+```
+
+```sh
 # Prepare the first LTS release for a given release line
 git node release --prepare --startLTS
 ```
