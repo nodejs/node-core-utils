@@ -45,6 +45,84 @@ describe('WPTUpdater', function() {
     cli.clearCalls();
   });
 
+  it('rejects unsafe WPT names before making requests', () => {
+    const unsafeNames = [
+      '../', '', '.', '..', '../outside', '../../..',
+      'url/..', 'url/../outside', 'url/./resources',
+      '/url', '//server/share', 'url/', 'url//resources',
+      '..\\outside', 'url\\..\\outside', '\\url',
+      'C:\\outside', 'C:/outside', 'C:outside', 'url:stream',
+      'url\0outside'
+    ];
+    const request = { gql: sinon.stub(), buffer: sinon.stub() };
+    for (const name of unsafeNames) {
+      assert.throws(
+        () => new WPTUpdater(name, cli, request, '.', 'testcommit'),
+        /Invalid WPT path/,
+        JSON.stringify(name)
+      );
+    }
+    assert.strictEqual(request.gql.callCount, 0);
+    assert.strictEqual(request.buffer.callCount, 0);
+  });
+
+  it('rejects fixture paths outside a strict subdirectory', () => {
+    const updater = new WPTUpdater('url', cli, request, '.');
+    for (const name of ['../wpt-sibling', '', '.', '..', 'url/..']) {
+      assert.throws(() => updater.fixtures(name), /Invalid WPT fixture path/);
+    }
+    assert.strictEqual(updater.fixtures(), nodePath.join('test', 'fixtures', 'wpt'));
+    assert.strictEqual(
+      updater.fixtures('url', 'resources', 'test.js'),
+      nodePath.join('test', 'fixtures', 'wpt', 'url', 'resources', 'test.js')
+    );
+  });
+
+  it('updates a nested suite without removing sibling fixtures', async() => {
+    const tempDir = fs.mkdtempSync(nodePath.join(os.tmpdir(), 'ncu-wpt-'));
+    try {
+      const fixtures = nodePath.join(tempDir, 'test', 'fixtures', 'wpt');
+      const suite = nodePath.join(fixtures, 'html', 'dom');
+      fs.mkdirSync(suite, { recursive: true });
+      const stalePath = nodePath.join(suite, 'stale.js');
+      const siblingPath = nodePath.join(fixtures, 'html', 'sibling.js');
+      const outsidePath = nodePath.join(fixtures, '..', 'outside.txt');
+      fs.writeFileSync(stalePath, 'stale');
+      fs.writeFileSync(siblingPath, 'sibling');
+      fs.writeFileSync(outsidePath, 'outside');
+
+      const request = {
+        gql: sinon.stub().resolves({
+          repository: {
+            object: { entries: [{ name: 'test.js', type: 'blob' }] }
+          }
+        }),
+        buffer: sinon.stub().resolves(Buffer.from('downloaded'))
+      };
+      const updater = new WPTUpdater('html/dom', new TestCLI(), request, tempDir, 'testcommit');
+      await updater.update();
+      await updater.updateLicense();
+
+      assert.strictEqual(fs.existsSync(stalePath), false);
+      assert.strictEqual(fs.readFileSync(nodePath.join(suite, 'test.js'), 'utf8'), 'downloaded');
+      assert.strictEqual(fs.readFileSync(siblingPath, 'utf8'), 'sibling');
+      assert.strictEqual(fs.readFileSync(outsidePath, 'utf8'), 'outside');
+      const licensePath = nodePath.join(fixtures, 'LICENSE.md');
+      const versionsPath = nodePath.join(fixtures, 'versions.json');
+      assert.strictEqual(fs.readFileSync(licensePath, 'utf8'), 'downloaded');
+      assert.deepStrictEqual(JSON.parse(fs.readFileSync(versionsPath, 'utf8')), {
+        'html/dom': { commit: 'testcommit', path: 'html/dom' }
+      });
+      assert.deepStrictEqual(request.gql.firstCall.args, ['TreeEntries', {
+        owner: 'web-platform-tests',
+        repo: 'wpt',
+        expression: 'testcommit:html/dom'
+      }]);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('exits with meaningful error when WPT name not found', async() => {
     wptUpdater = new WPTUpdater(path, cli, request, nodedir);
     let thrown;
