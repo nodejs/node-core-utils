@@ -47,17 +47,23 @@ function short(dir, sha) {
   return git(dir, 'rev-parse', '--short', sha);
 }
 
+const C_BEFORE = '1\n2\n3\nOLD\n5\n6\n';
+
 // V8 main runs 1.1 -> 1.4. Release lines 1.1 and 1.3 carry merged fixes.
 // The 1.1 lkgr stops before the latest 1.1 tag.
 function createV8(dir) {
   init(dir);
   const v8 = {};
+  commit(dir, 'Add C', { 'src/c.cc': C_BEFORE });
   versionCommit(dir, '1.1.0');
   v8.fixA = commit(dir, 'Fix A\n\nChange-Id: Iaaaa');
   versionCommit(dir, '1.2.0');
   v8.fixB = commit(dir, 'Fix B\n\nChange-Id: Ibbbb');
   versionCommit(dir, '1.3.0');
-  v8.fixC = commit(dir, 'Fix C\n\nChange-Id: Icccc', { 'src/c.cc': 'C\n' });
+  // Changes the context of Fix C, which Node's older V8 lacks.
+  commit(dir, 'Tweak C', { 'src/c.cc': C_BEFORE.replace('2', 'two') });
+  v8.fixC = commit(dir, 'Fix C\n\nChange-Id: Icccc',
+    { 'src/c.cc': C_BEFORE.replace('2', 'two').replace('OLD', 'NEW') });
   versionCommit(dir, '1.4.0');
   v8.fixD = commit(dir, 'Fix D\n\nChange-Id: Idddd');
   v8.fixE = commit(dir, 'Fix E\n\nChange-Id: Ieeee', { 'src/e.cc': 'E\n' });
@@ -94,12 +100,13 @@ function createNode(dir, v8) {
   let n = 0;
   const touch = (message) => commit(dir, message, { 'deps/v8/file': `${n++}` });
   const node = {};
-  node.import = touch('deps: update V8 to 1.1.0');
+  node.import = commit(dir, 'deps: update V8 to 1.1.0',
+    { 'deps/v8/file': `${n++}`, 'deps/v8/src/c.cc': C_BEFORE });
   node.patch = touch('deps: patch V8 to 1.1.2');
-  // The same change as upstream, plus the embedder string bump outside
-  // deps/v8.
+  // The same change as upstream with different context, plus the embedder
+  // string bump outside deps/v8.
   node.pickC = commit(dir, cherryPick(v8.fixC, 'Fix C'),
-    { 'deps/v8/src/c.cc': 'C\n', 'common.gypi': '1\n' });
+    { 'deps/v8/src/c.cc': C_BEFORE.replace('OLD', 'NEW'), 'common.gypi': '1\n' });
   // Edited while picking.
   node.pickE = commit(dir, cherryPick(v8.fixE, 'Fix E'),
     { 'deps/v8/src/e.cc': 'E edited\n' });
@@ -203,6 +210,10 @@ describe('git node v8 list-patches', () => {
       [n(node.pickX), 'cherry-pick', '-'],
       [n(node.local), 'node-only', '-']
     ]);
+
+    const table = await run({ tsv: false, checkDiff: true });
+    assert.deepStrictEqual(table[preamble().length].split(/ {2,}/).slice(-3),
+      ['in_target', 'diff', 'subject']);
   });
 
   it('aligns the table and hangs branch merges under their update', async() => {

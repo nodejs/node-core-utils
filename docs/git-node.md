@@ -493,9 +493,10 @@ every row shows the subject of the Node.js commit.
   - `-`: `patch-level` rows, see their `branch-merge` rows instead.
 - `diff` is only shown with `--check-diff`. For a `cherry-pick` row with an
   upstream commit on V8 main, it compares the `git patch-id --stable` of the
-  Node.js commit's `deps/v8` changes with that of the upstream commit, and is
-  one of:
-  - `same`: the diffs match, ignoring whitespace and line numbers.
+  Node.js commit's `deps/v8` changes with that of the upstream commit. Both
+  diffs omit context lines, so code around the change that differs between
+  Node.js's V8 and V8 main does not count. It is one of:
+  - `same`: the changed lines match, ignoring whitespace.
   - `differs`: Node.js changed the patch, or picked a different patchset than
     the one that landed. `deps: V8: backport` commits usually differ. Upstream
     changes to files Node.js does not vendor also make the diffs differ.
