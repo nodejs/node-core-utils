@@ -22,6 +22,7 @@ A custom Git command for managing pull requests. You can run it as
     - [`git node v8 major`](#git-node-v8-major)
     - [`git node v8 minor`](#git-node-v8-minor)
     - [`git node v8 backport <sha..>`](#git-node-v8-backport-sha)
+    - [`git node v8 list-patches`](#git-node-v8-list-patches)
     - [General options](#general-options)
   - [`git node vote`](#git-node-vote)
     - [Prerequisites](#prerequisites-2)
@@ -436,6 +437,100 @@ Options:
   patch version.
 - `--squash`: Set this flag to squash multiple commits into one. This should
   only be done if individual commits would break the build.
+
+### `git node v8 list-patches`
+
+Lists every V8 patch Node.js carries since its last V8 import. For each one,
+reports the V8 version it first shipped in and the release branches it was
+merged back to.
+
+With `--target`, it also reports whether the target line's `<line>-lkgr`
+branch contains each patch, in an extra `in_target` column. Use this before a
+major update to find the patches that need to be reapplied.
+
+Prints `#` header lines, then a table with one row per patch in commit order.
+Each `patch-level` row shows the version range it updated across, and its
+`branch-merge` rows hang under it. A `cherry-pick` row shows the subject of
+the original V8 commit. With `--target 15.7`:
+
+```
+node_commit  kind          upstream_ref            released_in  backported_to            in_target           subject
+7c2eaad2967  cherry-pick   785a2ea88a90            15.8.25      -                        missing             [tracing] do not define legacy tracing classes when using Perfetto
+352e81424fe  patch-level   15.6.75.13..15.6.75.25  -            -                        -                   deps: patch V8 to 15.6.75.25
+├─           branch-merge  a4b5ec9b7260            15.7.41      15.6.75.14               ancestor            [M156] [maglev] ...
+└─           branch-merge  0fd76b79067d            15.8.7       15.6.75.19, 15.7.112.4   merged:af8f5a21f5e  [M156] [maglev range analysis] ...
+```
+
+With `--tsv`, the rows are tab-separated for scripts instead. There, each
+`branch-merge` row repeats the `node_commit` of its `patch-level` row, a
+`patch-level` row's `upstream_ref` is only the version it updated from, and
+every row shows the subject of the Node.js commit.
+
+- `kind` says where the patch came from:
+  - `cherry-pick`: a `deps: V8: cherry-pick` or `deps: V8: backport` commit,
+    usually made by `git node v8 backport`. Node took one V8 commit on its own.
+  - `patch-level`: a `deps: patch V8 to X.Y.Z.W` commit, usually made by
+    `git node v8 minor`. Node moved to a newer patch version of the same V8
+    release line. It is followed by its `branch-merge` rows.
+  - `branch-merge`: one fix that V8 merged into its release branch between the
+    old and new versions of the `patch-level` update above it. Node got it
+    through that update, not as a commit of its own.
+  - `node-only`: any other commit touching `deps/v8`, such as a build fix
+    written for Node.
+- `released_in` is the earliest V8 version tag containing the upstream commit
+  on V8 main.
+- `backported_to` lists each release line older than `released_in`, from
+  Node's current line onward, that the fix was merged back to. The table
+  shows the first version on each line with the fix. `--tsv` shows
+  `<line>:<sha>@<first version with it>`. Each line is searched up to its
+  `<line>-lkgr` branch.
+- `in_target` is only shown with `--target`, and is one of:
+  - `ancestor`: the upstream commit is an ancestor of the target.
+  - `merged:<sha>`: in the target under a new SHA.
+  - `missing`: the upstream commit exists but the target lacks it.
+  - `missing:<sha>`: on V8 main under a new SHA, but the target lacks it.
+  - `unknown`: no upstream commit found to check against.
+  - `-`: `patch-level` rows, see their `branch-merge` rows instead.
+- `diff` is only shown with `--check-diff`. For a `cherry-pick` row with an
+  upstream commit on V8 main, it compares the `git patch-id --stable` of the
+  Node.js commit's `deps/v8` changes with that of the upstream commit. Both
+  diffs omit context lines, so code around the change that differs between
+  Node.js's V8 and V8 main does not count. It is one of:
+  - `same`: the changed lines match, ignoring whitespace.
+  - `differs`: Node.js changed the patch, or picked a different patchset than
+    the one that landed. `deps: V8: backport` commits usually differ. Upstream
+    changes to files Node.js does not vendor also make the diffs differ.
+  - `-`: every other row.
+
+When updating V8 to the target line, run with `--target` and review the
+`cherry-pick`,
+`branch-merge`, and `node-only` rows. `patch-level` rows need no action.
+
+- Rows with `ancestor` or `merged:<sha>` are already in the target and can be
+  dropped. If `--check-diff` shows `differs`, check first that the target does
+  not need the changes Node.js made to the patch.
+- Rows with `missing` or `missing:<sha>` must be reapplied, for example with
+  `git node v8 backport`. For `missing:<sha>`, backport that SHA rather than
+  the one in `upstream_ref`.
+- Rows with `unknown` need a look by hand. This includes every `node-only`
+  row. Reapply them if the target still needs them.
+
+Options:
+
+- `--target=MAJOR.MINOR`: V8 release line to upgrade to, for example `15.7`
+  when `deps/v8` is on 15.6. Adds the `in_target` column, which tells whether
+  the line's `<line>-lkgr` branch contains each patch. Without it, backports
+  are searched on every release line from Node's current one onward.
+- `--base=ref`: Node.js ref to read the V8 patches from. Defaults to
+  `upstream/main`.
+- `--no-fetch`: Skip fetching V8 and the remote branch of `--base`.
+- `--check-diff`: Add the `diff` column, which compares each `cherry-pick`
+  row's diff with its upstream commit.
+- `--tsv`: Print tab-separated rows instead of an aligned table.
+
+The V8 clone, from `--v8-dir` or the one maintained in `--base-dir` (see
+[General options](#general-options)), must be a full clone with tags and the
+`origin/<line>-lkgr` branches.
 
 ### General options
 

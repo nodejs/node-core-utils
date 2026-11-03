@@ -1,12 +1,14 @@
 import path from 'node:path';
 
-import { minor, major, backport, deps } from '../../lib/update-v8/index.js';
+import {
+  minor, major, backport, deps, listPatches
+} from '../../lib/update-v8/index.js';
 import { defaultBaseDir } from '../../lib/update-v8/constants.js';
 import { checkCwd } from '../../lib/update-v8/common.js';
 import { forceRunAsync } from '../../lib/run.js';
 import { error } from '../../lib/figures.js';
 
-export const command = 'v8 [major|minor|backport|deps]';
+export const command = 'v8 [major|minor|backport|deps|list-patches]';
 export const describe = 'Update or patch the V8 engine';
 
 export function builder(yargs) {
@@ -85,6 +87,38 @@ export function builder(yargs) {
           });
       }
     })
+    .command({
+      command: 'list-patches',
+      desc: 'List the V8 patches carried since the last V8 import',
+      handler,
+      builder: (yargs) => {
+        yargs
+          .option('target', {
+            type: 'string',
+            describe: 'V8 release line to upgrade to, as MAJOR.MINOR. ' +
+              'Reports whether its lkgr branch contains each patch'
+          })
+          .option('base', {
+            describe: 'Node.js ref to read the V8 patches from',
+            default: 'upstream/main'
+          })
+          .option('fetch', {
+            type: 'boolean',
+            describe: 'Fetch V8 and the remote branch of --base first',
+            default: true
+          })
+          .option('check-diff', {
+            type: 'boolean',
+            describe: 'Compare each cherry-pick diff with its upstream commit',
+            default: false
+          })
+          .option('tsv', {
+            type: 'boolean',
+            describe: 'Print tab-separated rows instead of an aligned table',
+            default: false
+          });
+      }
+    })
     .demandCommand(1, 'Please provide a valid command')
     .option('node-dir', {
       describe: 'Directory of a Node.js clone',
@@ -149,6 +183,8 @@ export function handler(argv) {
           return backport(options);
         case 'deps':
           return deps(options);
+        case 'list-patches':
+          return listPatches(options);
       }
     })
     .catch((err) => {
