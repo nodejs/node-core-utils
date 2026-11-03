@@ -598,22 +598,33 @@ $ ncu-config --global set h1_username $H1_TOKEN
   access.
 - `h1_username`: HackerOne API Token username.
 
+`git node security --start` pushes `vulnerabilities.json` to
+`nodejs-private/security-release` through the GitHub API using the token NCU
+is configured with, not your local git credentials. That token needs:
+
+- Classic token: the `repo` scope.
+- Fine-grained token: access to `nodejs-private/security-release` with
+  **Contents: Read and write** (to create the `next-security-release` branch
+  and commit the file) and **Pull requests: Read and write** (to open the
+  pull request), plus **Pull requests: Read** on `nodejs-private/node-private`
+  to look up patch authors.
+
 ### `git node security --start`
 
 This command prepares `vulnerabilities.json` and can open the Next Security
 Release pull request in `nodejs-private/security-release`, following the
 [Security Release Process][] document. It retrieves all pages of triaged
 HackerOne reports and uses the same candidate list for exclusions and selection.
-The CLI prompts for the release date, report selection, and dependency updates
-before writing the draft. Commit, push, and PR creation remain separate
-confirmed steps. An existing `next-security-release` branch is checked out
-without resetting it. If only `origin/next-security-release` exists locally,
-the command creates a tracking branch from that ref. Fetch first when remote
-state may have changed.
+The CLI prompts for the release date, report selection, and dependency updates,
+then generates the draft in memory (optionally opening it in your editor for
+review; the edited file must still be a valid draft). It pushes the draft to the
+`next-security-release` branch of `nodejs-private/security-release` using the
+GitHub API, so it doesn't need a local clone of that repository. Branch
+creation, the push, and PR creation remain separate confirmed steps.
 
-Security release commits reject unrelated staged changes before staging their
-own files. Commit or unstage those changes before continuing. `--start` refuses
-to overwrite an existing draft, including one found after switching branches.
+`--start` aborts before prompting for reports if the `next-security-release`
+branch already exists upstream, or if `main` already contains
+`security-release/next-security-release/vulnerabilities.json`.
 Use `--sync`, `--add-report`, or `--remove-report` to update that release.
 
 #### Preparing release data without the CLI
@@ -652,8 +663,9 @@ After reviewing the prepared data, local tools can use
 repository path. The helper validates the draft and creates
 `security-release/next-security-release/vulnerabilities.json` with an exclusive
 write, so an existing file cannot be overwritten. It does not change Git state
-or publish anything. Review and authorization belong to the calling tool; the
-CLI retains its directory and file-write confirmations.
+or publish anything. Review and authorization belong to the calling tool.
+`git node security --start` does not use it: it publishes through the GitHub
+API instead of writing to a local checkout.
 
 ### `git node security --apply-patches`
 

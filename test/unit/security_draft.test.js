@@ -9,7 +9,6 @@ import {
   getSecurityReleaseDraftPath,
   writeSecurityReleaseDraft
 } from '../../lib/security-release/draft.js';
-import PrepareSecurityRelease from '../../lib/prepare_security.js';
 
 function directory(t) {
   const previous = process.cwd();
@@ -68,21 +67,5 @@ describe('security release draft persistence', () => {
     }), /Invalid release date/);
     assert.deepStrictEqual(fs.readdirSync(dir), []);
     assert.throws(() => getSecurityReleaseDraftPath(), /directory is required/);
-  });
-
-  it('does not write a draft when the file-write confirmation is declined', async(t) => {
-    const dir = directory(t);
-    const previous = process.cwd();
-    t.after(() => process.chdir(previous));
-    process.chdir(dir);
-    let prompts = 0;
-    const release = new PrepareSecurityRelease({
-      async prompt() {
-        return ++prompts === 1;
-      }
-    });
-    await assert.rejects(release.createVulnerabilitiesJSON([], {}, 'TBD'), /Aborted: write/);
-    assert.strictEqual(prompts, 2);
-    assert.deepStrictEqual(fs.readdirSync(dir), []);
   });
 });
