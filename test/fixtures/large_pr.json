@@ -1,0 +1,22 @@
+{
+  "createdAt": "2017-10-24T11:13:43Z",
+  "authorAssociation": "COLLABORATOR",
+  "author": {
+    "login": "pr_author",
+    "email": "pr_author@example.com",
+    "name": "Their Github Account email"
+  },
+  "url": "https://github.com/nodejs/node/pull/16438",
+  "bodyHTML": "<p>Awesome changes</p>",
+  "bodyText": "Awesome changes",
+  "labels": {
+    "nodes": [
+      {
+        "name": "large-pr"
+      }
+    ]
+  },
+  "title": "lib: awesome changes",
+  "baseRefName": "main",
+  "headRefName": "awesome-changes"
+}
