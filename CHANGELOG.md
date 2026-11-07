@@ -1,5 +1,19 @@
 # Changelog
 
+## [7.7.0](https://github.com/nodejs/node-core-utils/compare/v7.6.0...v7.7.0) (2026-11-07)
+
+
+### Features
+
+* **security:** add OpenJS CNA credentials and Worker client ([f5cfa2a](https://github.com/nodejs/node-core-utils/commit/f5cfa2adcf4dfbb33b36e534d2dbac54f911d10a))
+* **security:** reserve CVEs through the OpenJS CNA in --request-cve ([7769e7d](https://github.com/nodejs/node-core-utils/commit/7769e7df768ee373456fbb94021c144d0edb16b7))
+* update LTS transition description ([#1229](https://github.com/nodejs/node-core-utils/issues/1229)) ([30ded7d](https://github.com/nodejs/node-core-utils/commit/30ded7df2159d852427859b107f4206d14fae23a))
+
+
+### Bug Fixes
+
+* **v8:** keep llvm-libc src/string in V8 updates ([#1242](https://github.com/nodejs/node-core-utils/issues/1242)) ([869e8a3](https://github.com/nodejs/node-core-utils/commit/869e8a369f07ba387125a6d45fdd7df528b46f7f))
+
 ## [7.6.0](https://github.com/nodejs/node-core-utils/compare/v7.5.3...v7.6.0) (2026-11-03)
 
 
