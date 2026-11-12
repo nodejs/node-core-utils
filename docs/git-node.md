@@ -577,11 +577,13 @@ $ git node vote \
 
 Manage or starts a security release process.
 
-Every `git node security` action asks for permission before each mutating step.
-Read-only operations, such as reading files or fetching report data, run without
-confirmation. Each confirmation names the command or service action that will
-write state and explains the side effect, such as writing files, committing and
-pushing changes, creating issues, or updating HackerOne reports.
+Every `git node security` action asks for permission before each step that
+changes remote state, such as creating issues or pull requests, or updating
+HackerOne reports. Local changes run without confirmation: files are written
+and staged, and the commit message is pre-filled in `.git/MERGE_MSG`, so it is
+picked up by `git commit` and editors such as VS Code. Apart from `--start`,
+which pushes its draft through the GitHub API, the CLI never commits or pushes;
+review the staged diff, then commit and push `next-security-release` yourself.
 
 <a id="git-node-security-prerequisites"></a>
 
