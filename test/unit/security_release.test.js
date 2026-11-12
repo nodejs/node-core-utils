@@ -1,5 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 import SecurityBlog from '../../lib/security_blog.js';
 import PrepareSecurityRelease, {
@@ -760,6 +763,182 @@ describe('security_release: include all triaged reports', () => {
     });
 
     assert.strictEqual(await release.promptReportSelectionMode(), 'include-all');
+  });
+});
+
+describe('security_release: push vulnerabilities.json', () => {
+  function setup({ branchSHA, fileSHA }) {
+    const calls = [];
+    const release = new PrepareSecurityRelease({
+      SPINNER_STATUS: { FAILED: 'failed', INFO: 'info' },
+      startSpinner() {},
+      stopSpinner() {},
+      prompt(message) {
+        calls.push(['prompt', message]);
+        return true;
+      }
+    });
+    release.req = {
+      getBranchSHA({ branch }) {
+        calls.push(['getBranchSHA', branch]);
+        return branch === 'main' ? 'main-sha' : branchSHA;
+      },
+      getFileSHA(opts) {
+        calls.push(['getFileSHA', opts]);
+        return fileSHA;
+      },
+      createBranch(opts) {
+        calls.push(['createBranch', opts]);
+      },
+      createOrUpdateFile(opts) {
+        calls.push(['createOrUpdateFile', opts]);
+        return { commit: { html_url: 'https://example.com/commit' } };
+      }
+    };
+    return { release, calls };
+  }
+
+  const file = {
+    owner: 'nodejs-private',
+    repo: 'security-release',
+    path: 'security-release/next-security-release/vulnerabilities.json',
+    branch: 'next-security-release',
+    content: '{}\n',
+    message: 'msg'
+  };
+
+  it('creates the branch from main when missing', async() => {
+    const { release, calls } = setup({});
+    await release.pushVulnerabilitiesJSON('{}\n', 'msg');
+    assert.deepStrictEqual(calls.filter(([n]) => n !== 'prompt'), [
+      ['getBranchSHA', 'next-security-release'],
+      ['getBranchSHA', 'main'],
+      ['createBranch', {
+        owner: 'nodejs-private',
+        repo: 'security-release',
+        branch: 'next-security-release',
+        sha: 'main-sha'
+      }],
+      ['createOrUpdateFile', { ...file, sha: undefined }]
+    ]);
+    assert.strictEqual(calls.filter(([n]) => n === 'prompt').length, 2);
+  });
+
+  it('skips the branch lookup when told the branch does not exist', async() => {
+    const { release, calls } = setup({ branchSHA: 'branch-sha' });
+    await release.pushVulnerabilitiesJSON('{}\n', 'msg', { branchExists: false });
+    assert.deepStrictEqual(calls.filter(([n]) => n !== 'prompt').map(([n]) => n), [
+      'getBranchSHA',
+      'createBranch',
+      'createOrUpdateFile'
+    ]);
+    assert.strictEqual(calls[0][1], 'main');
+  });
+
+  it('refuses to start when the branch already exists', async() => {
+    const { release } = setup({ branchSHA: 'branch-sha' });
+    await assert.rejects(() => release.checkBranchDoesNotExist(),
+      /A security release seems to be in progress/);
+  });
+
+  it('refuses to start when a draft already exists on main', async() => {
+    const { release } = setup({ fileSHA: 'file-sha' });
+    await assert.rejects(() => release.checkBranchDoesNotExist(), /draft already exists/);
+  });
+
+  it('starts when the branch does not exist', async() => {
+    const { release, calls } = setup({});
+    await release.checkBranchDoesNotExist();
+    assert.deepStrictEqual(calls, [
+      ['getBranchSHA', 'next-security-release'],
+      ['getFileSHA', {
+        owner: 'nodejs-private',
+        repo: 'security-release',
+        path: 'security-release/next-security-release/vulnerabilities.json',
+        ref: 'main'
+      }]
+    ]);
+  });
+
+  it('updates the file on an existing branch', async() => {
+    const { release, calls } = setup({ branchSHA: 'branch-sha', fileSHA: 'file-sha' });
+    await release.pushVulnerabilitiesJSON('{}\n', 'msg');
+    assert.deepStrictEqual(calls.filter(([n]) => n !== 'prompt'), [
+      ['getBranchSHA', 'next-security-release'],
+      ['getFileSHA', {
+        owner: 'nodejs-private',
+        repo: 'security-release',
+        path: 'security-release/next-security-release/vulnerabilities.json',
+        ref: 'next-security-release'
+      }],
+      ['createOrUpdateFile', { ...file, sha: 'file-sha' }]
+    ]);
+  });
+});
+
+describe('security_release: edit vulnerabilities.json', () => {
+  // Fake editor: replaces the file with the contents of the next answer.
+  function useEditor(t, answers) {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ncu-test-editor-'));
+    t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+    const answersPath = path.join(dir, 'answers.json');
+    fs.writeFileSync(answersPath, JSON.stringify(answers));
+    const script = path.join(dir, 'editor.mjs');
+    fs.writeFileSync(script, `
+      import fs from 'node:fs';
+      const answers = JSON.parse(fs.readFileSync(${JSON.stringify(answersPath)}, 'utf8'));
+      fs.writeFileSync(process.argv[2], answers.shift());
+      fs.writeFileSync(${JSON.stringify(answersPath)}, JSON.stringify(answers));
+    `);
+    const previous = process.env.GIT_EDITOR;
+    process.env.GIT_EDITOR = `"${process.execPath}" "${script}"`;
+    t.after(() => {
+      if (previous === undefined) delete process.env.GIT_EDITOR;
+      else process.env.GIT_EDITOR = previous;
+    });
+  }
+
+  const normalized = JSON.stringify({
+    releaseDate: '2026-10-06', reports: [], dependencies: {}
+  }, null, 2) + '\n';
+
+  it('returns the edited content, normalized', async(t) => {
+    useEditor(t, ['{"releaseDate":"2026/10/06","reports":[]}']);
+    const release = new PrepareSecurityRelease({});
+    assert.strictEqual(await release.editVulnerabilitiesJSON('{}\n'), normalized);
+  });
+
+  it('offers to edit again when the result is not valid', async(t) => {
+    useEditor(t, [
+      '{',
+      '{"releaseDate":"2026/10/06"}',
+      '{"releaseDate":"2026/10/06","reports":[]}'
+    ]);
+    const prompts = [];
+    const release = new PrepareSecurityRelease({
+      error() {},
+      prompt(message) {
+        prompts.push(message);
+        return true;
+      }
+    });
+    assert.strictEqual(await release.editVulnerabilitiesJSON('{}\n'), normalized);
+    assert.deepStrictEqual(prompts, [
+      'Edit vulnerabilities.json again?',
+      'Edit vulnerabilities.json again?'
+    ]);
+  });
+
+  it('aborts when the user does not fix invalid JSON', async(t) => {
+    useEditor(t, ['{']);
+    const release = new PrepareSecurityRelease({
+      error() {},
+      prompt() {
+        return false;
+      }
+    });
+    await assert.rejects(() => release.editVulnerabilitiesJSON('{}\n'),
+      /vulnerabilities\.json is not valid/);
   });
 });
 
