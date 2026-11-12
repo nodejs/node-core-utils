@@ -171,3 +171,137 @@ describe('Request', () => {
     });
   });
 });
+
+describe('Request: OpenJS CNA', () => {
+  function createCnaRequest(responder) {
+    const calls = [];
+    const request = createRequest({});
+    request.credentials = {
+      cna: {
+        token: 'test_nodejs:0123456789abcdef',
+        worker_url: 'https://worker.example.workers.dev'
+      }
+    };
+    request.json = async(url, options) => {
+      calls.push({ url, options });
+      return responder(url, options, calls.length);
+    };
+    return { request, calls };
+  }
+
+  describe('cnaDispatch', () => {
+    it('POSTs /dispatch with the bearer token and a JSON body', async() => {
+      const { request, calls } = createCnaRequest(
+        () => ({ correlation_id: 'abc-123', status: 'queued' })
+      );
+
+      const result = await request.cnaDispatch('reserve-cve');
+
+      assert.deepStrictEqual(result, { correlation_id: 'abc-123', status: 'queued' });
+      assert.strictEqual(calls.length, 1);
+      assert.strictEqual(calls[0].url, 'https://worker.example.workers.dev/dispatch');
+      assert.strictEqual(calls[0].options.method, 'POST');
+      assert.strictEqual(calls[0].options.headers.Authorization,
+        'Bearer test_nodejs:0123456789abcdef');
+      assert.strictEqual(calls[0].options.headers['Content-Type'], 'application/json');
+      assert.deepStrictEqual(JSON.parse(calls[0].options.body),
+        { operation: 'reserve-cve', inputs: {} });
+    });
+
+    it('throws when the Worker returns an error envelope', async() => {
+      const { request } = createCnaRequest(() => ({ error: 'unknown_operation' }));
+
+      await assert.rejects(
+        () => request.cnaDispatch('do-the-thing'),
+        /OpenJS CNA dispatch failed \(do-the-thing\): unknown_operation/
+      );
+    });
+
+    it('throws when the Worker returns no correlation id', async() => {
+      const { request } = createCnaRequest(() => ({ status: 'queued' }));
+
+      await assert.rejects(
+        () => request.cnaDispatch('reserve-cve'),
+        /returned no correlation_id/
+      );
+    });
+  });
+
+  describe('cnaPoll', () => {
+    it('GETs /runs/{id} with the bearer token', async() => {
+      const run = {
+        correlation_id: 'abc-123',
+        run_id: 999,
+        status: 'completed',
+        conclusion: 'success',
+        result: { cve_id: 'CVE-2026-1234' }
+      };
+      const { request, calls } = createCnaRequest(() => run);
+
+      const result = await request.cnaPoll('abc-123');
+
+      assert.deepStrictEqual(result, run);
+      assert.strictEqual(calls[0].url, 'https://worker.example.workers.dev/runs/abc-123');
+      assert.strictEqual(calls[0].options.method, 'GET');
+      assert.strictEqual(calls[0].options.headers.Authorization,
+        'Bearer test_nodejs:0123456789abcdef');
+    });
+
+    it('throws when the Worker returns an error envelope', async() => {
+      const { request } = createCnaRequest(() => ({ error: 'unauthorized' }));
+
+      await assert.rejects(
+        () => request.cnaPoll('abc-123'),
+        /OpenJS CNA poll failed \(abc-123\): unauthorized/
+      );
+    });
+  });
+
+  describe('cnaWaitForCompletion', () => {
+    it('polls until the run completes successfully', async() => {
+      const { request, calls } = createCnaRequest((url, options, call) => {
+        if (call === 1) return { status: 'in_progress' };
+        return {
+          run_id: 42,
+          status: 'completed',
+          conclusion: 'success',
+          result: { cve_id: 'CVE-2026-1234' }
+        };
+      });
+
+      const run = await request.cnaWaitForCompletion('abc-123',
+        { timeoutMs: 1_000, intervalMs: 1 });
+
+      assert.strictEqual(run.run_id, 42);
+      assert.deepStrictEqual(run.result, { cve_id: 'CVE-2026-1234' });
+      assert.strictEqual(calls.length, 2);
+    });
+
+    it('throws when the run concludes without success', async() => {
+      const { request } = createCnaRequest(() => ({
+        status: 'completed',
+        conclusion: 'failure',
+        url: 'https://github.com/example/runs/13'
+      }));
+
+      await assert.rejects(
+        () => request.cnaWaitForCompletion('abc-123', { timeoutMs: 1_000, intervalMs: 1 }),
+        /OpenJS CNA run abc-123 concluded with 'failure'. See https:\/\/github.com\/example\/runs\/13/
+      );
+    });
+
+    it('throws a CnaTimeoutError carrying the correlation id on timeout', async() => {
+      const { request } = createCnaRequest(() => ({ status: 'in_progress' }));
+
+      await assert.rejects(
+        () => request.cnaWaitForCompletion('abc-123', { timeoutMs: 5, intervalMs: 1 }),
+        (error) => {
+          assert.strictEqual(error.name, 'CnaTimeoutError');
+          assert.strictEqual(error.correlationId, 'abc-123');
+          assert.match(error.message, /did not complete within 5ms/);
+          return true;
+        }
+      );
+    });
+  });
+});
