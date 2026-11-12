@@ -611,6 +611,13 @@ is configured with, not your local git credentials. That token needs:
   pull request), plus **Pull requests: Read** on `nodejs-private/node-private`
   to look up patch authors.
 
+`git node security --request-cve` lists the reports without a CVE and asks for
+a single confirmation. It then requests a CVE for each report and adds the CVE
+ID to the HackerOne report right away, without further prompts.
+`vulnerabilities.json` is updated and staged last, so if that step fails or the
+run is interrupted, `git node security --sync` can still fetch the CVE IDs from
+HackerOne.
+
 #### Optional: reserve CVEs through the OpenJS Foundation CNA
 
 By default `--request-cve` reserves CVE ids through HackerOne, which acts as
