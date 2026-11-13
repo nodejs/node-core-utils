@@ -1,5 +1,17 @@
 # Changelog
 
+## [7.8.0](https://github.com/nodejs/node-core-utils/compare/v7.7.0...v7.8.0) (2026-11-13)
+
+
+### Features
+
+* **git-node:** simplify `security --start` ([#1240](https://github.com/nodejs/node-core-utils/issues/1240)) ([6e65384](https://github.com/nodejs/node-core-utils/commit/6e6538413802ea8eff7ccc9d795c3734dda315bc))
+
+
+### Bug Fixes
+
+* **v8:** fetch replace_with crates from crates.io ([#1245](https://github.com/nodejs/node-core-utils/issues/1245)) ([5c96089](https://github.com/nodejs/node-core-utils/commit/5c96089295985539981fe10ae9f7377e22964a78))
+
 ## [7.7.0](https://github.com/nodejs/node-core-utils/compare/v7.6.0...v7.7.0) (2026-11-07)
 
 
