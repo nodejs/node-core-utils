@@ -102,7 +102,15 @@ function run(t, command, responses, credentials = {
   `;
   const result = spawnSync(process.execPath, ['--input-type=module', '--eval', script], {
     cwd: dir,
-    env: { ...process.env, XDG_CONFIG_HOME: dir, NCU_VERBOSITY: 'NONE' },
+    env: {
+      ...process.env,
+      XDG_CONFIG_HOME: dir,
+      NCU_VERBOSITY: 'NONE',
+      // The node:test harness may run the test process with FORCE_COLOR;
+      // it needs to be stripped when spawning child processes, otherwise
+      // stdout/stderr will contain ANSI color codes and the assertions fail.
+      FORCE_COLOR: undefined,
+    },
     encoding: 'utf8',
     timeout: 10000
   });
