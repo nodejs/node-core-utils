@@ -1,0 +1,15 @@
+query ReleaseProposalPR($prid: Int!, $owner: String!, $repo: String!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $prid) {
+      headRefName,
+      commits(last: 1) {
+        nodes {
+          commit {
+            oid,
+            messageHeadline
+          }
+        }
+      }
+    }
+  }
+}
