@@ -1,11 +1,15 @@
 import { describe, it, beforeEach } from 'node:test';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert';
+import os from 'node:os';
+import path from 'node:path';
 
 import {
   isCollaborator,
   getCollaborators
 } from '../../lib/collaborators.js';
+import Request from '../../lib/request.js';
 
 import {
   readme,
@@ -186,6 +190,95 @@ describe('collaborators', function() {
         async() => getCollaborators(cli, request, argv),
         /Error: Could not find any collaborators/);
     });
+
+    it('should stop spinner and rethrow when request.text rejects', async() => {
+      const argv = { owner: 'nodejs', repo: 'node' };
+      const err = new Error('Unable to fetch README: 503 Service Unavailable');
+      const request = {
+        async text() {
+          throw err;
+        }
+      };
+
+      await assert.rejects(
+        () => getCollaborators(cli, request, argv),
+        (caught) => caught === err);
+      cli.assertCalledWith({
+        stopSpinner: [[
+          'Failed to get collaborator info from nodejs/node/README.md',
+          cli.SPINNER_STATUS.FAILED
+        ]]
+      }, { ignore: ['updateSpinner'] });
+    });
+
+    it('should reject non-ok HTTP responses via Request instead of parse error', async() => {
+      const argv = { owner: 'nodejs', repo: 'node' };
+      const request = Object.assign(Object.create(Request.prototype), {
+        credentials: {},
+        proxyAgent: undefined
+      });
+      let cancelled = false;
+      request.fetch = async() => ({
+        ok: false,
+        status: 503,
+        statusText: 'Service Unavailable',
+        body: {
+          cancel: async() => {
+            cancelled = true;
+          }
+        },
+        text: async() => '<html>503</html>'
+      });
+
+      await assert.rejects(
+        () => getCollaborators(cli, request, argv),
+        /Unable to fetch .*: 503 Service Unavailable/);
+      assert.strictEqual(cancelled, true);
+      cli.assertCalledWith({
+        stopSpinner: [[
+          'Failed to get collaborator info from nodejs/node/README.md',
+          cli.SPINNER_STATUS.FAILED
+        ]]
+      }, { ignore: ['updateSpinner'] });
+    });
+
+    it('should stop spinner and rethrow when local readme file cannot be read', async(t) => {
+      const tmpDir = mkdtempSync(path.join(os.tmpdir(), 'ncu-collaborators-'));
+      t.after(() => rmSync(tmpDir, { recursive: true, force: true }));
+      const missingPath = path.join(tmpDir, 'missing-README.md');
+      const argv = { owner: 'nodejs', repo: 'node', readme: missingPath };
+
+      await assert.rejects(
+        () => getCollaborators(cli, {}, argv),
+        { code: 'ENOENT' });
+      cli.assertCalledWith({
+        stopSpinner: [[
+          `Failed to get collaborator info from ${missingPath}`,
+          cli.SPINNER_STATUS.FAILED
+        ]]
+      }, { ignore: ['updateSpinner'] });
+    });
+
+    it('should report nodejs/node/README.md when remote fetch fails for another repo',
+      async() => {
+        const argv = { owner: 'nodejs', repo: 'llnode' };
+        const err = new Error('Unable to fetch README: 503 Service Unavailable');
+        const request = {
+          async text() {
+            throw err;
+          }
+        };
+
+        await assert.rejects(
+          () => getCollaborators(cli, request, argv),
+          (caught) => caught === err);
+        cli.assertCalledWith({
+          stopSpinner: [[
+            'Failed to get collaborator info from nodejs/node/README.md',
+            cli.SPINNER_STATUS.FAILED
+          ]]
+        }, { ignore: ['updateSpinner'] });
+      });
   });
 
   describe('isCollaborator', () => {

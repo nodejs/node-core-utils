@@ -170,6 +170,149 @@ describe('Request', () => {
         });
     });
   });
+
+  describe('text', () => {
+    it('returns response text when status is ok', async() => {
+      const request = createRequest({});
+      request.fetch = async() => ({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        text: async() => 'hello world'
+      });
+
+      const body = await request.text('https://example.com/README.md');
+      assert.strictEqual(body, 'hello world');
+    });
+
+    it('rejects non-ok responses and cancels the body', async() => {
+      const request = createRequest({});
+      let cancelled = false;
+      let readBody = false;
+      request.fetch = async() => ({
+        ok: false,
+        status: 503,
+        statusText: 'Service Unavailable',
+        body: {
+          cancel: async() => {
+            cancelled = true;
+          }
+        },
+        text: async() => {
+          readBody = true;
+          return '<html>503</html>';
+        }
+      });
+
+      await assert.rejects(
+        () => request.text('https://example.com/README.md'),
+        /Unable to fetch https:\/\/example\.com\/README\.md: 503 Service Unavailable/);
+      assert.strictEqual(cancelled, true);
+      assert.strictEqual(readBody, false);
+    });
+
+    it('rejects non-ok responses when res.body is missing', async() => {
+      const request = createRequest({});
+      let readBody = false;
+      request.fetch = async() => ({
+        ok: false,
+        status: 502,
+        statusText: 'Bad Gateway',
+        text: async() => {
+          readBody = true;
+          return '<html>502</html>';
+        }
+      });
+
+      await assert.rejects(
+        () => request.text('https://example.com/README.md'),
+        /Unable to fetch https:\/\/example\.com\/README\.md: 502 Bad Gateway/);
+      assert.strictEqual(readBody, false);
+    });
+
+    it('rejects with HTTP status when cancelling an errored response body fails', async() => {
+      const request = createRequest({});
+      const streamErr = new TypeError('terminated');
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.error(streamErr);
+        }
+      });
+      request.fetch = async() => new Response(stream, {
+        status: 503,
+        statusText: 'Service Unavailable'
+      });
+
+      await assert.rejects(
+        () => request.text('https://example.com/README.md'),
+        (err) => {
+          assert.strictEqual(
+            err.message,
+            'Unable to fetch https://example.com/README.md: 503 Service Unavailable');
+          assert.strictEqual(err.cause, streamErr);
+          return true;
+        });
+    });
+
+    it('omits trailing space when statusText is empty', async() => {
+      const request = createRequest({});
+      request.fetch = async() => ({
+        ok: false,
+        status: 503,
+        statusText: '',
+        body: { cancel: async() => {} }
+      });
+
+      await assert.rejects(
+        () => request.text('https://example.com/README.md'),
+        (err) => {
+          assert.strictEqual(err.message, 'Unable to fetch https://example.com/README.md: 503');
+          return true;
+        });
+    });
+
+    it('preserves falsy body cancellation rejection reasons as cause', async() => {
+      const request = createRequest({});
+      for (const reason of [false, undefined]) {
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.error(reason);
+          }
+        });
+        request.fetch = async() => new Response(stream, {
+          status: 503,
+          statusText: 'Service Unavailable'
+        });
+
+        await assert.rejects(
+          () => request.text('https://example.com/README.md'),
+          (err) => {
+            assert.strictEqual(
+              err.message,
+              'Unable to fetch https://example.com/README.md: 503 Service Unavailable');
+            assert.strictEqual(Object.hasOwn(err, 'cause'), true);
+            assert.strictEqual(err.cause, reason);
+            return true;
+          });
+      }
+    });
+  });
+
+  describe('json', () => {
+    it('parses JSON payloads on non-ok responses', async() => {
+      const request = createRequest({});
+      delete request.json;
+      request.fetch = async() => ({
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        text: async() => '{"message":"Bad credentials"}'
+      });
+
+      const body = await request.json('/graphql', { method: 'POST' });
+      assert.deepStrictEqual(body, { message: 'Bad credentials' });
+    });
+  });
 });
 
 describe('Request: OpenJS CNA', () => {
