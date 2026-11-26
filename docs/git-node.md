@@ -265,6 +265,12 @@ git node release --prepare --startLTS
 git node release --prepare --security --filterLabel 18.x 18.20.1
 ```
 
+```sh
+# Prepare a new release of Node.js for an already opened release proposal,
+# using the date from its last commit and filling in the PR-URL of the release commit
+git node release --prepare --newVersion=1.2.3 https://github.com/nodejs/node/pull/12345
+```
+
 ```
 # Skip the branch-diff initial check (useful when updating ongoing proposals)
 git node release --prepare 1.2.3 --skipBranchDiff
