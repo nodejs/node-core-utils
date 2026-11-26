@@ -249,7 +249,7 @@ async function skipIfExisting(cli, prURL) {
     { ignoreFailure: false, captureStdout: true });
   if (existingCommit.trim()) {
     cli.info(`${prURL} seems to already be on the current tree: ${existingCommit}`);
-    return await cli.prompt('Do you want to skip it?', { defaultAnswer: true });
+    return true;
   }
   return false;
 }
@@ -304,6 +304,7 @@ async function applySecurityPatches(cli) {
 
   const { owner, repo } = SECURITY_REPO;
   const { releaseDate, reports, dependencies } = await fetchVulnerabilitiesDotJSON(cli, req);
+  const missingPatches = [];
 
   let patchedVersion;
   const releaseLine = `${nodeMajorVersion}.x`;
@@ -316,7 +317,10 @@ async function applySecurityPatches(cli) {
 
     const argv = parsePRFromURL(prURL);
     if (argv.owner === SECURITY_REPO.owner && argv.repo === SECURITY_REPO.repo) {
-      await landingSession(cli, req, prURL, argv);
+      const skipped = await landingSession(cli, req, prURL, argv);
+      if (skipped) {
+        missingPatches.push(`${prURL} (${name} update)`);
+      }
       continue;
     }
 
@@ -381,7 +385,10 @@ async function applySecurityPatches(cli) {
             'once at the start of the session; to refresh those, start a new NCU session');
           const response = await cli.prompt('Do you want to skip that CVE?',
             { defaultAnswer: false });
-          if (response) continue;
+          if (response) {
+            missingPatches.push(`${prURL} (${title})`);
+            continue;
+          }
           throw new Error(`Found no patch for ${cveIds}`);
         }
       }
@@ -390,9 +397,17 @@ async function applySecurityPatches(cli) {
 
     const backport = prURL !== pr.url;
 
-    await landingSession(cli, req, prURL, { prid: pr.number, backport, ...SECURITY_REPO }, cveIds);
+    const skipped = await landingSession(
+      cli, req, prURL, { prid: pr.number, backport, ...SECURITY_REPO }, cveIds);
+    if (skipped) missingPatches.push(prURL);
   }
-  cli.ok('All patches are on the local HEAD!');
+  if (missingPatches.length) {
+    cli.warn(`The following are missing on the current HEAD:\n${
+      missingPatches.map(cve => ` - ${cve}`).join('\n')}`);
+    cli.setExitCode(1);
+  } else {
+    cli.ok('All patches are on the local HEAD!');
+  }
   cli.info('You can now build and test, and create a proposal with the following commands:');
   cli.info(`git switch -C v${nodeMajorVersion}.x HEAD`);
   cli.info(`git node release --prepare --security --newVersion=${patchedVersion} ` +
