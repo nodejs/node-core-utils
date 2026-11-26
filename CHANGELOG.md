@@ -1,5 +1,19 @@
 # Changelog
 
+## [7.9.0](https://github.com/nodejs/node-core-utils/compare/v7.8.0...v7.9.0) (2026-11-26)
+
+
+### Features
+
+* **git-node:** improve UX of updating a release proposal ([#1252](https://github.com/nodejs/node-core-utils/issues/1252)) ([e3d55cf](https://github.com/nodejs/node-core-utils/commit/e3d55cfd30d58dc7c4cee48ad8cd62f7fc39cf49))
+* **git-node:** list missing security patches ([#1246](https://github.com/nodejs/node-core-utils/issues/1246)) ([5947986](https://github.com/nodejs/node-core-utils/commit/5947986f5afa7f1080b239f45995ad3cae877fbd))
+
+
+### Bug Fixes
+
+* **ci:** prevent diagnostic output from escaping code fences ([e05ba26](https://github.com/nodejs/node-core-utils/commit/e05ba261e3262f8e62af169d99dea4508e5a7d71))
+* **wpt:** prevent fixture path traversal ([#1234](https://github.com/nodejs/node-core-utils/issues/1234)) ([973c510](https://github.com/nodejs/node-core-utils/commit/973c51044c5a37f155c3db368e6abee9c573fd58))
+
 ## [7.8.0](https://github.com/nodejs/node-core-utils/compare/v7.7.0...v7.8.0) (2026-11-13)
 
 
