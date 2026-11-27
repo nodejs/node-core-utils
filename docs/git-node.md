@@ -719,6 +719,10 @@ This command fetches the list of reports and the list of PRs labelled for the
 release corresponding to the CWD, and match them in pair, and run a
 `git node land` session for each.
 
+When run on `main` (i.e. the CWD's major version is greater than the most
+recent release line listed in `vulnerabilities.json`), it offers to apply the
+patches of that most recent release line on top of `main` instead.
+
 ### `git node security --update-date=YYYY/MM/DD`
 
 This command updates the `vulnerabilities.json` with target date of the security release.

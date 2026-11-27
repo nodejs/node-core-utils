@@ -18,7 +18,8 @@ import UpdateSecurityRelease, {
 import {
   getAffectedVersionLines,
   getDependencyUpdates,
-  getHighestSeverityAnnouncement
+  getHighestSeverityAnnouncement,
+  getLatestAffectedReleaseLine
 } from '../../lib/security-release/security-release.js';
 
 describe('security_release: cleanup pull requests', () => {
@@ -225,6 +226,24 @@ describe('security_release: affected versions', () => {
       }),
       ['24.x', '22.x']
     );
+  });
+});
+
+describe('security_release: latest affected release line', () => {
+  it('returns the most recent line from reports and dependencies', () => {
+    assert.strictEqual(getLatestAffectedReleaseLine({
+      reports: [
+        { affectedVersions: ['20.x', '22.x'] },
+        { affectedVersions: { '24.x': 'https://github.com/nodejs-private/node-private/pull/1' } }
+      ],
+      dependencies: {
+        undici: [
+          { affectedVersions: { '22.x': 'https://github.com/nodejs/node/pull/2' } },
+          { affectedVersions: { '25.x': 'https://github.com/nodejs/node/pull/3' } }
+        ]
+      }
+    }), 25);
+    assert.strictEqual(getLatestAffectedReleaseLine({ reports: [] }), undefined);
   });
 });
 
