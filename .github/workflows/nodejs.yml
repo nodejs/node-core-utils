@@ -28,6 +28,7 @@ jobs:
     name: Test on Node.js
     uses: pkgjs/action/.github/workflows/node-test.yaml@v0
     with:
+      upgrade-policy: lts/strict
       runs-on: ubuntu-latest, macos-latest
       test-command: npm run coverage:ci
       post-test-steps: |
